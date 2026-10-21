@@ -92,7 +92,7 @@
       if ($('#file02CompletedStamp')) $('#file02CompletedStamp').hidden = true;
       if ($('#continueFileThree')) $('#continueFileThree').hidden = true;
     }
-    const thirdUnlocked=Number(progress.unlockedChapter)>=3;$('#fileThree').disabled=!thirdUnlocked;$('#fileThree').classList.toggle('unlocked',thirdUnlocked);$('#fileThreeStatus').textContent=progress.file03PuzzleComplete?'COMPLETED':thirdUnlocked?'AVAILABLE':'LOCKED';$('#fileThree').setAttribute('aria-label',thirdUnlocked?'Open Project North Quay':'File 03 locked');
+    const thirdUnlocked=Number(progress.unlockedChapter)>=3;const thirdRevealed=thirdUnlocked&&(!!progress.file03Revealed||!!progress.file03PuzzleComplete);$('#homeScene').classList.toggle('file-three-revealed',thirdRevealed);$('#homeScene').classList.toggle('file-three-completed',!!progress.file03PuzzleComplete);if($('#continueFileThree')&&thirdRevealed)$('#continueFileThree').hidden=true;$('#fileThree').disabled=!thirdUnlocked;$('#fileThree').classList.toggle('unlocked',thirdUnlocked);$('#fileThreeStatus').textContent=progress.file03PuzzleComplete?'COMPLETED':thirdUnlocked?'AVAILABLE':'LOCKED';$('#fileThree').setAttribute('aria-label',thirdUnlocked?'Open Project North Quay':'File 03 locked');
     $('#homeScene').classList.toggle('file-two-lit', secondUnlocked);
     $('#homeScene').classList.toggle('file-two-completed', secondComplete);
     // Once File 01 is accepted, land on its closed board cleanly. The older
@@ -757,6 +757,7 @@
         $('#f3CinematicContainer').hidden = true;
         // Unlock chapter 3 and begin the real financial investigation
         progress.unlockedChapter = Math.max(3, Number(progress.unlockedChapter) || 1);
+        progress.file03Revealed = true;
         persistProgress();
         paintProgress();
         openFile03();

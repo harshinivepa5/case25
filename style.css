@@ -1402,3 +1402,19 @@ body.file-one-closed .grain,body.file-one-closed #soundToggle,body.file-one-clos
 /* Temporary local testing control; remove when File 002 testing is complete. */
 #devFile02Button{position:fixed;z-index:999;left:20px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
 #devFile02Button:hover{background:#2b1c0d;color:#ffe0a0}
+
+/* File 003 pinned on the wall beside Files 001 and 002 */
+.home .file-three{display:none}
+.home.board-mode.file-three-revealed .board-file.file-three{display:flex;position:absolute;z-index:125;left:47%;top:50%;width:min(220px,18vw);min-height:120px;padding:17px 16px 13px;gap:8px;opacity:1;filter:none;transform:rotate(-2deg);pointer-events:auto;cursor:pointer;background:repeating-linear-gradient(0deg,rgba(75,52,26,.035) 0 1px,transparent 1px 5px),radial-gradient(ellipse at 18% 8%,rgba(255,248,224,.5),transparent 58%),linear-gradient(142deg,#d8c59d,#bca37a 72%,#d1ba8d);border-color:#c39b5e;box-shadow:0 0 42px #d49a4a55,0 18px 38px #000c,inset 0 0 30px #6c502325;transition:transform .4s,box-shadow .6s,filter .6s}
+.home.board-mode.file-three-revealed .file-three .file-three-number{display:block;font:clamp(14px,1.4vw,18px) var(--type);letter-spacing:.08em;color:#211a12;text-align:center}
+.home.board-mode.file-three-revealed .file-three .file-three-title{text-align:center;font-size:clamp(12px,1.2vw,15px);letter-spacing:.06em}
+.home.board-mode.file-three-revealed .file-three .file-three-copy{margin-top:0;text-align:center;font:italic clamp(9px,.9vw,11px) var(--type);letter-spacing:0;color:#5a4a33}
+.home.board-mode.file-three-revealed .file-three .file-three-begin{display:block;align-self:flex-start;margin-top:auto;padding:7px 14px;border:1px solid #79572c;background:#18120c;color:#f0ca82;font:9px var(--mono);letter-spacing:.16em}
+.home.board-mode.file-three-revealed .file-three small{display:none}
+.home.board-mode.file-three-revealed .file-three:not(:disabled):hover{transform:translateY(-4px) rotate(0);box-shadow:0 0 55px #e5b1638c,0 22px 44px #000d}
+.home.board-mode.file-three-revealed .file-three:focus-visible{outline:2px solid #e9c786;outline-offset:6px;clip-path:none}
+.home.board-mode.file-three-completed .file-three .file-three-begin{border-color:#a6302e;color:#ba3331;background:#1a100f}
+.home.board-mode.file-three-completed .file-three small{display:block;position:absolute;left:12%;right:12%;top:46%;padding:6px 0;text-align:center;border:2.5px solid #a6302e;color:#ba3331;background:rgba(224,196,155,.88);font:bold clamp(10px,1vw,14px) var(--mono);letter-spacing:.22em;transform:rotate(-1.5deg);pointer-events:none}
+@media(max-width:720px){.home.board-mode.file-three-revealed .board-file.file-three{left:28%;top:56%;width:44vw;min-height:100px;padding:15px 12px;gap:7px}.home.board-mode.file-three-revealed .file-three .file-three-begin{padding:6px 10px;font-size:7px}}
+.home.board-mode.file-three-revealed .board-file.file-three:before{top:-5px;left:calc(50% - 6px);width:12px;height:12px;border:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9473d,#7d1b17);transform:none;box-shadow:0 3px 5px #000a}
+.home.board-mode.file-three-revealed .file-three .file-three-number{margin-top:6px}
