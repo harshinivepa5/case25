@@ -9,11 +9,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Libre+Baskerville:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=1792594784" />
 </head>
 <body>
   <main id="experience" aria-live="polite">
     <button id="devFile02Button" type="button" aria-label="Test File 002 directly">TEST FILE 002</button>
+    <button id="backButton" type="button" aria-label="Go back to the previous screen" disabled>← BACK</button>
+    <button id="f1Skip" type="button" aria-label="Skip to the end of File 01 (testing)" hidden>SKIP →</button>
+    <section class="f3-stage" id="f3Stage" hidden aria-label="File 03 investigation">
+      <div class="f3s-chapter" id="f3sChapter" hidden aria-live="polite"><small></small><h2></h2><i aria-hidden="true"></i></div>
+      <div class="f3s-modal" id="f3sModal" hidden role="dialog" aria-modal="true"><div class="f3s-modal-card"><h3></h3><div class="f3s-modal-body"></div><div class="f3s-modal-actions"></div></div></div>
+      <div class="f3s-toast" id="f3sToast" role="status"></div>
+      <button class="f3s-list" id="f3sList" type="button" hidden>← PUZZLE LIST</button>
+      <button class="f3s-return" id="f3sReturn" type="button" hidden>← RETURN</button>
+      <button class="f3s-retry" id="f3sRetry" type="button" aria-label="Restart File 03 from the beginning (testing)">↺ RETRY CASE</button>
+      <button class="f3s-skip" id="f3sSkip" type="button" aria-label="Skip to the next screen (testing)">SKIP →</button>
+    </section>
     <div class="grain" aria-hidden="true"></div>
     <button class="sound-toggle" id="soundToggle" aria-label="Turn ambient sound on" title="Sound off">◖)) <span>SOUND OFF</span></button>
     <button class="skip" id="skipIntro">SKIP INTRO <span>↗</span></button>
@@ -24,8 +35,7 @@
       <div class="title-backdrop"></div><div class="title-grain"></div>
       <div class="title-meta"><span>CASE 25</span><span>RESTRICTED ARCHIVE</span></div>
       <div class="title-core"><p class="eyebrow">AN UNRESOLVED DISAPPEARANCE</p><h1 class="case-title">CASE <span>25</span></h1><div class="title-redline"></div><p class="subtitle">THE LAST TRANSMISSION</p><p class="title-foot">THE RECORD ENDS WHERE THE WATER BEGINS</p></div>
-      <div class="title-signal">SIGNAL FOUND <i></i> 01:47:23</div>
-    </section>
+      <div class="title-signal">SIGNAL FOUND <i></i> 01:47:23</div>    </section>
 
     <section class="scene lake" id="lakeScene" aria-label="Lake Ash at night">
       <img class="reference-stage-art" src="assets/reference/opening.png" alt="" aria-hidden="true" />
@@ -114,10 +124,10 @@
         <p class="panel-subtitle">RESTRICTED ARCHIVE</p>
         <label for="digit-1">ENTER ACCESS CODE</label>
         <div class="digit-row" role="group" aria-label="Four digit access code">
-          <input id="digit-1" class="digit" type="text" inputmode="numeric" autocomplete="one-time-code" aria-label="First digit" maxlength="1" />
-          <input id="digit-2" class="digit" type="text" inputmode="numeric" autocomplete="off" aria-label="Second digit" maxlength="1" />
-          <input id="digit-3" class="digit" type="text" inputmode="numeric" autocomplete="off" aria-label="Third digit" maxlength="1" />
-          <input id="digit-4" class="digit" type="text" inputmode="numeric" autocomplete="off" aria-label="Fourth digit" maxlength="1" />
+          <input id="digit-1" class="digit" type="text" inputmode="numeric" autocomplete="one-time-code" aria-label="First digit" maxlength="1" placeholder=" " />
+          <input id="digit-2" class="digit" type="text" inputmode="numeric" autocomplete="off" aria-label="Second digit" maxlength="1" placeholder=" " />
+          <input id="digit-3" class="digit" type="text" inputmode="numeric" autocomplete="off" aria-label="Third digit" maxlength="1" placeholder=" " />
+          <input id="digit-4" class="digit" type="text" inputmode="numeric" autocomplete="off" aria-label="Fourth digit" maxlength="1" placeholder=" " />
         </div>
         <button class="access-button" id="accessButton">ACCESS ARCHIVE <span>→</span></button>
         <p class="login-error" id="loginError" role="status"></p>
@@ -141,8 +151,8 @@
     </section>
 
     <section class="scene home" id="homeScene" aria-label="Recovered investigation wall">
-      <img class="accepted-case-art" src="assets/reference/phase-two/file-01-closed.png" alt="File 01 completed. File 01 closed, awaiting further instruction." />
-      <img class="file02-board-art" src="assets/reference/phase-two/file-02-board.png" alt="File 02 — The Unexpected Signal" />
+      <img class="accepted-case-art" src="assets/reference/phase-two/file-01-closed.png?v=1792581110" alt="File 01 completed. File 01 closed, awaiting further instruction." />
+      <img class="file02-board-art" src="assets/reference/phase-two/file-02-board-blank.png?v=1792581110" alt="File 02 — The Unexpected Signal" />
       <div class="home-wall dim-wall"></div><div class="home-wall light-wall"></div><div class="home-atmosphere"></div><div class="document-spotlight" aria-hidden="true"></div>
       <div class="home-caption" id="homeCaption"><span>A MESSAGE HAS BEEN RECOVERED.</span><small>CLICK TO OPEN THE RECOVERED FILE.</small></div>
       <button class="wall-hotspot" id="wallHotspot" aria-label="Open recovered incoming transmission"></button>
@@ -170,8 +180,36 @@
         </aside>
       </div>
       <button class="file02-continue" id="continueFileTwo" type="button" onclick="window.continueFileTwoFlow && window.continueFileTwoFlow()">CONTINUE →</button>
+      <button class="file01-art-open" id="file01ArtOpen" type="button" aria-label="Open File 01 — The Disappearance">FILE 01</button>
+      <button class="file05-art-card" id="file05ArtCard" type="button" aria-label="Open File 005 — The Last Transmission">
+        <span class="file05-art-number">FILE 005</span>
+        <span class="file05-art-title">THE LAST TRANSMISSION</span>
+        <span class="file05-art-rule" aria-hidden="true"></span>
+        <span class="file05-art-cta">INVESTIGATE →</span>
+      </button>
+      <button class="file04-art-card" id="file04ArtCard" type="button" aria-label="Open File 004 — The Lantern Fire">
+        <span class="file04-art-number">FILE 004</span>
+        <span class="file04-art-title">THE LANTERN FIRE</span>
+        <span class="file04-art-rule" aria-hidden="true"></span>
+        <span class="file04-art-cta">INVESTIGATE →</span>
+      </button>
+      <button class="file03-art-card" id="file03ArtCard" type="button" aria-label="Open File 03 — The Financial Trail">
+        <span class="file03-art-number">FILE 003</span>
+        <span class="file03-art-title">THE FINANCIAL TRAIL</span>
+        <span class="file03-art-rule" aria-hidden="true"></span>
+        <span class="file03-art-copy">Missing funds. Altered records. Four people with something to hide.</span>
+        <span class="file03-art-cta">INVESTIGATE →</span>
+      </button>
       <button class="file02-art-begin" id="file02ArtBegin" type="button" aria-label="Begin File 02">BEGIN →</button>
-      <div class="file02-completed-stamp" id="file02CompletedStamp" aria-hidden="true">COMPLETED</div>
+      <i class="wall-dark" aria-hidden="true"></i><i class="wall-three-dark" aria-hidden="true"></i><i class="wall-four-dark" aria-hidden="true"></i><i class="wall-five-dark" aria-hidden="true"></i>
+      <svg class="wall-string" id="wallString" aria-hidden="true"><defs><mask id="wallCardMask" maskUnits="userSpaceOnUse" x="0" y="0" width="4000" height="3000"><rect id="wallCardMaskBase" x="0" y="0" width="4000" height="3000" fill="#fff"/><polygon id="wallCardHide" points="0,0" fill="#000"/></mask></defs><path pathLength="1"/><path class="wall-string-three" pathLength="1"/><path class="wall-string-four" pathLength="1"/><path class="wall-string-five" pathLength="1"/></svg>
+      <i class="wall-light wall-light-one" aria-hidden="true"></i><i class="wall-light wall-light-two" aria-hidden="true"></i><i class="wall-light wall-light-three" aria-hidden="true"></i><i class="wall-light wall-light-four" aria-hidden="true"></i><i class="wall-light wall-light-five" aria-hidden="true"></i><i class="wall-completed-pulse" aria-hidden="true"></i>
+      <div class="file02-completed-stamp" id="file02CompletedStamp" aria-hidden="true">CLASSIFIED</div>
+      <img class="file02-done-patch" src="assets/reference/phase-two/file-02-done-patch.png" alt="" aria-hidden="true" />
+      <div class="file02-done-label" aria-hidden="true"><i></i>CLASSIFIED</div>
+      <div class="file02-unlit" aria-hidden="true"></div><div class="file02-desat" aria-hidden="true"></div>
+      <div class="file02-card-shade" aria-hidden="true"></div>
+      <div class="file02-card-text" id="file02CardText" aria-hidden="true"><span class="f2c-num"></span><span class="f2c-title"></span><span class="f2c-copy"></span><span class="f2c-begin shown">BEGIN →</span></div>
       <button class="file03-continue" id="continueFileThree" type="button" hidden>CONTINUE →</button>
       <button class="board-file file-three" id="fileThree" type="button" disabled>
         <span class="file-three-number">FILE 003</span><b class="file-three-title">PROJECT NORTH QUAY</b>
@@ -607,6 +645,6 @@
       </div>
     </section>
   </main>
-  <script src="script.js"></script>
+  <script src="script.js?v=1792595002"></script>
 </body>
 </html>

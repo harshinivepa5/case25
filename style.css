@@ -222,10 +222,29 @@ body.case-finished .sound-toggle,body.case-finished .skip{opacity:0;visibility:h
 .home.file-two-signal .accepted-case-art,.home.file-two-paper .accepted-case-art,.home.file-two-available .accepted-case-art{display:none}
 .home.file-two-signal .file02-board-art,.home.file-two-paper .file02-board-art,.home.file-two-available .file02-board-art{display:block!important;position:absolute;z-index:100;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.48);transition:filter 1.4s ease}
 .home.file-two-paper .file02-board-art,.home.file-two-available .file02-board-art{filter:none}
-.home.file-two-signal .file02-art-begin,.home.file-two-paper .file02-art-begin,.home.file-two-available .file02-art-begin{display:block!important;position:absolute;z-index:130;left:62.5%;top:35.5%;width:15%;height:6.8%;border:1px solid transparent;background:transparent;color:transparent;cursor:pointer}
-.home.file-two-signal .file02-art-begin{pointer-events:none;opacity:0}
-.home.file-two-paper .file02-art-begin,.home.file-two-available .file02-art-begin{pointer-events:auto;opacity:1}
-.home.file-two-available .file02-art-begin:hover,.home.file-two-available .file02-art-begin:focus-visible{outline:1.5px solid rgba(224,189,117,.8)!important;box-shadow:0 0 20px rgba(224,189,117,.5)!important;border-radius:3px}
+.home.file-two-signal .file02-art-begin,.home.file-two-paper .file02-art-begin,.home.file-two-available .file02-art-begin{display:block!important;position:absolute;z-index:130;left:66.4%;top:25%;width:13.6%;height:19.4%;padding:0;border:1px solid transparent;background:transparent;color:transparent;cursor:pointer;transform:rotate(1.5deg)}
+.home.file-two-signal .file02-art-begin,.home.file-two-paper .file02-art-begin,.home.file-two-available .file02-art-begin{pointer-events:auto;opacity:1}
+.file01-art-open{display:none}
+.home.file-two-signal .file01-art-open,.home.file-two-paper .file01-art-open,.home.file-two-available .file01-art-open{display:block!important;position:absolute;z-index:130;left:33%;top:33.5%;width:11%;height:14%;padding:0;border:1px solid transparent;background:transparent;color:transparent;cursor:pointer;pointer-events:auto;transform:rotate(-4deg)}
+/* File 03 is a real paper card pinned onto the painted File 02 wall, always clickable. */
+.file03-art-card{display:none}
+/* File 03 card copies the painted File 01 card: landscape aged paper, burnt edges, black pin, red rule and red status.
+   Sizes follow --wall-scale (artwork pixels -> screen) so it matches File 01 at any window size. */
+.home.file-two-signal .file03-art-card,.home.file-two-paper .file03-art-card,.home.file-two-available .file03-art-card{--s:var(--wall-scale,1);display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;z-index:130;left:50.5%;top:47%;width:calc(var(--s)*178px);height:calc(var(--s)*124px);padding:calc(var(--s)*14px) calc(var(--s)*10px) calc(var(--s)*10px);gap:calc(var(--s)*5px);border:0;border-radius:calc(var(--s)*2px);color:#241a10;text-align:center;cursor:pointer;transform:rotate(-2.5deg);filter:brightness(1.02) saturate(1.05);clip-path:polygon(0 2%,6% 0,52% 1%,97% 0,100% 4%,99% 55%,100% 97%,94% 100%,48% 99%,3% 100%,0 95%,1% 50%);background:radial-gradient(ellipse at 45% 40%,rgba(236,170,108,.45),transparent 60%),radial-gradient(circle at 0 0,rgba(70,30,8,.8),transparent 14%),radial-gradient(circle at 100% 0,rgba(70,30,8,.6),transparent 12%),radial-gradient(circle at 0 100%,rgba(70,30,8,.75),transparent 15%),radial-gradient(circle at 100% 100%,rgba(70,30,8,.8),transparent 15%),repeating-linear-gradient(0deg,rgba(90,52,18,.05) 0 1px,transparent 1px 4px),linear-gradient(160deg,#d18f58,#c27c46 55%,#9c5a2c);box-shadow:inset 0 0 calc(var(--s)*22px) rgba(70,26,4,.95),inset 0 0 calc(var(--s)*6px) rgba(50,18,2,.8),0 calc(var(--s)*10px) calc(var(--s)*22px) rgba(0,0,0,.75)}
+.home .file03-art-card:before{content:"";position:absolute;top:calc(var(--s)*3px);left:calc(50% - var(--s)*6px);width:calc(var(--s)*12px);height:calc(var(--s)*12px);border-radius:50%;background:radial-gradient(circle at 35% 30%,#5a5a5a,#0b0b0b 70%);box-shadow:0 calc(var(--s)*2px) calc(var(--s)*3px) rgba(0,0,0,.75)}
+.file03-art-number{font:calc(var(--s)*17px) var(--type);letter-spacing:.08em;color:#1c140c;text-shadow:0 0 .5px #1c140c}
+.file03-art-title{font:calc(var(--s)*11.5px) var(--type);letter-spacing:.06em;color:#241a10}
+.file03-art-rule{width:72%;height:calc(var(--s)*1.5px);margin:calc(var(--s)*3px) 0;background:linear-gradient(90deg,transparent,#a3352a 15%,#a3352a 85%,transparent)}
+.file03-art-copy{display:none}
+.file03-art-cta{font:calc(var(--s)*15px) var(--type);letter-spacing:.06em;color:#a52c26;text-shadow:0 0 .5px #a52c26}
+.home.file-three-completed .file03-art-cta{font-size:0}
+.home.file-three-completed .file03-art-cta:after{content:"CLASSIFIED";font-size:calc(var(--s)*15px)}
+/* The older revealed File 03 card would duplicate this one on the painted wall. */
+.home.file-two-signal .board-file.file-three,.home.file-two-paper .board-file.file-three,.home.file-two-available .board-file.file-three{display:none!important}
+/* File 03 screens must sit above the painted wall (z-index 100) when opened from it. */
+.home .file-three-flow.visible{z-index:160}
+/* File 02 and File 03 use the same hover as File 01. */
+.home .file01-art-open:hover,.home .file01-art-open:focus-visible,.home .file02-art-begin:hover,.home .file02-art-begin:focus-visible,.home .file03-art-card:hover,.home .file03-art-card:focus-visible{outline:1.5px solid rgba(224,189,117,.8)!important;box-shadow:0 0 20px rgba(224,189,117,.5)!important;border-radius:3px}
 .home.closure-revealed .file02-continue{display:block!important;z-index:140}
 .home.closure-revealed .file02-continue{position:fixed!important;right:3.3%!important;bottom:3.5%!important;pointer-events:auto!important}
 .home.file-two-signal .file02-continue,.home.file-two-paper .file02-continue,.home.file-two-available .file02-continue{display:none!important}
@@ -1402,6 +1421,15 @@ body.file-one-closed .grain,body.file-one-closed #soundToggle,body.file-one-clos
 /* Temporary local testing control; remove when File 002 testing is complete. */
 #devFile02Button{position:fixed;z-index:999;left:20px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
 #devFile02Button:hover{background:#2b1c0d;color:#ffe0a0}
+/* Title opens on the CASE 25 lettering over black, then the whole artwork eases in evenly behind it. */
+@property --title-bg{syntax:'<number>';inherits:false;initial-value:0}
+.title-scene.active .reference-stage-art{-webkit-mask-image:radial-gradient(ellipse 37% 17% at center,#000 70%,transparent 100%),linear-gradient(rgba(0,0,0,var(--title-bg)),rgba(0,0,0,var(--title-bg)));mask-image:radial-gradient(ellipse 37% 17% at center,#000 70%,transparent 100%),linear-gradient(rgba(0,0,0,var(--title-bg)),rgba(0,0,0,var(--title-bg)));-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;animation:referenceHold 9s ease-in-out both,titleBackgroundFade 2.2s .6s ease-in-out both,titleBackgroundLight 3.4s .6s cubic-bezier(.22,.61,.36,1) both}
+@keyframes titleBackgroundFade{from{--title-bg:0}to{--title-bg:1}}
+@keyframes titleBackgroundLight{from{filter:brightness(.62) contrast(2.3)}to{filter:none}}
+@media(prefers-reduced-motion:reduce){.title-scene.active .reference-stage-art{-webkit-mask-image:none;mask-image:none}}
+#backButton{position:fixed;z-index:999;left:160px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
+#backButton:hover:not(:disabled){background:#2b1c0d;color:#ffe0a0}
+#backButton:disabled{opacity:.35;cursor:default}
 
 /* File 003 pinned on the wall beside Files 001 and 002 */
 .home .file-three{display:none}
@@ -1418,3 +1446,632 @@ body.file-one-closed .grain,body.file-one-closed #soundToggle,body.file-one-clos
 @media(max-width:720px){.home.board-mode.file-three-revealed .board-file.file-three{left:28%;top:56%;width:44vw;min-height:100px;padding:15px 12px;gap:7px}.home.board-mode.file-three-revealed .file-three .file-three-begin{padding:6px 10px;font-size:7px}}
 .home.board-mode.file-three-revealed .board-file.file-three:before{top:-5px;left:calc(50% - 6px);width:12px;height:12px;border:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9473d,#7d1b17);transform:none;box-shadow:0 3px 5px #000a}
 .home.board-mode.file-three-revealed .file-three .file-three-number{margin-top:6px}
+/* Title -> lake match cut: the camera pushes into the tilted lake photo (the man on the dock),
+   with the rest of the table falling into darkness around it, levels it until it fills the frame, then dissolves into the same dock, now empty.
+   --focus-* / --shift-* are measured in script.js from the rendered image. */
+@property --title-spot{syntax:'<number>';inherits:false;initial-value:0}
+.title-scene.leaving .reference-stage-art{-webkit-mask-image:radial-gradient(ellipse var(--spot-w) var(--spot-h) at var(--spot-x) var(--spot-y),#000 40%,rgba(0,0,0,calc(1 - var(--title-spot))) 85%);mask-image:radial-gradient(ellipse var(--spot-w) var(--spot-h) at var(--spot-x) var(--spot-y),#000 40%,rgba(0,0,0,calc(1 - var(--title-spot))) 85%);transform-origin:var(--focus-x) var(--focus-y);animation:titleIntoPhoto 2.2s cubic-bezier(.62,0,.32,1) forwards,titleSpotOnPhoto .7s ease-out forwards}
+@keyframes titleIntoPhoto{from{opacity:1;filter:none;transform:translate(0,0) scale(1.015) rotate(0)}to{opacity:1;filter:blur(1.5px) brightness(.85);transform:translate(var(--shift-x),var(--shift-y)) scale(3.2) rotate(14deg)}}
+@keyframes titleSpotOnPhoto{from{--title-spot:0}to{--title-spot:1}}
+.lake{transition-duration:1.3s}
+.title-scene.leaving{transition:opacity .01s 1.3s,visibility .01s 1.3s}
+.lake.active .reference-stage-art{animation:lakeSettle 3s cubic-bezier(.22,.61,.36,1) both}
+@keyframes lakeSettle{from{transform:scale(1.1);filter:brightness(.8)}to{transform:scale(1);filter:none}}
+@media(prefers-reduced-motion:reduce){.title-scene.leaving .reference-stage-art,.lake.active .reference-stage-art{animation:none}}
+/* Give SKIP INTRO a comfortable hit area; the text stays the same size. */
+#skipIntro{padding:14px 18px;margin:-14px -18px}
+/* Archive code: the inputs sit exactly on the four boxes painted into the panel artwork and stay
+   transparent, so the artwork's gold-edged boxes show. Focus lights the active box; a small fill hides the dot painted in each box. */
+#archiveScene .archive-panel .digit-row{top:51.65%!important;left:13.05%!important;width:71.6%!important;height:8.76%!important;gap:3.73%!important}
+#archiveScene .archive-panel .digit-row .digit{width:22.2%!important;height:100%!important;border-radius:6px!important;border:1.5px solid transparent!important;background:transparent!important;box-shadow:none!important;font:clamp(18px,2.2vw,32px) var(--serif)!important;transition:border-color .2s ease,box-shadow .2s ease,background .2s ease}
+#archiveScene .archive-panel .digit-row .digit.digit{background:radial-gradient(circle,#161717 0 18%,transparent 26%)!important}
+#archiveScene .archive-panel .digit-row .digit:focus{border-color:#e8b866!important;box-shadow:0 0 0 1px rgba(232,184,102,.35),0 0 18px rgba(232,170,80,.45)!important}
+#archiveScene .archive-panel.pin-error .digit-row .digit{border-color:rgba(190,70,52,.9)!important}
+/* Wall intro (File 01 -> File 002). Positions come from wallGeometry() in script.js. The painted board starts dark;
+   each --wall-spot opens a soft light over one card and --wall-rest brings the rest of the wall up. */
+@property --wall-spot-one{syntax:'<number>';inherits:true;initial-value:0}
+@property --wall-spot-two{syntax:'<number>';inherits:true;initial-value:0}
+@property --wall-rest{syntax:'<number>';inherits:true;initial-value:0}
+.home.wall-intro{transition:opacity 1.1s ease,visibility 1.1s,--wall-spot-one 1.8s cubic-bezier(.3,.6,.3,1),--wall-spot-two 1.7s cubic-bezier(.3,.6,.3,1),--wall-rest 1.9s ease-in-out}
+.home.wall-intro.wall-stage-one{--wall-spot-one:1}
+.home.wall-intro.wall-stage-two{--wall-spot-two:1}
+.home.wall-intro.wall-stage-rest{--wall-rest:1}
+.home.wall-intro .file02-board-art,.home.wall-intro .file02-blank-patch{-webkit-mask-image:radial-gradient(ellipse calc(var(--wall-spot-one)*var(--wall-one-w) + .1px) calc(var(--wall-spot-one)*var(--wall-one-h) + .1px) at var(--wall-one-x) var(--wall-one-y),rgba(0,0,0,var(--wall-one-alpha,1)) 55%,transparent 100%),radial-gradient(ellipse calc(var(--wall-spot-two)*var(--wall-two-w)*1.5 + .1px) calc(var(--wall-spot-two)*var(--wall-two-h)*1.55 + .1px) at var(--wall-two-x) var(--wall-two-y),#000 40%,transparent 100%),linear-gradient(rgba(0,0,0,var(--wall-rest)),rgba(0,0,0,var(--wall-rest)));mask-image:radial-gradient(ellipse calc(var(--wall-spot-one)*var(--wall-one-w) + .1px) calc(var(--wall-spot-one)*var(--wall-one-h) + .1px) at var(--wall-one-x) var(--wall-one-y),rgba(0,0,0,var(--wall-one-alpha,1)) 55%,transparent 100%),radial-gradient(ellipse calc(var(--wall-spot-two)*var(--wall-two-w)*1.5 + .1px) calc(var(--wall-spot-two)*var(--wall-two-h)*1.55 + .1px) at var(--wall-two-x) var(--wall-two-y),#000 40%,transparent 100%),linear-gradient(rgba(0,0,0,var(--wall-rest)),rgba(0,0,0,var(--wall-rest)))}
+/* Small warm point of light at each pin before its card is revealed. */
+.wall-light,.wall-completed-pulse{display:none}
+.home.wall-intro .wall-light{display:block;position:absolute;z-index:126;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#ffe2a8;box-shadow:0 0 12px 4px rgba(255,196,110,.85),0 0 46px 18px rgba(255,160,70,.35);opacity:0;pointer-events:none;transition:opacity 1.2s ease}
+.wall-light-one{left:var(--wall-pin-one-x);top:var(--wall-pin-one-y)}
+.wall-light-two{left:var(--wall-pin-two-x);top:var(--wall-pin-two-y)}
+.home.wall-dot-one .wall-light-one,.home.wall-dot-two .wall-light-two{animation:wallLightOn .9s ease-out forwards}
+.home.wall-stage-rest .wall-light{opacity:0!important;animation:none}
+@keyframes wallLightOn{0%{opacity:0;transform:scale(.4)}30%{opacity:.9}45%{opacity:.35}60%{opacity:1;transform:scale(1)}100%{opacity:1;transform:scale(1)}}
+/* COMPLETED: a red ink pulse over the painted stamp on File 01. */
+.home.wall-intro .wall-completed-pulse{display:block;position:absolute;z-index:126;left:var(--wall-completed-x);top:var(--wall-completed-y);width:calc(var(--wall-scale)*190px);height:calc(var(--wall-scale)*56px);transform:translate(-50%,-50%) rotate(-4deg);border-radius:50%;background:radial-gradient(ellipse,rgba(235,52,38,.7),rgba(200,30,20,.25) 55%,transparent 72%);mix-blend-mode:screen;opacity:0;pointer-events:none}
+.home.wall-stamp .wall-completed-pulse{animation:wallCompletedPulse 1.1s ease-out forwards}
+@keyframes wallCompletedPulse{0%{opacity:0;transform:translate(-50%,-50%) rotate(-4deg) scale(1.5)}35%{opacity:1;transform:translate(-50%,-50%) rotate(-4deg) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) rotate(-4deg) scale(1)}}
+/* Red string from File 01's pin to File 002's pin. Drawn in during the intro, then stays on the wall. */
+.wall-string{display:none}
+.home.file-two-signal .wall-string,.home.file-two-paper .wall-string,.home.file-two-available .wall-string{display:block;position:absolute;z-index:120;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.wall-string path{fill:none;stroke:#b9271d;stroke-width:calc(var(--wall-scale,1)*2.4px);stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0;filter:drop-shadow(0 0 4px rgba(220,50,35,.7)) drop-shadow(0 2px 2px rgba(0,0,0,.7))}
+.home.wall-intro .wall-string path{stroke-dashoffset:1}
+.home.wall-intro.wall-stage-string .wall-string path{stroke-dashoffset:0;transition:stroke-dashoffset 1.4s cubic-bezier(.55,.1,.35,1)}
+/* File 03 stays in the dark until the rest of the wall comes up. */
+.home.wall-intro .file03-art-card{opacity:0;pointer-events:none}
+.home.wall-intro.wall-stage-rest .file03-art-card{opacity:1;transition:opacity 1.6s ease .3s}
+/* Solid dark behind the masked board so the older HTML board underneath never shows through. */
+.wall-dark{display:none}
+.home.wall-intro .wall-dark{display:block;position:absolute;z-index:99;inset:0;background:#040302;pointer-events:none}
+
+/* ===== File 03 stage: the supplied puzzle artwork with live controls laid over its painted ones ===== */
+.f3-stage{position:fixed;z-index:900;inset:0;overflow:hidden;background:#050403;opacity:0;transition:opacity .7s ease;font-family:var(--mono)}
+.f3-stage.visible{opacity:1}
+.f3s-screen{position:absolute;inset:0;overflow:hidden;opacity:0;transform:scale(1.035);filter:brightness(.4) blur(3px);transition:opacity 1s ease,transform 1.6s cubic-bezier(.2,.7,.2,1),filter 1.1s ease}
+.f3s-screen.enter{opacity:1;transform:none;filter:none}
+.f3s-screen.from-chapter{transform:scale(1.08);transition-duration:1.4s,2.6s,1.6s}
+.f3s-screen.from-chapter.enter{transform:none}
+.f3s-screen.leave{opacity:0;transform:scale(.985);filter:brightness(.25) blur(4px);transition:opacity .8s ease,transform .9s ease,filter .8s ease;pointer-events:none}
+.f3s-layer{position:absolute;--u:1}
+.f3s-art{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
+/* Lamp flicker that settles once the screen is in. */
+.f3s-screen.enter .f3s-layer:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 40%,rgba(0,0,0,.35));animation:f3sLamp 2.4s ease-out both}
+@keyframes f3sLamp{0%{opacity:1}12%{opacity:.5}18%{opacity:.9}30%{opacity:.35}100%{opacity:.18}}
+
+/* Shared geometry: every overlay box is placed in artwork pixels (--x/--y/--w/--h) times the fitted scale --u. */
+.f3s-hit,.f3s-text,.f3s-time,.f3s-cell,.f3s-cell-time,.f3s-sel,.f3s-reason,.f3s-counter,.f3s-docbtn,.f3s-letter{position:absolute;left:calc(var(--x)*var(--u)*1px);top:calc(var(--y)*var(--u)*1px);width:calc(var(--w)*var(--u)*1px);height:calc(var(--h)*var(--u)*1px);box-sizing:border-box;margin:0}
+.f3s-hit{padding:0;border:1.5px solid transparent;border-radius:calc(var(--u)*5px);background:transparent;color:transparent;cursor:pointer;transition:border-color .2s ease,box-shadow .25s ease,background .25s ease}
+.f3s-hit:hover,.f3s-hit:focus-visible{outline:none;border-color:rgba(232,190,110,.75);box-shadow:0 0 calc(var(--u)*16px) rgba(232,170,80,.35),inset 0 0 calc(var(--u)*12px) rgba(232,170,80,.12)}
+.f3s-soft:hover,.f3s-soft:focus-visible{border-color:rgba(232,190,110,.5)}
+
+/* Options: gold edge and a filled radio when picked; gold when confirmed; red flash when rejected. */
+.f3s-opt{text-align:left}
+.f3s-opt .f3s-dot{position:absolute;left:calc((var(--rx) - var(--rr)*.48)*var(--u)*1px);top:50%;width:calc(var(--rr)*.96*var(--u)*1px);height:calc(var(--rr)*.96*var(--u)*1px);transform:translateY(-50%) scale(0);border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe2a4,#e0a64e 60%,#a8701f);box-shadow:0 0 calc(var(--u)*10px) rgba(240,180,80,.8);transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+.f3s-opt.picked{border-color:#e6b866;background:rgba(230,170,80,.09);box-shadow:0 0 calc(var(--u)*18px) rgba(232,170,80,.4),inset 0 0 calc(var(--u)*16px) rgba(232,170,80,.14)}
+.f3s-opt.picked .f3s-dot{transform:translateY(-50%) scale(1)}
+.f3s-opt.correct{border-color:#f0c878;background:rgba(240,190,100,.16);box-shadow:0 0 calc(var(--u)*24px) rgba(240,190,100,.55),inset 0 0 calc(var(--u)*18px) rgba(240,190,100,.2)}
+.f3s-opt.correct .f3s-dot{transform:translateY(-50%) scale(1)}
+.f3s-opt.wrong{animation:f3sWrong .7s ease both}
+@keyframes f3sWrong{0%,100%{transform:none}15%{transform:translateX(calc(var(--u)*-7px))}30%{transform:translateX(calc(var(--u)*6px))}45%{transform:translateX(calc(var(--u)*-4px))}60%{transform:translateX(calc(var(--u)*2px))}0%,70%{border-color:#d4483a;box-shadow:0 0 calc(var(--u)*22px) rgba(212,72,58,.55),inset 0 0 calc(var(--u)*18px) rgba(212,72,58,.2)}}
+.f3-stage .answered .f3s-opt:not(.correct){opacity:.55;cursor:default}
+.f3-stage .answered .f3s-opt.picked:not(.correct){border-color:rgba(212,72,58,.6);box-shadow:none;background:transparent}
+.f3-stage .answered .f3s-opt.picked:not(.correct) .f3s-dot{transform:translateY(-50%) scale(0)}
+/* "A Witness or a Lie?" art ships with option C pre-highlighted, so its four option faces are redrawn in HTML. */
+.f3s-opt.has-face{border-color:rgba(70,45,22,.55);background:#e2bb98}
+.f3s-face{position:absolute;inset:0;display:flex;align-items:center;gap:calc(var(--u)*30px);padding:0 calc(var(--u)*22px) 0 calc(var(--u)*18px);color:#3a2a1a;font:calc(var(--u)*13.5px)/1.45 var(--mono);letter-spacing:.02em;background:linear-gradient(180deg,#e6c3a1,#dcb592)}
+.f3s-face i{flex:none;display:grid;place-items:center;width:calc(var(--u)*42px);height:calc(var(--u)*42px);border-radius:50%;background:#140d07;color:#f2e2c4;font:calc(var(--u)*16px) var(--mono);font-style:normal;box-shadow:inset 0 0 0 calc(var(--u)*2px) #3a2a1a}
+.f3s-opt.has-face.picked .f3s-face,.f3s-opt.has-face.correct .f3s-face{background:linear-gradient(180deg,#e2a85c,#d2934a)}
+.f3s-opt.has-face.picked .f3s-face i,.f3s-opt.has-face.correct .f3s-face i{box-shadow:0 0 0 calc(var(--u)*2px) #f6d79a,0 0 calc(var(--u)*14px) rgba(255,210,130,.8)}
+
+/* Submit turns into CONTINUE once the question is settled. */
+.f3s-submit .f3s-next{position:absolute;inset:calc(var(--u)*2px);display:none;align-items:center;justify-content:center;gap:calc(var(--u)*10px);border-radius:inherit;background:linear-gradient(180deg,#2a1d10,#140d07);color:#f2d39a;font:calc(var(--u)*17px) var(--mono);letter-spacing:.14em}
+.f3-stage .answered .f3s-submit{border-color:#e6b866;box-shadow:0 0 calc(var(--u)*20px) rgba(232,170,80,.45);animation:f3sReady 2.4s ease-in-out infinite}
+.f3-stage .answered .f3s-submit .f3s-next{display:flex}
+@keyframes f3sReady{50%{box-shadow:0 0 calc(var(--u)*32px) rgba(232,170,80,.7)}}
+
+/* Typed answers: the painted placeholder shows until the player types, then the field goes opaque. */
+.f3s-text,.f3s-time,.f3s-reason{padding:calc(var(--u)*14px) calc(var(--u)*18px);border:1.5px solid transparent;border-radius:calc(var(--u)*3px);background:transparent;color:#f1e4c8;caret-color:#f0c878;font:calc(var(--u)*15px)/1.6 var(--mono);letter-spacing:.02em;resize:none;outline:none;transition:border-color .25s,box-shadow .25s,background .2s}
+.f3s-time{padding:0 calc(var(--u)*12px);font-size:calc(var(--u)*16px);letter-spacing:.12em}
+.f3s-reason{padding:0 calc(var(--u)*12px);font-size:calc(var(--u)*14px)}
+.f3s-text:not(:placeholder-shown),.f3s-time:not(:placeholder-shown){background:#0c0a08}
+.f3s-reason:not(:placeholder-shown){background:#1a1410}
+.f3s-text:focus,.f3s-time:focus,.f3s-reason:focus{border-color:#e6b866;box-shadow:0 0 calc(var(--u)*16px) rgba(232,170,80,.35)}
+.f3s-text.nudge,.f3s-time.nudge,.f3s-opt.nudge{animation:f3sNudge .9s ease both}
+@keyframes f3sNudge{30%{border-color:#e6b866;box-shadow:0 0 calc(var(--u)*24px) rgba(232,170,80,.6)}}
+.f3s-counter{display:flex;align-items:center;justify-content:flex-end;color:#b9a582;font:calc(var(--u)*11px) var(--mono);letter-spacing:.06em;pointer-events:none;background:#0c0a08}
+.f3s-counter.over{color:#e0705f}
+.f3s-docbtn{display:flex;align-items:center;justify-content:center;gap:calc(var(--u)*10px);border:1.5px solid #9c7a45;border-radius:calc(var(--u)*3px);background:rgba(16,11,7,.9);color:#efd29a;font:calc(var(--u)*14px) var(--mono);letter-spacing:.14em;cursor:pointer;box-shadow:0 calc(var(--u)*6px) calc(var(--u)*18px) rgba(0,0,0,.6);transition:border-color .2s,box-shadow .2s}
+.f3s-docbtn:hover,.f3s-docbtn:focus-visible{outline:none;border-color:#f0c878;box-shadow:0 0 calc(var(--u)*18px) rgba(232,170,80,.45)}
+
+/* Timeline (Puzzle 3 · Q2): drag or click an event, then click a row. */
+.f3s-chip{cursor:grab}
+.f3s-chip.held{border-color:#f0c878;box-shadow:0 0 calc(var(--u)*20px) rgba(240,190,100,.7);transform:translateY(calc(var(--u)*-2px))}
+.f3s-chip.placed{background:rgba(20,12,6,.62);border-color:transparent}
+.f3s-chip.placed:after{content:"PLACED";position:absolute;right:calc(var(--u)*46px);top:50%;transform:translateY(-50%);color:#f0c878;font:calc(var(--u)*10px) var(--mono);letter-spacing:.2em}
+.f3s-cell,.f3s-cell-time{display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0 calc(var(--u)*8px);border:1px dashed transparent;border-radius:calc(var(--u)*2px);background:transparent;color:#2b1d10;font:calc(var(--u)*11px) var(--mono);letter-spacing:.02em;cursor:pointer}
+.f3s-cell-time{pointer-events:none;justify-content:flex-start}
+.f3s-cell.over,.f3s-cell:hover{border-color:#8a5a22;background:rgba(240,200,130,.35)}
+.f3s-cell.filled,.f3s-cell-time.filled{background:#e9cfa6;border-style:solid;border-color:#a37a45}
+.f3s-sel{padding:0 calc(var(--u)*8px);border:1px solid transparent;border-radius:calc(var(--u)*2px);background:transparent;color:transparent;font:calc(var(--u)*11px) var(--mono);cursor:pointer;appearance:none;-webkit-appearance:none}
+.f3s-sel option{color:#1b1209;background:#f2e2c4}
+.f3s-sel.filled{color:#1b1209;background:#e9cfa6;border-color:#a37a45}
+.f3s-sel[data-kind="CORRECTED"]{background:#bfd39a}.f3s-sel[data-kind="UNVERIFIED"]{background:#e2c37a}.f3s-sel[data-kind="ESTIMATED"]{background:#a9c3dd}.f3s-sel[data-kind="SEARCH RECORD"]{background:#e3a397}
+.f3s-sel:hover,.f3s-sel:focus{outline:none;border-color:#8a5a22;box-shadow:0 0 calc(var(--u)*10px) rgba(240,190,100,.5)}
+
+/* Chapter card between puzzles. */
+.f3s-chapter{position:absolute;z-index:40;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:radial-gradient(ellipse at center,#120c07 0%,#030202 70%);opacity:0;transition:opacity .9s ease}
+.f3s-chapter.in{opacity:1}.f3s-chapter.out{opacity:0}
+.f3s-chapter small{color:#c99a55;font:12px var(--mono);letter-spacing:.5em;opacity:0;animation:f3sRise .9s .3s ease forwards}
+.f3s-chapter h2{margin:0;min-height:1.2em;color:#f1e3c6;font:clamp(28px,4.4vw,58px) var(--type);letter-spacing:.08em;text-shadow:0 0 30px rgba(240,180,90,.25)}
+.f3s-chapter i{width:min(420px,60vw);height:2px;background:linear-gradient(90deg,transparent,#a3221b,transparent);transform:scaleX(0);animation:f3sLine 1.6s .5s cubic-bezier(.6,0,.2,1) forwards}
+@keyframes f3sRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes f3sLine{to{transform:scaleX(1)}}
+
+/* M transmissions. */
+.f3s-tx-backdrop{position:absolute;inset:-4%;background:url('assets/file-003/p1-end.png') center/cover;filter:blur(14px) brightness(.32) saturate(.8);transform:scale(1.05)}
+.f3s-tx{position:absolute;left:50%;top:50%;display:flex;flex-direction:column;width:min(780px,calc(100vw - 32px));height:min(680px,calc(100vh - 70px));overflow:hidden;transform:translate(-50%,-50%);padding:34px 42px 30px;box-sizing:border-box;border:1px solid rgba(201,154,85,.5);background:linear-gradient(160deg,rgba(28,21,14,.97),rgba(12,9,6,.97));box-shadow:0 30px 90px rgba(0,0,0,.85),inset 0 0 60px rgba(0,0,0,.6);color:#e9dcc2}
+.f3s-tx header{display:flex;align-items:center;gap:14px;padding-bottom:14px;border-bottom:1px solid rgba(201,154,85,.35);color:#e3b56a;font:13px var(--mono);letter-spacing:.16em}
+.f3s-tx-mast{width:22px;height:26px;background:linear-gradient(#e3b56a,#e3b56a) center bottom/2px 18px no-repeat,radial-gradient(circle,#e3b56a 2.5px,transparent 3px) center 4px/8px 8px no-repeat;animation:f3sPulse 1.6s ease-in-out infinite}
+@keyframes f3sPulse{50%{filter:drop-shadow(0 0 6px #f0c070)}}
+.f3s-tx small{display:block;margin-top:18px;color:#c99a55;font:12px var(--mono);letter-spacing:.18em}
+.f3s-tx h2{margin:6px 0 18px;padding-bottom:12px;color:#f3e6cb;font:clamp(22px,3vw,34px) var(--type);letter-spacing:.06em;background:linear-gradient(90deg,#9e2219,transparent 60%) left bottom/100% 2px no-repeat}
+.f3s-tx-copy{flex:1;min-height:0;overflow-y:auto;padding-right:8px;white-space:pre-line;font:14px/1.65 var(--mono);color:#e4d6bb;scrollbar-width:thin;scrollbar-color:#6b5230 transparent}
+.f3s-tx-continue[hidden]{display:none}
+.f3s-tx-continue{display:flex;align-items:center;gap:14px;margin:22px 0 0 auto;padding:13px 28px;border:1.5px solid #c99a55;background:rgba(20,14,8,.9);color:#f2d39a;font:14px var(--mono);letter-spacing:.18em;cursor:pointer;animation:f3sRise .7s ease both;transition:box-shadow .25s,border-color .25s}
+.f3s-tx-continue:hover,.f3s-tx-continue:focus-visible{outline:none;border-color:#f0c878;box-shadow:0 0 22px rgba(232,170,80,.5)}
+
+/* Case-note modal: verdicts, hints, revealed answers and evidence. */
+.f3s-modal{position:absolute;z-index:60;inset:0;display:grid;place-items:center;padding:16px;background:rgba(3,2,1,0);transition:background .35s ease}
+.f3s-modal.open{background:rgba(3,2,1,.62)}
+.f3s-modal-card{position:relative;width:min(560px,100%);max-height:calc(100vh - 40px);overflow:auto;padding:26px 30px 24px;box-sizing:border-box;border:1px solid #9c7a45;border-top:3px solid var(--tone,#e6b866);background:linear-gradient(165deg,#1f160d,#0d0906);box-shadow:0 30px 80px rgba(0,0,0,.8);color:#e9dcc2;opacity:0;transform:translateY(14px) scale(.98);transition:opacity .35s ease,transform .4s cubic-bezier(.2,.8,.2,1)}
+.f3s-modal.open .f3s-modal-card{opacity:1;transform:none}
+.f3s-modal.tone-good{--tone:#e6b866}.f3s-modal.tone-bad{--tone:#d4483a}.f3s-modal.tone-reveal{--tone:#c98a3a}.f3s-modal.tone-hint,.f3s-modal.tone-docs{--tone:#8f7a5a}
+.f3s-modal.tone-docs .f3s-modal-card{width:min(760px,100%)}
+.f3s-modal h3{margin:0 0 12px;color:var(--tone);font:15px var(--mono);letter-spacing:.2em}
+.f3s-modal-body{font:14px/1.7 var(--mono);color:#e4d6bb}
+.f3s-modal-body p{margin:0 0 10px}.f3s-modal-body ul{margin:4px 0 10px;padding-left:18px;color:#d9c6a3}
+.f3s-modal-body .f3s-left{color:#b39a72;font-size:12px;letter-spacing:.06em}
+.f3s-answer{padding:10px 14px;border-left:3px solid #e6b866;background:rgba(230,184,102,.1);color:#f3e2bd}
+.f3s-doc{margin:0 0 14px;padding:14px 16px;border:1px solid rgba(156,122,69,.45);background:rgba(233,212,170,.06)}
+.f3s-doc small{color:#c99a55;font:11px var(--mono);letter-spacing:.16em}
+.f3s-doc h4{margin:6px 0 8px;color:#f3e6cb;font:15px var(--type);letter-spacing:.05em}
+.f3s-modal-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:14px}
+.f3s-modal-actions button{padding:11px 22px;border:1.5px solid var(--tone);background:rgba(20,14,8,.9);color:#f2d39a;font:13px var(--mono);letter-spacing:.16em;cursor:pointer;transition:box-shadow .2s}
+.f3s-modal-actions button:hover,.f3s-modal-actions button:focus-visible{outline:none;box-shadow:0 0 18px rgba(232,170,80,.45)}
+/* VERIFIED stamp on a correct answer. */
+.f3s-stamp{position:absolute;z-index:50;left:50%;top:44%;padding:10px 26px;border:4px double #c8402f;color:#d8463a;font:clamp(26px,4vw,52px) var(--type);letter-spacing:.14em;transform:translate(-50%,-50%) rotate(-8deg) scale(2.2);opacity:0;pointer-events:none;mix-blend-mode:screen;animation:f3sStamp 2.1s cubic-bezier(.2,.9,.3,1) forwards}
+@keyframes f3sStamp{18%{opacity:.95;transform:translate(-50%,-50%) rotate(-8deg) scale(1)}70%{opacity:.85}100%{opacity:0;transform:translate(-50%,-50%) rotate(-8deg) scale(1)}}
+.f3s-toast{position:absolute;z-index:70;left:50%;bottom:28px;padding:10px 20px;border:1px solid #9c7a45;background:rgba(14,10,6,.95);color:#f2d39a;font:13px var(--mono);letter-spacing:.1em;transform:translate(-50%,20px);opacity:0;pointer-events:none}
+.f3s-toast.show{animation:f3sToast 2.4s ease forwards}
+@keyframes f3sToast{12%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,0)}}
+@media(prefers-reduced-motion:reduce){.f3s-screen,.f3s-screen.from-chapter,.f3s-screen.leave{transition:opacity .3s ease;transform:none;filter:none}.f3s-screen.enter .f3s-layer:after,.f3s-stamp,.f3-stage .answered .f3s-submit,.f3s-opt.wrong{animation:none}}
+/* Mottled stains and grain so the File 03 paper reads as aged as the painted File 01 card. */
+.home .file03-art-card:after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.55;background:radial-gradient(ellipse 30% 22% at 22% 30%,rgba(120,60,20,.35),transparent 70%),radial-gradient(ellipse 26% 30% at 78% 70%,rgba(110,50,15,.4),transparent 70%),radial-gradient(ellipse 18% 14% at 60% 18%,rgba(130,70,25,.3),transparent 70%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .2 0 0 0 0 .08 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.home .file03-art-card>*{position:relative;z-index:1}
+.file03-art-number,.file03-art-cta{text-shadow:none!important}
+.file03-art-title{color:#2a1e12}
+/* File 03 card uses File 01's own painted paper (assets/file-003/card-paper.png, lettering removed), so the two match exactly.
+   The paper is already tilted like File 01; the text follows the same tilt. Sizes are in artwork pixels × --wall-scale. */
+.home.file-two-signal .file03-art-card,.home.file-two-paper .file03-art-card,.home.file-two-available .file03-art-card{display:block;width:calc(var(--s)*179.5px);height:calc(var(--s)*132.75px);padding:0;gap:0;border-radius:0;clip-path:none;transform:none;filter:drop-shadow(0 calc(var(--s)*6px) calc(var(--s)*7px) rgba(0,0,0,.7));background:url('assets/file-003/card-paper.png') center/100% 100% no-repeat;box-shadow:none}
+.home .file03-art-card:before,.home .file03-art-card:after{display:none}
+.home .file03-art-card>span{position:absolute;left:0;right:0;text-align:center;transform:rotate(-3.6deg);white-space:nowrap}
+.home .file03-art-card .file03-art-number{top:23%;font-size:calc(var(--s)*17.5px);letter-spacing:.07em;color:#1d140c}
+.home .file03-art-card .file03-art-title{top:43%;font-size:calc(var(--s)*12px);letter-spacing:.05em;color:#211810}
+.home .file03-art-card .file03-art-rule{top:59%;left:22%;right:18%;width:auto;height:calc(var(--s)*1.4px);margin:0;background:linear-gradient(90deg,transparent,rgba(160,45,35,.85) 12%,rgba(160,45,35,.85) 88%,transparent)}
+.home .file03-art-card .file03-art-cta{top:65%;font-size:calc(var(--s)*15.5px);letter-spacing:.05em;color:#a22b24}
+/* Testing-only skip for File 03, matching the TEST FILE 002 button. */
+.f3s-skip{position:absolute;z-index:80;right:20px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
+.f3s-skip:hover{background:#2b1c0d;color:#ffe0a0}
+/* Shown while reviewing a finished puzzle: jumps back to where the player left off. */
+.f3s-return{position:absolute;z-index:80;left:50%;bottom:20px;transform:translateX(-50%);padding:11px 20px;border:1.5px solid #e6b866;background:rgba(16,11,7,.94);color:#f2d39a;font:12px var(--mono);letter-spacing:.16em;cursor:pointer;box-shadow:0 0 18px rgba(232,170,80,.35)}
+.f3s-return:hover,.f3s-return:focus-visible{outline:none;box-shadow:0 0 26px rgba(232,170,80,.6)}
+.f3s-return[hidden]{display:none}
+/* Back to the puzzle-list screen, shown on every question. Sits above the global BACK button. */
+.f3s-list{position:absolute;z-index:80;left:20px;bottom:66px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
+.f3s-list:hover,.f3s-list:focus-visible{outline:none;background:#2b1c0d;color:#ffe0a0}
+.f3s-list[hidden]{display:none}
+/* Completed File 03: swap INVESTIGATE → for COMPLETED, the way File 01 shows it. */
+.home.file-three-completed .file03-art-card .file03-art-cta{font-size:0}
+.home.file-three-completed .file03-art-card .file03-art-cta:after{content:"CLASSIFIED";font-size:calc(var(--s)*17px);letter-spacing:.06em}
+.f3s-retry{position:absolute;z-index:80;right:96px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
+.f3s-retry:hover{background:#2b1c0d;color:#ffe0a0}
+/* Soft dimming of decorative art around a question's focus areas (see `focus` in the File 03 screen map). */
+.f3s-dim{position:absolute;inset:0;width:100%;height:100%;opacity:.42;pointer-events:none;z-index:0}
+.f3s-layer>.f3s-art{z-index:-1}
+/* Screens shown whole (taller than the window) sit over a blurred copy of themselves instead of bare black bars. */
+.f3s-screen[data-screen="final"]:before{content:"";position:absolute;inset:-4%;background:url('assets/file-003/final-blank.png') center/cover;filter:blur(18px) brightness(.35);transform:scale(1.05);z-index:-2}
+/* M's closing letter typed onto the blank paper of final-blank.png (sizes in artwork px × --u). */
+.f3s-letter{white-space:pre-line;color:#2a1f15;font:calc(var(--u)*25.5px)/calc(var(--u)*37px) var(--type);letter-spacing:.01em;pointer-events:none;text-shadow:0 0 calc(var(--u)*.6px) rgba(42,31,21,.55)}
+.f3s-letter>span{opacity:0}.f3s-letter>span.shown{opacity:1}
+.f3s-letter-mark{display:inline-block;margin:calc(var(--u)*4px) 0 calc(var(--u)*4px) calc(var(--u)*-32px);padding:calc(var(--u)*6px) calc(var(--u)*28px) calc(var(--u)*6px) calc(var(--u)*32px);background:rgba(196,128,86,.28);font-size:calc(var(--u)*31px);letter-spacing:.04em;color:#2a1a10}
+.f3s-letter-sign{position:absolute;right:calc(var(--u)*60px);bottom:calc(var(--u)*24px);font:italic calc(var(--u)*64px) var(--serif);color:#1d140c;opacity:0;transform:translateY(calc(var(--u)*6px));transition:opacity 1.2s ease,transform 1.2s ease}
+.f3s-letter-sign.shown{opacity:.92;transform:none}
+/* CONTINUE stays dim until the letter has been typed. */
+.f3s-screen.typing .f3s-go{pointer-events:none}
+.f3s-screen[data-screen="final"] .f3s-go{transition:opacity .8s ease,box-shadow .4s}
+.f3s-screen[data-screen="final"].typing .f3s-go{background:rgba(5,3,2,.55)}
+.f3s-screen[data-screen="final"]:not(.typing) .f3s-go{animation:f3sReady 2.4s ease-in-out infinite;border-color:rgba(232,190,110,.6)}
+/* Custom wording over a painted button (e.g. GOOD JOB, DETECTIVE on the gift card); covers the painted label. */
+.f3s-go-label{position:absolute;inset:calc(var(--u)*4px);display:flex;align-items:center;justify-content:center;border-radius:calc(var(--u)*4px);background:radial-gradient(ellipse at 50% 0%,rgba(150,80,20,.35),transparent 55%),#0a0502;color:#e9c37a;font:calc(var(--u)*26px) var(--type);letter-spacing:.08em;white-space:nowrap}
+/* Completed File 002, drawn like File 01: the painted BEGIN button is covered with matching paper
+   (file-02-done-patch.png, same size as the board art) and a red rule + COMPLETED sit in its place. */
+.home.file-two-completed .file02-completed-stamp,.home .file02-completed-stamp{display:none!important}
+.file02-done-patch,.file02-done-label{display:none}
+.home.file-two-completed .file02-done-patch{display:block;position:absolute;z-index:101;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;pointer-events:none}
+.home.file-two-completed .file02-done-label{display:flex;flex-direction:column;align-items:center;gap:calc(var(--wall-scale,1)*4px);position:absolute;z-index:102;left:var(--wall-two-done-x);top:var(--wall-two-done-y);transform:translate(-50%,-50%) rotate(1deg);color:#a52a22;font:calc(var(--wall-scale,1)*21px) var(--type);letter-spacing:.06em;white-space:nowrap;pointer-events:none;text-shadow:0 0 1px rgba(165,42,34,.5)}
+.file02-done-label i{display:block;width:calc(var(--wall-scale,1)*120px);height:calc(var(--wall-scale,1)*1.5px);background:linear-gradient(90deg,transparent,rgba(165,42,34,.85) 15%,rgba(165,42,34,.85) 85%,transparent)}
+.home.wall-intro .file02-done-label,.home.wall-intro .file02-done-patch{transition:opacity 1s ease}
+/* File 03 is not on the wall until File 02 is completed. */
+.home.file-three-locked .file03-art-card{display:none!important}
+/* Second string, File 002 -> File 03: hidden while File 03 is locked, draws itself when File 03 is unlocked. */
+.wall-string path.wall-string-three{stroke-dashoffset:1;opacity:0;transition:stroke-dashoffset 1.6s cubic-bezier(.55,.1,.35,1) .6s,opacity .3s ease .6s}
+.home:not(.file-three-locked) .wall-string path.wall-string-three{stroke-dashoffset:0;opacity:1}
+.home.wall-intro .wall-string path.wall-string-three{stroke-dashoffset:1;opacity:0;transition:none}
+.home.wall-intro.wall-stage-rest:not(.file-three-locked) .wall-string path.wall-string-three{stroke-dashoffset:0;opacity:1;transition:stroke-dashoffset 1.6s cubic-bezier(.55,.1,.35,1) .4s,opacity .3s ease .4s}
+/* Bulbs: the warm light at each pin stays on after the reveal (File 03's only once it is unlocked). */
+.wall-light-three{left:var(--wall-pin-three-x);top:var(--wall-pin-three-y)}
+.home.file-two-signal .wall-light,.home.file-two-paper .wall-light,.home.file-two-available .wall-light{display:block;position:absolute;z-index:135;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#ffe2a8;box-shadow:0 0 12px 4px rgba(255,196,110,.85),0 0 46px 18px rgba(255,160,70,.35);opacity:0;pointer-events:none}
+.home:not(.wall-intro) .wall-light-one,.home:not(.wall-intro) .wall-light-two,.home:not(.wall-intro):not(.file-three-locked) .wall-light-three,.home.wall-intro.wall-stage-rest .wall-light-one,.home.wall-intro.wall-stage-rest .wall-light-two,.home.wall-intro.wall-stage-rest:not(.file-three-locked) .wall-light-three{opacity:1!important;animation:wallBulb 3.4s ease-in-out infinite}
+.home.file-three-locked .wall-light-three{display:none!important}
+@keyframes wallBulb{0%,100%{box-shadow:0 0 12px 4px rgba(255,196,110,.85),0 0 46px 18px rgba(255,160,70,.35)}45%{box-shadow:0 0 15px 6px rgba(255,208,130,.95),0 0 60px 26px rgba(255,160,70,.5)}52%{box-shadow:0 0 9px 3px rgba(255,190,100,.7),0 0 36px 12px rgba(255,160,70,.28)}}
+@media(prefers-reduced-motion:reduce){.home .wall-light{animation:none!important}}
+/* Bulbs hang above each card on a short wire; the paper itself is held to the wall by its pin alone. */
+.wall-light-one{top:calc(var(--wall-pin-one-y) - var(--wall-scale,1)*26px)}
+.wall-light-two{top:calc(var(--wall-pin-two-y) - var(--wall-scale,1)*26px)}
+.wall-light-three{top:calc(var(--wall-pin-three-y) - var(--wall-scale,1)*26px)}
+.home .wall-light:before{content:"";position:absolute;left:50%;bottom:100%;width:1.5px;height:calc(var(--wall-scale,1)*20px);transform:translateX(-50%);background:linear-gradient(transparent,#2a1a0c 60%);box-shadow:none}
+/* File 03 reveal (see playFile03Reveal): card, bulb and string stay hidden, then appear one after another. */
+.home.file-three-locked.wall-three-intro .file03-art-card{display:block!important;opacity:0;pointer-events:none;transition:opacity 1.6s ease}
+.home.file-three-locked.wall-three-intro.wall-three-card .file03-art-card{opacity:1}
+.home.file-three-locked.wall-three-intro .wall-light-three{display:block!important;opacity:0!important;animation:none}
+.home.file-three-locked.wall-three-intro.wall-three-dot .wall-light-three{opacity:1!important;animation:wallLightOn .9s ease-out forwards,wallBulb 3.4s 1s ease-in-out infinite}
+.home.wall-three-intro.wall-three-string .wall-string path.wall-string-three{stroke-dashoffset:0;opacity:1;transition:stroke-dashoffset 1.7s cubic-bezier(.55,.1,.35,1),opacity .3s ease}
+.home.file-three-locked.wall-three-intro .wall-string path.wall-string-three{stroke-dashoffset:1;opacity:0}
+.home.file-three-locked.wall-three-intro.wall-three-string .wall-string path.wall-string-three{stroke-dashoffset:0;opacity:1}
+/* Real bulbs: glass globe, filament and screw cap on a cord (SVG), glowing and flickering softly. Positioned above each card. */
+.home.home.home .wall-light{width:calc(var(--wall-scale,1)*26px);height:calc(var(--wall-scale,1)*42px);margin:0 0 0 calc(var(--wall-scale,1)*-13px);border-radius:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 42'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='58%25' r='55%25'%3E%3Cstop offset='0' stop-color='%23fff6d8'/%3E%3Cstop offset='.45' stop-color='%23ffd27a'/%3E%3Cstop offset='1' stop-color='%23d98a2e' stop-opacity='.9'/%3E%3C/radialGradient%3E%3ClinearGradient id='m' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='%23352619'/%3E%3Cstop offset='.5' stop-color='%23a07e5a'/%3E%3Cstop offset='1' stop-color='%23352619'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='8' y='0' width='10' height='12' rx='1.5' fill='url(%23m)'/%3E%3Cpath d='M8 3.5h10M8 6.5h10M8.5 9.5h9' stroke='%2318100a' stroke-width='.8'/%3E%3Cpath d='M9 12C3 17 1.5 24 4 31C6.5 38 19.5 38 22 31C24.5 24 23 17 17 12Z' fill='url(%23g)' stroke='%23b8741f' stroke-width='.6'/%3E%3Cpath d='M11 12.5V22M15 12.5V22' stroke='%23806040' stroke-width='.5'/%3E%3Cpath d='M11 22l1.6-4.5 1.4 4.5 1.4-4.5 1.6 4.5' fill='none' stroke='%23fffbe8' stroke-width='.9' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cellipse cx='8.5' cy='25' rx='2' ry='4' fill='%23fff' opacity='.35' transform='rotate(12 8.5 25)'/%3E%3C/svg%3E") center/100% 100% no-repeat;box-shadow:none;filter:drop-shadow(0 0 calc(var(--wall-scale,1)*7px) rgba(255,196,110,.95)) drop-shadow(0 0 calc(var(--wall-scale,1)*20px) rgba(255,160,70,.5));transform-origin:50% 0}
+.home.home.home .wall-light:before{content:"";position:absolute;left:50%;bottom:100%;width:calc(var(--wall-scale,1)*1.6px);height:calc(var(--wall-scale,1)*26px);margin:0;transform:translateX(-50%);background:linear-gradient(#0d0907,#2a1a0c);box-shadow:none}
+.home.home.home .wall-light:after{content:"";position:absolute;left:50%;bottom:calc(100% + var(--wall-scale,1)*24px);width:calc(var(--wall-scale,1)*5px);height:calc(var(--wall-scale,1)*5px);transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 35% 30%,#6a6a6a,#0b0b0b 70%)}
+.wall-light-one{top:calc(var(--wall-pin-one-y) - var(--wall-scale,1)*60px)}
+.wall-light-two{top:calc(var(--wall-pin-two-y) - var(--wall-scale,1)*60px)}
+.wall-light-three{top:calc(var(--wall-pin-three-y) - var(--wall-scale,1)*60px)}
+@keyframes wallBulb{0%,100%{filter:drop-shadow(0 0 7px rgba(255,196,110,.95)) drop-shadow(0 0 20px rgba(255,160,70,.5))}45%{filter:drop-shadow(0 0 10px rgba(255,208,130,1)) drop-shadow(0 0 30px rgba(255,160,70,.7))}52%{filter:drop-shadow(0 0 5px rgba(255,190,100,.8)) drop-shadow(0 0 16px rgba(255,160,70,.4))}}
+/* Light, not bulbs: each file gets a warm pool of lamp light spilling over its card and the wall around it (like the lit paper on the wall art). */
+.home.home.home .wall-light{display:block;width:calc(var(--wall-scale,1)*470px);height:calc(var(--wall-scale,1)*350px);margin:calc(var(--wall-scale,1)*-175px) 0 0 calc(var(--wall-scale,1)*-235px);border-radius:50%;background:radial-gradient(ellipse at center,rgba(255,176,78,.46) 0%,rgba(255,150,52,.26) 34%,rgba(214,108,30,.1) 58%,transparent 74%);mix-blend-mode:screen;box-shadow:none;filter:none;pointer-events:none}
+.home.home.home .wall-light:before,.home.home.home .wall-light:after{display:none}
+.home.home.home .wall-light-one{left:var(--wall-one-x);top:var(--wall-one-y)}
+.home.home.home .wall-light-two{left:var(--wall-two-x);top:var(--wall-two-y)}
+.home.home.home .wall-light-three{left:var(--wall-glow-three-x);top:var(--wall-glow-three-y)}
+/* The lamp light breathes very slightly, like a real flame-lit wall. */
+@keyframes wallBulb{0%,100%{filter:brightness(1)}42%{filter:brightness(1.2)}50%{filter:brightness(.82)}58%{filter:brightness(1.1)}}
+/* Tuned to the reference wall: a saturated orange pool, strongest toward the pin side of the paper, lighting the map texture around it. */
+.home.home.home .wall-light{width:calc(var(--wall-scale,1)*560px);height:calc(var(--wall-scale,1)*430px);margin:calc(var(--wall-scale,1)*-235px) 0 0 calc(var(--wall-scale,1)*-300px);background:radial-gradient(ellipse 46% 44% at 52% 50%,rgba(255,148,40,.62) 0%,rgba(255,128,30,.46) 26%,rgba(236,104,22,.26) 50%,rgba(190,78,16,.1) 70%,transparent 88%),radial-gradient(ellipse 14% 14% at 46% 42%,rgba(255,206,120,.55),transparent 100%);mix-blend-mode:screen}
+.home.home.home .wall-light{margin:calc(var(--wall-scale,1)*-215px) 0 0 calc(var(--wall-scale,1)*-280px);background:radial-gradient(ellipse 46% 44% at 50% 50%,rgba(255,148,40,.6) 0%,rgba(255,128,30,.44) 26%,rgba(236,104,22,.25) 50%,rgba(190,78,16,.09) 70%,transparent 88%),radial-gradient(ellipse 15% 15% at 47% 47%,rgba(255,206,120,.34),transparent 100%)}
+
+/* Spotlight on File 002: File 01 (already done) is dimmed, File 002's light burns brightest. */
+.home.wall-one-dim{--wall-one-alpha:.5}
+.home.wall-one-dim.wall-intro .wall-light-one{opacity:.4!important;animation:none}
+.home:not(.wall-intro):not(.file-two-completed) .wall-light-one{opacity:.45!important}
+.home.wall-intro.wall-stage-rest:not(.file-two-completed) .wall-light-one{opacity:.45!important}
+.home:not(.file-two-completed) .wall-light-two{--b:1.5}
+@keyframes wallBulb{0%,100%{filter:brightness(calc(var(--b,1)*1))}42%{filter:brightness(calc(var(--b,1)*1.2))}50%{filter:brightness(calc(var(--b,1)*.82))}58%{filter:brightness(calc(var(--b,1)*1.1))}}
+/* Clarity: the light spills around each card (strongest on the wall just outside its edges) and stays faint over the lettering. */
+.home.home.home .wall-light{background:radial-gradient(ellipse 46% 44% at 50% 50%,rgba(255,148,40,.04) 0%,rgba(255,140,36,.07) 30%,rgba(255,132,32,.5) 47%,rgba(240,108,24,.3) 60%,rgba(190,78,16,.1) 78%,transparent 94%)}
+/* File 03's card is HTML sitting above the art, so its light goes behind it. */
+.home.home.home .wall-light-three{z-index:129}
+.home.home.home .wall-light{background:radial-gradient(ellipse 46% 44% at 50% 50%,rgba(255,140,36,.03) 0%,rgba(255,130,32,.05) 30%,rgba(255,122,28,.34) 46%,rgba(236,96,20,.22) 60%,rgba(180,70,14,.08) 78%,transparent 94%);mix-blend-mode:screen}
+
+/* File 002's card: lettering erased from the art (file-02-blank-patch.png) and typed live in HTML, so it stays sharp. */
+.file02-blank-patch,.file02-card-text{display:none}
+.home.file-two-signal .file02-blank-patch,.home.file-two-paper .file02-blank-patch,.home.file-two-available .file02-blank-patch{display:block;position:absolute;z-index:101;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;pointer-events:none}
+.home.file-two-signal .file02-card-text,.home.file-two-paper .file02-card-text,.home.file-two-available .file02-card-text{display:block;position:absolute;z-index:102;left:var(--wall-two-x);top:var(--wall-two-y);width:0;height:0;--s:var(--wall-scale,1);transform:rotate(1.2deg);pointer-events:none;font-family:var(--type);color:#3a2216}
+.file02-card-text span{position:absolute;left:0;transform:translate(-50%,-50%);white-space:pre;text-align:center}
+.f2c-num{top:calc(var(--s)*-47px);font-size:calc(var(--s)*22px);letter-spacing:.06em;color:#2a1810}
+.f2c-title{top:calc(var(--s)*-20px);font-size:calc(var(--s)*14.5px);letter-spacing:.05em}
+.f2c-copy{top:calc(var(--s)*13.5px);font-size:calc(var(--s)*10.5px);line-height:1.45;font-style:italic;letter-spacing:.01em;color:#4a2e1c}
+.f2c-begin{top:calc(var(--s)*55px);width:calc(var(--s)*102px);height:calc(var(--s)*31px);display:flex;align-items:center;justify-content:center;border-radius:calc(var(--s)*2px);background:#1a120c;color:#f1deb0;font-size:calc(var(--s)*13px);letter-spacing:.06em;opacity:1;transition:opacity .7s ease}
+.home.wall-intro .file02-card-text{opacity:0}
+.home.wall-intro.wall-stage-two .file02-card-text{opacity:1;transition:opacity .5s ease}
+.home.wall-intro .f2c-begin:not(.shown){opacity:0}
+.home.file-two-completed .f2c-begin{display:none}
+.home.file-two-completed .file02-done-patch{display:none!important}
+/* Light stays steady (no breathing/flicker), and a touch softer. */
+.home .wall-light{animation:none!important;transition:opacity 1.4s ease}
+.home.wall-dot-one .wall-light-one,.home.wall-dot-two .wall-light-two,.home.file-three-locked.wall-three-intro.wall-three-dot .wall-light-three{opacity:1!important}
+.home:not(.file-two-completed) .wall-light-two{filter:brightness(1.45)}
+.home.home.home .wall-light{background:radial-gradient(ellipse 46% 44% at 50% 50%,rgba(255,140,36,.03) 0%,rgba(255,130,32,.05) 30%,rgba(255,122,28,.25) 46%,rgba(236,96,20,.16) 60%,rgba(180,70,14,.055) 78%,transparent 94%)}
+/* Light turned down: a faint warm halo only. */
+.home.home.home .wall-light{background:radial-gradient(ellipse 46% 44% at 50% 50%,rgba(255,140,36,.02) 0%,rgba(255,130,32,.03) 30%,rgba(255,122,28,.12) 46%,rgba(236,96,20,.08) 60%,rgba(180,70,14,.03) 78%,transparent 94%)}
+.home:not(.file-two-completed) .wall-light-two{filter:brightness(1.15)}
+/* Testing-only skip for File 01 (jumps to ACCEPT CASE; press again to accept), next to the other test buttons. */
+#f1Skip{position:fixed;z-index:999;left:252px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
+#f1Skip:hover{background:#2b1c0d;color:#ffe0a0}
+#f1Skip[hidden]{display:none}
+
+/* ---- File 002 reveal, reworked: the wall stays visible but dark (no black, no cut-out ovals); light rises on File 002 only,
+   File 01 simply stays unlit, then the whole wall lifts. Glow pools are held back until the end. ---- */
+.home.wall-intro{transition:opacity 1.1s ease,visibility 1.1s,--wall-spot-one 1s ease,--wall-spot-two 1.1s cubic-bezier(.33,.0,.2,1),--wall-rest 1.4s cubic-bezier(.4,0,.2,1)}
+.home.wall-intro .wall-dark{background:radial-gradient(ellipse 75% 70% at 55% 45%,transparent 35%,rgba(0,0,0,.55) 100%),url('assets/reference/phase-two/file-02-board.png') center/cover no-repeat;filter:brightness(.27) saturate(.75);animation:wallDimIn .6s ease-out both}
+@keyframes wallDimIn{from{opacity:0}to{opacity:1}}
+.home.wall-one-dim{--wall-one-alpha:0}
+.home.home.wall-intro:not(.wall-stage-rest) .wall-light{opacity:0!important}
+.home.home.wall-intro.wall-stage-rest .wall-light{transition:opacity 1.4s ease .2s}
+/* Keep File 002's lettering crisp on its hot painted glow: a soft darkening right under the text. */
+.file02-card-shade{display:none}
+.home.file-two-signal .file02-card-shade,.home.file-two-paper .file02-card-shade,.home.file-two-available .file02-card-shade{display:block;position:absolute;z-index:101;left:var(--wall-two-x);top:var(--wall-two-y);width:calc(var(--wall-scale,1)*200px);height:calc(var(--wall-scale,1)*130px);transform:translate(-50%,-56%);border-radius:50%;background:radial-gradient(ellipse at center,rgba(120,56,14,.30),rgba(120,56,14,.12) 55%,transparent 75%);mix-blend-mode:multiply;pointer-events:none}
+.home.wall-intro .file02-card-shade{opacity:0;transition:opacity .9s ease}
+.home.wall-intro.wall-stage-two .file02-card-shade{opacity:1}
+/* Typewriter: letters are laid out in place from the start and simply appear, so lines never shift. */
+.file02-card-text .ch{visibility:hidden}
+.file02-card-text .ch.on{visibility:visible}
+.f2c-caret{display:inline-block;width:0;height:.95em;margin:0 -1px -.1em 0;border-right:calc(var(--s)*1.6px) solid #3a2216;vertical-align:baseline;animation:f2cBlink .8s steps(1) infinite}
+@keyframes f2cBlink{50%{border-color:transparent}}
+/* No test buttons over the cinematic. */
+body.wall-cinematic #devFile02Button,body.wall-cinematic #backButton,body.wall-cinematic #f1Skip{opacity:0;pointer-events:none;transition:opacity .4s}
+/* Only the four line boxes are positioned; letters and caret flow inline inside them. */
+.file02-card-text .ch,.file02-card-text .f2c-caret{position:static;left:auto;transform:none}
+/* The dark under-layer uses the blank card too, so no old lettering ghosts through while the light rises. */
+.home.wall-intro .wall-dark{background:radial-gradient(ellipse 75% 70% at 55% 45%,transparent 35%,rgba(0,0,0,.55) 100%),url('assets/reference/phase-two/file-02-blank-patch.png') center/cover no-repeat,url('assets/reference/phase-two/file-02-board.png') center/cover no-repeat}
+
+/* The wall art now has File 002's card blank baked in (file-02-board-blank.png); its text is the live HTML above. */
+.home.wall-intro .wall-dark{background:radial-gradient(ellipse 75% 70% at 55% 45%,transparent 35%,rgba(0,0,0,.55) 100%),url('assets/reference/phase-two/file-02-board-blank.png?v=1792581110') center/cover no-repeat}
+
+/* ---- File 03 reveal, matched to the File 002 one: the wall darkens (overlay with a soft opening that widens on File 03),
+   the blank card fades up, its text types in place, then the rule, INVESTIGATE, string and the wall lift. ---- */
+@property --three-spot{syntax:'<number>';inherits:true;initial-value:0}
+.wall-three-dark{display:none}
+.home.wall-three-intro{transition:--three-spot 1.1s cubic-bezier(.33,0,.2,1)}
+.home.wall-three-intro.wall-three-card{--three-spot:1}
+.home.wall-three-intro .wall-three-dark{display:block;position:absolute;z-index:128;inset:0;pointer-events:none;background:radial-gradient(ellipse 75% 70% at 55% 45%,rgba(4,3,2,.72) 35%,rgba(0,0,0,.86) 100%);-webkit-mask-image:radial-gradient(ellipse calc(var(--three-spot)*var(--wall-scale,1)*240px + .1px) calc(var(--three-spot)*var(--wall-scale,1)*180px + .1px) at var(--wall-glow-three-x) var(--wall-glow-three-y),transparent 40%,#000 100%);mask-image:radial-gradient(ellipse calc(var(--three-spot)*var(--wall-scale,1)*240px + .1px) calc(var(--three-spot)*var(--wall-scale,1)*180px + .1px) at var(--wall-glow-three-x) var(--wall-glow-three-y),transparent 40%,#000 100%);animation:wallDimIn .6s ease-out both;transition:opacity 1.4s cubic-bezier(.4,0,.2,1)}
+.home.wall-three-intro.wall-three-rest .wall-three-dark{opacity:0}
+/* Card: fades up blank with the light, no extra glow until the wall lifts. */
+.home.file-three-locked.wall-three-intro .file03-art-card{opacity:0;transition:opacity 1.1s ease}
+.home.file-three-locked.wall-three-intro.wall-three-card .file03-art-card{opacity:1}
+.home.home.wall-three-intro:not(.wall-three-rest) .wall-light{opacity:0!important}
+.home.home.wall-three-intro.wall-three-rest .wall-light-three{opacity:1!important;transition:opacity 1.4s ease .2s}
+/* Typing: rule and INVESTIGATE wait until the title is typed. */
+.file03-art-card .ch{visibility:hidden}.file03-art-card .ch.on{visibility:visible}
+.f3c-caret{display:inline-block;width:0;height:.95em;margin:0 -1px -.1em 0;border-right:calc(var(--s,1)*1.6px) solid #2a1e12;animation:f2cBlink .8s steps(1) infinite}
+.home .file03-art-card.typing .file03-art-rule{transform:rotate(-3.6deg) scaleX(0);transition:transform .7s cubic-bezier(.4,0,.2,1)}
+.home .file03-art-card.typing.typed .file03-art-rule{transform:rotate(-3.6deg) scaleX(1)}
+.home .file03-art-card.typing .file03-art-cta{opacity:0;transition:opacity .7s ease .45s}
+.home .file03-art-card.typing.typed .file03-art-cta{opacity:1}
+/* String: draws above the dark layer; the older File 01 -> 002 string stays dim until the wall lifts. */
+.home.wall-three-intro .wall-string{z-index:129}
+.home.wall-three-intro:not(.wall-three-rest) .wall-string path:not(.wall-string-three){opacity:.22}
+.home.wall-three-intro .wall-string path:not(.wall-string-three){transition:opacity 1.4s ease}
+/* A slide never stays visible or clickable once its scene is hidden (File 01's last slide used to sit over the wall). */
+.scene:not(.active) .phase-slide{visibility:hidden!important;pointer-events:none!important}
+
+/* ---- Spotlight follows the active file (active-two / active-three / active-none set in paintProgress) ---- */
+/* Once File 002 is finished, damp the lamp glow painted onto it so it sits back like File 01. */
+.file02-unlit{display:none}
+.home.file-two-completed .file02-unlit{display:block;position:absolute;z-index:101;left:var(--wall-two-x);top:var(--wall-two-y);width:calc(var(--wall-scale,1)*520px);height:calc(var(--wall-scale,1)*420px);transform:translate(-50%,-52%);border-radius:50%;background:radial-gradient(ellipse at center,rgba(20,10,4,.62) 0%,rgba(20,10,4,.5) 34%,rgba(20,10,4,.22) 58%,transparent 76%);pointer-events:none;transition:opacity 1.4s ease}
+.home.wall-three-intro:not(.wall-three-rest) .file02-unlit{opacity:1}
+/* Only the active file keeps a light pool, and it is a little stronger than before. */
+.home.home.home:not(.wall-intro):not(.wall-three-intro) .wall-light{opacity:0!important}
+.home.home.home.active-two:not(.wall-intro):not(.wall-three-intro) .wall-light-two,
+.home.home.home.active-three:not(.wall-intro):not(.wall-three-intro) .wall-light-three{opacity:1!important}
+.home.home.home.wall-three-intro.wall-three-rest .wall-light:not(.wall-light-three),.home.home.home.wall-intro.wall-stage-rest .wall-light:not(.wall-light-two){opacity:0!important}
+.home.home.home.active-three .wall-light-three{background:radial-gradient(ellipse 46% 44% at 50% 50%,rgba(255,150,40,.06) 0%,rgba(255,140,36,.1) 30%,rgba(255,128,30,.34) 46%,rgba(240,104,22,.2) 60%,rgba(180,70,14,.07) 78%,transparent 94%)}
+/* The active File 03 card itself catches the light; finished cards are a touch dimmer. */
+.home.active-three .file03-art-card{filter:drop-shadow(0 calc(var(--s)*6px) calc(var(--s)*7px) rgba(0,0,0,.7)) brightness(1.12) saturate(1.08)}
+.home.file-three-completed .file03-art-card{filter:drop-shadow(0 calc(var(--s)*6px) calc(var(--s)*7px) rgba(0,0,0,.7)) brightness(.88)}
+
+/* Finished File 002: colour-correct its painted lamp glow to File 001's paper tone (measured), and damp the halo around it. */
+.home.file-two-completed .file02-unlit{width:calc(var(--wall-scale,1)*560px);height:calc(var(--wall-scale,1)*440px);transform:translate(-50%,-52%);mix-blend-mode:multiply;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgb(212,200,252) 0%,rgb(212,200,252) 30%,rgb(170,150,150) 46%,rgb(185,170,170) 62%,rgb(225,218,218) 76%,#fff 88%)}
+
+/* Finished File 002: neutral (not reddish) halo, and pull the painted lamp glow's extra orange saturation back to the other cards' level. */
+.home.file-two-completed .file02-unlit{background:radial-gradient(ellipse 50% 50% at 50% 50%,rgb(212,202,250) 0%,rgb(212,202,250) 30%,rgb(176,168,172) 46%,rgb(196,190,192) 62%,rgb(230,226,226) 76%,#fff 88%)}
+/* moved to .file02-desat */ .x-unused{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse 50% 50% at 50% 46%,rgba(128,128,128,.45) 0%,rgba(128,128,128,.35) 40%,rgba(128,128,128,.12) 66%,transparent 82%);mix-blend-mode:saturation}
+/* Old File 03 "CONTINUE" route is gone: the File 003 card itself opens the file. */
+.home .file03-continue,#continueFileThree{display:none!important}
+
+.file02-desat{display:none}
+.home.file-two-completed .file02-desat{display:block;position:absolute;z-index:101;left:var(--wall-two-x);top:var(--wall-two-y);width:calc(var(--wall-scale,1)*560px);height:calc(var(--wall-scale,1)*440px);transform:translate(-50%,-52%);border-radius:50%;pointer-events:none;mix-blend-mode:saturation;background:radial-gradient(ellipse 50% 50% at 50% 46%,rgba(128,128,128,.2) 0%,rgba(128,128,128,.16) 40%,rgba(128,128,128,.06) 66%,transparent 82%)}
+
+/* ===== File 004 card: same crushed paper as File 003, pinned lower right; hidden until File 003 is done ===== */
+.file04-art-card{display:none}
+.home.file-two-signal .file04-art-card,.home.file-two-paper .file04-art-card,.home.file-two-available .file04-art-card{--s:var(--wall-scale,1);display:block;position:absolute;z-index:130;left:30.5%;top:55%;width:calc(var(--s)*179.5px);height:calc(var(--s)*132.75px);padding:0;border:0;cursor:pointer;color:#241a10;background:url('assets/file-003/card-paper.png') center/100% 100% no-repeat;filter:drop-shadow(0 calc(var(--s)*6px) calc(var(--s)*7px) rgba(0,0,0,.7));font-family:var(--type)}
+.home.file-four-locked .file04-art-card{display:none!important}
+.home .file04-art-card>span{position:absolute;left:0;right:0;text-align:center;transform:rotate(-3.6deg);white-space:nowrap}
+.home .file04-art-card .file04-art-number{top:23%;font-size:calc(var(--s)*17.5px);letter-spacing:.07em;color:#1d140c}
+.home .file04-art-card .file04-art-title{top:43%;font-size:calc(var(--s)*12px);letter-spacing:.05em;color:#211810}
+.home .file04-art-card .file04-art-rule{top:59%;left:22%;right:18%;height:calc(var(--s)*1.4px);background:linear-gradient(90deg,transparent,rgba(160,45,35,.85) 12%,rgba(160,45,35,.85) 88%,transparent)}
+.home .file04-art-card .file04-art-cta{top:65%;font-size:calc(var(--s)*15.5px);letter-spacing:.05em;color:#a22b24}
+.home.file-four-completed .file04-art-card .file04-art-cta{font-size:0}
+.home.file-four-completed .file04-art-card .file04-art-cta:after{content:"CLASSIFIED";font-size:calc(var(--s)*17px);letter-spacing:.06em}
+.home .file04-art-card:hover,.home .file04-art-card:focus-visible{outline:1.5px solid rgba(224,189,117,.8)!important;box-shadow:0 0 20px rgba(224,189,117,.5)!important;border-radius:3px}
+.home.active-four .file04-art-card{filter:drop-shadow(0 calc(var(--s)*6px) calc(var(--s)*7px) rgba(0,0,0,.7)) brightness(1.12) saturate(1.08)}
+.home.file-four-completed .file04-art-card{filter:drop-shadow(0 calc(var(--s)*6px) calc(var(--s)*7px) rgba(0,0,0,.7)) brightness(.88)}
+.home.home.home .wall-light-four{left:var(--wall-glow-four-x);top:var(--wall-glow-four-y);background:radial-gradient(ellipse 46% 44% at 50% 50%,rgba(255,150,40,.06) 0%,rgba(255,140,36,.1) 30%,rgba(255,128,30,.34) 46%,rgba(240,104,22,.2) 60%,rgba(180,70,14,.07) 78%,transparent 94%)}
+.home.home.home.active-four:not(.wall-intro):not(.wall-three-intro):not(.wall-four-intro) .wall-light-four{opacity:1!important}
+.home.file-four-locked .wall-light-four{display:none!important}
+/* String File 003 -> File 004 */
+.wall-string path.wall-string-four{stroke-dashoffset:1;opacity:0}
+.home:not(.file-four-locked) .wall-string path.wall-string-four{stroke-dashoffset:0;opacity:1}
+.home.wall-four-intro .wall-string path.wall-string-four{stroke-dashoffset:1;opacity:1}
+.home.wall-four-intro.wall-four-string .wall-string path.wall-string-four{stroke-dashoffset:0;transition:stroke-dashoffset 1.6s cubic-bezier(.55,.1,.35,1)}
+/* File 004 reveal (mirrors File 03's) */
+@property --four-spot{syntax:'<number>';inherits:true;initial-value:0}
+.wall-four-dark{display:none}
+.home.wall-four-intro{transition:--four-spot 1.1s cubic-bezier(.33,0,.2,1)}
+.home.wall-four-intro.wall-four-card{--four-spot:1}
+.home.wall-four-intro .wall-four-dark{display:block;position:absolute;z-index:128;inset:0;pointer-events:none;background:radial-gradient(ellipse 75% 70% at 55% 45%,rgba(4,3,2,.72) 35%,rgba(0,0,0,.86) 100%);-webkit-mask-image:radial-gradient(ellipse calc(var(--four-spot)*var(--wall-scale,1)*240px + .1px) calc(var(--four-spot)*var(--wall-scale,1)*180px + .1px) at var(--wall-glow-four-x) var(--wall-glow-four-y),transparent 40%,#000 100%);mask-image:radial-gradient(ellipse calc(var(--four-spot)*var(--wall-scale,1)*240px + .1px) calc(var(--four-spot)*var(--wall-scale,1)*180px + .1px) at var(--wall-glow-four-x) var(--wall-glow-four-y),transparent 40%,#000 100%);animation:wallDimIn .6s ease-out both;transition:opacity 1.4s cubic-bezier(.4,0,.2,1)}
+.home.wall-four-intro.wall-four-rest .wall-four-dark{opacity:0}
+.home.wall-four-intro .file04-art-card{display:block!important;opacity:0;transition:opacity 1.1s ease}
+.home.wall-four-intro.wall-four-card .file04-art-card{opacity:1}
+.home.home.wall-four-intro:not(.wall-four-rest) .wall-light{opacity:0!important}
+.home.home.wall-four-intro.wall-four-rest .wall-light-four{opacity:1!important;transition:opacity 1.4s ease .2s}
+.home.wall-four-intro .wall-string{z-index:129}
+.home.wall-four-intro:not(.wall-four-rest) .wall-string path:not(.wall-string-four){opacity:.22}
+.file04-art-card .ch{visibility:hidden}.file04-art-card .ch.on{visibility:visible}
+.home .file04-art-card .ch,.home .file04-art-card .f3c-caret{position:static;transform:none}
+.home .file04-art-card.typing .file04-art-rule{transform:rotate(-3.6deg) scaleX(0);transition:transform .7s cubic-bezier(.4,0,.2,1)}
+.home .file04-art-card.typing.typed .file04-art-rule{transform:rotate(-3.6deg) scaleX(1)}
+.home .file04-art-card.typing .file04-art-cta{opacity:0;transition:opacity .7s ease .45s}
+.home .file04-art-card.typing.typed .file04-art-cta{opacity:1}
+/* File 003 dims once finished, File 004 now has the light. */
+.home.file-three-completed .wall-light-three{opacity:0!important}
+
+/* ===== File 004 screens (inside #f3Stage[data-mode=f4]) ===== */
+#f3Stage[data-mode="f4"] .f3s-list,#f3Stage[data-mode="f4"] .f3s-return{display:none!important}
+.f4-backdrop{background:url('assets/reference/war-room.png') center/cover!important;filter:blur(10px) brightness(.28) saturate(.7)!important}
+.f4-desk-bg{position:absolute;inset:-4%;background:url('assets/reference/war-room.png') center/cover;filter:blur(8px) brightness(.24) saturate(.7);transform:scale(1.04)}
+.f4-desk{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr);grid-template-rows:auto 1fr;gap:18px 28px;padding:clamp(18px,3.5vw,48px) clamp(16px,4vw,60px) 80px;box-sizing:border-box;overflow:auto;color:#e9dcc2}
+.f4-head{grid-column:1/-1}
+.f4-head small{color:#c99a55;font:12px var(--mono);letter-spacing:.2em}
+.f4-head h2{margin:6px 0 8px;padding-bottom:10px;color:#f3e6cb;font:clamp(22px,2.8vw,36px) var(--type);letter-spacing:.06em;background:linear-gradient(90deg,#9e2219,transparent 60%) left bottom/100% 2px no-repeat}
+.f4-head p{max-width:760px;margin:0;color:#d9c6a3;font:14px/1.6 var(--mono)}
+.f4-docs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;align-content:start}
+.f4-doc{position:relative;padding:14px 16px 16px;border-radius:2px;background:linear-gradient(160deg,#e6d3ad,#d6bd8c 70%,#c9ad78);color:#2a1d12;box-shadow:0 10px 26px rgba(0,0,0,.55),inset 0 0 26px rgba(120,80,30,.35);transform:rotate(var(--r,0deg));transition:transform .25s ease,box-shadow .25s ease}
+.f4-doc:nth-child(2n){--r:.8deg}.f4-doc:nth-child(3n){--r:-.9deg}
+.f4-doc small{display:block;color:#8a2a20;font:11px var(--mono);letter-spacing:.16em}
+.f4-doc time{display:block;margin-top:3px;color:#5a4128;font:12px var(--mono)}
+.f4-doc h4{margin:8px 0 6px;font:15px var(--type);letter-spacing:.03em}
+.f4-doc p{margin:0;white-space:pre-line;font:12.5px/1.55 var(--mono)}
+.f4-orderable .f4-doc{cursor:pointer}
+.f4-orderable .f4-doc:hover,.f4-orderable .f4-doc:focus-visible{outline:none;transform:rotate(0) translateY(-3px);box-shadow:0 0 0 2px #e6b866,0 14px 30px rgba(0,0,0,.6)}
+.f4-doc[data-pos]:not([data-pos=""]):after{content:attr(data-pos);position:absolute;top:-12px;right:-10px;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#7c1f17;color:#f6e3c2;font:16px var(--type);box-shadow:0 4px 10px rgba(0,0,0,.6)}
+.f4-doc.placed{box-shadow:0 0 0 2px rgba(124,31,23,.8),0 10px 26px rgba(0,0,0,.55),inset 0 0 26px rgba(120,80,30,.35)}
+.f4-doc.right:after{background:#2f5a2a!important}
+.f4-docs.f4-four{grid-template-columns:repeat(2,minmax(0,1fr))}
+.f4-task{align-self:start;position:sticky;top:0;padding:20px 22px;border:1px solid rgba(201,154,85,.45);background:linear-gradient(165deg,rgba(30,22,14,.95),rgba(12,9,6,.95));box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.f4-step{margin:0 0 6px;color:#c99a55;font:11px var(--mono);letter-spacing:.2em}
+.f4-q{margin:0 0 12px;color:#f1e4c8;font:15px/1.6 var(--mono)}
+.f4-sub{margin:-4px 0 12px;color:#b39a72;font:12px var(--mono)}
+.f4-options{display:grid;gap:9px}
+.f4-opt{display:flex;align-items:flex-start;gap:12px;padding:11px 12px;border:1px solid rgba(201,154,85,.35);border-radius:2px;background:rgba(233,212,170,.06);color:#e9dcc2;font:13px/1.5 var(--mono);text-align:left;cursor:pointer;transition:border-color .2s,background .2s,box-shadow .2s}
+.f4-opt i{flex:none;display:grid;place-items:center;width:24px;height:24px;border:1px solid #c99a55;border-radius:50%;color:#e6b866;font:12px var(--mono);font-style:normal}
+.f4-opt:hover,.f4-opt:focus-visible{outline:none;border-color:#e6b866}
+.f4-opt.picked{border-color:#e6b866;background:rgba(230,170,80,.14);box-shadow:0 0 16px rgba(232,170,80,.3)}
+.f4-opt.correct{border-color:#f0c878;background:rgba(240,190,100,.2)}
+.f4-opt.wrong{animation:f4Wrong .6s ease both}
+@keyframes f4Wrong{0%,100%{transform:none}20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}0%,70%{border-color:#d4483a;box-shadow:0 0 16px rgba(212,72,58,.45)}}
+.f4-task.settled .f4-opt:not(.correct){opacity:.5}
+.f4-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-top:16px}
+.f4-btn{padding:11px 20px;border:1.5px solid #c99a55;background:rgba(20,14,8,.9);color:#f2d39a;font:12px var(--mono);letter-spacing:.16em;cursor:pointer;transition:box-shadow .2s,border-color .2s}
+.f4-btn:hover:not(:disabled),.f4-btn:focus-visible{outline:none;border-color:#f0c878;box-shadow:0 0 18px rgba(232,170,80,.45)}
+.f4-btn:disabled{opacity:.4;cursor:default}
+.f4-ghost{border-color:rgba(201,154,85,.4);color:#c9b28a}
+.f4-task.settled .f4-submit{display:none}
+.f4-verdict .f4-desk{grid-template-columns:minmax(0,900px);justify-content:center}
+.f4-verdict .f4-task{position:static}
+.f4-verdict-text{width:100%;min-height:clamp(200px,38vh,360px);box-sizing:border-box;padding:16px 18px;border:1px solid rgba(201,154,85,.45);background:#0e0b08;color:#f1e4c8;caret-color:#f0c878;font:15px/1.7 var(--mono);resize:vertical;outline:none}
+.f4-verdict-text:focus{border-color:#e6b866;box-shadow:0 0 16px rgba(232,170,80,.3)}
+.f4-count{margin-right:auto;color:#a8916b;font:12px var(--mono)}
+@media(max-width:900px){.f4-desk{grid-template-columns:1fr}.f4-task{position:static}.f4-docs.f4-four{grid-template-columns:1fr}}
+
+/* File 004 story cards are longer than File 03's messages: give them room so the last lines aren't clipped. */
+.f4-story .f3s-tx{height:auto;max-height:calc(100vh - 60px)}
+.f4-story .f3s-tx-copy{flex:none;min-height:340px;max-height:calc(100vh - 290px)}
+
+/* ===== File 005 card: same paper, pinned lower right; hidden until File 004 is done ===== */
+.file05-art-card{display:none}
+.home.file-two-signal .file05-art-card,.home.file-two-paper .file05-art-card,.home.file-two-available .file05-art-card{--s:var(--wall-scale,1);display:block;position:absolute;z-index:130;left:66%;top:58%;width:calc(var(--s)*179.5px);height:calc(var(--s)*132.75px);padding:0;border:0;cursor:pointer;color:#241a10;background:url('assets/file-003/card-paper.png') center/100% 100% no-repeat;filter:drop-shadow(0 calc(var(--s)*6px) calc(var(--s)*7px) rgba(0,0,0,.7));font-family:var(--type)}
+.home.file-five-locked .file05-art-card{display:none!important}
+.home .file05-art-card>span{position:absolute;left:0;right:0;text-align:center;transform:rotate(-3.6deg);white-space:nowrap}
+.home .file05-art-card .file05-art-number{top:23%;font-size:calc(var(--s)*17.5px);letter-spacing:.07em;color:#1d140c}
+.home .file05-art-card .file05-art-title{top:43%;font-size:calc(var(--s)*12px);letter-spacing:.05em;color:#211810}
+.home .file05-art-card .file05-art-rule{top:59%;left:22%;right:18%;height:calc(var(--s)*1.4px);background:linear-gradient(90deg,transparent,rgba(160,45,35,.85) 12%,rgba(160,45,35,.85) 88%,transparent)}
+.home .file05-art-card .file05-art-cta{top:65%;font-size:calc(var(--s)*15.5px);letter-spacing:.05em;color:#a22b24}
+.home.file-five-completed .file05-art-card .file05-art-cta{font-size:0}
+.home.file-five-completed .file05-art-card .file05-art-cta:after{content:"CASE CLOSED";font-size:calc(var(--s)*17px);letter-spacing:.06em}
+.home .file05-art-card:hover,.home .file05-art-card:focus-visible{outline:1.5px solid rgba(224,189,117,.8)!important;box-shadow:0 0 20px rgba(224,189,117,.5)!important;border-radius:3px}
+.home.active-five .file05-art-card{filter:drop-shadow(0 calc(var(--s)*6px) calc(var(--s)*7px) rgba(0,0,0,.7)) brightness(1.12) saturate(1.08)}
+.home.file-five-completed .file05-art-card{filter:drop-shadow(0 calc(var(--s)*6px) calc(var(--s)*7px) rgba(0,0,0,.7)) brightness(.88)}
+.home.home.home .wall-light-five{left:var(--wall-glow-five-x);top:var(--wall-glow-five-y);background:radial-gradient(ellipse 46% 44% at 50% 50%,rgba(255,150,40,.06) 0%,rgba(255,140,36,.1) 30%,rgba(255,128,30,.34) 46%,rgba(240,104,22,.2) 60%,rgba(180,70,14,.07) 78%,transparent 94%)}
+.home.home.home.active-five:not(.wall-intro):not(.wall-three-intro):not(.wall-four-intro):not(.wall-five-intro) .wall-light-five{opacity:1!important}
+.home.file-five-locked .wall-light-five{display:none!important}
+/* String File 003 -> File 004 */
+.wall-string path.wall-string-five{stroke-dashoffset:1;opacity:0}
+.home:not(.file-five-locked) .wall-string path.wall-string-five{stroke-dashoffset:0;opacity:1}
+.home.wall-five-intro .wall-string path.wall-string-five{stroke-dashoffset:1;opacity:1}
+.home.wall-five-intro.wall-five-string .wall-string path.wall-string-five{stroke-dashoffset:0;transition:stroke-dashoffset 1.6s cubic-bezier(.55,.1,.35,1)}
+/* File 004 reveal (mirrors File 03's) */
+@property --five-spot{syntax:'<number>';inherits:true;initial-value:0}
+.wall-five-dark{display:none}
+.home.wall-five-intro{transition:--five-spot 1.1s cubic-bezier(.33,0,.2,1)}
+.home.wall-five-intro.wall-five-card{--five-spot:1}
+.home.wall-five-intro .wall-five-dark{display:block;position:absolute;z-index:128;inset:0;pointer-events:none;background:radial-gradient(ellipse 75% 70% at 55% 45%,rgba(4,3,2,.72) 35%,rgba(0,0,0,.86) 100%);-webkit-mask-image:radial-gradient(ellipse calc(var(--five-spot)*var(--wall-scale,1)*240px + .1px) calc(var(--five-spot)*var(--wall-scale,1)*180px + .1px) at var(--wall-glow-five-x) var(--wall-glow-five-y),transparent 40%,#000 100%);mask-image:radial-gradient(ellipse calc(var(--five-spot)*var(--wall-scale,1)*240px + .1px) calc(var(--five-spot)*var(--wall-scale,1)*180px + .1px) at var(--wall-glow-five-x) var(--wall-glow-five-y),transparent 40%,#000 100%);animation:wallDimIn .6s ease-out both;transition:opacity 1.4s cubic-bezier(.4,0,.2,1)}
+.home.wall-five-intro.wall-five-rest .wall-five-dark{opacity:0}
+.home.wall-five-intro .file05-art-card{display:block!important;opacity:0;transition:opacity 1.1s ease}
+.home.wall-five-intro.wall-five-card .file05-art-card{opacity:1}
+.home.home.wall-five-intro:not(.wall-five-rest) .wall-light{opacity:0!important}
+.home.home.wall-five-intro.wall-five-rest .wall-light-five{opacity:1!important;transition:opacity 1.4s ease .2s}
+.home.wall-five-intro .wall-string{z-index:129}
+.home.wall-five-intro:not(.wall-five-rest) .wall-string path:not(.wall-string-five){opacity:.22}
+.file05-art-card .ch{visibility:hidden}.file05-art-card .ch.on{visibility:visible}
+.home .file05-art-card .ch,.home .file05-art-card .f3c-caret{position:static;transform:none}
+.home .file05-art-card.typing .file05-art-rule{transform:rotate(-3.6deg) scaleX(0);transition:transform .7s cubic-bezier(.4,0,.2,1)}
+.home .file05-art-card.typing.typed .file05-art-rule{transform:rotate(-3.6deg) scaleX(1)}
+.home .file05-art-card.typing .file05-art-cta{opacity:0;transition:opacity .7s ease .45s}
+.home .file05-art-card.typing.typed .file05-art-cta{opacity:1}
+/* File 003 dims once finished, File 004 now has the light. */
+.home.file-four-completed .wall-light-four{opacity:0!important}
+
+
+/* ===== Cinematic story scenes (Files 004–005) ===== */
+.cine{background:#030202;cursor:default}
+.cine-layer{position:absolute;inset:0;overflow:hidden}
+.cine-img{position:absolute;inset:-6%;background:center/cover no-repeat;animation:cineDrift 34s ease-in-out infinite alternate}
+@keyframes cineDrift{from{transform:scale(1.04) translate(0,0)}to{transform:scale(1.16) translate(-2.5%,-1.5%)}}
+.cine-stage{position:absolute;inset:0;width:100%;height:100%;animation:cineDrift 40s ease-in-out infinite alternate}
+.cine-fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cine-grade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(2,1,1,.92) 0%,rgba(2,1,1,.75) 32%,rgba(2,1,1,.15) 62%,rgba(2,1,1,.35) 100%),radial-gradient(ellipse at 65% 45%,transparent 40%,rgba(0,0,0,.55) 100%)}
+.tone-cold .cine-img{filter:saturate(.75) brightness(.8)}
+.tone-warm .cine-img{filter:saturate(.85) brightness(.75) sepia(.15)}
+.cine-bar{position:absolute;left:0;right:0;z-index:3;height:0;background:#000;transition:height 1.4s cubic-bezier(.4,0,.2,1)}
+.cine-bar.top{top:0}.cine-bar.bottom{bottom:0}
+.f3s-screen.enter .cine-bar{height:7vh}
+.cine-text{position:absolute;z-index:4;left:clamp(20px,6vw,96px);top:12vh;bottom:12vh;width:min(560px,calc(100vw - 40px));display:flex;flex-direction:column;color:#efe3c9}
+.cine-text header{opacity:0;transform:translateY(10px);transition:opacity 1.2s ease .6s,transform 1.4s ease .6s}
+.f3s-screen.enter .cine-text header{opacity:1;transform:none}
+.cine-text small{display:block;color:#c99a55;font:11px var(--mono);letter-spacing:.24em}
+.cine-text header span{display:block;margin-top:8px;color:#a8916b;font:11px var(--mono);letter-spacing:.2em}
+.cine-text h2{margin:6px 0 0;padding-bottom:12px;color:#f6ead0;font:clamp(24px,3.2vw,42px) var(--type);letter-spacing:.05em;text-shadow:0 2px 18px rgba(0,0,0,.8);background:linear-gradient(90deg,#9e2219,transparent 70%) left bottom/100% 2px no-repeat}
+.cine-lines{flex:1;min-height:0;margin-top:18px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0,#000 14%,#000 100%);mask-image:linear-gradient(transparent 0,#000 14%,#000 100%);padding-top:40px}
+.cine-lines p{margin:0 0 14px;font:clamp(14px,1.15vw,17px)/1.7 var(--mono);text-shadow:0 1px 10px rgba(0,0,0,.9);opacity:0;filter:blur(6px);transform:translateY(8px);transition:opacity 1.1s ease,filter 1.1s ease,transform 1.1s ease}
+.cine-lines p.on{opacity:1;filter:none;transform:none}
+.cine-go{align-self:flex-start;margin:16px 0 0}
+/* Stage: spotlight sweep, lamps flicker, player sways, crowd bobs. */
+.cine-spot{transform-origin:800px 120px;animation:cineSweep 9s ease-in-out infinite alternate}
+@keyframes cineSweep{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+.cine-lamp circle{animation:cineLamp 3.2s ease-in-out infinite;animation-delay:calc(var(--i)*-.7s)}
+@keyframes cineLamp{0%,100%{opacity:.9}50%{opacity:.45}}
+.cine-sway{transform-origin:800px 540px;animation:cineSway 2.6s ease-in-out infinite alternate}
+@keyframes cineSway{from{transform:rotate(-2.2deg)}to{transform:rotate(2.2deg)}}
+.cine-guitar{transform-origin:770px 410px;animation:cineStrum .55s ease-in-out infinite alternate}
+@keyframes cineStrum{from{transform:rotate(-1.5deg)}to{transform:rotate(1.5deg)}}
+.cine-head{animation:cineBob 1.3s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-.17s)}
+@keyframes cineBob{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+/* Fire: flames lick, the room flickers orange, the crowd flees left. */
+.on-fire .cine-flame{transform-box:fill-box;transform-origin:50% 100%;animation:cineFlame .9s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-.23s);mix-blend-mode:screen}
+@keyframes cineFlame{0%{transform:scaleY(.82) scaleX(1.05) skewX(-3deg);opacity:.85}100%{transform:scaleY(1.12) scaleX(.94) skewX(4deg);opacity:1}}
+.on-fire .cine-backwall{animation:cineHeat .35s steps(2) infinite}
+@keyframes cineHeat{50%{filter:brightness(1.6) sepia(.6) saturate(3) hue-rotate(-12deg)}}
+.on-fire .cine-spot{opacity:.25}
+.on-fire .cine-sway,.on-fire .cine-guitar{animation:none}
+.on-fire .cine-player{animation:cineGone 6s ease-in forwards 2s}
+@keyframes cineGone{to{opacity:0}}
+.on-fire .cine-head{animation:cineFlee 7s cubic-bezier(.5,0,.7,.4) forwards;animation-delay:calc(1.5s + var(--i)*.12s)}
+@keyframes cineFlee{0%{transform:translateX(0)}15%{transform:translateX(-30px) translateY(-6px)}100%{transform:translateX(-1400px)}}
+.tone-fire .cine-grade{background:linear-gradient(90deg,rgba(2,1,1,.92) 0%,rgba(10,3,1,.7) 32%,rgba(40,8,0,.1) 62%,rgba(0,0,0,.35) 100%),radial-gradient(ellipse at 65% 60%,rgba(255,90,20,.18),transparent 60%);animation:cineGlow 1.6s ease-in-out infinite alternate}
+@keyframes cineGlow{to{filter:brightness(1.15)}}
+/* Reveal: a figure fades in at the end of the dock. */
+.cine-figure{position:absolute;left:21%;bottom:28%;height:22vh;opacity:0;filter:drop-shadow(0 0 12px rgba(160,190,230,.25));animation:cineFigure 6s ease-out 3s forwards}
+@keyframes cineFigure{0%{opacity:0;transform:translateY(8px)}100%{opacity:.95;transform:none}}
+@media(prefers-reduced-motion:reduce){.cine-img,.cine-stage,.cine-spot,.cine-sway,.cine-guitar,.cine-head,.cine-flame,.cine-backwall{animation:none!important}}
+@media(max-width:760px){.cine-grade{background:linear-gradient(0deg,rgba(2,1,1,.95) 30%,rgba(2,1,1,.3) 100%)}.cine-text{top:auto;bottom:9vh;height:62vh}}
+
+/* ===== File 005: case closed and Why Case 25? ===== */
+.f5-closed-wrap{position:absolute;inset:0;display:grid;grid-template-rows:auto 1fr;gap:26px;padding:clamp(18px,4vw,56px);box-sizing:border-box;overflow:auto;color:#e9dcc2}
+.f5-files{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.f5-file{position:relative;padding:18px 14px 22px;min-height:120px;text-align:center;background:linear-gradient(160deg,#e6d3ad,#cdb07c);color:#2a1d12;box-shadow:0 12px 28px rgba(0,0,0,.6),inset 0 0 26px rgba(120,80,30,.35);opacity:0;transform:translateY(16px) rotate(-1deg);animation:f5FileIn .8s ease forwards;animation-delay:calc(var(--d) - .4s)}
+@keyframes f5FileIn{to{opacity:1;transform:none}}
+.f5-file span{display:block;font:15px var(--type);letter-spacing:.08em}
+.f5-file b{display:block;margin-top:8px;font:12px var(--mono);font-weight:400;letter-spacing:.06em}
+.f5-stamp{position:absolute;left:50%;top:56%;padding:5px 12px;border:3px double #a22b24;color:#a22b24;font:14px var(--type);font-style:normal;letter-spacing:.14em;white-space:nowrap;transform:translate(-50%,-50%) rotate(-10deg) scale(2.4);opacity:0;mix-blend-mode:multiply;animation:f5Stamp .5s cubic-bezier(.2,.9,.3,1.3) forwards;animation-delay:calc(var(--d) + .4s)}
+.f5-stamp.final{padding:8px 16px;font-size:18px;border-color:#8a160f;color:#8a160f;background:rgba(162,43,36,.08)}
+@keyframes f5Stamp{to{opacity:.92;transform:translate(-50%,-50%) rotate(-10deg) scale(1)}}
+.f5-determination{max-width:900px;justify-self:center;width:100%;padding:24px 28px;border:1px solid rgba(201,154,85,.45);background:linear-gradient(165deg,rgba(30,22,14,.95),rgba(12,9,6,.95));opacity:0;animation:f5FileIn 1s ease forwards 3.8s}
+.f5-determination h2{margin:0 0 14px;color:#f3e6cb;font:clamp(20px,2.4vw,30px) var(--type);letter-spacing:.06em}
+.f5-determination ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.f5-determination li{display:grid;grid-template-columns:180px 1fr;gap:14px;font:14px/1.55 var(--mono);color:#e4d6bb}
+.f5-determination li b{color:#e6b866;font-weight:500}
+.f5-line{margin:18px 0 0;color:#f1e4c8;font:italic 15px/1.6 var(--serif)}
+.f5-why{display:grid;place-items:center;background:#000}
+.f5-why-dark{position:absolute;inset:0;background:radial-gradient(ellipse at center,#1a120b 0%,#000 70%)}
+.f5-parchment{position:relative;width:min(640px,calc(100vw - 32px));max-height:calc(100vh - 40px);overflow:auto;padding:38px 44px 34px;box-sizing:border-box;background:linear-gradient(160deg,#ecdcb6,#d9c091 70%,#c9aa74);color:#2b1e12;box-shadow:0 30px 80px rgba(0,0,0,.85),inset 0 0 40px rgba(120,80,30,.4);text-align:center;opacity:0;transform:scale(.97);animation:f5FileIn 1.6s ease forwards .3s}
+.f5-parchment small{color:#8a2a20;font:11px var(--mono);letter-spacing:.22em}
+.f5-parchment h2{margin:10px 0 18px;font:clamp(22px,3vw,32px) var(--type);letter-spacing:.06em}
+.f5-why-copy p{margin:0 0 12px;font:15px/1.65 var(--mono);opacity:0;animation:f5FileIn 1s ease forwards;animation-delay:var(--d)}
+.f5-why-copy .f5-big{margin:18px 0;font:clamp(18px,2.2vw,24px) var(--type);color:#7c1f17}
+.f5-parchment .f4-submit{margin-top:14px;opacity:0;animation:f5FileIn .8s ease forwards;animation-delay:var(--d)}
+@media(max-width:900px){.f5-files{grid-template-columns:repeat(2,1fr)}.f5-determination li{grid-template-columns:1fr}}
+
+/* Softer, more natural flames; tighter case-closed layout; stamps sit below the file titles. */
+.on-fire .cine-flames{filter:blur(7px)}
+.on-fire .cine-flame{opacity:.95}
+.f5-closed-wrap{align-content:start}
+.f5-determination{align-self:start}
+.f5-file{min-height:130px}
+.f5-stamp{top:72%}
