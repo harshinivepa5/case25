@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#080a0c" />
+  <meta name="description" content="CASE 25 — The Last Transmission. A restricted archive awaits." />
+  <title>CASE 25 — The Last Transmission</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Libre+Baskerville:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="experience" aria-live="polite">
+    <button id="devFile02Button" type="button" aria-label="Test File 002 directly">TEST FILE 002</button>
+    <div class="grain" aria-hidden="true"></div>
+    <button class="sound-toggle" id="soundToggle" aria-label="Turn ambient sound on" title="Sound off">◖)) <span>SOUND OFF</span></button>
+    <button class="skip" id="skipIntro">SKIP INTRO <span>↗</span></button>
+
+    <section class="scene title-scene active" id="titleScene" aria-label="Case 25 title reveal">
+      <img class="reference-stage-art" src="assets/reference/title.png" alt="" aria-hidden="true" />
+      <div class="reference-caption-mask" aria-hidden="true"></div>
+      <div class="title-backdrop"></div><div class="title-grain"></div>
+      <div class="title-meta"><span>CASE 25</span><span>RESTRICTED ARCHIVE</span></div>
+      <div class="title-core"><p class="eyebrow">AN UNRESOLVED DISAPPEARANCE</p><h1 class="case-title">CASE <span>25</span></h1><div class="title-redline"></div><p class="subtitle">THE LAST TRANSMISSION</p><p class="title-foot">THE RECORD ENDS WHERE THE WATER BEGINS</p></div>
+      <div class="title-signal">SIGNAL FOUND <i></i> 01:47:23</div>
+    </section>
+
+    <section class="scene lake" id="lakeScene" aria-label="Lake Ash at night">
+      <img class="reference-stage-art" src="assets/reference/opening.png" alt="" aria-hidden="true" />
+      <img class="lake-image" src="assets/lake-ash.png" alt="" aria-hidden="true" />
+      <div class="lake-vignette"></div>
+      <div class="opening-copy">
+        <p class="eyebrow">LAKE ASH · OCTOBER 14 · 11:47 PM</p>
+        <h2>SOME TRUTHS<br />SHOULD HAVE STAYED<br /><em>BURIED.</em></h2>
+        <button class="play" id="playIntro"><span class="play-icon">▶</span> CONTINUE INTO THE FILE</button>
+      </div>
+      <div class="frame-mark">CASE FILE 025 <span>—</span> INCIDENT 10.14</div>
+    </section>
+
+    <section class="scene montage" id="clueScene" aria-label="Teaser clues">
+      <img class="reference-stage-art" src="assets/reference/clues.png" alt="" aria-hidden="true" />
+      <div class="reference-caption-mask" aria-hidden="true"></div>
+      <div class="montage-wash"></div>
+      <div class="scene-index"><span id="sceneNumber">01</span> / 03 <i></i> RECOVERED EVIDENCE</div>
+      <article class="evidence-shot shot-one" data-shot="1">
+        <div class="photo boat-photo"><span class="photo-label">EXHIBIT A · RECOVERED VESSEL</span></div>
+        <p class="type-line">A boat. Adrift in the dark.</p>
+        <span class="caption">EXHIBIT A · RECOVERED 06:12 AM</span>
+      </article>
+      <article class="evidence-shot shot-two" data-shot="2">
+        <div class="photo lake-photo"><span class="photo-label">LAKE ASH · NORTH SHORE</span></div>
+        <div class="map-card"><span class="map-heading">LAKE ASH</span><span class="map-water"></span><span class="map-pin">×</span><span class="map-coord">41° 08′ N<br/>72° 34′ W</span></div>
+        <p class="type-line">A watch. Stopped at 11:47.</p>
+        <span class="caption">THE HANDS NEVER MOVED AGAIN</span>
+      </article>
+      <article class="evidence-shot shot-three" data-shot="3">
+        <div class="file-card"><div class="file-stamp">CONFIDENTIAL</div><small>CASE FILE 025 · OPEN</small><h3>THOMAS<br/>REED</h3><p>Owner, The Mariner<br/>Last seen: Lake Ash<br/>Status: Presumed deceased</p><div class="file-signature">T. Reed</div></div>
+        <div class="note-card">“Not everything that<br/>disappears is gone.”<small>— unsigned</small></div>
+        <div class="press-card"><b>LOCAL MUSICIAN<br/>VANISHES AFTER<br/>LAKE INCIDENT</b><small>THE ASHFORD GAZETTE · OCT 15</small></div>
+        <p class="type-line">No body. No answers.</p>
+        <span class="caption">SEARCH SUSPENDED · 10.21.1999</span>
+      </article>
+      <div class="montage-controls"><button id="prevEvidence" aria-label="Previous clue">←</button><span>THE EVIDENCE DOESN’T LIE</span><button id="nextEvidence" aria-label="Next clue">→</button></div>
+      <div class="montage-quote">Three things were left behind.<span>One man was not.</span></div>
+    </section>
+
+    <section class="scene case-details" id="caseScene" aria-label="Thomas Reed case file">
+      <img class="reference-stage-art" src="assets/reference/case-details.png" alt="" aria-hidden="true" />
+      <div class="reference-caption-mask" aria-hidden="true"></div>
+      <div class="case-wall"></div><div class="case-wall-shade"></div>
+      <div class="case-topline"><span>ASHFORD POLICE DEPARTMENT</span><span>CASE 025 · PERSONS MISSING</span></div>
+      <div class="case-photo"></div>
+      <article class="dossier-sheet"><div class="dossier-top"><span>ASHFORD POLICE DEPARTMENT</span><span>FILE NO. 025</span></div><div class="dossier-stamp">UNRESOLVED</div><p class="dossier-label">MISSING PERSON · LAKE ASH</p><h2>THOMAS<br/>REED</h2><div class="dossier-rule"></div><dl><dt>OCCUPATION</dt><dd>Owner, The Mariner</dd><dt>LAST SEEN</dt><dd>October 14, 1999 · 11:47 PM</dd><dt>RECOVERED</dt><dd>Damaged boat · wristwatch</dd><dt>STATUS</dt><dd>Presumed fatal. No remains.</dd></dl><div class="dossier-hand">The water gives nothing back.</div><div class="dossier-bottom">FILED BY DET. M. HALE <span>10 / 21 / 1999</span></div></article>
+      <div class="case-caption"><span>04</span><i></i><p>THE FILE WAS CLOSED.<br/><em>THE QUESTIONS WEREN’T.</em></p></div>
+    </section>
+
+    <section class="scene suspense" id="suspenseScene" aria-label="Building suspense at Lake Ash">
+      <img class="reference-stage-art" src="assets/reference/suspense.png" alt="" aria-hidden="true" />
+      <div class="reference-caption-mask" aria-hidden="true"></div>
+      <img src="assets/lake-ash.png" alt="" class="suspense-lake" />
+      <div class="suspense-veil"></div><div class="suspense-scan"></div>
+      <div class="suspense-header"><span>05 / FIELD RECONSTRUCTION</span><span>LAKE ASH · 11:47 PM</span></div>
+      <div class="suspense-map"><span>LAST KNOWN POSITION</span><div class="suspense-water"></div><i class="suspense-cross">×</i><b>LAKE ASH</b><small>41° 08′ N<br/>72° 34′ W</small></div>
+      <div class="suspense-line line-a"></div><div class="suspense-line line-b"></div><div class="suspense-pin pin-a"></div><div class="suspense-pin pin-b"></div>
+      <div class="suspense-copy"><p class="eyebrow">THE OFFICIAL STORY ENDS HERE</p><h2>NOT EVERYTHING<br/>THAT DISAPPEARS<br/><em>IS GONE.</em></h2><div class="suspense-clock"><span>11</span><i></i><span>47</span></div></div>
+      <button class="reopen-button" id="reopenCase">REOPEN THE INVESTIGATION <span>→</span></button>
+      <div class="suspense-footer">ARCHIVE SIGNAL DETECTED <i></i> SOURCE UNKNOWN</div>
+    </section>
+
+    <section class="scene archive" id="archiveScene" aria-label="Restricted archive login">
+      <img class="reference-stage-art" src="assets/reference/login.png" alt="" aria-hidden="true" />
+      <div class="reference-caption-mask" aria-hidden="true"></div>
+      <div class="board-base"></div><div class="board-shade"></div>
+      <div class="board-topline"><span>ASHFORD POLICE DEPARTMENT</span><span>MAJOR CASES UNIT · 1999 — 2024</span></div>
+      <div class="pin-label label-left">LAKE ASH<br/>NORTH SHORE</div>
+      <div class="pin-label label-right">UNRESOLVED<br/>CASE 025</div>
+      <div class="string string-one"></div><div class="string string-two"></div><div class="string string-three"></div>
+      <div class="artifact artifact-photo photo-dock"><span>RECOVERED · 10.14</span></div>
+      <div class="artifact artifact-photo photo-figure"><span>WITNESS PHOTO · 10.15</span></div>
+      <div class="artifact evidence-map"><strong>LAKE ASH</strong><div class="map-outline"></div><i class="map-marker"></i><small>NORTH COVE<br/>LAST KNOWN POSITION</small></div>
+      <div class="artifact evidence-paper"><small>ASHFORD POLICE · CASE 025</small><b>CONFIDENTIAL<br/>INCIDENT REPORT</b><hr/><p>SUBJECT: THOMAS REED<br/>LOCATION: LAKE ASH<br/>STATUS: PRESUMED FATAL</p><span>FILED 10 / 15 / 1999</span></div>
+      <div class="artifact evidence-news"><small>THE ASHFORD GAZETTE</small><b>VENUE OWNER<br/>MISSING AFTER<br/>LAKE INCIDENT</b><span>SEARCH ENTERS SECOND DAY</span></div>
+      <div class="artifact evidence-note">No body.<br/>No answers.<br/><small>— T.R.</small></div>
+      <div class="artifact watch" aria-label="Recovered wristwatch"><div class="watch-face"><span>11:47</span><i></i></div></div>
+      <div class="artifact fingerprint">◉<small>LATENT PRINT<br/>LIFT #04</small></div>
+      <div class="paper-clip clip-one"></div><div class="paper-clip clip-two"></div>
+      <div class="archive-panel" id="archivePanel">
+        <div class="panel-corner corner-tl"></div><div class="panel-corner corner-tr"></div><div class="panel-corner corner-bl"></div><div class="panel-corner corner-br"></div>
+        <div class="panel-kicker"><span></span> ASHFORD POLICE DEPARTMENT <span></span></div>
+        <h2>CASE <b>25</b></h2>
+        <div class="panel-rule"><span></span></div>
+        <p class="panel-subtitle">RESTRICTED ARCHIVE</p>
+        <label for="digit-1">ENTER ACCESS CODE</label>
+        <div class="digit-row" role="group" aria-label="Four digit access code">
+          <input id="digit-1" class="digit" type="text" inputmode="numeric" autocomplete="one-time-code" aria-label="First digit" maxlength="1" />
+          <input id="digit-2" class="digit" type="text" inputmode="numeric" autocomplete="off" aria-label="Second digit" maxlength="1" />
+          <input id="digit-3" class="digit" type="text" inputmode="numeric" autocomplete="off" aria-label="Third digit" maxlength="1" />
+          <input id="digit-4" class="digit" type="text" inputmode="numeric" autocomplete="off" aria-label="Fourth digit" maxlength="1" />
+        </div>
+        <button class="access-button" id="accessButton">ACCESS ARCHIVE <span>→</span></button>
+        <p class="login-error" id="loginError" role="status"></p>
+        <blockquote>“Not everything that disappears is gone.”</blockquote>
+        <div class="panel-footer"><span>AUTHORIZED PERSONNEL ONLY</span><span>EST. 1999</span></div>
+      </div>
+      <div class="archive-progress" id="archiveProgress"><img class="reference-access-art" src="assets/reference/accessing.png" alt="" aria-hidden="true" /><div class="decrypt-mark">ACCESSING ARCHIVE…</div><div class="progress-track"><i></i></div><p>DECRYPTING ARCHIVE <span id="decryptPercent">00</span>%</p><small>VERIFYING ACCESS CREDENTIALS</small></div>
+      <div class="archive-complete" id="archiveComplete"><span>ARCHIVE UNSEALED</span><h2>THE FILE<br/><em>IS OPEN.</em></h2><p>CASE 25 · ACCESS GRANTED</p><button id="replayIntro">REPLAY INTRODUCTION ↺</button><small>DAY ONE HAS NOT YET BEEN RELEASED.</small></div>
+      <div class="archive-footer"><span>APD / DIGITAL EVIDENCE DIVISION</span><span>SESSION ENCRYPTED · 256 BIT</span></div>
+    </section>
+
+    <section class="scene transmission" id="transmissionScene" aria-label="Recovered transmission">
+      <div class="transmission-backdrop"></div><div class="transmission-scanlines"></div>
+      <div class="transmission-card">
+        <div class="signal"><span></span> LIVE RECOVERED SIGNAL <b>▮▮▮▮</b><em> SOURCE UNKNOWN</em></div>
+        <p class="transmission-mark">TRANSMISSION 001</p>
+        <div class="waveform" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <p class="transmission-copy" id="transmissionCopy">If you're reading this, the disappearance has already been accepted as a death.<br/><br/>That conclusion may be premature.<br/><br/>Three people know more than they have admitted.<br/><br/>Begin with the last person who claims to have seen Thomas Reed.</p>
+        <div class="transmission-actions"><button class="secondary-choice" id="skipTyping">SKIP TYPING</button><button class="primary-choice" id="openInvestigation">OPEN INVESTIGATION <span>→</span></button></div>
+      </div>
+    </section>
+
+    <section class="scene home" id="homeScene" aria-label="Recovered investigation wall">
+      <img class="accepted-case-art" src="assets/reference/phase-two/file-01-closed.png" alt="File 01 completed. File 01 closed, awaiting further instruction." />
+      <img class="file02-board-art" src="assets/reference/phase-two/file-02-board.png" alt="File 02 — The Unexpected Signal" />
+      <div class="home-wall dim-wall"></div><div class="home-wall light-wall"></div><div class="home-atmosphere"></div><div class="document-spotlight" aria-hidden="true"></div>
+      <div class="home-caption" id="homeCaption"><span>A MESSAGE HAS BEEN RECOVERED.</span><small>CLICK TO OPEN THE RECOVERED FILE.</small></div>
+      <button class="wall-hotspot" id="wallHotspot" aria-label="Open recovered incoming transmission"></button>
+      <div class="message-dossier" id="messageDossier" role="dialog" aria-modal="true" aria-labelledby="dossierTitle" aria-hidden="true">
+        <button class="dossier-close" id="dossierClose" aria-label="Close recovered message">×</button>
+        <div class="dossier-header"><span>INCOMING TRANSMISSION</span><small>SOURCE UNKNOWN</small></div>
+        <h2 id="dossierTitle">You weren't supposed<br/>to find this.</h2>
+        <div class="dossier-body"><p>This archive was buried for a reason.</p><p>And yet, here you are.</p><p>I don't know who you are, or what you think you've found.</p><p>Perhaps nothing. Perhaps more than you realise.</p><p>If you've come this far, you might as well see what's inside.</p></div>
+        <div class="dossier-warning">Just don't assume you understand<br/>what you're looking at.</div><div class="dossier-signature">— M</div>
+        <button class="dossier-open" id="dossierOpen">OPEN ARCHIVE <span>→</span></button>
+      </div>
+      <div class="archive-transition" id="archiveTransition" aria-hidden="true"><span>TRANSMISSION ENCRYPTED</span></div>
+      <div class="board-files" id="boardFiles" aria-label="Case files">
+        <header class="board-header"><span>CASE <b>25</b> <i></i> INVESTIGATION ARCHIVE</span><span>LAKE ASH <i></i> EVIDENCE ROOM</span></header>
+        <svg class="board-strings" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true"><path d="M240 260 C360 205 430 305 565 310 S700 250 820 270"/><circle cx="240" cy="260" r="5"/><circle cx="565" cy="310" r="5"/><circle cx="820" cy="270" r="5"/></svg>
+        <button class="board-file file-one" id="fileOne"><span>FILE 01 <i>●</i></span><b>THE DISAPPEARANCE</b><small id="fileOneStatus">ACTIVE</small><em>LAKE ASH · CASE 25</em></button>
+        <article class="board-file file-two" id="fileTwo" aria-label="File 002 — The Unexpected Signal">
+          <span class="file-two-number">FILE 002</span><b class="file-two-title">THE UNEXPECTED SIGNAL</b>
+          <em class="file-two-copy">Something else is buried within this archive.</em>
+          <button class="file-two-begin" id="fileTwoBegin" type="button" disabled>BEGIN →</button>
+        </article>
+        <button class="board-file file-three" id="fileThree" disabled><span>FILE 03 <i>⌑</i></span><b>PROJECT NORTH QUAY</b><small id="fileThreeStatus">LOCKED</small><em>THE NEXT INVESTIGATION</em></button>
+        <footer class="board-footer"><span><i></i> SELECT AN ACTIVE FILE TO CONTINUE</span><span>ARCHIVE STATUS <b>01 / 03</b></span></footer>
+        <aside class="file-closed-notice" id="fileClosedNotice" aria-label="File 01 closed">
+          <span class="closure-clip" aria-hidden="true"></span><small>FILE 01 CLOSED</small><b>AWAITING FURTHER<br/>INSTRUCTION.</b>
+        </aside>
+      </div>
+      <button class="file02-continue" id="continueFileTwo" type="button" onclick="window.continueFileTwoFlow && window.continueFileTwoFlow()">CONTINUE →</button>
+      <button class="file02-art-begin" id="file02ArtBegin" type="button" aria-label="Begin File 02">BEGIN →</button>
+      <div class="file02-completed-stamp" id="file02CompletedStamp" aria-hidden="true">COMPLETED</div>
+      <button class="file03-continue" id="continueFileThree" type="button" hidden>CONTINUE →</button>
+
+      <!-- Cinematic File 003 Reveal Container -->
+      <div class="f3-cinematic-container" id="f3CinematicContainer" aria-label="File 003 Discovery" hidden>
+        <!-- Stage 1 & 2: Amber light beacon & expanding glow -->
+        <div class="f3-signal-beacon" id="f3SignalBeacon" aria-hidden="true">
+          <div class="f3-beacon-halo"></div>
+          <div class="f3-beacon-pulse"></div>
+          <div class="f3-beacon-light-pool"></div>
+          <div class="f3-beacon-core"></div>
+        </div>
+
+        <!-- Stage 3, 4, 5: File 003 Parchment on the wall -->
+        <article class="f3-cinematic-sheet" id="f3CinematicSheet" aria-label="File 03: The Financial Trail">
+          <div class="f3-sheet-pin" aria-hidden="true">
+            <span class="f3-pin-head"></span>
+            <span class="f3-pin-shadow"></span>
+          </div>
+
+          <div class="f3-sheet-paper">
+            <div class="f3-sheet-glow" aria-hidden="true"></div>
+
+            <header class="f3-sheet-header">
+              <span class="f3-sheet-tag" id="f3SheetTag"></span>
+              <h2 class="f3-sheet-title" id="f3SheetTitle"></h2>
+            </header>
+            
+            <div class="f3-sheet-rule" id="f3SheetRule" aria-hidden="true"></div>
+            
+            <p class="f3-sheet-copy" id="f3SheetCopy"></p>
+
+            <button class="f3-investigate-btn" id="f3InvestigateBtn" type="button" hidden>INVESTIGATE →</button>
+          </div>
+        </article>
+      </div>
+      <section class="file-two-flow file-three-flow" id="fileTwoFlow" aria-hidden="true" aria-label="File 02 — The Case Against Peter">
+        <div class="file-three-shade"></div>
+        <article class="f3-panel f3-question f2-question-panel" id="f2QuestionPanel" role="dialog" aria-modal="true" aria-labelledby="f2QuestionTitle" hidden>
+          <button class="f3-close" data-f2-close aria-label="Return to caseboard">×</button>
+          <header class="f3-q-head"><div><small id="f2QuestionCount">QUESTION 1 OF 4</small><h2 id="f2QuestionTitle"></h2></div><span class="f3-difficulty" id="f2Difficulty"></span></header>
+          <p class="f3-prompt" id="f2Prompt"></p><p class="f3-requirements" id="f2Instruction"></p>
+          <div class="f3-progress" id="f2Progress" aria-label="Investigation progress"><i></i><i></i><i></i><i></i></div>
+          <div class="p2-docs f2-doc-tabs" id="f2DocTabs"></div>
+          <form id="f2AnswerForm"><div class="f3-options f2-options" id="f2Options"></div><label class="f3-written-label" id="f2WrittenLabel" for="f2Written" hidden></label><textarea class="f3-written" id="f2Written" maxlength="2500" hidden></textarea><button class="f3-button f2-hint-button" id="f2Hint" type="button">? &nbsp; HINT</button><p class="f2-hint" id="f2HintText" hidden></p><div class="f3-feedback" id="f2Feedback" aria-live="polite" hidden></div><button class="f3-button" id="f2Submit" type="submit" disabled>SUBMIT ANSWER →</button><button class="f3-button f3-next" id="f2Next" type="button" hidden>CONTINUE →</button></form>
+          <p class="f2-word-count" id="f2WordCount" hidden>0 / 500 words</p>
+        </article>
+        <article class="f3-panel f3-question p2-document" id="f2Evidence" role="dialog" aria-modal="true" aria-labelledby="f2EvidenceTitle" hidden><button class="f3-close" id="f2EvidenceClose" type="button" aria-label="Close evidence">×</button><small id="f2EvidenceMeta">CASE 25 · EVIDENCE FILE</small><h2 id="f2EvidenceTitle"></h2><div id="f2EvidenceBody" class="p2-doc-body"></div><button class="f3-button" id="f2EvidenceDone" type="button">RETURN TO QUESTION →</button></article>
+        <article class="f3-panel f3-transmission f2-ending" id="f2Transmission" role="dialog" aria-modal="true" aria-labelledby="f2TransmissionTitle" hidden><header class="f3-transmission-head"><span id="f2TransmissionTitle">INCOMING TRANSMISSION · SOURCE: M</span><small>ARCHIVE FRAGMENT 004<br/>STATUS: PARTIAL</small></header><div class="f3-message">You have found the pattern, Detective.<br/><br/>The money does not add up.<br/>The witness has not been corroborated.<br/>The originals are missing.<br/><br/>And yet, you still cannot prove what happened.<br/><br/>One name remains at the centre of this file.<br/>One disappearance remains unexplained.<br/><br/><b>Open the final file, Detective.<br/>Don’t confuse a convincing theory with the truth.</b><br/><br/>— M</div><button class="f3-button" id="f2Finish">OPEN FILE 03 →</button></article>
+      </section>
+      <section class="file-three-flow" id="fileThreeFlow" aria-hidden="true" aria-label="File 03 — Project North Quay">
+        <div class="file-three-shade"></div>
+        <article class="f3-panel f3-transmission" id="f3Transmission" role="dialog" aria-modal="true" aria-labelledby="f3TransmissionTitle" hidden>
+          <button class="f3-close" type="button" data-f3-close aria-label="Close transmission">×</button>
+          <header class="f3-transmission-head"><span>⌁ &nbsp; INCOMING TRANSMISSION</span><small>SOURCE: M<br/>ARCHIVE FRAGMENT 001</small></header>
+          <div class="f3-message" id="f3Message" aria-live="polite"></div>
+          <button class="f3-button f3-continue" id="f3TransmissionContinue" hidden>CONTINUE →</button>
+        </article>
+        <article class="f3-panel f3-cover" id="f3Cover" role="dialog" aria-modal="true" aria-labelledby="f3CoverTitle" hidden>
+          <span class="f3-paperclip" aria-hidden="true"></span><span class="f3-wax" aria-hidden="true">✦</span>
+          <div class="f3-cover-meta"><b>CASE 25</b><span>RESTRICTED INVESTIGATION</span><small>EVIDENCE RELEASE 02<br/>FILE 001</small></div>
+          <span class="f3-confidential">CONFIDENTIAL</span>
+          <h2 id="f3CoverTitle">PROJECT<br/>NORTH QUAY</h2>
+          <p class="f3-subject">SUBJECT: EXPANSION ACCOUNT</p>
+          <div class="f3-cover-body"><p>Four records have been recovered from the expansion account.</p><p>Not every entry represents a separate event.</p><p>Reconstruct the trail. Question the records.</p><p>Look for what doesn't add up.</p><p class="f3-signature">— M</p><button class="f3-button" id="f3Begin">BEGIN RECONCILIATION →</button></div>
+        </article>
+        <article class="f3-panel f3-cover p2-intro" id="p2Intro" role="dialog" aria-modal="true" aria-labelledby="p2Title" hidden>
+          <div class="f3-cover-meta"><b>CASE 25</b><span>THE LAST TRANSMISSION</span><small>INVESTIGATION 002<br/>EVIDENCE RELEASE 03</small></div>
+          <span class="f3-confidential">INVESTIGATION 002</span><h2 id="p2Title">THE MISSING<br/>STORY</h2>
+          <p class="f3-subject">An investigative article.<br/>A missing paragraph.<br/>An anonymous message.</p>
+          <div class="f3-cover-body"><p>Three records describe the same investigation, but they do not contain the same information.</p><p class="p2-stats">DIFFICULTY 8/10 &nbsp; · &nbsp; 3 DOCUMENTS &nbsp; · &nbsp; 20–30 MIN</p><div class="p2-collage"><span>THE LANTERN<br/>ACCOUNTS</span><span>DANIEL CROSS<br/>JOURNALIST</span><span>Same story.<br/>Different version.<br/>What did he leave out?<br/><i>— M</i></span></div><button class="f3-button" id="p2ViewEvidence">VIEW EVIDENCE →</button></div>
+        </article>
+        <article class="f3-panel f3-question" id="f3Question" role="dialog" aria-modal="true" aria-labelledby="f3QTitle" hidden>
+          <header class="f3-q-head"><div><small id="f3QCount">QUESTION 01 / 03</small><h2 id="f3QTitle"></h2></div><span class="f3-difficulty" id="f3Difficulty"></span></header>
+          <div class="p2-docs" id="p2Docs" hidden><button type="button" data-doc="0">DOCUMENT 1 · UNPUBLISHED DRAFT</button><button type="button" data-doc="1">DOCUMENT 2 · PUBLISHED ARTICLE</button><button type="button" data-doc="2">DOCUMENT 3 · RECOVERED MESSAGE</button></div>
+          <div class="f3-progress" id="f3Progress" aria-label="Question progress"><i></i><i></i><i></i></div>
+          <p class="f3-prompt" id="f3Prompt"></p>
+          <form id="f3AnswerForm"><div class="f3-options" id="f3Options"></div><label class="f3-written-label" id="f3WrittenLabel" hidden for="f3Written">YOUR DEDUCTION</label><textarea id="f3Written" class="f3-written" placeholder="Type your deduction here..." hidden></textarea><div class="f3-feedback" id="f3Feedback" aria-live="polite" hidden></div><button class="f3-button" id="f3Submit" type="submit" disabled>SUBMIT ANSWER →</button><button class="f3-button f3-next" id="f3Next" type="button" hidden>CONTINUE →</button></form>
+        </article>
+        <article class="f3-panel f3-question p2-document" id="p2Document" role="dialog" aria-modal="true" aria-labelledby="p2DocTitle" hidden><button class="f3-close" id="p2DocClose" type="button" aria-label="Close evidence document">×</button><small id="p2DocByline"></small><h2 id="p2DocTitle"></h2><div id="p2DocBody" class="p2-doc-body"></div><button class="f3-button" id="p2DocDone" type="button">RETURN TO QUESTION →</button></article>
+        <article class="f3-panel f3-question f3-deduction" id="f3Deduction" role="dialog" aria-modal="true" aria-labelledby="f3DeductionTitle" hidden>
+          <header class="f3-q-head"><div><small>FINAL DEDUCTION</small><h2 id="f3DeductionTitle">THE TRUE PAYMENT TRAIL</h2></div><span class="f3-difficulty">HARD</span></header>
+          <p class="f3-prompt">Based on all the records, determine which invoices were actually paid and which did not receive a confirmed payment. Explain your reasoning using evidence from the documents.</p>
+          <p class="f3-requirements">Include the invoices paid, the invoice without confirmed payment, key evidence (references, amounts, discrepancies), and how you reached your conclusion.</p>
+          <form id="f3DeductionForm"><label class="f3-written-label" for="f3DeductionText">YOUR CONCLUSION</label><textarea id="f3DeductionText" class="f3-written" placeholder="Type your deduction here..."></textarea><div class="f3-feedback" id="f3DeductionFeedback" aria-live="polite" hidden></div><button class="f3-button" type="submit">SUBMIT DEDUCTION →</button></form>
+        </article>
+        <article class="f3-panel f3-question f3-ending" id="f3Accepted" role="dialog" aria-modal="true" aria-labelledby="f3AcceptedTitle" hidden>
+          <h2 id="f3AcceptedTitle">CONCLUSION ACCEPTED</h2><p>The evidence has been reconciled as far as the records allow.</p><p>Do not confuse an unexplained balance with proof of theft. Do not confuse a matching invoice with proof of delivery.</p><p>The numbers have given you a trail, Detective.<br/>They have not yet told you who controlled it.</p><button class="f3-button" id="f3Receive">RECEIVE TRANSMISSION →</button>
+        </article>
+        <article class="f3-panel f3-transmission f3-ending" id="f3FinalMessage" role="dialog" aria-modal="true" aria-labelledby="f3FinalTitle" hidden>
+          <header class="f3-transmission-head"><span id="f3FinalTitle">INCOMING TRANSMISSION</span><small id="f3FinalMeta">SOURCE: M<br/>ARCHIVE FRAGMENT 002</small></header><div class="f3-message" id="f3FinalCopy" aria-live="polite"></div><button class="f3-button f3-continue" id="f3CloseFinal" hidden>CONTINUE →</button>
+        </article>
+        <article class="f3-panel f3-cover p3-panel" id="p3Intro" role="dialog" aria-modal="true" aria-labelledby="p3IntroTitle" hidden>
+          <span class="f3-paperclip" aria-hidden="true"></span><div class="f3-cover-meta"><b>CASE 25</b><span>THE LAST TRANSMISSION</span><small>INVESTIGATION 003<br/>EVIDENCE RELEASE 04</small></div>
+          <span class="f3-confidential">CASE FILE 003</span><h2 id="p3IntroTitle">THE IMPOSSIBLE<br/>TIMELINE</h2><p class="f3-subject">THE LAST KNOWN MOVEMENTS<br/>OF THOMAS REED</p>
+          <div class="f3-cover-body"><p>A witness statement.<br/>A door that opened.<br/>A vehicle on camera.<br/>A search the next morning.</p><p>The night before Thomas disappeared is recorded in four different ways. But do they tell the same story?</p><p class="p2-stats">DIFFICULTY 9/10 &nbsp; · &nbsp; 4 DOCUMENTS &nbsp; · &nbsp; 25–40 MIN</p><button class="f3-button" id="p3Begin">VIEW EVIDENCE →</button></div>
+        </article>
+        <article class="f3-panel f3-question p3-panel" id="p3Question" role="dialog" aria-modal="true" aria-labelledby="p3QTitle" hidden>
+          <header class="f3-q-head"><div><small id="p3QCount">INVESTIGATION 003 · EVIDENCE TEST 01</small><h2 id="p3QTitle"></h2></div><span class="f3-difficulty" id="p3Difficulty"></span></header>
+          <div class="f3-progress" id="p3Progress" aria-label="Investigation progress"><i></i><i></i><i></i><i></i></div>
+          <div class="p3-question-body" id="p3QuestionBody"></div>
+          <div class="f3-feedback p3-feedback" id="p3Feedback" aria-live="polite" hidden></div>
+          <div class="p3-actions"><button class="f3-button p3-evidence-button" id="p3ViewEvidence" type="button">VIEW EVIDENCE (T1–T4)</button><button class="f3-button" id="p3Submit" type="button">SUBMIT ANSWER →</button><button class="f3-button f3-next" id="p3Next" type="button" hidden>CONTINUE →</button></div>
+        </article>
+        <article class="f3-panel f3-question p3-panel p3-evidence" id="p3Evidence" role="dialog" aria-modal="true" aria-labelledby="p3EvidenceTitle" hidden>
+          <header class="f3-q-head"><div><small>CASE 25 · EVIDENCE INDEX</small><h2 id="p3EvidenceTitle">FOUR RECORDS</h2></div><span class="f3-difficulty">T1—T4</span></header><div id="p3EvidenceBody" class="p3-evidence-body"></div><button class="f3-button" id="p3EvidenceReturn" type="button">RETURN TO INVESTIGATION →</button>
+        </article>
+        <article class="f3-panel f3-transmission f3-ending p3-panel p3-transmission" id="p3Transmission" role="dialog" aria-modal="true" aria-labelledby="p3TransmissionTitle" hidden>
+          <header class="f3-transmission-head"><span id="p3TransmissionTitle">INCOMING TRANSMISSION</span><small>SOURCE: M<br/>ARCHIVE FRAGMENT 003</small></header><div class="f3-message" id="p3TransmissionCopy" aria-live="polite"></div><button class="f3-button f3-continue" id="p3TransmissionContinue" hidden>CONTINUE →</button>
+        </article>
+        <article class="f3-panel f3-question p3-panel p3-report" id="p3Report" role="dialog" aria-modal="true" aria-labelledby="p3ReportTitle" hidden>
+          <header class="f3-q-head"><div><small>CASE 25 · INVESTIGATION 003 · FINAL CASE ASSESSMENT</small><h2 id="p3ReportTitle">THE IMPOSSIBLE TIMELINE</h2></div><span class="f3-difficulty">OFFICIAL RECORD</span></header>
+          <div class="p3-report-content" id="p3ReportContent"><section><h3>ESTABLISHED BY THE RECORDS</h3><ul><li>The rear entrance system clock was seven minutes fast.</li><li>The corrected access events are 19:45:31, 19:46:02, and 19:47:18.</li><li>The access log records credential use and door activity but does not identify the person using the credential.</li><li>The parking-camera index records a vehicle entering and leaving the frame, but its clock cannot be independently verified and its occupants cannot be identified.</li><li>Peter Shaw reported that Thomas left The Lantern alone at approximately 20:10.</li><li>The following morning's records document the discovery of a damaged boat at 07:10 and the entry of a watch and jacket into inventory at 08:05.</li></ul></section><section><h3>NOT ESTABLISHED</h3><ul><li>The identity of the person who used the rear entrance credential.</li><li>Whether the vehicle recorded by the parking camera was connected to Thomas.</li><li>Whether Peter's account is false.</li><li>The exact time Thomas disappeared.</li><li>Whether Thomas entered the lake or died there.</li><li>The precise sequence of Thomas's movements between The Lantern and Lake Ash.</li></ul></section><section><h3>WHAT WOULD CLOSE THE GAPS?</h3><ul><li>Independently calibrated camera timestamps.</li><li>Identifiable footage or reliable eyewitness accounts.</li><li>Independent records connecting a person or vehicle to the relevant locations.</li><li>Additional verified evidence establishing the timing and circumstances of Thomas's disappearance.</li></ul></section><section class="p3-finding"><h3>FINAL FINDING</h3><p>The available records allow part of the timeline to be corrected, but they do not establish a complete sequence of Thomas Reed's movements.</p><p>Peter's account remains uncorroborated, but it is not conclusively contradicted by the supplied evidence.</p><p>The search records establish when the boat and belongings were recorded, not when Thomas disappeared or what ultimately happened to him.</p><p>The timeline remains incomplete.</p></section></div>
+          <div class="p3-open-stamp">CASE STATUS: OPEN</div><p class="p3-report-signoff">Some questions remain unanswered.<br/>That is where the next investigation begins.<br/><i>— CASE 25</i></p><button class="f3-button p3-return-case" id="p3ReturnHome" type="button">RETURN TO THE CASE →</button>
+        </article>
+        <article class="f3-panel p3-final-transmission" id="p3FinalTransmission" tabindex="0" role="dialog" aria-modal="true" aria-labelledby="p3FinalTitle" hidden>
+          <span class="f3-paperclip" aria-hidden="true"></span><span class="p3-final-stamp" aria-hidden="true">M</span>
+          <header class="p3-final-head"><span id="p3FinalTitle">INCOMING TRANSMISSION</span><small>SOURCE: M<br/>ARCHIVE FRAGMENT 005<br/>STATUS: REVIEW COMPLETE</small></header>
+          <div class="p3-final-copy" id="p3FinalCopy" aria-live="polite"></div>
+          <footer class="p3-final-footer">ARCHIVE STATUS: FINALIZED</footer>
+          <button class="f3-button p3-final-continue" id="p3FinalContinue" hidden>CONTINUE →</button>
+        </article>
+        <article class="p3-gift-popup" id="p3GiftPopup" role="dialog" aria-modal="true" aria-labelledby="p3GiftTitle" hidden>
+          <small>CASE 25 · SUPPLEMENTARY ITEM</small><h2 id="p3GiftTitle">ONE LAST THING</h2>
+          <p>Before you go, Detective,</p><p>there is one small thing waiting for you.</p><p>It's our way of saying thank you</p><p>for seeing the investigation through.</p>
+          <button class="f3-button" id="p3GiftContinue">CONTINUE →</button>
+        </article>
+        <button class="f3-button f3-return" id="f3Return" hidden>RETURN TO INVESTIGATION WALL</button>
+      </section>
+      <aside class="lead-notice" id="leadNotice" aria-hidden="true"><button id="dismissNotice" aria-label="Dismiss notification">×</button><small>NEW LEAD IDENTIFIED</small><p>The financial records don't add up.<br/>There's more to The Lantern than was reported.</p><button class="notice-view" id="viewConnection">VIEW CONNECTION →</button></aside>
+    </section>
+
+    <section class="scene chapter-entry" id="chapterEntryScene" aria-label="Chapter 02 financial records">
+      <div class="entry-backdrop"></div><div class="entry-vignette"></div><div class="entry-folder">
+        <p>CHAPTER 02 <span>FILE 02 — THE FINANCIAL RECORDS</span></p><h1>THE LANTERN<br/><em>FINANCIAL RECORDS</em></h1>
+        <div class="entry-copy"><p>A trail of numbers, missing entries, and unanswered questions.</p><p>The Lantern was more than just a music venue.<br/>It was also a business — and businesses leave trails.</p><p>But the numbers don't tell a simple story.</p></div>
+        <small>OBJECTIVE</small><p class="entry-objective">Examine the financial records of The Lantern, identify irregularities, and trace where the money went.</p>
+        <button id="openFinancialFile">OPEN FILE →</button><button class="entry-back" id="entryBack">RETURN TO INVESTIGATION WALL</button>
+      </div>
+    </section>
+
+    <section class="scene secret-level" id="secretLevelScene" aria-label="File 002: The Unexpected Signal">
+      <div class="quiz-boardwash"></div><div class="quiz-vignette"></div>
+      <img class="secret-reference-art" id="secretReferenceArt" src="assets/secret-level/unexpected-transmission.png" alt="Unexpected transmission detected — a secret level has been unlocked" />
+      <div class="secret-reference-controls" id="secretReferenceControls" aria-label="Secret level controls">
+        <button class="secret-reference-button secret-ref-enter" id="secretRefEnter" type="button" aria-label="Enter secret level"></button>
+        <button class="secret-reference-button secret-ref-round" id="secretRefRound" type="button" aria-label="Begin Round I"></button>
+        <div class="secret-ref-answers" id="secretRefAnswers"></div>
+        <button class="secret-reference-button secret-ref-submit" id="secretRefSubmit" type="button" aria-label="Submit answer"></button>
+        <button class="secret-reference-button secret-ref-continue" id="secretRefContinue" type="button" aria-label="Continue to next question">CONTINUE →</button>
+        <button class="secret-reference-button secret-ref-skip" id="secretRefSkip" type="button" aria-label="Skip question">SKIP →</button>
+        <p class="secret-ref-feedback" id="secretRefFeedback" role="status" aria-live="polite" hidden></p>
+      </div>
+      <button class="quiz-close" id="quizClose" aria-label="Return to the investigation wall">×</button>
+      <div class="secret-panel" id="secretIntro">
+        <p class="quiz-kicker">⚡ UNEXPECTED TRANSMISSION DETECTED</p><div class="secret-stamp">A SECRET LEVEL</div>
+        <h1>HAS BEEN UNLOCKED</h1><p>Well, well, Detective…<br/><br/>Looks like you've stumbled upon a secret level you weren't meant to find.<br/><br/>Before the real investigation resumes, there's a little detour waiting for you.</p>
+        <div class="quiz-rule">3 ROUNDS. 9 QUESTIONS. 1 HIDDEN REWARD.</div>
+        <p class="quiz-small">Clear the level to unlock your next lead.<br/><br/>Think fast, Detective. No cheating. Some doors open only to those who know a little more than they let on.</p>
+        <button class="quiz-action" id="enterSecretLevel">ENTER SECRET LEVEL →</button>
+      </div>
+      <div class="secret-panel secret-dashboard" id="secretDashboard" hidden>
+        <p class="quiz-kicker">CASE 25 / RESTRICTED ARCHIVE</p><h1>CLASSIFIED TRIALS</h1>
+        <p class="secret-dashboard-count" id="secretQuestionsComplete">0 / 9 QUESTIONS</p>
+        <div class="secret-dashboard-track"><i id="secretDashboardProgress"></i></div>
+        <div class="secret-dashboard-rounds" id="secretDashboardRounds"><article data-round="1"><b>01</b><small>ROUND 01</small></article><article data-round="2"><b>02</b><small>ROUND 02</small></article><article data-round="3"><b>03</b><small>ROUND 03</small></article></div>
+        <p class="secret-dashboard-xp">XP RECOVERED <strong id="secretXpTotal">0 XP</strong></p>
+        <button class="quiz-action" id="secretDashboardBegin">CONTINUE →</button>
+      </div>
+      <div class="secret-panel round-intro" id="roundIntro" hidden>
+        <p class="quiz-kicker">SECRET LEVEL · ROUND I</p><h1>THE SHINOBI TEST</h1>
+        <p>Different worlds. Same game.<br/>The first set of trials comes from a world of shinobi, secrets, and sacrifice.<br/><br/>Three questions. Test your knowledge, your logic, and your instincts.</p>
+        <div class="quiz-rule">CLEAR ALL 3 TO UNLOCK ROUND II</div>
+        <button class="quiz-action" id="beginRound">BEGIN ROUND I →</button>
+      </div>
+      <div class="secret-panel round-intro round-two-intro" id="roundTwoIntro" hidden>
+        <p class="quiz-kicker">SECRET LEVEL · ROUND II</p><div class="secret-stamp">THE IMMORTAL’S GAME</div>
+        <h1>ROUND II</h1><p>Some secrets survive their witnesses.<br/>Some debts outlive the people who owe them.<br/>And some things refuse to stay buried.</p>
+        <div class="quiz-rule">THREE NEW TRIALS<br/><small>Something to remember · Something to resist · Something to uncover</small></div>
+        <p class="quiz-small">The past has a longer memory than anyone expects.</p>
+        <button class="quiz-action" id="beginRoundTwo">BEGIN ROUND II →</button>
+      </div>
+      <div class="secret-panel round-intro round-three-intro" id="roundThreeIntro" hidden>
+        <p class="quiz-kicker">CASE 25 · SECRET LEVEL</p><h1>ROUND III<br/><span>BEYOND THE WALLS</span></h1>
+        <p>Every boundary protects something.<br/>Every wall hides something.<br/>And every secret leaves a trace.</p>
+        <div class="quiz-rule">THREE FINAL TRIALS</div>
+        <p class="quiz-small">Follow the evidence. Question the obvious.<br/>Find what lies beyond.</p>
+        <button class="quiz-action" id="beginRoundThree">BEGIN ROUND III →</button>
+      </div>
+      
+      <div class="quiz-interface" id="quizInterface" hidden>
+        <figure class="secret-evidence-wall" aria-hidden="true"><img id="secretEvidenceArt" src="assets/secret-level/q01-shinobi.jpg" alt=""><figcaption id="secretEvidenceCaption">IDENTITY UNDER QUESTION</figcaption></figure>
+        <header class="quiz-top"><div><span>SECRET LEVEL</span><b id="quizHeaderRound">ROUND I — THE FIRST TRIAL</b><div class="quiz-steps" id="quizSteps" aria-hidden="true"><i data-step>1</i><i data-step>2</i><i data-step>3</i></div></div><div class="quiz-progress" id="quizProgress">01 / 03</div><div class="quiz-score" id="quizScore">SCORE: 0</div></header>
+        <article class="quiz-paper">
+          <div class="quiz-question-meta"><span id="questionNumber">01</span><small id="questionDifficulty">MEDIUM</small><b id="questionXp">10 XP</b></div>
+          <h2 id="questionTitle"></h2><p id="questionPrompt"></p>
+          <form id="answerForm"><div class="answer-options" id="answerOptions"></div><label class="answer-text-label" id="answerTextLabel" hidden for="answerText">ENTER YOUR CONCLUSION</label><input id="answerText" class="answer-text" autocomplete="off" hidden/><p class="answer-feedback" id="answerFeedback" aria-live="polite"></p><div class="quiz-actions"><button class="quiz-action submit-answer" type="submit">SUBMIT ANSWER →</button><button class="quiz-action question-skip" id="questionSkip" type="button">SKIP →</button></div></form>
+          <p class="answer-explanation" id="answerExplanation" hidden></p><button class="quiz-action question-continue" id="questionContinue" hidden>CONTINUE →</button>
+        </article>
+      </div>
+      <div class="quiz-interface dossier-interface" id="dossierInterface" hidden>
+        <header class="quiz-top"><div><span>CASE 25 / THE LAST TRANSMISSION</span><b id="recordTransmission">TRANSMISSION 01</b></div><div class="quiz-score" id="dossierScore">OVERALL SCORE: 0 XP</div></header>
+        <article class="quiz-paper investigator-record"><p class="quiz-kicker" id="recordRoundLabel">ROUND I · INVESTIGATION RECORD</p><h1>INVESTIGATOR’S RECORD</h1><h2 class="record-round-title" id="recordRoundTitle">ROUND I — THE FIRST TRIAL</h2><p class="record-summary" id="recordSummary">THREE FILES EXAMINED. THREE CONCLUSIONS VERIFIED.</p><div id="roundRecord"></div><div class="record-total"><small id="recordScoreLabel">ROUND SCORE</small><b id="recordTotal">0 / 45 XP</b><strong id="recordVerified">0 / 3 VERIFIED</strong><span id="recordOverall">OVERALL EARNED · 0 XP</span></div><p class="record-closing" id="recordClosing"></p><button class="quiz-action" id="roundContinue" hidden>CONTINUE →</button></article>
+      </div>
+    </section>
+
+    <section class="scene secret-reward" id="secretRewardScene" aria-label="Secret Level completion and reward">
+      <!-- Stage 1: Final Transmission & Performance Report -->
+      <div class="completion-stage" id="completionStage">
+        <img class="final-transmission-art" src="assets/secret-level/final-transmission.png" alt="Case 25 final transmission report" />
+        <div class="final-report-box" aria-label="Detective Performance Report">
+          <div class="final-report-row row-xp">
+            <span class="report-dynamic-val" id="finalXpValue">0</span><span class="report-denom"> / 150</span>
+          </div>
+          <div class="final-report-row row-trials">
+            <span class="report-dynamic-val" id="finalTrialsValue">0</span><span class="report-denom"> / 9</span>
+          </div>
+          <div class="final-report-row row-case">
+            <span class="report-status-val" id="finalCaseStatusValue">CLOSED</span>
+          </div>
+          <div class="final-report-row row-detective">
+            <span class="report-status-val status-suspicious" id="finalDetectiveStatusValue">STILL SUSPICIOUS</span>
+          </div>
+        </div>
+        <button class="final-claim-button" id="finalClaimButton" type="button" aria-label="Claim your reward"></button>
+      </div>
+
+      <!-- Stage 2: Evidence 001 Chocolate Dossier Message -->
+      <div class="chocolate-reward-stage" id="chocolateRewardStage" hidden>
+        <div class="chocolate-desk-bg" aria-hidden="true"></div>
+        <div class="chocolate-vignette" aria-hidden="true"></div>
+
+        <!-- Left Sticky Note -->
+        <aside class="chocolate-note-left" aria-label="Detective note">
+          <span class="note-pin" aria-hidden="true"></span>
+          <p>Some<br/>investigations<br/>have sweeter<br/>leads. <span class="note-smiley">☺</span></p>
+        </aside>
+
+        <!-- Main Dossier Parchment -->
+        <article class="chocolate-dossier" aria-label="Case 25 Evidence 001 Dossier">
+          <span class="dossier-paperclip" aria-hidden="true"></span>
+          <span class="dossier-tape" aria-hidden="true"></span>
+
+          <header class="dossier-header-badge">
+            <span>CASE 25 // EVIDENCE 001</span>
+          </header>
+
+          <div class="dossier-classification">
+            <p>CLASSIFICATION: <strong>TOP SECRET</strong></p>
+            <p>THREAT LEVEL: <strong>UNREASONABLY TEMPTING</strong></p>
+          </div>
+
+          <div class="dossier-rule-line" aria-hidden="true"></div>
+
+          <div class="dossier-letter-body">
+            <p class="letter-salutation">Detective,</p>
+            <p>Our surveillance team has intercepted<br/>a suspicious little package.</p>
+            <p>Its contents have been linked to:</p>
+            <ul class="chocolate-list">
+              <li>A sudden loss of self-control.</li>
+              <li>Repeated visits to the scene of the crime.</li>
+              <li>The disappearance of evidence at an<br/>alarming rate.</li>
+            </ul>
+            <p>The suspect is small, heavily guarded,<br/>and notoriously difficult to resist.</p>
+            <p class="chocolate-warning">We advise against interrogation.</p>
+            <p>Some things are better left unshared.</p>
+            <p class="chocolate-lead-line">Your first lead is waiting.</p>
+            <p class="chocolate-ps"><em>P.S. If the evidence mysteriously<br/>vanishes, this message never existed.</em></p>
+            <div class="chocolate-signoff">— M</div>
+          </div>
+
+          <!-- Chocolate sketches decoration -->
+          <div class="chocolate-sketches" aria-hidden="true">
+            <span class="sketch-bar bar-1"></span>
+            <span class="sketch-q">?</span>
+            <span class="sketch-arrow">↷</span>
+            <span class="sketch-bar bar-2"></span>
+          </div>
+
+          <!-- Red circular APD seal -->
+          <div class="dossier-red-seal" aria-hidden="true">
+            <svg viewBox="0 0 100 100" class="seal-svg">
+              <circle cx="50" cy="50" r="46" fill="none" stroke="#ba2828" stroke-width="2.5" stroke-dasharray="4 2"/>
+              <circle cx="50" cy="50" r="39" fill="none" stroke="#ba2828" stroke-width="1.5"/>
+              <path d="M50 20 L58 38 L78 40 L63 53 L68 73 L50 62 L32 73 L37 53 L22 40 L42 38 Z" fill="none" stroke="#ba2828" stroke-width="1.8"/>
+              <text x="50" y="86" text-anchor="middle" font-family="'DM Mono', monospace" font-size="7" fill="#ba2828" letter-spacing="1">CASE 25</text>
+            </svg>
+          </div>
+        </article>
+
+        <!-- Right Evidence Photo -->
+        <aside class="chocolate-photo-card" aria-label="Suspicious package photo">
+          <div class="photo-inner">
+            <div class="photo-box-graphic">
+              <div class="gift-box-art">
+                <span class="gift-ribbon-v"></span>
+                <span class="gift-ribbon-h"></span>
+                <span class="gift-bow">✦</span>
+              </div>
+              <div class="photo-target-circle">
+                <span>?</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Right Wax Seal -->
+        <div class="chocolate-wax-seal" aria-hidden="true">
+          <span>✦</span>
+          <i class="wax-ribbon ribbon-left"></i>
+          <i class="wax-ribbon ribbon-right"></i>
+        </div>
+
+        <!-- Right Sticky Note -->
+        <aside class="chocolate-note-right" aria-label="Lead instruction">
+          <p>First lead.<br/>No deductions<br/>required.<br/>Just follow it.<br/><small>— M</small></p>
+        </aside>
+
+        <!-- Reading Timer Progress Indicator -->
+        <div class="chocolate-reading-progress" id="chocolateReadingProgress" aria-live="polite">
+          <div class="reading-track"><i class="reading-fill" id="chocolateReadingFill"></i></div>
+          <span class="reading-text">INTERCEPT SECURED · RETURNING TO INVESTIGATION WALL…</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene records" id="recordsScene" aria-label="Recovered records">
+      <div class="records-blackout"></div>
+      <div class="records-scanline"></div>
+      <div class="records-system" aria-live="polite"><span id="recordsStatus">CONNECTION ESTABLISHED</span><span id="recordsStatus2">RECOVERING RECORDS…</span><span id="recordsStatus3">CASE FILE 25 — FOUND</span></div>
+      <div class="records-desk" aria-hidden="true"></div>
+      <div class="record-photo record-lake" aria-label="Lake Ash evidence photograph"></div>
+      <div class="record-photo record-boat" aria-label="Recovered boat evidence photograph"></div>
+      <div class="record-report" aria-label="Missing person report"></div>
+      <div class="record-folder" aria-label="Classified case folder">
+        <span class="classified-stamp">CLASSIFIED</span>
+        <div class="folder-kicker">RECOVERED RECORDS // ACCESS GRANTED</div>
+        <h2>CASE FILE <em>25</em></h2>
+        <div class="folder-rule"></div>
+        <p>THE DISAPPEARANCE OF THOMAS REED</p>
+        <dl><div><dt>LOCATION</dt><dd>LAKE ASH</dd></div><div><dt>STATUS</dt><dd>PRESUMED DECEASED</dd></div></dl>
+        <small>The body was never recovered.</small>
+        <button id="reviewCase">REVIEW CASE <span>→</span></button>
+      </div>
+      <div class="records-dust" aria-hidden="true"></div>
+    </section>
+
+    <section class="scene phase-two" id="phaseTwoScene" aria-label="Thomas Reed case investigation">
+      <div class="phase-slide" data-phase-slide="0" aria-label="Archive access granted">
+        <img src="assets/reference/phase-two/archive-access.png" alt="Case File 25 archive access granted" />
+        <div class="phase-vignette"></div><div class="phase-caption">RECORDS RECOVERED <span>CASE FILE 25 // LAKE ASH</span></div>
+      </div>
+      <div class="phase-slide" data-phase-slide="1" aria-label="Thomas Reed: the last known day">
+        <img src="assets/reference/phase-two/lake-ash-story.png" alt="Lake Ash at dusk with Thomas Reed's case details" />
+        <div class="phase-vignette"></div><button class="phase-hotspot lake-continue" data-next-phase aria-label="Continue from Thomas Reed's last known day"></button>
+      </div>
+      <div class="phase-slide" data-phase-slide="2" aria-label="What was found">
+        <img src="assets/reference/phase-two/what-was-found.png" alt="Evidence collage showing the recovered boat, watch, and jacket" />
+        <div class="phase-vignette"></div><button class="phase-hotspot found-continue" data-next-phase aria-label="Continue from the recovered evidence"></button>
+      </div>
+      <div class="phase-slide" data-phase-slide="3" aria-label="The case was closed. The questions remained.">
+        <img src="assets/reference/phase-two/questions-remained.png" alt="Case notes listing unresolved questions about Thomas's connections" />
+        <div class="phase-vignette"></div><button class="phase-hotspot questions-continue" data-next-phase aria-label="View the people connected to Thomas"></button>
+      </div>
+      <div class="phase-slide people-slide" data-phase-slide="4" aria-label="Four people, four connections">
+        <img src="assets/reference/phase-two/four-people.png" alt="Four case portraits: Thomas Reed, Peter Shaw, Elena, and Daniel Cross" />
+        <div class="phase-vignette"></div>
+        <button class="person-hotspot person-thomas" data-person="0" aria-label="Inspect Thomas Reed"></button>
+        <button class="person-hotspot person-peter" data-person="1" aria-label="Inspect Peter Shaw"></button>
+        <button class="person-hotspot person-elena" data-person="2" aria-label="Inspect Elena"></button>
+        <button class="person-hotspot person-daniel" data-person="3" aria-label="Inspect Daniel Cross"></button>
+        <button class="people-continue">CONTINUE →</button>
+      </div>
+      <div class="phase-slide dossiers-slide" data-phase-slide="5" aria-label="Character dossiers">
+        <img src="assets/reference/phase-two/dossiers.png" alt="Four dossier files on Thomas Reed, Peter Shaw, Elena, and Daniel Cross" />
+        <div class="phase-vignette"></div>
+        <button class="dossier-hotspot dossier-thomas" data-person="0" aria-label="Open Thomas Reed's dossier"></button>
+        <button class="dossier-hotspot dossier-peter" data-person="1" aria-label="Open Peter Shaw's dossier"></button>
+        <button class="dossier-hotspot dossier-elena" data-person="2" aria-label="Open Elena's dossier"></button>
+        <button class="dossier-hotspot dossier-daniel" data-person="3" aria-label="Open Daniel Cross's dossier"></button>
+        <button class="dossier-arrow dossier-arrow-one-prev" data-person="3" aria-label="Previous dossier: Daniel Cross">←</button>
+        <button class="dossier-arrow dossier-arrow-one-next" data-person="1" aria-label="Next dossier: Peter Shaw">→</button>
+        <button class="dossier-arrow dossier-arrow-two-prev" data-person="0" aria-label="Previous dossier: Thomas Reed">←</button>
+        <button class="dossier-arrow dossier-arrow-two-next" data-person="2" aria-label="Next dossier: Elena">→</button>
+        <button class="dossier-arrow dossier-arrow-three-prev" data-person="1" aria-label="Previous dossier: Peter Shaw">←</button>
+        <button class="dossier-arrow dossier-arrow-three-next" data-person="3" aria-label="Next dossier: Daniel Cross">→</button>
+        <button class="dossier-arrow dossier-arrow-four-prev" data-person="2" aria-label="Previous dossier: Elena">←</button>
+        <button class="dossier-arrow dossier-arrow-four-next" data-person="0" aria-label="Next dossier: Thomas Reed">→</button>
+        <div class="person-detail" id="personDetail" aria-live="polite"><span class="detail-kicker">RECOVERED PERSONNEL FILE</span><h2 id="personName"></h2><p class="detail-role" id="personRole"></p><p id="personDescription"></p><button id="backToFiles">BACK TO FILES</button></div>
+        <nav class="dossier-navigation" aria-label="Story navigation"><button id="backToPeople">← BACK TO PEOPLE</button></nav>
+        <div class="phase-hint dossier-hint">SELECT A DOSSIER TO READ</div>
+      </div>
+      <div class="phase-slide glitch-slide" data-phase-slide="6" aria-label="Signal interception">
+        <img class="glitch-underlay" src="assets/reference/phase-two/interference.png" alt="" />
+        <img class="glitch-overlay" src="assets/reference/phase-two/glitch-files.png" alt="" />
+        <div class="signal-lines"><span>SIGNAL INTERCEPTED</span><span>INCOMING TRANSMISSION</span><span>SOURCE: UNKNOWN</span><span>ORIGIN: UNTRACEABLE</span><span>MESSAGE: RECOVERED</span></div>
+      </div>
+      <div class="phase-slide final-signal" data-phase-slide="7" aria-label="A message from M">
+        <img src="assets/reference/phase-two/signal-intercepted.png" alt="Recovered unknown transmission from M" />
+        <div class="phase-vignette"></div>
+      </div>
+      <div class="phase-slide final-message" data-phase-slide="8" aria-label="A message from M">
+        <img src="assets/reference/phase-two/interference.png" alt="" />
+        <div class="phase-vignette"></div><div class="message-reveal" id="messageReveal"><span class="message-mark">M</span><div class="message-meta">UNKNOWN <small>TODAY 8:26 PM · SOURCE UNTRACEABLE</small></div><div class="message-copy"><p>If you're reading this,<br/>the archive has opened.</p><p>The official version is simple.<br/>The records left behind suggest otherwise.</p><p>I can't tell you what to believe.<br/><em>Not yet.</em></p><p>For now, remember this:<br/>The first version of a story is not always the true one.</p><strong>— M</strong></div><div class="message-signal">SIGNAL LOST <i></i></div></div>
+        <div class="final-darken"></div>
+      </div>
+      <div class="phase-slide signal-lost-screen" data-phase-slide="9" aria-label="Signal lost">
+        <img class="phase-critical-image" src="assets/reference/phase-two/signal-lost.png" alt="M's transmission breaking up into static" />
+        <div class="frame-loading" role="status">RESTORING SIGNAL FRAME…</div>
+        <div class="signal-lost-glitch" aria-hidden="true"></div>
+      </div>
+      <div class="phase-slide unassigned-file-screen" data-phase-slide="10" aria-label="The unassigned case file">
+        <img class="phase-critical-image" src="assets/reference/phase-two/unassigned-file.png" alt="Case 25 folder marked investigator unassigned, subject Thomas Reed, status open" />
+        <div class="frame-loading" role="status">ILLUMINATING ARCHIVE DESK…</div>
+        <div class="desk-lamp-beam" aria-hidden="true"></div>
+        <div class="folder-turn" aria-hidden="true"></div>
+      </div>
+      <div class="phase-slide accept-case-screen" data-phase-slide="11" aria-label="Accept the Case 25 investigation">
+        <img class="phase-critical-image" src="assets/reference/phase-two/accept-case.png" alt="Opened Case 25 folder and official investigation status sheet" />
+        <div class="frame-loading" role="status">OPENING OFFICIAL CASE FILE…</div>
+        <div class="accept-paper" id="acceptPaper">
+          <div class="accept-heading">CASE FILE 25 // INVESTIGATION STATUS</div>
+          <h2>THOMAS REED</h2>
+          <div class="accept-status">INVESTIGATION OPEN</div>
+          <div class="accept-lines"><p>YOU HAVE THE FILE.</p><p>YOU HAVE THE NAMES.</p><p>NOW FIND OUT WHAT THEY LEFT OUT.</p></div>
+          <button id="acceptCase" disabled>ACCEPT CASE <span>→</span></button>
+        </div>
+        <div class="end-black" aria-hidden="true"></div>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
