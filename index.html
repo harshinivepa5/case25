@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#080a0c" />
   <meta name="description" content="CASE 25 — The Last Transmission. A restricted archive awaits." />
   <title>CASE 25 — The Last Transmission</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Libre+Baskerville:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet" />
+  
+  
+  <link rel="stylesheet" href="assets/fonts/fonts.css" />
   <link rel="stylesheet" href="style.css?v=1792594784" />
 </head>
 <body>
@@ -66,7 +66,7 @@
         <span class="caption">THE HANDS NEVER MOVED AGAIN</span>
       </article>
       <article class="evidence-shot shot-three" data-shot="3">
-        <div class="file-card"><div class="file-stamp">CONFIDENTIAL</div><small>CASE FILE 025 · OPEN</small><h3>THOMAS<br/>REED</h3><p>Owner, The Mariner<br/>Last seen: Lake Ash<br/>Status: Presumed deceased</p><div class="file-signature">T. Reed</div></div>
+        <div class="file-card"><div class="file-stamp">CONFIDENTIAL</div><small>CASE FILE 025 · OPEN</small><h3>THOMAS<br/>REED</h3><p>Co-owner, The Lantern<br/>Last seen: Lake Ash<br/>Status: Presumed deceased</p><div class="file-signature">T. Reed</div></div>
         <div class="note-card">“Not everything that<br/>disappears is gone.”<small>— unsigned</small></div>
         <div class="press-card"><b>LOCAL MUSICIAN<br/>VANISHES AFTER<br/>LAKE INCIDENT</b><small>THE ASHFORD GAZETTE · OCT 15</small></div>
         <p class="type-line">No body. No answers.</p>
@@ -82,7 +82,7 @@
       <div class="case-wall"></div><div class="case-wall-shade"></div>
       <div class="case-topline"><span>ASHFORD POLICE DEPARTMENT</span><span>CASE 025 · PERSONS MISSING</span></div>
       <div class="case-photo"></div>
-      <article class="dossier-sheet"><div class="dossier-top"><span>ASHFORD POLICE DEPARTMENT</span><span>FILE NO. 025</span></div><div class="dossier-stamp">UNRESOLVED</div><p class="dossier-label">MISSING PERSON · LAKE ASH</p><h2>THOMAS<br/>REED</h2><div class="dossier-rule"></div><dl><dt>OCCUPATION</dt><dd>Owner, The Mariner</dd><dt>LAST SEEN</dt><dd>October 14, 1999 · 11:47 PM</dd><dt>RECOVERED</dt><dd>Damaged boat · wristwatch</dd><dt>STATUS</dt><dd>Presumed fatal. No remains.</dd></dl><div class="dossier-hand">The water gives nothing back.</div><div class="dossier-bottom">FILED BY DET. M. HALE <span>10 / 21 / 1999</span></div></article>
+      <article class="dossier-sheet"><div class="dossier-top"><span>ASHFORD POLICE DEPARTMENT</span><span>FILE NO. 025</span></div><div class="dossier-stamp">UNRESOLVED</div><p class="dossier-label">MISSING PERSON · LAKE ASH</p><h2>THOMAS<br/>REED</h2><div class="dossier-rule"></div><dl><dt>OCCUPATION</dt><dd>Owner, The Mariner</dd><dt>LAST SEEN</dt><dd>October 14, 1999 · 11:47 PM</dd><dt>RECOVERED</dt><dd>Damaged boat · wristwatch</dd><dt>STATUS</dt><dd>Presumed fatal. No remains.</dd></dl><div class="dossier-hand">The water gives nothing back.</div><div class="dossier-bottom"><span>10 / 21 / 1999</span></div></article>
       <div class="case-caption"><span>04</span><i></i><p>THE FILE WAS CLOSED.<br/><em>THE QUESTIONS WEREN’T.</em></p></div>
     </section>
 
@@ -154,7 +154,7 @@
       <img class="accepted-case-art" src="assets/reference/phase-two/file-01-closed.png?v=1792581110" alt="File 01 completed. File 01 closed, awaiting further instruction." />
       <img class="file02-board-art" src="assets/reference/phase-two/file-02-board-blank.png?v=1792581110" alt="File 02 — The Unexpected Signal" />
       <div class="home-wall dim-wall"></div><div class="home-wall light-wall"></div><div class="home-atmosphere"></div><div class="document-spotlight" aria-hidden="true"></div>
-      <div class="home-caption" id="homeCaption"><span>A MESSAGE HAS BEEN RECOVERED.</span><small>CLICK TO OPEN THE RECOVERED FILE.</small></div>
+      <div class="home-caption" id="homeCaption"><span>A FILE HAS BEEN RECOVERED.</span><small>CLICK TO OPEN THE ARCHIVE.</small></div>
       <button class="wall-hotspot" id="wallHotspot" aria-label="Open recovered incoming transmission"></button>
       <div class="message-dossier" id="messageDossier" role="dialog" aria-modal="true" aria-labelledby="dossierTitle" aria-hidden="true">
         <button class="dossier-close" id="dossierClose" aria-label="Close recovered message">×</button>
@@ -359,13 +359,26 @@
       <div class="quiz-boardwash"></div><div class="quiz-vignette"></div>
       <img class="secret-reference-art" id="secretReferenceArt" src="assets/secret-level/unexpected-transmission.png" alt="Unexpected transmission detected — a secret level has been unlocked" />
       <div class="secret-reference-controls" id="secretReferenceControls" aria-label="Secret level controls">
-        <button class="secret-reference-button secret-ref-enter" id="secretRefEnter" type="button" aria-label="Enter secret level"></button>
-        <button class="secret-reference-button secret-ref-round" id="secretRefRound" type="button" aria-label="Begin Round I"></button>
-        <div class="secret-ref-answers" id="secretRefAnswers"></div>
-        <button class="secret-reference-button secret-ref-submit" id="secretRefSubmit" type="button" aria-label="Submit answer"></button>
-        <button class="secret-reference-button secret-ref-continue" id="secretRefContinue" type="button" aria-label="Continue to next question">CONTINUE →</button>
+        <div class="secret-ref-stage" id="secretRefStage">
+          <div class="secret-lamp" id="secretLamp" aria-hidden="true"></div>
+          <div class="secret-intro-type" id="secretIntroType" aria-hidden="true"></div>
+          <p class="secret-sr">Unexpected transmission detected. A secret level has been unlocked. Well, well, Detective... Looks like you've stumbled upon a secret level you weren't meant to find. Before the real investigation resumes, there's a little detour waiting for you. Three rounds. Nine questions. One hidden reward. Clear the level to unlock your next lead. Think fast, Detective. No cheating. Some doors open only to those who know a little more than they let on.</p>
+          <button class="secret-reference-button secret-ref-enter" id="secretRefEnter" type="button" aria-label="Enter secret level"><span class="secret-enter-label">ENTER SECRET LEVEL →</span></button>
+          <button class="secret-reference-button secret-ref-round" id="secretRefRound" type="button" aria-label="Begin Round I"></button>
+          <div class="secret-ref-answers" id="secretRefAnswers"></div>
+          <button class="secret-reference-button secret-ref-submit" id="secretRefSubmit" type="button" aria-label="Submit answer"></button>
+          <button class="secret-reference-button secret-ref-continue" id="secretRefContinue" type="button" aria-label="Continue to next question">CONTINUE →</button>
+        </div>
         <button class="secret-reference-button secret-ref-skip" id="secretRefSkip" type="button" aria-label="Skip question">SKIP →</button>
         <p class="secret-ref-feedback" id="secretRefFeedback" role="status" aria-live="polite" hidden></p>
+      </div>
+      <div class="secret-cut" id="secretCut" aria-hidden="true">
+        <div class="cut-body"><svg class="cut-rings" id="cutRings" viewBox="-100 -100 200 200" aria-hidden="true"></svg><i class="cut-noise"></i><i class="cut-lines"></i><div class="cut-text"><p class="cut-k"></p><p class="cut-s"></p></div></div>
+        <i class="cut-scan"></i>
+      </div>
+      <div class="secret-signal" id="secretSignal" aria-hidden="true" hidden>
+        <canvas width="960" height="540"></canvas>
+        <div class="hud"><span class="tl">FREQ <b>000.000</b></span><span class="tr">SOURCE: UNKNOWN</span><span class="mid">SEARCHING</span><span class="bl"><b>0</b>% DECODED</span></div>
       </div>
       <button class="quiz-close" id="quizClose" aria-label="Return to the investigation wall">×</button>
       <div class="secret-panel" id="secretIntro">
@@ -423,22 +436,25 @@
     <section class="scene secret-reward" id="secretRewardScene" aria-label="Secret Level completion and reward">
       <!-- Stage 1: Final Transmission & Performance Report -->
       <div class="completion-stage" id="completionStage">
-        <img class="final-transmission-art" src="assets/secret-level/final-transmission.png" alt="Case 25 final transmission report" />
-        <div class="final-report-box" aria-label="Detective Performance Report">
-          <div class="final-report-row row-xp">
-            <span class="report-dynamic-val" id="finalXpValue">0</span><span class="report-denom"> / 150</span>
+        <div class="fin-stage" id="finStage">
+          <img class="final-transmission-art" id="finalArt" src="assets/secret-level/final-transmission.png" alt="Case 25 final transmission report" />
+          <div class="final-report-box" aria-label="Detective Performance Report">
+            <div class="final-report-row row-xp">
+              <span class="report-dynamic-val" id="finalXpValue">0</span><span class="report-denom" id="finalXpMax"> / 140</span>
+            </div>
+            <div class="final-report-row row-trials">
+              <span class="report-dynamic-val" id="finalTrialsValue">0</span><span class="report-denom"> / 9</span>
+            </div>
+            <div class="fin-status-glow glow-case" aria-hidden="true"></div>
+            <div class="fin-status-glow glow-det" aria-hidden="true"></div>
+            <span class="fin-sr" id="finalCaseStatusValue">CLOSED</span><span class="fin-sr status-suspicious" id="finalDetectiveStatusValue">STILL SUSPICIOUS</span>
           </div>
-          <div class="final-report-row row-trials">
-            <span class="report-dynamic-val" id="finalTrialsValue">0</span><span class="report-denom"> / 9</span>
-          </div>
-          <div class="final-report-row row-case">
-            <span class="report-status-val" id="finalCaseStatusValue">CLOSED</span>
-          </div>
-          <div class="final-report-row row-detective">
-            <span class="report-status-val status-suspicious" id="finalDetectiveStatusValue">STILL SUSPICIOUS</span>
-          </div>
+          <i class="fin-seal-ring" id="finSealRing" aria-hidden="true"></i>
+          <div class="fin-lamp" id="finLamp" aria-hidden="true"></div>
+          <div class="fin-veil" id="finVeil" aria-hidden="true"></div>
+          <i class="fin-scan" id="finScan" aria-hidden="true"></i>
+          <button class="final-claim-button" id="finalClaimButton" type="button" aria-label="Claim your reward"></button>
         </div>
-        <button class="final-claim-button" id="finalClaimButton" type="button" aria-label="Claim your reward"></button>
       </div>
 
       <!-- Stage 2: Evidence 001 Chocolate Dossier Message -->
@@ -532,10 +548,10 @@
           <p>First lead.<br/>No deductions<br/>required.<br/>Just follow it.<br/><small>— M</small></p>
         </aside>
 
-        <!-- Reading Timer Progress Indicator -->
+        <!-- The player decides when they have finished reading -->
         <div class="chocolate-reading-progress" id="chocolateReadingProgress" aria-live="polite">
-          <div class="reading-track"><i class="reading-fill" id="chocolateReadingFill"></i></div>
-          <span class="reading-text">INTERCEPT SECURED · RETURNING TO INVESTIGATION WALL…</span>
+          <button class="chocolate-continue-btn" id="continueToCase" type="button" aria-label="Good luck — return to the investigation wall" disabled>GOOD LUCK →</button>
+          <span class="reading-text" id="chocolateHint">INTERCEPT SECURED</span>
         </div>
       </div>
     </section>
@@ -567,11 +583,11 @@
         <div class="phase-vignette"></div><div class="phase-caption">RECORDS RECOVERED <span>CASE FILE 25 // LAKE ASH</span></div>
       </div>
       <div class="phase-slide" data-phase-slide="1" aria-label="Thomas Reed: the last known day">
-        <img src="assets/reference/phase-two/lake-ash-story.png" alt="Lake Ash at dusk with Thomas Reed's case details" />
+        <img src="assets/reference/phase-two/lake-ash-story-blank.jpg" alt="Lake Ash at dusk with Thomas Reed's case details" />
         <div class="phase-vignette"></div><button class="phase-hotspot lake-continue" data-next-phase aria-label="Continue from Thomas Reed's last known day"></button>
       </div>
       <div class="phase-slide" data-phase-slide="2" aria-label="What was found">
-        <img src="assets/reference/phase-two/what-was-found.png" alt="Evidence collage showing the recovered boat, watch, and jacket" />
+        <img src="assets/reference/phase-two/what-was-found-blank.jpg" alt="Evidence collage showing the recovered boat, watch, and jacket" />
         <div class="phase-vignette"></div><button class="phase-hotspot found-continue" data-next-phase aria-label="Continue from the recovered evidence"></button>
       </div>
       <div class="phase-slide" data-phase-slide="3" aria-label="The case was closed. The questions remained.">
@@ -612,8 +628,14 @@
         <div class="signal-lines"><span>SIGNAL INTERCEPTED</span><span>INCOMING TRANSMISSION</span><span>SOURCE: UNKNOWN</span><span>ORIGIN: UNTRACEABLE</span><span>MESSAGE: RECOVERED</span></div>
       </div>
       <div class="phase-slide final-signal" data-phase-slide="7" aria-label="A message from M">
-        <img src="assets/reference/phase-two/signal-intercepted.png" alt="Recovered unknown transmission from M" />
+        <img src="assets/reference/phase-two/signal-intercepted-blank.jpg" alt="Recovered unknown transmission from M" />
         <div class="phase-vignette"></div>
+        <div class="sig7-stage" id="sig7Stage">
+          <div class="sig7-text" id="sig7Text" role="log" aria-live="off"></div>
+          <div class="sig7-leak" id="sig7Leak" aria-hidden="true"></div>
+          <span class="sig7-lost" id="sig7Lost" aria-hidden="true">SIGNAL LOST <i></i></span>
+          <p class="sig7-sr" id="sig7Sr"></p>
+        </div>
       </div>
       <div class="phase-slide final-message" data-phase-slide="8" aria-label="A message from M">
         <img src="assets/reference/phase-two/interference.png" alt="" />
