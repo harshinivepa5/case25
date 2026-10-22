@@ -2119,17 +2119,22 @@
     'p3-q3':{kind:'choice',puzzle:2,docs:'p3',faces:true,opt:[[434,489,679,64],[434,563,679,62],[434,636,679,64],[434,712,679,63]],evidence:[436,796,328,60],submit:[803,796,311,60],answer:2,options:['Peter definitely lied because the access log shows someone at the rear entrance earlier.','The vehicle on camera proves Peter followed Thomas.','Peter’s account remains uncorroborated, but the records do not conclusively disprove it.','The recovered watch proves Thomas died at Lake Ash.'],hint:'Which record identifies a person? The access log records a credential, and the camera cannot identify the plate or occupants.',explain:'Peter’s account remains uncorroborated, but the supplied records do not conclusively disprove it. The log records a credential, not a person; the camera cannot identify the vehicle’s occupants; and the search summary does not establish when Thomas disappeared.',next:'p3-q4'},
     'p3-q4':{kind:'written',puzzle:2,docs:'p3',text:[425,582,728,190],counter:[[968,744,176,18],1000,'characters'],evidence:[427,791,323,61],submit:[781,791,372,61],grade:t=>{const r=p3DeductionResult(t);return {accepted:r.accepted,missing:r.missing.map(i=>P3_DEDUCTION_MISSING[i])};},hint:'Separate established facts, reported claims, unknowns, and the evidence you would still need.',model:F3S_MODELS['p3-q4'],next:'p3-end'},
     'p3-end':{kind:'transmission',kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'TIMELINE REVIEWED',title:'THE CLOCK WAS NEVER THE PROBLEM.',text:`You corrected the clock.\n\nYou separated the record from the witness.\n\nBut you could not establish the moment the story changed.\n\nThat is not a failure of calculation, Detective.\n\nIt is a failure of the evidence.\n\nOne thread is still loose.\nIt runs through every file you have opened.\n\nPull it carefully.\n\n— M`,next:'p4-cover'},
-    'p4-cover':{kind:'cover',chapter:3,begin:[470,773,500,75],review:[[[48,232,262,62],0],[[48,296,262,80],1],[[48,378,262,80],2]],next:'p4-q1'},
-    'p4-q1':{kind:'choice',puzzle:3,docs:'f2',docSet:[0,1,2,3],opt:[[1114,432,507,74],[1114,517,507,88],[1114,616,507,74],[1114,702,507,77]],radio:[1152,18],hintBtn:[1114,803,160,54],submit:[1300,803,321,54],tabs:[[338,110,150,42],[505,110,150,42],[673,110,150,42],[841,110,152,42]],thumbs:[[383,785,125,75],[536,785,125,75],[698,785,122,75],[853,785,135,75]],answer:1,options:F2_QUESTIONS[0].options,hint:F2_QUESTIONS[0].hint,explain:'The ₹2.40 crore remains unreconciled against verified expenditure, and the supporting records have not been provided. Nothing in the account records names who received it.',next:'p4-q2'},
-    'p4-q2':{kind:'choice',puzzle:3,docs:'f2',docSet:[4,5,6,7],opt:[[1075,409,516,72],[1075,492,516,73],[1075,578,516,94],[1075,684,516,76]],radio:[1112,17],hintBtn:[1077,793,156,56],submit:[1285,793,297,56],tabs:[[290,160,177,55],[476,160,174,55],[657,160,173,55],[838,160,174,55]],thumbs:[[343,748,135,112],[500,748,132,112],[654,748,136,112],[813,748,137,112]],answer:2,options:F2_QUESTIONS[1].options,hint:F2_QUESTIONS[1].hint,explain:'Peter’s account is not independently corroborated. The access log records an unknown card, not a person, and the camera does not show the plate or who was driving.',next:'p4-q3'},
-    'p4-q3':{kind:'choice',puzzle:3,review:[[[48,232,248,62],0],[[48,298,248,80],1],[[48,382,248,78],2]],docs:'f2',docSet:[8,9,10,11],opt:[[1140,410,470,80],[1140,505,470,80],[1140,600,470,93],[1140,708,470,87]],radio:[1177,18],hintBtn:[1138,818,130,55],submit:[1294,818,316,55],tabs:[[375,95,171,52],[553,95,172,52],[731,95,172,52],[910,95,170,52]],thumbs:[[412,756,124,104],[560,756,132,104],[716,756,134,104],[878,756,146,104]],answer:2,options:F2_QUESTIONS[2].options,hint:F2_QUESTIONS[2].hint,explain:'It establishes that the original records remain unavailable, which prevents verification. It does not prove who removed them or why.',next:'p4-q4'},
-    'p4-q4':{kind:'written',puzzle:3,docs:'f2',docSet:[0,4,5,6,8,9],text:[1176,465,452,273],counter:[[1500,746,130,20],500,'words'],hintBtn:[1176,792,140,55],submit:[1338,792,293,55],thumbs:[[334,792,110,72],[465,792,98,72],[590,792,98,72],[710,792,98,72],[836,792,100,72],[960,792,105,72]],grade:t=>{const ok=f2DeductionAccepted(t);return {accepted:!!(ok&&ok.accepted!==false),missing:[]};},hint:F2_QUESTIONS[3].hint,model:F3S_MODELS['p4-q4'],next:'final'},
+    'p4-cover':{kind:'live',chapter:3,build:screen=>cineStory(screen,P4_STORY,'lake',()=>f3sGo('p4-q1'))},
+    'p4-q1':{kind:'live',puzzle:3,build:screen=>p4BuildQ(screen,0)},
+    'p4-q2':{kind:'live',puzzle:3,build:screen=>p4BuildQ(screen,1)},
+    'p4-q3':{kind:'live',puzzle:3,build:screen=>p4BuildQ(screen,2)},
+    'p4-q4':{kind:'live',puzzle:3,build:p4BuildChain},
+    'p4-end':{kind:'transmission',kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'LAKE ASH · REVIEWED',title:'THE LAKE REMEMBERS.',text:`You counted the minutes.\n\nYou ruled out the one who was already in the air.\n\nA boat in one name. A card in the same name. A message that gave a reason.\n\nEvery piece you chose points the same way.\n\nThere is only one person left to ask.\n\n— M`,next:'p5-cover'},
+    'p5-cover':{kind:'live',chapter:4,build:screen=>cineStory(screen,P5_STORY,'signal',()=>f3sGo('p5-q1'))},
+    'p5-q1':{kind:'live',puzzle:3,build:p5BuildInterview},
+    'p5-q2':{kind:'live',puzzle:3,build:p5BuildConclusion},
+    'p5-q3':{kind:'live',puzzle:3,build:p5BuildM},
     // M's closing letter (final.png) is taller than 16:9, so it is shown whole rather than cropped.
     final:{kind:'message',fit:'contain',art:'final-blank',letter:[412,318,1095,1180],cont:[588,1573,688,115],next:'gift'},
     // Thank-you card before the physical gift is handed over; its CONTINUE ends File 03.
     gift:{kind:'message',cont:[552,701,431,82],label:'GOOD JOB, DETECTIVE',next:null,finish:true}
   };
-  const F3S_CHAPTERS=[['PUZZLE 01','NORTH QUAY'],['PUZZLE 02','THE MISSING STORY'],['PUZZLE 03','THE IMPOSSIBLE TIMELINE'],['PUZZLE 04','THE UNRESOLVED THREAD']];
+  const F3S_CHAPTERS=[['PUZZLE 01','NORTH QUAY'],['PUZZLE 02','THE MISSING STORY'],['PUZZLE 03','THE IMPOSSIBLE TIMELINE'],['PUZZLE 04','THE LAST NIGHT AT LAKE ASH'],['PUZZLE 05','THE CONFRONTATION']];
   function readF3S(){const fresh={screen:'opening',done:{},attempts:{},drafts:{},picks:{}};try{return {...fresh,...JSON.parse(localStorage.getItem(F3S_KEY)||'{}')};}catch{return fresh;}}
   let f3s=readF3S(),f3sBusy=false;
   function saveF3S(){try{localStorage.setItem(F3S_KEY,JSON.stringify(f3s));}catch{}}
@@ -2169,7 +2174,7 @@
     const chapter=Number.isInteger(def.chapter)&&!resume?def.chapter:null;
     if(chapter!==null)f3sChapterCard(chapter,()=>f3sMount(id,{fromChapter:true}));
     else f3sMount(id);
-    [def.next,def.next&&F3S_SCREENS[def.next]?.next].filter(n=>n&&!F3S_SCREENS[n].kind.includes('transmission')).forEach(n=>{const i=new Image();i.src=`assets/file-003/${n}.png`;});
+    [def.next,def.next&&F3S_SCREENS[def.next]?.next].filter(n=>n&&!F3S_SCREENS[n].kind.includes('transmission')&&F3S_SCREENS[n].kind!=='live').forEach(n=>{const i=new Image();i.src=`assets/file-003/${n}.png`;});
   }
   function f3sChapterCard(index,done){
     const card=$('#f3sChapter'),[kicker,title]=F3S_CHAPTERS[index];
@@ -2184,6 +2189,7 @@
     const def=F3S_SCREENS[id],stage=$('#f3Stage'),old=[...stage.querySelectorAll('.f3s-screen')];
     const screen=document.createElement('section');screen.className=`f3s-screen f3s-${def.kind}`+(fromChapter?' from-chapter':'');screen.dataset.screen=id;if(def.fit)screen.dataset.fit=def.fit;
     if(def.kind==='transmission')f3sBuildTransmission(screen,def);
+    else if(def.kind==='live'){screen.classList.add('f4-screen');def.build(screen,id);}
     else{
       screen.innerHTML=`<div class="f3s-layer"><img class="f3s-art" alt="" src="assets/file-003/${def.art||id}.png"></div>`;
       f3sBuildControls(screen,id,def);
@@ -2343,6 +2349,7 @@
   function f3sToast(message){const t=$('#f3sToast');t.textContent=message;t.classList.remove('show');void t.offsetWidth;t.classList.add('show');}
   function f3sStamp(screen,label){const s=document.createElement('div');s.className='f3s-stamp';s.textContent=label;screen.append(s);setTimeout(()=>s.remove(),2200);}
   function f3sModal({tone,title,body,actions}){
+    sfx(({good:'good',bad:'bad',reveal:'sting',hint:'click'})[tone]);
     const m=$('#f3sModal');f3sBusy=true;
     m.className=`f3s-modal tone-${tone}`;m.querySelector('h3').textContent=title;m.querySelector('.f3s-modal-body').innerHTML=body;
     const row=m.querySelector('.f3s-modal-actions');row.replaceChildren();
@@ -2449,6 +2456,114 @@
   // File 004 — The Lantern Fire. Runs inside the File 03 stage (#f3Stage, data-mode="f4") and reuses its
   // transmissions, chapter cards and case-note modal. Story → Puzzle 1 → story → Puzzle 2 → verdict → story → M.
   // Wrong answers get a hint first; a second wrong answer shows the answer, like File 03.
+  // ---------------------------------------------------------------------------------------------
+  // File 003, puzzles 4 and 5. Built live on the same desk as File 004: the lake evidence, then the interview.
+  // Soft sound cues share the ambient sound switch: nothing plays while sound is off.
+  function sfx(kind){
+    if(!audioContext||audioContext.state!=='running')return;
+    const c=audioContext,t0=c.currentTime;
+    const tone=(f,d,type='sine',v=.08,f2=0,delay=0)=>{const o=c.createOscillator(),g=c.createGain(),t=t0+delay;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);};
+    ({click:()=>tone(620,.05,'square',.02),good:()=>{tone(523,.6,'sine',.06);tone(784,.7,'sine',.05,0,.12);},bad:()=>tone(120,.4,'sawtooth',.05,70),stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);}})[kind]?.();
+  }
+  const P4_STORY={kicker:'FILE 003 · PUZZLE 04',eyebrow:'LAKE ASH · OCTOBER 14',title:'THE LAST NIGHT AT LAKE ASH',button:'EXAMINE THE EVIDENCE',text:`Until now, you have read what the records could not prove.\n\nThe police have since reopened the lake evidence.\n\nA boat. A toll receipt. A laboratory note. And the last message Thomas Reed ever sent.\n\nSeven documents. One night.\n\nDecide what they mean.`};
+  const P5_STORY={kicker:'FILE 003 · PUZZLE 05',eyebrow:'OCTOBER 16 · INTERVIEW ROOM 2',title:'THE CONFRONTATION',button:'BEGIN THE INTERVIEW',text:`Peter Shaw agreed to be interviewed.\n\nHe came alone. He declined a lawyer.\n\nThe recording starts now.\n\nHe will answer four questions.\n\nFor each answer, find the document that says otherwise.`};
+  const P4_DOCS=[
+    {tag:'BOAT HIRE SLIP',date:'Tue 14 Oct · 17:40',title:'Lake Ash Boat Hire — east dock',body:'Hirer: P. Shaw (signed)\nBoat: No. 6, rowing skiff with outboard\nPaid: card ending 4417 — The Lantern company account\nID: not checked (self-service kiosk)\nDue back: 21:00\nStatus: NOT RETURNED'},
+    {tag:'TOLL RECEIPT',date:'14 Oct · 20:58 · verified gate clock',title:'Lake Ash Road — toll gate',body:'Vehicle: car, towards the lake\nPaid: card ending 4417\nCardholder: P. Shaw, The Lantern'},
+    {tag:'POLICE ROUTE NOTE',date:'16 Oct',title:'Drive time, The Lantern to the toll gate',body:'Measured at normal speed: 41 minutes.\nThe Lantern exit camera, displayed time 20:16:11: a vehicle leaves.\nThe camera clock has not been independently checked.'},
+    {tag:'LABORATORY NOTE',date:'15 Oct',title:'Blood on the boat gunwale',body:'Blood type A positive — consistent with Thomas Reed’s medical file.\nSample degraded. DNA inconclusive.\nLake Ash at the east dock: 38 m deep, cold. Remains rarely surface.'},
+    {tag:'BUY–SELL AGREEMENT',date:'Signed 2019',title:'The Lantern — partners’ agreement',body:'If either partner dies, the surviving partner acquires 100% of the business.\nEstimated value: ₹5 crore.'},
+    {tag:'MESSAGE LOG',date:'14 Oct · 19:58',title:'Thomas Reed → Peter Shaw',body:'“Tomorrow I tell the board about the 2.40 crore. Don’t make this harder than it is.”\nStatus: delivered, read 19:59.'},
+    {tag:'TRAVEL RECORD',date:'14 Oct',title:'Elena Ward — flight record',body:'Boarded 19:15. Departure 19:40.\nOutbound international flight.\nReturn: not booked.'}
+  ];
+  const P4_QS=[
+    {q:'What does the hire slip establish?',options:['Peter was seen rowing the boat that night.','A boat was hired in Peter’s name, on his company card, hours before Thomas disappeared — and it was never returned.','Thomas hired the boat for himself.','The hire was routine and means nothing.'],answer:1,hint:'Read the hirer, the card and the time. The slip shows whose name the boat was hired under — not who was in it.',explain:'The slip puts Peter’s name and company card on a boat hired at 17:40, before Thomas left The Lantern, and the boat never came back. It does not prove who was aboard, but it is the first link in the chain.'},
+    {q:'The exit camera shows a vehicle leaving at displayed 20:16. The toll gate — a verified clock — logs card 4417 at 20:58. Police measured the drive at 41 minutes. What does that establish?',options:['Nothing: the camera clock is unverified, so the two cannot be linked.','The car that left at 20:16 is the car that reached the toll at 20:58. The camera clock is sound, and card 4417 was in a car that left minutes after Thomas.','Thomas drove himself to the lake.','Peter was at home all evening.'],answer:1,hint:'Add 41 minutes to 20:16. What do you get, and what does that say about the camera clock?',explain:'20:16 plus 41 minutes is 20:57 — within a minute of the toll. The journey fits, the camera clock is reliable, and the car carrying card 4417 left The Lantern about six minutes after Thomas did.'},
+    {q:'The lab found Thomas’s blood type on the boat. No body has been recovered. Where does that leave Thomas?',options:['Alive and hiding: no body means no death.','Hurt on that boat the night he vanished. The lake is deep and cold, so a missing body is exactly what you would expect.','Drowned by accident; the blood means nothing.','Nothing can be said about him at all.'],answer:1,hint:'Think about what the lab note says about the lake as well as the blood.',explain:'The blood places Thomas on that boat, and 38 m of cold water rarely returns a body. A missing body does not mean he is alive.'}
+  ];
+  function p4BuildQ(screen,n){
+    const {docs,task}=f4Desk(screen,{file:'FILE 003 · PUZZLE 04',step:`QUESTION ${n+1} / 4`,title:'THE LAST NIGHT AT LAKE ASH',lead:'Seven documents from the night of October 14. Read them all before you answer.'});
+    docs.innerHTML=P4_DOCS.map(d=>f4Doc(d)).join('');
+    task.insertAdjacentHTML('afterbegin','');
+    f4Ask(task,'p4-'+n,P4_QS[n],()=>f3sGo('p4-q'+(n+2)),f3s,saveF3S);
+  }
+  function p4BuildChain(screen){
+    const {docs,task}=f4Desk(screen,{file:'FILE 003 · PUZZLE 04',step:'QUESTION 4 / 4',title:'BUILD THE CASE',lead:'A case needs a means, an opportunity and a motive. They are scattered across these documents.'});
+    docs.innerHTML=P4_DOCS.map((d,i)=>f4Doc(d,`data-i="${i}" role="button" tabindex="0"`)).join('');docs.classList.add('f4-orderable');
+    const cards=[...docs.querySelectorAll('.f4-doc')];let picks=[];
+    const paint=()=>{cards.forEach((c,i)=>{const n=picks.indexOf(i);c.dataset.pos=n<0?'':String(n+1);c.classList.toggle('placed',n>=0);});submit.disabled=picks.length!==3;};
+    task.innerHTML=`<p class="f4-q">Choose the three documents that, together, make the strongest case against one person.</p><p class="f4-sub">Click a document to select it. Click it again to remove it.</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit" disabled>THIS IS MY CASE →</button></div>`;
+    const submit=task.querySelector('.f4-submit');
+    const toggle=c=>{if(task.classList.contains('settled'))return;const i=Number(c.dataset.i),n=picks.indexOf(i);if(n>=0)picks.splice(n,1);else if(picks.length<3)picks.push(i);sfx('click');paint();};
+    cards.forEach(c=>{c.addEventListener('click',()=>toggle(c));c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(c);}});});
+    const finish=()=>{f3sCloseModal();f3sGo('p4-end');};
+    const settle=()=>{task.classList.add('settled');picks=[0,1,4];paint();cards.forEach((c,i)=>c.classList.toggle('right',picks.includes(i)));};
+    submit.addEventListener('click',()=>{
+      if(f3sBusy||picks.length!==3)return;
+      const tries=(f3s.attempts['p4-chain']||0)+1;f3s.attempts['p4-chain']=tries;saveF3S();
+      const hasMeans=picks.includes(0),hasOpp=picks.includes(1),hasMotive=picks.includes(4)||picks.includes(5);
+      if(hasMeans&&hasOpp&&hasMotive){cards.forEach((c,i)=>c.classList.toggle('right',picks.includes(i)));task.classList.add('settled');f3sModal({tone:'good',title:'A CHAIN THAT HOLDS',body:'<p>A boat hired in Peter’s name. A car carrying his card, minutes behind Thomas. And a reason for wanting him gone. Means, opportunity and motive — each one stands on its own document.</p>',actions:[['CONTINUE →',finish]]});return;}
+      const why=picks.includes(6)?'Elena Ward boarded a flight at 19:15. Everything at the lake happens after she left — she cannot be placed there.':!hasMotive?'You have placed someone at the lake, but nothing says why. A case needs a motive.':'Without the hired boat and the toll receipt, nobody is placed at the lake at all.';
+      if(tries<2){f3sModal({tone:'bad',title:'THE CHAIN HAS A GAP',body:`<p>${why}</p><p class="f3s-left">One more attempt before the file shows you the chain.</p>`,actions:[['TRY AGAIN',()=>{f3sCloseModal();picks=[];paint();}]]});return;}
+      settle();f3sModal({tone:'reveal',title:'THE STRONGEST CHAIN',body:'<p class="f3s-answer"><b>Means:</b> the boat hire slip. <b>Opportunity:</b> the toll receipt. <b>Motive:</b> the buy–sell agreement (or Thomas’s last message).</p><p>'+f3sEsc(why)+'</p>',actions:[['CONTINUE →',finish]]});
+    });
+    paint();
+  }
+  const P5_EV={SL:'Boat hire slip — Peter’s name and card, 17:40',TL:'Toll receipt — card 4417, 20:58',CL:'Police call log — 06:12, the morning after',AG:'Buy–sell agreement — the survivor gets 100%',MS:'Message log — Thomas to Peter, 19:58',TR:'Travel record — Elena Ward, 19:15 flight',LB:'Laboratory note — blood on the boat',RN:'Route note — the 41-minute drive'};
+  const P5_ROUNDS=[
+    {ask:'When were you last at Lake Ash?',say:'I haven’t been to Lake Ash since the summer.',opts:['TR','SL','LB','RN'],answer:1,hint:'Which document puts Peter’s name at the lake on the night of the 14th?',explain:'A boat was hired at Lake Ash at 17:40 on the 14th, in his name, on his card.',label:'BOAT HIRE SLIP',react:'Anyone can write a name on a slip.'},
+    {ask:'Where were you after Thomas left?',say:'I stayed in the office after he left at ten past eight. I never left The Lantern.',opts:['AG','LB','TL','TR'],answer:2,hint:'Which document shows his card moving away from The Lantern that night?',explain:'His card was used at the Lake Ash toll gate at 20:58 — a 41-minute drive from the car that left The Lantern at 20:16.',label:'TOLL RECEIPT',react:'…That card was in my wallet. It was always in my wallet.'},
+    {ask:'How did you learn Thomas was missing?',say:'I found out the next morning, like everyone else. Nobody told me where to look.',opts:['CL','SL','TL','MS'],answer:0,hint:'Look for something Peter said to the police before the boat was found.',explain:'At 06:12 Peter told the police to check the east dock. The boat was found there at 07:10.',label:'POLICE CALL LOG',react:'[a long silence]'},
+    {ask:'Did you have any reason to want Thomas gone?',say:'We were partners for twenty years. I had no reason to want him gone.',opts:['RN','AG','LB','TR'],answer:1,hint:'Which document shows what Peter would gain if Thomas were no longer there?',explain:'If either partner dies, the survivor takes 100% of The Lantern — about ₹5 crore. And Thomas had just promised to tell the board about the missing 2.40 crore.',label:'BUY–SELL AGREEMENT',react:'I want a lawyer.'}
+  ];
+  function p5Type(el,text,done){
+    if(reducedMotion){el.textContent=text;done&&done();return;}
+    let i=0;const tick=()=>{if(!el.isConnected)return;el.textContent=text.slice(0,++i);if(i<text.length)laterWait(tick,26);else done&&done();};tick();
+  }
+  function p5BuildInterview(screen){
+    const {docs,task}=f4Desk(screen,{file:'FILE 003 · PUZZLE 05',step:'THE CONFRONTATION',title:'FOUR ANSWERS. FOUR DOCUMENTS.',lead:'For each answer Peter gives, choose the document that says otherwise.'});
+    docs.classList.add('p5-docs');
+    docs.innerHTML='<div class="p5-tape"><div class="p5-rec"><i></i><b>REC</b><span>INTERVIEW ROOM 2 · 16 OCT</span></div><div class="p5-log" aria-live="polite"></div></div>';
+    const tape=docs.querySelector('.p5-tape'),log=tape.querySelector('.p5-log');
+    f3s.live=f3s.live||{};
+    const line=(cls,who,text,type)=>{const p=document.createElement('p');p.className=cls;p.innerHTML=`<b>${who}</b><span></span>`;log.append(p);const s=p.querySelector('span');if(type)p5Type(s,text,type===true?null:type);else s.textContent=text;p.scrollIntoView({block:'nearest',behavior:reducedMotion?'auto':'smooth'});return s;};
+    const end=()=>{tape.classList.add('off');tape.querySelector('.p5-rec b').textContent='STOPPED';task.classList.remove('settled');task.innerHTML=`<p class="f4-step">INTERVIEW ENDED</p><p class="f4-q">Peter Shaw has asked for a lawyer.</p><p class="f4-sub">Four answers, four documents. Now decide what it all means.</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit">MY CONCLUSION →</button></div>`;task.querySelector('.f4-submit').addEventListener('click',()=>f3sGo('p5-q2'));};
+    const round=i=>{
+      const r=P5_ROUNDS[i];
+      line('q','INTERVIEWER',r.ask);
+      line('a','PETER SHAW','“'+r.say+'”',()=>{
+        task.classList.remove('settled');
+        f4Ask(task,'p5-'+i,{q:'Which document contradicts this answer?',options:r.opts.map(k=>P5_EV[k]),answer:r.answer,hint:r.hint,explain:r.explain},()=>{
+          sfx('stamp');line('x','','CONTRADICTION ON RECORD — '+r.label);
+          f3s.live.round=i+1;saveF3S();
+          laterWait(()=>{line('r','PETER SHAW',r.react,()=>{if(i<3)laterWait(()=>round(i+1),1300);else{sfx('sting');laterWait(end,1400);}});},900);
+        },f3s,saveF3S);
+      });
+    };
+    const done=Math.min(4,f3s.live.round||0);
+    for(let i=0;i<done;i++){const r=P5_ROUNDS[i];line('q','INTERVIEWER',r.ask);line('a','PETER SHAW','“'+r.say+'”');line('x','','CONTRADICTION ON RECORD — '+r.label);line('r','PETER SHAW',r.react);}
+    if(done>=4)end();else laterWait(()=>round(done),700);
+  }
+  function p5BuildConclusion(screen){
+    const {docs,task}=f4Desk(screen,{file:'FILE 003 · PUZZLE 05',step:'YOUR CONCLUSION',title:'WHAT HAPPENED TO THOMAS REED?',lead:'The interview is over. Everything on record is in front of you.'});
+    docs.classList.add('f4-four');
+    docs.innerHTML=P5_ROUNDS.map(r=>f4Doc({tag:'CAUGHT',date:r.label,title:'“'+r.say+'”',body:r.explain})).join('');
+    f4Ask(task,'p5-conclusion',{q:'Based on everything on record: what happened to Thomas Reed?',options:['He vanished on his own and is alive somewhere.','He died in an accident at the lake. Peter’s lies are unrelated.','Peter Shaw followed Thomas to Lake Ash on the night of 14 October. Thomas did not come back, and the lake kept the body.','Nothing can be concluded from this file.'],answer:2,hint:'Four of Peter’s answers were contradicted by documents. Which explanation accounts for all of them?',explain:'The hired boat, the toll, the call to the east dock and the agreement all lead to the same night, the same lake and the same man. No body was recovered — but the lake is deep, cold and silent.'},()=>f3sGo('p5-q3'),f3s,saveF3S);
+  }
+  function p5BuildM(screen){
+    const {docs,task}=f4Desk(screen,{file:'FILE 003 · PUZZLE 05',step:'ONE LAST QUESTION',title:'WHO IS M?',lead:'Someone has been sending you these transmissions since the first file. You have read every one.'});
+    docs.classList.add('f4-four');
+    docs.innerHTML=[['FILE 003 · PUZZLE 01','“Find the person who knew what the published story left out.”'],['FILE 003 · PUZZLE 02','“A truth can survive without ever being printed.”'],['ARCHIVE METADATA','Source classification: PRESS / PRIVATE\nOriginal archive reference: D.C.\nVerification: WITHHELD'],['M’S CLOSING LETTER','“I’ve spent a great deal of time putting these pieces together.”']].map(([t,b])=>f4Doc({tag:'TRANSMISSION',date:t,title:'On the record',body:b})).join('');
+    const names=['Peter Shaw','Elena Ward','Daniel Cross','Someone not yet named'];
+    task.innerHTML=`<p class="f4-q">Who sent the transmissions?</p><p class="f4-sub">There is no right or wrong here. Put your answer on the record.</p><div class="f4-options" role="radiogroup">${names.map((n,i)=>`<button type="button" class="f4-opt" role="radio" aria-checked="false" data-i="${i}"><i>${'ABCD'[i]}</i><span>${n}</span></button>`).join('')}</div><div class="f4-actions"><button type="button" class="f4-btn f4-submit">PUT IT ON THE RECORD →</button></div>`;
+    let pick=null;const opts=[...task.querySelectorAll('.f4-opt')];
+    opts.forEach(b=>b.addEventListener('click',()=>{pick=Number(b.dataset.i);sfx('click');opts.forEach(o=>{o.classList.toggle('picked',o===b);o.setAttribute('aria-checked',String(o===b));});}));
+    task.querySelector('.f4-submit').addEventListener('click',()=>{
+      if(f3sBusy)return;if(pick===null){f3sToast('Choose an answer first.');return;}
+      f3s.live=f3s.live||{};f3s.live.mPick=names[pick];saveF3S();
+      f3sModal({tone:'good',title:'ON THE RECORD',body:`<p>You named: <b>${f3sEsc(names[pick])}</b>.</p><p>M does not confirm it. M does not deny it.</p>`,actions:[['CONTINUE →',()=>{f3sCloseModal();f3sGo('final');}]]});
+    });
+  }
   const F4_KEY='case25File004V1';
   F3S_CHAPTERS.push(['PUZZLE 01','RECONSTRUCT THE NIGHT'],['PUZZLE 02','THE MISSING PIECE']);
   const F4_CH1=F3S_CHAPTERS.length-2,F4_CH2=F3S_CHAPTERS.length-1;
