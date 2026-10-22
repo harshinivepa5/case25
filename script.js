@@ -937,6 +937,13 @@
     round = readRound(1);
     showHomeBoard(); playWallIntro();
   });
+  $('#devFile03Button').addEventListener('click',()=>{
+    progress.caseAccepted=true;progress.file02TransitionSeen=true;progress.fileTwoComplete=true;progress.file02Complete=true;
+    progress.file03WallSeen=true;progress.file03Revealed=true;progress.unlockedChapter=Math.max(3,Number(progress.unlockedChapter)||1);
+    progress.file03PuzzleComplete=false;
+    f3s={screen:'opening',done:{},attempts:{},drafts:{},picks:{},live:{}};saveF3S();
+    persistProgress();showHomeBoard();openFile03();
+  });
   $('#beginChapter')?.addEventListener('click',()=>{ localStorage.setItem('case25Chapter01Started','1'); $('#beginChapter').textContent='CHAPTER 01 READY ✓'; });
   $('#wallHotspot').addEventListener('click',()=>{ if($('#homeScene').classList.contains('archive-transitioning'))return; $('#dossierOpen').click(); });
   $('#dossierClose').addEventListener('click',()=>{ $('#homeScene').classList.remove('dossier-open'); $('#messageDossier').setAttribute('aria-hidden','true'); $('#wallHotspot').focus(); });

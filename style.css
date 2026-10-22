@@ -2258,3 +2258,8 @@ body:has(#secretLevelScene.active) #devFile02Button{display:none}
 @media(prefers-reduced-motion:reduce){.p5-rec i,.p5-log p{animation:none;opacity:1}}
 
 .claim-stamp{position:absolute;left:50%;top:50%;z-index:30;padding:.35em .9em;border:.28em solid #b3261a;border-radius:.2em;color:#b3261a;font:700 clamp(28px,5vw,64px) var(--type);letter-spacing:.14em;text-shadow:0 0 18px rgba(179,38,26,.45);mix-blend-mode:screen;pointer-events:none;opacity:0;white-space:nowrap}
+
+#devFile03Button{position:fixed;z-index:999;left:340px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
+#devFile03Button:hover{background:#2b1c0d;color:#ffe0a0}
+body.wall-cinematic #devFile03Button{opacity:0;pointer-events:none;transition:opacity .4s}
+body:has(#secretLevelScene.active) #devFile03Button{display:none}
