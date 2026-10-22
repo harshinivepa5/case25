@@ -2256,3 +2256,5 @@ body:has(#secretLevelScene.active) #devFile02Button{display:none}
 .p5-log .r span{color:#bda985;font-style:italic}
 @keyframes p5In{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.p5-rec i,.p5-log p{animation:none;opacity:1}}
+
+.claim-stamp{position:absolute;left:50%;top:50%;z-index:30;padding:.35em .9em;border:.28em solid #b3261a;border-radius:.2em;color:#b3261a;font:700 clamp(28px,5vw,64px) var(--type);letter-spacing:.14em;text-shadow:0 0 18px rgba(179,38,26,.45);mix-blend-mode:screen;pointer-events:none;opacity:0;white-space:nowrap}

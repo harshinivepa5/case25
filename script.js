@@ -1374,9 +1374,9 @@
     (async()=>{
       stage.animate([{opacity:0},{opacity:1}],{duration:900,easing:'ease-out'});
       bg.animate([{filter:'brightness(.08) saturate(.4)'},{filter:'brightness(.42) saturate(.65)'}],{duration:2600,easing:'ease-out'});
-      dossier.animate([{opacity:0,translate:'0 46px',scale:'.965'},{opacity:1,translate:'0 0',scale:'1'}],{duration:1300,delay:500,easing:'cubic-bezier(.2,.8,.25,1)',fill:'backwards'});
+      dossier.animate([{opacity:0,translate:'140px 0',rotate:'2.2deg',scale:'.97'},{opacity:1,translate:'0 0',rotate:'0deg',scale:'1'}],{duration:1500,delay:700,easing:'cubic-bezier(.16,.84,.3,1)',fill:'backwards'});setTimeout(()=>{if(alive())sfx('paper');},760);
       dossier.style.visibility='';
-      await wait(1750);if(!alive())return;
+      await wait(2250);if(!alive())return;sfx('stamp');
       extras.seal.style.opacity='';extras.seal.animate([{opacity:0,scale:'1.9'},{opacity:1,scale:'1'}],{duration:380,easing:'cubic-bezier(.3,1.2,.4,1)',fill:'backwards'});
       stage.animate([{transform:'translate(0,0)'},{transform:'translate(-2px,2px)'},{transform:'translate(1px,-1px)'},{transform:'translate(0,0)'}],{duration:200});
       await wait(450);if(!alive())return;
@@ -1420,8 +1420,15 @@
 
   $('#finalClaimButton')?.addEventListener('click',async ()=>{
     if (!reducedMotion) {
+      // the report is stamped CLAIMED, the lamp dips to black, and only then does the desk come back up
       $('#finStage').classList.remove('fin-ready');
-      await $('#completionStage').animate([{opacity:1,filter:'brightness(1)'},{opacity:0,filter:'brightness(1.6)'}],{duration:520,easing:'ease-in',fill:'forwards'}).finished.catch(()=>{});
+      const stamp=document.createElement('div');stamp.className='claim-stamp';stamp.setAttribute('aria-hidden','true');stamp.textContent='REWARD CLAIMED';
+      $('#secretRewardScene').append(stamp);sfx('stamp');
+      stamp.animate([{opacity:0,transform:'translate(-50%,-50%) rotate(-9deg) scale(2.6)'},{opacity:1,transform:'translate(-50%,-50%) rotate(-9deg) scale(1)',offset:.55},{opacity:1,transform:'translate(-50%,-50%) rotate(-9deg) scale(1)'}],{duration:620,easing:'cubic-bezier(.3,1.1,.4,1)',fill:'forwards'});
+      await new Promise(r=>setTimeout(r,1000));
+      await $('#completionStage').animate([{opacity:1,transform:'scale(1)',filter:'brightness(1)'},{opacity:0,transform:'scale(.965)',filter:'brightness(.15)'}],{duration:1200,easing:'ease-in-out',fill:'forwards'}).finished.catch(()=>{});
+      stamp.animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'});
+      await new Promise(r=>setTimeout(r,520));stamp.remove();
     }
     $('#completionStage').getAnimations().forEach(a=>a.cancel());
     $('#completionStage').hidden = true;
@@ -2463,7 +2470,7 @@
     if(!audioContext||audioContext.state!=='running')return;
     const c=audioContext,t0=c.currentTime;
     const tone=(f,d,type='sine',v=.08,f2=0,delay=0)=>{const o=c.createOscillator(),g=c.createGain(),t=t0+delay;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);};
-    ({click:()=>tone(620,.05,'square',.02),good:()=>{tone(523,.6,'sine',.06);tone(784,.7,'sine',.05,0,.12);},bad:()=>tone(120,.4,'sawtooth',.05,70),stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);}})[kind]?.();
+    ({click:()=>tone(620,.05,'square',.02),good:()=>{tone(523,.6,'sine',.06);tone(784,.7,'sine',.05,0,.12);},bad:()=>tone(120,.4,'sawtooth',.05,70),stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);},paper:()=>{const n=c.sampleRate*.45|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1700;g.gain.value=.06;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);}})[kind]?.();
   }
   const P4_STORY={kicker:'FILE 003 · PUZZLE 04',eyebrow:'LAKE ASH · OCTOBER 14',title:'THE LAST NIGHT AT LAKE ASH',button:'EXAMINE THE EVIDENCE',text:`Until now, you have read what the records could not prove.\n\nThe police have since reopened the lake evidence.\n\nA boat. A toll receipt. A laboratory note. And the last message Thomas Reed ever sent.\n\nSeven documents. One night.\n\nDecide what they mean.`};
   const P5_STORY={kicker:'FILE 003 · PUZZLE 05',eyebrow:'OCTOBER 16 · INTERVIEW ROOM 2',title:'THE CONFRONTATION',button:'BEGIN THE INTERVIEW',text:`Peter Shaw agreed to be interviewed.\n\nHe came alone. He declined a lawyer.\n\nThe recording starts now.\n\nHe will answer four questions.\n\nFor each answer, find the document that says otherwise.`};
