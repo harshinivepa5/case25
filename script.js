@@ -58,6 +58,7 @@
   let progress = readProgress();
   const persistProgress = () => localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
   let timers = [], clueIndex = 0, audioContext = null, audioNodes = [];
+  let soundBus = null; // must exist before the first showHomeBoard() -> stopSound() on page load
   // Wall intro state and artwork points; showHomeBoard() reads them on page load, so they live up here.
   let wallIntroRun = 0;
   const WALL_FOUR_CLASSES = ['wall-four-intro','wall-four-card','wall-four-string','wall-four-rest'];
@@ -71,7 +72,7 @@
   const WALL_THREE_CLASSES = ['wall-three-intro','wall-three-dot','wall-three-card','wall-three-type','wall-three-string','wall-three-rest'];
   let wallThreeRun = 0;
   const WALL_ART = {
-    pinOne: { x: 642, y: 322 }, pinTwo: { x: 1220, y: 245 }, completed: { x: 650, y: 408 }, twoDone: { x: 1216, y: 386 },
+    pinOne: { x: 642, y: 322 }, pinTwo: { x: 1220, y: 245 }, completed: { x: 650, y: 408 }, twoDone: { x: 1218, y: 379 },
     cardOne: { x: 648, y: 382, w: 140, h: 110 }, cardTwo: { x: 1217, y: 330, w: 160, h: 125 }
   };
   const WALL_INTRO_CLASSES = ['wall-intro','wall-one-dim','wall-dot-one','wall-stage-one','wall-stamp','wall-dot-two','wall-stage-two','wall-stage-string','wall-stage-rest'];
@@ -82,8 +83,13 @@
   function show(scene) {
     const current = scenes.find(s => s.classList.contains('active'));
     if (!goingBack && current && current !== scene) sceneHistory.push(current);
+    // BACK or SKIP can interrupt a timed push before it cleans up; never come back to a half-finished zoom
+    if (scene === scenes[0]) { scene.classList.remove('leaving'); scene.querySelectorAll('.title-match-art').forEach(n => n.remove()); }
+    if (scene === scenes[1]) scene.classList.remove('lake-pushing');
+    // smooth hand-off (see .scene-leaving / sceneSettle in style.css)
+    scene.classList.remove('scene-leaving');
+    if (current && current !== scene && !reducedMotion) { current.classList.add('scene-leaving'); setTimeout(() => current.classList.remove('scene-leaving'), 1300); }
     $('#backButton').disabled = !sceneHistory.length;
-    $('#f1Skip').hidden = !(scene === scenes[7] || scene === scenes[8]);
     scenes.forEach(s => s.classList.toggle('active', s === scene));
     const acceptedCaseOnly = scene === scenes[6] && scene.classList.contains('closure-revealed');
     document.body.classList.toggle('file-one-closed', acceptedCaseOnly);
@@ -839,11 +845,39 @@
     img.style.setProperty('--spot-x', `${sx}px`); img.style.setProperty('--spot-y', `${sy}px`);
     img.style.setProperty('--spot-w', `${TITLE_SPOT.w * scale}px`); img.style.setProperty('--spot-h', `${TITLE_SPOT.h * scale}px`);
     img.style.setProperty('--shift-x', `${innerWidth / 2 - r.left - fx}px`); img.style.setProperty('--shift-y', `${innerHeight / 2 - r.top - fy}px`);
-    title.classList.add('leaving');
+    title.classList.add('leaving'); playImpact(.8);
+    if (reducedMotion) {
+      later(() => { show(scenes[1]); setTimeout(() => title.classList.remove('leaving'), 1400); }, 1200);
+      return;
+    }
+    // Swap the dock photo for the real opening frame, tilted to sit inside the photo and carried through
+    // the same zoom, so the push lands on exactly the image the lake scene starts from.
+    const W = innerWidth, H = innerHeight, PUSH = 2200, TILT = 14, END_SCALE = 3.2;
+    // scene coordinates: the title image box starts at (r.left, r.top), which is above the viewport
+    const sx0 = r.left + fx, sy0 = r.top + fy, k = .5;
+    const match = document.createElement('img');
+    match.src = img.src.replace('title.png', 'opening.png'); match.alt = ''; match.className = 'title-match-art'; match.setAttribute('aria-hidden', 'true');
+    match.style.cssText = `position:absolute;z-index:31;left:0;top:0;width:${W}px;height:${H}px;object-fit:cover;transform-origin:0 0;pointer-events:none;display:block!important;opacity:0;filter:brightness(.8)`;
+    title.append(match);
+    const place = `translate(${sx0}px,${sy0}px) rotate(${-TILT}deg) scale(${k}) translate(${-W / 2}px,${-H / 2}px)`;
+    const zoom = (shift, scale, rot) => `translate(${sx0}px,${sy0}px) translate(${shift}) scale(${scale}) rotate(${rot}deg) translate(${-sx0}px,${-sy0}px) ${place}`;
+    const shift = `${W / 2 - sx0}px,${H / 2 - sy0}px`;
+    // lands at exactly 1.1x, the lake scene's first frame
+    const push = match.animate([
+      { transform: zoom('0px,0px', 1.015, 0), opacity: 0, offset: 0 },
+      { opacity: 0, offset: .1 },
+      { opacity: 1, offset: .35 },
+      { transform: zoom(shift, 1.1 / k, TILT), opacity: 1, offset: 1 }
+    ], { duration: PUSH, easing: 'cubic-bezier(.62,0,.32,1)', fill: 'forwards' });
+    // the lake only takes over once the push has landed on its first frame
     later(() => {
       show(scenes[1]);
-      setTimeout(() => title.classList.remove('leaving'), 1400);
-    }, 1200);
+      // keep pace with the lake art's own lakeSettle so the two stay identical while they cross-fade
+      push.cancel(); match.style.transformOrigin = '50% 50%'; match.style.opacity = '1';
+      match.animate([{ transform: 'scale(1.1)', filter: 'brightness(.8)' }, { transform: 'scale(1)', filter: 'none' }],
+        { duration: 3000, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'forwards' });
+      setTimeout(() => { title.classList.remove('leaving'); match.remove(); }, 1400);
+    }, PUSH);
   }
   // Requested flow: title (2), Lake Ash opening (1), clues (3), case file (4), login (5), decryption, transmission, homepage.
   const previewHome = new URLSearchParams(location.search).get('screen') === 'home';
@@ -851,7 +885,7 @@
   $('#playIntro').addEventListener('click', () => {
     const lake = $('#lakeScene');
     if (lake.classList.contains('lake-pushing')) return;
-    clearTimers(); startSound();
+    clearTimers(); startSound(); playImpact(1);
     if (reducedMotion) { runClues(); return; }
     // the camera pushes down the dock into the dark, then the clues begin
     lake.classList.add('lake-pushing');
@@ -904,7 +938,7 @@
     const code=digits.map(d=>d.value).join('');
     if(!/^\d{4}$/.test(code)){digits.find(d=>!d.value)?.focus();return;}
     if(code!=='6813'){$('#loginError').textContent='ACCESS DENIED · CHECK THE CASE RECORD.';$('#archivePanel').classList.remove('shake','pin-error');void $('#archivePanel').offsetWidth;$('#archivePanel').classList.add('shake','pin-error');digits.forEach(d=>d.value='');syncCodeState();digits[0].focus();setTimeout(()=>{$('#loginError').textContent='';$('#archivePanel').classList.remove('pin-error');},900);return;}
-    $('#loginError').textContent='';$('#archiveScene').classList.add('decrypting');let pct=0;
+    $('#loginError').textContent='';try{localStorage.setItem('case25LoginPassed','1');}catch{}$('#archiveScene').classList.add('decrypting');let pct=0;
     const statuses=[[0,'VERIFYING CREDENTIALS...'],[18,'LOCATING ARCHIVE FRAGMENTS...'],[36,'RESTORING DAMAGED TRANSMISSION...'],[58,'RECONSTRUCTING CASE FILE...'],[79,'VERIFYING RECORD INTEGRITY...'],[100,'ARCHIVE RECOVERED']];
     const fill=$('#archiveProgress .progress-track i'); fill.style.width='0%';
     const interval=setInterval(()=>{pct=Math.min(100,pct+2);fill.style.width=pct+'%';$('#decryptPercent').textContent=String(pct).padStart(2,'0');const current=statuses.reduce((a,s)=>pct>=s[0]?s:a,statuses[0]);$('#archiveProgress small').textContent=current[1];if(pct===100){clearInterval(interval);$('#archiveProgress small').textContent='ARCHIVE RECOVERED';setTimeout(()=>{$('#archiveScene').classList.remove('decrypting');$('#archiveScene').classList.add('unsealed');later(()=>file1Bars(showTransmission),500);},700);}},reducedMotion?20:120);
@@ -923,20 +957,6 @@
   }
   $('#skipTyping').addEventListener('click',()=>$('#transmissionCopy').classList.add('typing-done'));
   $('#openInvestigation').addEventListener('click',()=>{ clearTimers(); localStorage.setItem('case25HomeSeen','1'); show(scenes[6]); });
-  $('#devFile02Button').addEventListener('click',()=>{
-    ['case25RoundOneResultsV1', 'case25RoundTwoResultsV1', 'case25RoundThreeResultsV2', 'case25SecretLevelStateV1'].forEach(k => localStorage.removeItem(k));
-    secretTestMode = false;
-    progress.caseAccepted = true;
-    progress.file02TransitionSeen = true;
-    progress.fileTwoComplete = false;
-    progress.file02Complete = false;
-    progress.file03WallSeen = false;
-    progress.unlockedChapter = 1;
-    persistProgress();
-    selectRound(1);
-    round = readRound(1);
-    showHomeBoard(); playWallIntro();
-  });
   $('#beginChapter')?.addEventListener('click',()=>{ localStorage.setItem('case25Chapter01Started','1'); $('#beginChapter').textContent='CHAPTER 01 READY ✓'; });
   $('#wallHotspot').addEventListener('click',()=>{ if($('#homeScene').classList.contains('archive-transitioning'))return; $('#dossierOpen').click(); });
   $('#dossierClose').addEventListener('click',()=>{ $('#homeScene').classList.remove('dossier-open'); $('#messageDossier').setAttribute('aria-hidden','true'); $('#wallHotspot').focus(); });
@@ -1552,7 +1572,11 @@
   $('#backButton').addEventListener('click',()=>{
     if(!$('#f3Stage').hidden){closeF3Stage();return;}
     if($('#fileThreeFlow').classList.contains('visible')){closeFile03();return;}
-    const previous=sceneHistory.pop();if(!previous)return;
+    // the access code is entered once; BACK steps over the login afterwards
+    let loginPassed=false;try{loginPassed=localStorage.getItem('case25LoginPassed')==='1';}catch{}
+    let previous=sceneHistory.pop();
+    while(previous===scenes[4]&&loginPassed)previous=sceneHistory.pop();
+    if(!previous)return;
     clearTimers();goingBack=true;reenterScene(previous);
     goingBack=false;$('#backButton').disabled=!sceneHistory.length;
   });
@@ -1713,11 +1737,22 @@
   // dust per story slide: warm rooms get it, the signal and transmission slides stay clean
   const PHASE_DUST=[.9,1,1,1,1,1,0,.35,.3,0,.7,.7];
   // a hooded figure crosses the lamp light between "what remained" and the four faces
+  // The mystery figure walks like a person: the supplied SVG (assets/m-figure.png, 520×1443) is cut into body, two thighs and two
+  // shins. Hips swing, knees bend and the body bobs once per step. Polygons are art-pixel coordinates of that image.
+  function mWalkerHTML(){
+    const poly=pts=>pts.map(([x,y])=>`${(x/5.2).toFixed(2)}% ${(y/14.43).toFixed(2)}%`).join(',');
+    const seg=(cls,pts)=>`<div class="mseg ${cls}" style="clip-path:polygon(${poly(pts)})"><img src="assets/m-figure.png?v=5" alt="" draggable="false"></div>`;
+    const leg=(cls,kx,thigh,shin)=>`<div class="mleg ${cls}" style="--kx:${(kx/5.2).toFixed(2)}%">${seg('thigh',thigh)}${seg('shin',shin)}</div>`;
+    const far=leg('leg-far',410,[[335,690],[490,690],[490,1020],[343,1020],[336,860]],[[343,1005],[490,1005],[490,1443],[352,1443],[350,1300],[347,1150]]);
+    const near=leg('leg-near',285,[[197,690],[345,690],[345,860],[353,1020],[230,1020],[214,900],[197,830]],[[230,1005],[353,1005],[357,1150],[360,1300],[362,1443],[120,1443],[120,1290],[246,1290],[246,1200]]);
+    const torso=seg('torso',[[0,0],[520,0],[520,712],[197,712],[197,840],[0,840]]);
+    return `<div class="m-walker"><div class="m-flip"><div class="m-rig">${far}${near}${torso}</div></div></div>`;
+  }
   function mSilhouette(){
     const scene=$('#phaseTwoScene');let el=scene.querySelector('.m-pass');
     if(!el){
       el=document.createElement('div');el.className='m-pass';el.setAttribute('aria-hidden','true');
-      el.innerHTML='<i class="glow"></i><svg viewBox="0 0 140 300" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="mrim" x1="0" x2="1"><stop offset="0" stop-color="#2a1a0c"/><stop offset=".5" stop-color="#050403"/><stop offset="1" stop-color="#1b1109"/></linearGradient></defs><path fill="url(#mrim)" d="M70 6c22 0 36 16 38 38 1 9-1 17-5 24 14 8 26 30 30 62 5 52 4 100 4 170H4c0-70-1-118 4-170 4-32 16-54 30-62-4-7-6-15-5-24C35 22 48 6 70 6z"/><ellipse cx="70" cy="52" rx="19" ry="22" fill="#000"/></svg>';
+      el.innerHTML='<i class="glow"></i>'+mWalkerHTML();
       scene.append(el);
     }
     el.classList.remove('run');void el.offsetWidth;el.classList.add('run');
@@ -1725,7 +1760,9 @@
   }
   // ---------- File 001 story screens: transitions and aligned buttons ----------
   // The painted CONTINUE buttons (x, y, w, h as % of each artwork) get real hotspots that move with the art.
-  const PSTAGE_BUTTONS={1:[7.33,76.55,22.48,9.17],2:[76.7,80.4,19.9,8.1],3:[30.9,78.7,31.9,8.2]};
+  const PSTAGE_BUTTONS={1:[7.33,76.55,22.48,9.17],2:[76.7,80.4,19.9,8.1],3:[30.9,78.7,31.9,8.2],5:[0,0,0,0]};
+  // the dossier screen keeps a strip at the bottom free for its hint and button, so they never sit on a dossier's text
+  const PSTAGE_RESERVE={5:64};
   // story text is live over the blank art so each line can arrive on its own (art px of the painting; [text, x, y-centre, width, size class])
   const PTEXT={
     1:{w:1677,h:938,lines:[['CASE FILE 25',122,240,251,'eb'],['THOMAS REED',120,315,611,'ti'],['THE LAST KNOWN DAY',122,390,530,'su'],['Thomas Reed was a co-owner of',123,475,475,'bo'],['The Lantern, a live-music venue.',123,521,486,'bo'],['He went to Lake Ash.',123,604,315,'bo'],['He never returned.',123,650,277,'bo']]},
@@ -1750,6 +1787,7 @@
     Object.entries(PSTAGE_BUTTONS).forEach(([i,box])=>{
       const slide=phaseSlides[i];if(!slide||slide.querySelector('.pstage'))return;
       const st=document.createElement('div');st.className='pstage';
+      if(Number(i)===5)slide.querySelectorAll('.dossier-hotspot').forEach(b=>st.append(b));
       const btn=slide.querySelector('.phase-hotspot');if(btn){st.append(btn);Object.assign(btn.style,{left:box[0]+'%',top:box[1]+'%',width:box[2]+'%',height:box[3]+'%',right:'auto',bottom:'auto'});}
       if(Number(i)===1){
         const f=document.createElement('div');f.className='far-figure';f.setAttribute('aria-hidden','true');
@@ -1768,7 +1806,7 @@
   function layoutPstages(){
     Object.keys(PSTAGE_BUTTONS).forEach(i=>{
       const slide=phaseSlides[i],st=slide&&slide.querySelector('.pstage'),img=slide&&slide.querySelector('img');if(!st||!img)return;
-      const nw=img.naturalWidth,nh=img.naturalHeight,sw=slide.clientWidth,sh=slide.clientHeight;if(!nw||!sw)return;
+      const nw=img.naturalWidth,nh=img.naturalHeight,sw=slide.clientWidth,sh=slide.clientHeight-(PSTAGE_RESERVE[i]||0);if(!nw||!sw)return;
       const k=Math.min(sw/nw,sh/nh),w=nw*k,hh=nh*k;
       st.style.left=(sw-w)/2+'px';st.style.top=(sh-hh)/2+'px';st.style.width=w+'px';st.style.height=hh+'px';
     });
@@ -1782,24 +1820,33 @@
     const E='cubic-bezier(.45,0,.2,1)';
     pimg.style.willChange=nimg.style.willChange='transform,opacity';
     pimg.animate([{transform:'scale(1.065)'},{transform:`scale(${o.push})`}],{duration:o.D,easing:E,fill:'forwards'});
-    sp.animate([{opacity:1},{opacity:1,offset:.3},{opacity:0}],{duration:o.D,easing:'ease-in-out',fill:'forwards'});
+    // the live layer on each slide (hotspots, typed text, dossier curtains) rides the same push, so nothing drifts off the artwork
+    const pst=sp.querySelector('.pstage'),nst=sn.querySelector('.pstage');
+    if(pst)pst.animate([{transform:'scale(1.065)'},{transform:`scale(${o.push})`}],{duration:o.D,easing:E,fill:'forwards'});
+    if(nst)nst.animate([{transform:`scale(${o.land})`},{transform:'scale(1.065)'}],{duration:o.D+1200,delay:o.lag,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'});
+    sp.animate([{opacity:1},{opacity:1,offset:o.hold??.3},{opacity:0}],{duration:o.D,easing:'ease-in-out',fill:'forwards'});
     const cap=sp.querySelector('.phase-caption');if(cap)cap.animate([{opacity:1},{opacity:0}],{duration:600,fill:'forwards'});
     sn.animate([{opacity:0},{opacity:1}],{duration:o.D,delay:o.lag,easing:'ease-in-out',fill:'backwards'});
     nimg.animate([{transform:`scale(${o.land})`},{transform:'scale(1.065)'}],{duration:o.D+1200,delay:o.lag,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'});
-    setTimeout(()=>{[pimg,sp].forEach(n=>n.getAnimations().forEach(a=>a.cancel()));if(cap)cap.getAnimations().forEach(a=>a.cancel());pimg.style.transformOrigin='';pimg.style.willChange=nimg.style.willChange='';sp.classList.remove('mc-out');},o.D+o.lag+100);
+    setTimeout(()=>{[pimg,sp,pst].forEach(n=>n&&n.getAnimations().forEach(a=>a.cancel()));if(cap)cap.getAnimations().forEach(a=>a.cancel());pimg.style.transformOrigin='';pimg.style.willChange=nimg.style.willChange='';sp.classList.remove('mc-out');},o.D+o.lag+100);
   }
   function phaseMatchCut(prev,next){
     phaseCrossfade(prev,next,{D:1700,lag:400,push:1.1,land:1.1,origin:[95,430]});
     const fig=phaseSlides[next].querySelector('.far-figure');
     if(fig){fig.getAnimations().forEach(a=>a.cancel());fig.animate([{opacity:0},{opacity:0,offset:.5},{opacity:.9}],{duration:6500,fill:'forwards',easing:'ease-in-out'});}
   }
-  function phaseDissolve(prev,next){phaseCrossfade(prev,next,{D:1200,lag:250,push:1.09,land:1.09});}
+  // the incoming slide starts fading in on the click itself (no lag), over the outgoing one, which keeps its full brightness until the new one is mostly there
+  function phaseDissolve(prev,next){phaseCrossfade(prev,next,{D:1100,lag:0,push:1.09,land:1.09,hold:.5});}
   function phaseAmbience(index,prev){
     if(AMB.phase)AMB.phase.set(PHASE_DUST[index]??1);
     if(index===4)peopleStrings();
     if(index>=1&&index<=3)layoutPstages();
     if(!reducedMotion&&prev===0&&index===1)phaseMatchCut(prev,index);
     else if(!reducedMotion&&prev>=1&&prev<=3&&index>=2&&index<=4&&index===prev+1)phaseDissolve(prev,index);
+    // people <-> dossiers, and people -> the signal interception
+    else if(!reducedMotion&&((prev===4&&index===5)||(prev===5&&index===4)||(prev===4&&index===6)))phaseDissolve(prev,index);
+    // every other change of slide gets the same dissolve, so none of them cut or dip through black
+    else if(!reducedMotion&&prev>=0&&prev!==index)phaseDissolve(prev,index);
     if(!reducedMotion&&index===4&&prev===3)mSilhouette();
     if(index===1||index===2){fitPText(index);later(()=>playPText(index),reducedMotion?0:(index===1?1500:900));}
   }
@@ -2016,10 +2063,6 @@
     $$('.accept-lines p').forEach(line=>line.classList.add('revealed'));
     $('#acceptCase').classList.add('visible');$('#acceptCase').disabled=false;
   }
-  $('#f1Skip').addEventListener('click',()=>{
-    const onAccept=$('#phaseTwoScene').classList.contains('active')&&phaseSlides[11].classList.contains('active');
-    if(onAccept)$('#acceptCase').click();else skipFile01ToEnd();
-  });
   function startPhaseTwo(){
     if($('#phaseTwoScene').classList.contains('active'))return;
     clearTimers(); visitedPeople=new Set(); $('#recordsScene').classList.add('case-ready');
@@ -2046,7 +2089,7 @@
   $('#backToPeople').addEventListener('click',()=>{
     $('#personDetail').classList.remove('visible'); setPhase(4);
     $('.person-hotspot')?.focus();
-    laterWait(()=>setPhase(6),reducedMotion?0:1000);
+    laterWait(()=>setPhase(6),reducedMotion?0:2100);
   });
   function playTransitionClick(){
     if(!audioContext||audioContext.state!=='running')return;
@@ -2073,9 +2116,120 @@
     clearTimers();button.disabled=true;progress.caseAccepted=true;progress.chapterOneComplete=true;persistProgress();phaseSlides[11].classList.add('case-accepted');
     showHomeBoard(); if(progress.file02TransitionSeen) playWallIntro();
   });
-  function stopSound(){audioNodes.forEach(n=>{try{n.stop?.();n.disconnect?.();}catch{}});audioNodes=[];if(audioContext){audioContext.close().catch(()=>{});audioContext=null;}$('#soundToggle').innerHTML='◖)) <span>SOUND OFF</span>';$('#soundToggle').setAttribute('aria-label','Turn ambient sound on');}
-  async function startSound(){if(audioContext){if(audioContext.state==='suspended')await audioContext.resume();return;}const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;audioContext=new Ctx();await audioContext.resume();const master=audioContext.createGain();master.gain.value=.4;master.connect(audioContext.destination);const b=audioContext.createBuffer(1,audioContext.sampleRate*4,audioContext.sampleRate);const a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=(Math.random()*2-1)*.24;const src=audioContext.createBufferSource();src.buffer=b;src.loop=true;const lp=audioContext.createBiquadFilter();lp.type='lowpass';lp.frequency.value=520;const ng=audioContext.createGain();ng.gain.value=.38;src.connect(lp);lp.connect(ng);ng.connect(master);src.start();const wind=audioContext.createOscillator(),wg=audioContext.createGain();wind.type='sine';wind.frequency.value=86;wg.gain.value=.03;wind.connect(wg);wg.connect(master);wind.start();const droneA=audioContext.createOscillator(),droneB=audioContext.createOscillator(),dg=audioContext.createGain();droneA.type='sine';droneB.type='triangle';droneA.frequency.value=55;droneB.frequency.value=82.4;dg.gain.value=.035;droneA.connect(dg);droneB.connect(dg);dg.connect(master);droneA.start();droneB.start();const heart=audioContext.createOscillator(),hg=audioContext.createGain();heart.frequency.value=48;hg.gain.value=.0001;heart.connect(hg);hg.connect(master);heart.start();const t=audioContext.currentTime+.5;for(let beat=0;beat<80;beat++)for(const off of [0,.17]){const x=t+beat*1.2+off;hg.gain.setValueAtTime(.0001,x);hg.gain.exponentialRampToValueAtTime(off?.07:.11,x+.045);hg.gain.exponentialRampToValueAtTime(.0001,x+.22);}audioNodes.push(src,wind,droneA,droneB,heart,lp,ng,wg,dg,hg);$('#soundToggle').innerHTML='◖)) <span>SOUND ON</span>';$('#soundToggle').setAttribute('aria-label','Turn ambient sound off');}
-  $('#soundToggle').addEventListener('click',()=>audioContext?stopSound():startSound());
+  function stopSound(){audioNodes.forEach(n=>{try{n.stop?.();n.disconnect?.();}catch{}});audioNodes=[];soundBus=null;if(audioContext){audioContext.close().catch(()=>{});audioContext=null;}$('#soundToggle').innerHTML='◖)) <span>SOUND OFF</span>';$('#soundToggle').setAttribute('aria-label','Turn ambient sound on');}
+  // Ambient score, synthesised live (no audio files): a slowly swelling dissonant drone in a reverberant room, held strings, a minor-key
+  // pulse, a heartbeat that never stops, and rare events (sub-bass hits, bell clusters, a distant creak) so the room never feels settled.
+  function playImpact(power = 1) {
+    const ac = audioContext; if (!ac || !soundBus || ac.state !== 'running') return;
+    const t = ac.currentTime, osc = ac.createOscillator(), g = ac.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(95, t); osc.frequency.exponentialRampToValueAtTime(30, t + .9);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.7 * power, t + .03); g.gain.exponentialRampToValueAtTime(.0001, t + 2.4);
+    osc.connect(g); g.connect(soundBus); osc.start(t); osc.stop(t + 2.5);
+    if (power > .5) { // a cold dissonant stab over the boom
+      [466.16, 493.88, 698.46].forEach(f => { const s = ac.createOscillator(), sg = ac.createGain(); s.type = 'sawtooth'; s.frequency.value = f; sg.gain.setValueAtTime(.0001, t);
+        sg.gain.exponentialRampToValueAtTime(.05 * power, t + .02); sg.gain.exponentialRampToValueAtTime(.0001, t + 1.6); s.connect(sg); sg.connect(soundBus); s.start(t); s.stop(t + 1.7); });
+    }
+    const n = ac.createBufferSource(), nf = ac.createBiquadFilter(), ng = ac.createGain();
+    n.buffer = soundBus.noise; nf.type = 'lowpass'; nf.frequency.setValueAtTime(900, t); nf.frequency.exponentialRampToValueAtTime(90, t + 1.2);
+    ng.gain.setValueAtTime(.0001, t); ng.gain.exponentialRampToValueAtTime(.35 * power, t + .02); ng.gain.exponentialRampToValueAtTime(.0001, t + 1.4);
+    n.connect(nf); nf.connect(ng); ng.connect(soundBus); n.start(t); n.stop(t + 1.5);
+  }
+  // Once the viewer switches sound off it stays off: scene changes call startSound() too, and must not turn it back on.
+  let soundMuted = false;
+  try { soundMuted = localStorage.getItem('case25SoundMuted') === '1'; } catch {}
+  const setSoundMuted = m => { soundMuted = m; try { localStorage.setItem('case25SoundMuted', m ? '1' : '0'); } catch {} };
+  async function startSound() {
+    if (soundMuted) return;
+    if (audioContext) { if (audioContext.state === 'suspended') await audioContext.resume(); return; }
+    const Ctx = window.AudioContext || window.webkitAudioContext; if (!Ctx) return;
+    const ac = audioContext = new Ctx({ latencyHint: 'playback' }); await ac.resume();
+    if (audioContext !== ac) return; // switched off while the browser was still unlocking audio
+    const rate = ac.sampleRate, now = ac.currentTime, rand = (a, b) => a + Math.random() * (b - a);
+    const master = ac.createGain(), hp = ac.createBiquadFilter(), comp = ac.createDynamicsCompressor();
+    hp.type = 'highpass'; hp.frequency.value = 26; // nothing useful below the sub; keeps the low end tight
+    master.gain.setValueAtTime(.0001, now); master.gain.exponentialRampToValueAtTime(.7, now + 4);
+    master.connect(hp); hp.connect(comp); comp.connect(ac.destination);
+    // a cold, long room: decaying noise as the impulse response
+    const ir = ac.createBuffer(2, rate * 4, rate);
+    for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2.8); }
+    const verb = ac.createConvolver(), wet = ac.createGain(); verb.buffer = ir; wet.gain.value = .55; verb.connect(wet); wet.connect(master);
+    const bus = ac.createGain(); bus.connect(master); bus.connect(verb);
+    const noise = ac.createBuffer(1, rate * 6, rate), nd = noise.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+    bus.noise = noise; soundBus = bus;
+    const nodes = [];
+    const lfo = (freq, depth, target) => { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = freq; g.gain.value = depth; o.connect(g); g.connect(target); o.start(); nodes.push(o, g); };
+    // the drone: detuned low saws, a sub, and a minor second that never resolves, swelling under a sweeping low-pass
+    const dlp = ac.createBiquadFilter(), dg = ac.createGain(); dlp.type = 'lowpass'; dlp.frequency.value = 210; dlp.Q.value = 2.5; dg.gain.value = .13;
+    lfo(.045, 90, dlp.frequency); lfo(.07, .05, dg.gain);
+    [['sawtooth', 55, 0], ['sawtooth', 55, 9], ['sine', 27.5, 0], ['triangle', 58.27, 0], ['sine', 82.4, -6]].forEach(([type, f, cents]) => {
+      const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.value = f; o.detune.value = cents; g.gain.value = type === 'sawtooth' ? .3 : .45; o.connect(g); g.connect(dlp); o.start(); nodes.push(o, g);
+    });
+    dlp.connect(dg); dg.connect(bus); nodes.push(dlp, dg);
+    // strings: two sawtooths a semitone apart (E and F) behind a soft low-pass, shivering and swelling in and out like a held bow
+    const slp = ac.createBiquadFilter(), sg = ac.createGain(); slp.type = 'lowpass'; slp.frequency.value = 1100; slp.Q.value = .7; sg.gain.value = .02;
+    lfo(.035, .022, sg.gain); lfo(5.4, 6, slp.frequency);
+    [[329.63, -9], [329.63, 11], [349.23, 0], [493.88, 6]].forEach(([f, cents]) => {
+      const o = ac.createOscillator(), g = ac.createGain(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = cents; g.gain.value = .5; lfo(5.2 + Math.random(), 7, o.detune); o.connect(g); g.connect(slp); o.start(); nodes.push(o, g);
+    });
+    slp.connect(sg); sg.connect(bus); nodes.push(slp, sg);
+    // pulse: a dark minor-key ostinato (E phrygian, with the flat second leaning on the root) that fades in once the room has settled
+    const alp = ac.createBiquadFilter(), ag = ac.createGain(); alp.type = 'lowpass'; alp.frequency.value = 2400; ag.gain.setValueAtTime(.0001, now); ag.gain.exponentialRampToValueAtTime(.11, now + 22);
+    alp.connect(ag); ag.connect(bus); nodes.push(alp, ag);
+    const SEQ = [0, 7, 12, 7, 0, 7, 12, 8, 0, 7, 12, 7, 0, 7, 13, 12], STEP = 60 / 66 / 2;
+    const pluck = (t, semis) => { const o = ac.createOscillator(), f = ac.createBiquadFilter(), g = ac.createGain(); o.type = 'sawtooth'; o.frequency.value = 82.41 * Math.pow(2, semis / 12);
+      f.type = 'lowpass'; f.Q.value = 5; f.frequency.setValueAtTime(1800, t); f.frequency.exponentialRampToValueAtTime(220, t + .28);
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.9, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + .34); o.connect(f); f.connect(g); g.connect(alp); o.start(t); o.stop(t + .36); };
+    let stepAt = now + 1.5, stepNo = 0;
+    // heartbeat: scheduled just ahead of the clock so it can run forever; it tightens a little the longer you stay
+    const thump = (t, v) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(70, t); o.frequency.exponentialRampToValueAtTime(36, t + .16);
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + .035); g.gain.exponentialRampToValueAtTime(.0001, t + .3); o.connect(g); g.connect(bus); o.start(t); o.stop(t + .32); };
+    let beatAt = now + 1.5, period = 1.45; const born = now;
+    const cold = (t) => { // a bell cluster with a minor second, long decay, mostly reverb
+      [[329.6, .05], [349.2, .035], [659.3, .018]].forEach(([f, v]) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = f * rand(.998, 1.002);
+        g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + 5); o.connect(g); g.connect(bus); o.start(t); o.stop(t + 5.2); });
+    };
+    const creak = (t) => { const n = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain(); n.buffer = noise; n.loop = true; f.type = 'bandpass'; f.Q.value = 14;
+      f.frequency.setValueAtTime(rand(500, 900), t); f.frequency.exponentialRampToValueAtTime(rand(140, 260), t + 1.6);
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.09, t + .4); g.gain.exponentialRampToValueAtTime(.0001, t + 1.7); n.connect(f); f.connect(g); g.connect(bus); n.start(t, rand(0, 4)); n.stop(t + 1.8); };
+    let nextEvent = now + rand(8, 14);
+    const tick = setInterval(() => {
+      if (ac.state !== 'running') return;
+      period = Math.max(1.05, 1.45 - (ac.currentTime - born) / 400);
+      while (stepAt < ac.currentTime + 1.5) { pluck(stepAt, SEQ[stepNo++ % SEQ.length]); stepAt += STEP; }
+      while (beatAt < ac.currentTime + 1.5) { thump(beatAt, .5); thump(beatAt + .19, .32); beatAt += period; }
+      if (ac.currentTime > nextEvent) { const r = Math.random(); if (r < .35) cold(ac.currentTime + .1); else if (r < .7) creak(ac.currentTime + .1); else playImpact(.45); nextEvent = ac.currentTime + rand(9, 18); }
+    }, 400);
+    nodes.push({ stop() { clearInterval(tick); } });
+    audioNodes.push(...nodes);
+    $('#soundToggle').innerHTML = '◖)) <span>SOUND ON</span>'; $('#soundToggle').setAttribute('aria-label', 'Turn ambient sound off');
+  }
+  // Sound is on by default. Browsers only allow audio after a gesture, so start now if this one allows it, otherwise on the first
+  // click or key press (not on the sound button itself, whose own click decides).
+  (async () => {
+    if (soundMuted) return;
+    const Ctx = window.AudioContext || window.webkitAudioContext; if (!Ctx) return;
+    const probe = new Ctx(), allowed = probe.state === 'running'; probe.close().catch(() => {});
+    if (allowed) { startSound(); return; }
+    const unlock = e => {
+      if (e.target.closest?.('#soundToggle')) return;
+      ['pointerdown', 'keydown', 'touchstart'].forEach(t => removeEventListener(t, unlock, true));
+      startSound();
+    };
+    ['pointerdown', 'keydown', 'touchstart'].forEach(t => addEventListener(t, unlock, true));
+  })();
+  // Fullscreen: hidden where the browser has no Fullscreen API (e.g. iPhone Safari).
+  const fsButton = $('#fullscreenButton'), fsRoot = document.documentElement;
+  const fsRequest = fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen;
+  const fsActive = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+  const paintFullscreen = () => { fsButton.textContent = fsActive() ? '⤡ EXIT FULLSCREEN' : '⤢ FULLSCREEN'; fsButton.setAttribute('aria-label', fsActive() ? 'Exit full screen' : 'Enter full screen'); };
+  if (!fsRequest) fsButton.hidden = true;
+  fsButton.addEventListener('click', () => {
+    if (fsActive()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    else fsRequest.call(fsRoot).catch?.(() => {});
+  });
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(t => document.addEventListener(t, paintFullscreen));
+  paintFullscreen();
+  $('#soundToggle').addEventListener('click',()=>{ if (audioContext) { setSoundMuted(true); stopSound(); } else { setSoundMuted(false); startSound(); } });
   // ---------------------------------------------------------------------------------------------
   // File 03 stage: four puzzles played directly on the supplied artwork (assets/file-003).
   // Every control is laid over the control painted into its screen. Boxes are [x, y, w, h] in that
@@ -2220,6 +2374,15 @@
     if(def.focus){const img=screen.querySelector('.f3s-art'),apply=()=>{const W=img.naturalWidth,H=img.naturalHeight,mid=`f3sFocus-${id}`;
       layer.insertAdjacentHTML('afterbegin',`<svg class="f3s-dim" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><defs><filter id="${mid}-b"><feGaussianBlur stdDeviation="14"/></filter><mask id="${mid}"><rect width="${W}" height="${H}" fill="#fff"/><g filter="url(#${mid}-b)">${def.focus.map(([x,y,w,h])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="#000"/>`).join('')}</g></mask></defs><rect width="${W}" height="${H}" fill="#050302" mask="url(#${mid})"/></svg>`);};
       if(img.complete&&img.naturalWidth)apply();else img.addEventListener('load',apply,{once:true});}
+    // Puzzles 1 and 2 have no sidebar in their artwork (3 and 4 do), so draw the same one: every puzzle, done / here / locked.
+    if(def.kind!=='cover'&&def.kind!=='message'&&(def.puzzle===0||def.puzzle===1)){
+      const last=['p1-q4','p2-q4','p3-q4','p4-q4'],ico={
+        doc:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z M14 3v4h4 M9 12h6 M9 16h6"/></svg>',
+        lock:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3 M12 15v2"/></svg>',
+        tick:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>'};
+      const items=[...F3S_CHAPTERS.slice(0,4).map(([,t],i)=>[t,i===def.puzzle?'current':f3s.done[last[i]]?'done':'locked']),['THE FINAL TRANSMISSION',progress.file03PuzzleComplete?'done':'locked']];
+      add(`<aside class="f3s-rail" aria-label="Puzzle progress"><header><b>CASE 25</b><span>THE LAST TRANSMISSION</span></header><ol>${items.map(([t,st],i)=>`<li class="${st}"${st==='current'?' aria-current="step"':''}><span class="f3s-rail-icon">${st==='locked'?ico.lock:ico.doc}</span><span class="f3s-rail-text"><small>PUZZLE ${i+1}</small>${t}</span>${st==='done'?`<span class="f3s-rail-tick" aria-label="Completed">${ico.tick}</span>`:''}</li>`).join('')}</ol></aside>`);
+    }
     (def.review||[]).forEach(([box,n])=>add(`<button type="button" class="f3s-hit" style="${f3sBox(box)}" aria-label="Review ${F3S_CHAPTERS[n][0].toLowerCase()}: ${F3S_CHAPTERS[n][1].toLowerCase()}"></button>`).addEventListener('click',()=>f3sReview(n)));
     if(def.kind==='cover')add(`<button type="button" class="f3s-hit f3s-go" style="${f3sBox(def.begin)}" aria-label="Begin investigation"></button>`).addEventListener('click',()=>f3sGo(def.next));
     if(def.kind==='message'){
@@ -2271,7 +2434,7 @@
       nodes[part].classList.add('shown');ch=Math.min(p.text.length,ch+2);nodes[part].textContent=p.text.slice(0,ch);
       if(ch>=p.text.length){part++;ch=0;laterWait(step,p.cls?500:30);}else laterWait(step,p.text[ch-1]==='\n'?140:26);};
     laterWait(step,1300);
-    screen.addEventListener('click',e=>{if(screen.classList.contains('typing')&&!e.target.closest('.f3s-skip,.f3s-retry'))finish();});
+    screen.addEventListener('click',e=>{if(screen.classList.contains('typing')&&!e.target.closest('.f3s-skip'))finish();});
   }
   function f3sPaintPick(screen,i){f3q('.f3s-opt',screen).forEach((b,n)=>{b.classList.toggle('picked',n===i);b.setAttribute('aria-checked',String(n===i));});}
   function f3sMarkAnswered(screen,id,def){
@@ -2360,23 +2523,6 @@
   }
   $('#f3sList').addEventListener('click',()=>{const target=$('#f3sList').dataset.target;if(target&&$('#f3sChapter').hidden){f3sCloseModal();f3sGo(target,{resume:true});}});
   $('#f3sReturn').addEventListener('click',()=>{if(f3s.reviewFrom&&$('#f3sChapter').hidden){f3sCloseModal();f3sGo(f3s.reviewFrom,{resume:true});}});
-  // Testing shortcut: wipe File 03 answers and attempts and start again from M's opening message.
-  $('#f3sRetry').addEventListener('click',()=>{
-    if($('#f3Stage').dataset.mode==='f4'){f4Retry();return;}
-    if($('#f3Stage').dataset.mode==='f5'){f5Retry();return;}
-    if(!$('#f3sChapter').hidden)return;
-    f3s={screen:'opening',done:{},attempts:{},drafts:{},picks:{}};saveF3S();
-    progress.file03PuzzleComplete=false;persistProgress();file03.p3.complete=false;saveFile03();paintProgress();
-    f3sCloseModal();f3sGo('opening');
-  });
-  // Testing shortcut: jump past the current File 03 screen without answering.
-  $('#f3sSkip').addEventListener('click',()=>{
-    if($('#f3Stage').dataset.mode==='f4'){f4Skip();return;}
-    if($('#f3Stage').dataset.mode==='f5'){f5Skip();return;}
-    if(!$('#f3sChapter').hidden)return;
-    const def=F3S_SCREENS[f3s.screen];f3sCloseModal();
-    if(def.next)f3sGo(def.next);else f3sFinish();
-  });
   $('#f3sModal').addEventListener('keydown',e=>{const m=$('#f3sModal');if(e.key==='Escape'&&(m.classList.contains('tone-docs')||m.classList.contains('tone-hint')))f3sCloseModal();});
   // ---------------------------------------------------------------------------------------------
   // Cinematic story scenes for Files 004–005: slow-moving artwork or a drawn stage with moving figures,

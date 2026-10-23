@@ -124,8 +124,8 @@
 .phase-two{background:#030405;isolation:isolate;z-index:25}
 .phase-slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;background:#030405;transition:opacity .9s ease,visibility .9s}
 .phase-slide.active{opacity:1;visibility:visible;pointer-events:auto}
-.phase-slide>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#030405;transform:scale(1.025);filter:brightness(.82) saturate(.82);transition:filter 1.4s,transform 8s cubic-bezier(.2,.7,.2,1)}
-.phase-slide.active>img{transform:scale(1.065);filter:brightness(.94) saturate(.9)}
+.phase-slide>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#030405;transform:scale(1.065);filter:brightness(.94) saturate(.9)}
+.phase-slide.active>img{filter:brightness(.94) saturate(.9)}
 .phase-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 52%,rgba(0,0,0,.38) 100%);opacity:.72}
 .phase-caption{position:absolute;left:50%;bottom:7%;transform:translateX(-50%);color:#ddc496;text-align:center;font:10px var(--mono);letter-spacing:.24em;text-shadow:0 2px 10px #000;animation:phaseOpacity 1.1s .5s both}
 .phase-caption span{display:block;margin-top:10px;color:#9d947e;font-size:8px;letter-spacing:.2em}
@@ -302,7 +302,7 @@ body.file-one-closed .grain,body.file-one-closed #soundToggle,body.file-one-clos
 .home.board-mode .file-three.unlocked{opacity:.94;filter:none;background:linear-gradient(145deg,#d4c19a,#a88c5e);color:#241c12;border-color:#c89d55;box-shadow:0 0 36px #d69a4655,0 18px 38px #000c}
 .home.board-mode .file-three.unlocked small{color:#8d342c;border-color:#8d342c}
 .home.board-mode .file-three:focus-visible{outline:2px solid #e9c786;outline-offset:6px}
-.home.closure-revealed .file-two,.home.closure-revealed .file-three{display:flex}
+.home.closure-revealed .file-two{display:flex}
 .home.closure-revealed .file-two{left:58%;top:39%;width:min(220px,18vw);min-height:120px;padding:17px 16px 13px;gap:8px;transform:rotate(2deg)}
 .home.closure-revealed .file-three{left:39%;top:62%;width:min(220px,18vw);min-height:120px;padding:17px 16px 13px;gap:8px;transform:rotate(-2deg)}
 .home.evidence-flicker:after{content:"";position:absolute;z-index:8;inset:0;background:rgba(8,6,3,.24);pointer-events:none;animation:evidenceFlicker .7s ease-out both}
@@ -1357,15 +1357,13 @@ body.file-one-closed .grain,body.file-one-closed #soundToggle,body.file-one-clos
 @media(max-width:720px){.dossier-arrow{width:36px;height:36px}.dossier-arrow-one-prev,.dossier-arrow-three-prev{left:25%}.dossier-arrow-one-next,.dossier-arrow-three-next{left:49%}.dossier-arrow-two-prev,.dossier-arrow-four-prev{left:75%}.dossier-arrow-two-next,.dossier-arrow-four-next{left:96%}}
 
 /* Temporary local testing control; remove when File 002 testing is complete. */
-#devFile02Button{position:fixed;z-index:999;left:20px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
-#devFile02Button:hover{background:#2b1c0d;color:#ffe0a0}
 /* Title opens on the CASE 25 lettering over black, then the whole artwork eases in evenly behind it. */
 @property --title-bg{syntax:'<number>';inherits:false;initial-value:0}
 .title-scene.active .reference-stage-art{-webkit-mask-image:radial-gradient(ellipse 37% 17% at center,#000 70%,transparent 100%),linear-gradient(rgba(0,0,0,var(--title-bg)),rgba(0,0,0,var(--title-bg)));mask-image:radial-gradient(ellipse 37% 17% at center,#000 70%,transparent 100%),linear-gradient(rgba(0,0,0,var(--title-bg)),rgba(0,0,0,var(--title-bg)));-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;animation:referenceHold 9s ease-in-out both,titleBackgroundFade 2.2s .6s ease-in-out both,titleBackgroundLight 3.4s .6s cubic-bezier(.22,.61,.36,1) both}
 @keyframes titleBackgroundFade{from{--title-bg:0}to{--title-bg:1}}
 @keyframes titleBackgroundLight{from{filter:brightness(.62) contrast(2.3)}to{filter:none}}
 @media(prefers-reduced-motion:reduce){.title-scene.active .reference-stage-art{-webkit-mask-image:none;mask-image:none}}
-#backButton{position:fixed;z-index:999;left:160px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
+#backButton{position:fixed;z-index:999;left:20px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
 #backButton:hover:not(:disabled){background:#2b1c0d;color:#ffe0a0}
 #backButton:disabled{opacity:.35;cursor:default}
 
@@ -1576,8 +1574,6 @@ body.file-one-closed .grain,body.file-one-closed #soundToggle,body.file-one-clos
 .home .file03-art-card .file03-art-rule{top:59%;left:22%;right:18%;width:auto;height:calc(var(--s)*1.4px);margin:0;background:linear-gradient(90deg,transparent,rgba(160,45,35,.85) 12%,rgba(160,45,35,.85) 88%,transparent)}
 .home .file03-art-card .file03-art-cta{top:65%;font-size:calc(var(--s)*15.5px);letter-spacing:.05em;color:#a22b24}
 /* Testing-only skip for File 03, matching the TEST FILE 002 button. */
-.f3s-skip{position:absolute;z-index:80;right:20px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
-.f3s-skip:hover{background:#2b1c0d;color:#ffe0a0}
 /* Shown while reviewing a finished puzzle: jumps back to where the player left off. */
 .f3s-return{position:absolute;z-index:80;left:50%;bottom:20px;transform:translateX(-50%);padding:11px 20px;border:1.5px solid #e6b866;background:rgba(16,11,7,.94);color:#f2d39a;font:12px var(--mono);letter-spacing:.16em;cursor:pointer;box-shadow:0 0 18px rgba(232,170,80,.35)}
 .f3s-return:hover,.f3s-return:focus-visible{outline:none;box-shadow:0 0 26px rgba(232,170,80,.6)}
@@ -1589,8 +1585,6 @@ body.file-one-closed .grain,body.file-one-closed #soundToggle,body.file-one-clos
 /* Completed File 03: swap INVESTIGATE → for COMPLETED, the way File 01 shows it. */
 .home.file-three-completed .file03-art-card .file03-art-cta{font-size:0}
 .home.file-three-completed .file03-art-card .file03-art-cta:after{content:"CLASSIFIED";font-size:calc(var(--s)*17px);letter-spacing:.06em}
-.f3s-retry{position:absolute;z-index:80;right:96px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
-.f3s-retry:hover{background:#2b1c0d;color:#ffe0a0}
 /* Soft dimming of decorative art around a question's focus areas (see `focus` in the File 03 screen map). */
 .f3s-dim{position:absolute;inset:0;width:100%;height:100%;opacity:.42;pointer-events:none;z-index:0}
 .f3s-layer>.f3s-art{z-index:-1}
@@ -1700,9 +1694,6 @@ body.file-one-closed .grain,body.file-one-closed #soundToggle,body.file-one-clos
 .home.home.home .wall-light{background:radial-gradient(ellipse 46% 44% at 50% 50%,rgba(255,140,36,.02) 0%,rgba(255,130,32,.03) 30%,rgba(255,122,28,.12) 46%,rgba(236,96,20,.08) 60%,rgba(180,70,14,.03) 78%,transparent 94%)}
 .home:not(.file-two-completed) .wall-light-two{filter:brightness(1.15)}
 /* Testing-only skip for File 01 (jumps to ACCEPT CASE; press again to accept), next to the other test buttons. */
-#f1Skip{position:fixed;z-index:999;left:252px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
-#f1Skip:hover{background:#2b1c0d;color:#ffe0a0}
-#f1Skip[hidden]{display:none}
 
 /* ---- File 002 reveal, reworked: the wall stays visible but dark (no black, no cut-out ovals); light rises on File 002 only,
    File 01 simply stays unlit, then the whole wall lifts. Glow pools are held back until the end. ---- */
@@ -1723,7 +1714,7 @@ body.file-one-closed .grain,body.file-one-closed #soundToggle,body.file-one-clos
 .f2c-caret{display:inline-block;width:0;height:.95em;margin:0 -1px -.1em 0;border-right:calc(var(--s)*1.6px) solid #3a2216;vertical-align:baseline;animation:f2cBlink .8s steps(1) infinite}
 @keyframes f2cBlink{50%{border-color:transparent}}
 /* No test buttons over the cinematic. */
-body.wall-cinematic #devFile02Button,body.wall-cinematic #backButton,body.wall-cinematic #f1Skip{opacity:0;pointer-events:none;transition:opacity .4s}
+body.wall-cinematic #backButton{opacity:0;pointer-events:none;transition:opacity .4s}
 /* Only the four line boxes are positioned; letters and caret flow inline inside them. */
 .file02-card-text .ch,.file02-card-text .f2c-caret{position:static;left:auto;transform:none}
 /* The dark under-layer uses the blank card too, so no old lettering ghosts through while the light rises. */
@@ -2015,7 +2006,6 @@ body.wall-cinematic #devFile02Button,body.wall-cinematic #backButton,body.wall-c
 .f5-stamp{top:72%}
 
 /* The test shortcut sits over the painted File 02 screens; the real BACK button stays. */
-body:has(#secretLevelScene.active) #devFile02Button{display:none}
 
 
 /* File 002 opening: signal transition, then the unlocked-level notice types itself onto clean paper */
@@ -2196,7 +2186,7 @@ body:has(#secretLevelScene.active) #devFile02Button{display:none}
 .m-pass svg{position:absolute;bottom:-2%;left:0;height:78%;width:auto;transform:translateX(-30vw);opacity:0;filter:drop-shadow(0 0 12px rgba(0,0,0,.9))}
 .m-pass.run .glow{animation:mGlow 4s ease-in-out both}
 .m-pass.run svg{animation:mWalk 4s linear both}
-@keyframes mWalk{0%{transform:translateX(-30vw) translateY(0);opacity:0}10%{opacity:.92}50%{transform:translateX(46vw) translateY(-1.2%)}90%{opacity:.92}100%{transform:translateX(112vw) translateY(0);opacity:0}}
+@keyframes mWalk{0%{transform:translateX(-30vw);opacity:0}10%{opacity:.95}50%{transform:translateX(46vw)}90%{opacity:.95}100%{transform:translateX(112vw);opacity:0}}
 @keyframes mGlow{0%{transform:translateX(-45vw);opacity:0}15%{opacity:1}50%{transform:translateX(34vw)}85%{opacity:1}100%{transform:translateX(115vw);opacity:0}}
 @media(prefers-reduced-motion:reduce){.m-pass,.amb-canvas{display:none!important}}
 
@@ -2227,7 +2217,7 @@ body:has(#secretLevelScene.active) #devFile02Button{display:none}
 
 
 /* story screens: hotspots ride on the art, photo match-cut, distant figure */
-.pstage{position:absolute;z-index:3;pointer-events:none;container-type:inline-size;transform:scale(1.025);transition:transform 8s cubic-bezier(.2,.7,.2,1)}
+.pstage{position:absolute;z-index:3;pointer-events:none;container-type:inline-size;transform:scale(1.065)}
 .phase-slide.active>.pstage{transform:scale(1.065)}
 .pstage .phase-hotspot{position:absolute;pointer-events:auto;border-radius:.5cqw}
 .pstage .phase-hotspot:hover,.pstage .phase-hotspot:focus-visible{background:rgba(224,178,103,.08);border-color:rgba(224,178,103,.55);box-shadow:0 0 2.2cqw rgba(224,178,103,.28)}
@@ -2241,3 +2231,126 @@ body:has(#secretLevelScene.active) #devFile02Button{display:none}
 .ptext .pl{position:absolute;transform:translateY(-50%);white-space:pre;opacity:0;line-height:1;font-family:'Libre Baskerville',serif;color:#efe9dc}
 .ptext.mono .pl{font-family:'DM Mono',monospace}
 .ptext .eb{color:#b98f55;letter-spacing:.16em}.ptext .ti{letter-spacing:.04em}.ptext .su{letter-spacing:.14em}
+
+/* The mystery figure walks (see mWalkerHTML): a cut-out man from the supplied SVG, mirrored so he walks left to right, glancing back over
+   his shoulder. Local frame is the unmirrored art, where "forward" is left: positive rotation swings a foot forward. */
+.m-pass .m-walker{position:absolute;bottom:-1%;left:0;height:80%;aspect-ratio:520/1443;transform:translateX(-30vw);opacity:0}
+.m-pass.run .m-walker{animation:mWalk 4.4s linear both}
+.m-flip{position:absolute;inset:0;transform:scaleX(-1)}
+.m-rig{position:absolute;inset:0;filter:brightness(.32) contrast(1.35) sepia(.55) saturate(1.5) drop-shadow(0 0 10px rgba(255,170,90,.26)) drop-shadow(0 0 26px rgba(0,0,0,.9))}
+.mleg,.mseg{position:absolute;inset:0}
+.mleg{transform-origin:63.46% 48.86%}
+.mseg img{display:block;width:100%;height:100%}
+.mseg.shin{transform-origin:var(--kx) 70.7%}
+.mseg.torso{transform-origin:63.46% 48.86%}
+.m-pass.run .m-rig{animation:mBob .2375s ease-in-out infinite alternate}
+.m-pass.run .leg-near,.m-pass.run .leg-far{animation:mHip .95s ease-in-out infinite}
+.m-pass.run .leg-far,.m-pass.run .leg-far .shin{animation-delay:-.475s}
+.m-pass.run .leg-near .shin,.m-pass.run .leg-far .shin{animation:mKnee .95s linear infinite}
+.m-pass.run .leg-far .shin{animation-delay:-.475s}
+.m-pass.run .mseg.torso{animation:mSway .475s ease-in-out infinite alternate}
+@keyframes mHip{0%,100%{transform:rotate(22deg)}50%{transform:rotate(-18deg)}}
+@keyframes mKnee{0%{transform:rotate(-3deg)}30%{transform:rotate(-8deg)}50%{transform:rotate(-12deg)}65%{transform:rotate(-48deg)}80%{transform:rotate(-22deg)}92%{transform:rotate(-4deg)}100%{transform:rotate(-3deg)}}
+@keyframes mBob{from{transform:translateY(0)}to{transform:translateY(-1.4%)}}
+@keyframes mSway{from{transform:rotate(-.9deg)}to{transform:rotate(.9deg)}}
+
+/* ===== Dossier screen polish =====
+   The four dossiers are one picture (2×2). Its hotspots now ride on the art (see setupPstages), each covering exactly its own quadrant:
+   hovering lights that dossier and dims the others; on entry the four reveal one after another; a blurred copy fills the side bars;
+   and a bottom strip keeps the hint and BACK button off the dossiers' text. */
+.dossiers-slide:before{content:"";position:absolute;inset:-4%;background:url('assets/reference/phase-two/dossiers.png?v=1792659208') center/cover;filter:blur(30px) brightness(.5) saturate(.95)}
+.dossiers-slide>img{inset:0 0 64px 0;height:calc(100% - 64px)}
+.dossiers-slide:after{content:"";position:absolute;z-index:2;left:0;right:0;bottom:0;height:78px;background:linear-gradient(transparent,rgba(3,4,5,.92) 55%);pointer-events:none}
+.dossiers-slide .phase-vignette{display:none}
+.pstage .dossier-hotspot{position:absolute;width:50%;height:50%;right:auto;bottom:auto;border:0;border-radius:.5cqw;pointer-events:auto;overflow:hidden;transition:background .45s ease,box-shadow .45s ease}
+.pstage .dossier-thomas{left:0;top:0}.pstage .dossier-peter{left:50%;top:0}.pstage .dossier-elena{left:0;top:50%}.pstage .dossier-daniel{left:50%;top:50%}
+.pstage .dossier-hotspot:hover,.pstage .dossier-hotspot:focus-visible{outline:0;background:rgba(255,196,110,.05);box-shadow:inset 0 0 0 .14cqw rgba(224,178,103,.7),inset 0 0 3.2cqw rgba(224,178,103,.16),0 0 2.4cqw rgba(224,178,103,.22)}
+.pstage:has(.dossier-hotspot:hover) .dossier-hotspot:not(:hover),.pstage:has(.dossier-hotspot:focus-visible) .dossier-hotspot:not(:focus-visible){background:rgba(2,2,3,.5)}
+/* entrance: a curtain over each quadrant lifts in turn */
+.pstage .dossier-hotspot:before{content:"";position:absolute;inset:0;background:#050403;opacity:1;pointer-events:none}
+.dossiers-slide.active .pstage .dossier-hotspot:before{animation:dossierLift 1.1s ease forwards}
+.dossiers-slide.active .pstage .dossier-thomas:before{animation-delay:.35s}
+.dossiers-slide.active .pstage .dossier-peter:before{animation-delay:.8s}
+.dossiers-slide.active .pstage .dossier-elena:before{animation-delay:1.25s}
+.dossiers-slide.active .pstage .dossier-daniel:before{animation-delay:1.7s}
+@keyframes dossierLift{from{opacity:1}to{opacity:0}}
+.dossiers-slide .dossier-hint{bottom:30px;z-index:3;animation-delay:2.6s}
+.dossiers-slide .dossier-navigation{bottom:16px}
+@media(prefers-reduced-motion:reduce){.pstage .dossier-hotspot:before{display:none}}
+
+/* ===== Smooth hand-off between every screen =====
+   Slides in File 001 share one cinematic push-and-dissolve (phaseCrossfade). Everything else that is a full scene gets the same feel:
+   the outgoing scene pushes forward slightly as it fades, the incoming one settles in from a small zoom. The title, lake and wall keep
+   their own bespoke transitions. */
+@keyframes sceneSettle{from{transform:scale(1.035)}to{transform:scale(1)}}
+@keyframes sceneAway{from{transform:scale(1)}to{transform:scale(1.045)}}
+.scene.active:not(#titleScene):not(#lakeScene):not(#homeScene){animation:sceneSettle 1.9s cubic-bezier(.2,.7,.2,1) backwards}
+.scene.scene-leaving:not(#titleScene):not(#lakeScene):not(#homeScene){animation:sceneAway 1.2s cubic-bezier(.5,0,.8,.6) forwards}
+@media(prefers-reduced-motion:reduce){.scene.active,.scene.scene-leaving{animation:none!important}}
+
+/* A 16:9 picture on a wider window gets its top and bottom cropped by cover. Fit these slides whole instead; the bars are black like the scene. */
+.montage .reference-stage-art,.case-details .reference-stage-art,.suspense .reference-stage-art{object-fit:contain;object-position:center top}
+
+/* True cross-dissolve between scenes: the outgoing scene stays fully opaque underneath while the incoming one fades in on top,
+   so the screen never dips toward black mid-transition. */
+.scene.active{z-index:2}
+.scene.scene-leaving:not(#titleScene):not(#lakeScene):not(#homeScene){opacity:1!important;visibility:visible!important;transition:none!important;z-index:1;pointer-events:none}
+
+/* Files open one at a time: after File 001 only File 002 is on the wall; File 003 stays hidden until it has been revealed. */
+.home.closure-revealed:not(.file-three-revealed) .file-three,.home.file-three-locked:not(.file-three-revealed) .file-three{display:none!important}
+
+/* File 03 puzzle sidebar for puzzles 1 and 2 (3 and 4 have it in their art): all five puzzles, which are done, which is open, which are locked.
+   Sized in artwork pixels (--u) so it scales with the screen like the other controls. */
+.f3s-rail{position:absolute;left:calc(14px*var(--u));top:calc(150px*var(--u));width:calc(340px*var(--u));padding:calc(18px*var(--u)) 0 calc(8px*var(--u));background:linear-gradient(180deg,rgba(14,11,9,.94),rgba(7,6,5,.94));border:1px solid rgba(200,155,88,.32);box-shadow:0 calc(14px*var(--u)) calc(40px*var(--u)) #000c,inset 0 0 calc(34px*var(--u)) #0008;font-family:var(--mono);z-index:2}
+.f3s-rail header{padding:0 calc(20px*var(--u)) calc(12px*var(--u));border-bottom:1px solid rgba(200,155,88,.28)}
+.f3s-rail header b{display:block;font:400 calc(26px*var(--u)) var(--serif);letter-spacing:.1em;color:#ecd9b4}
+.f3s-rail header span{display:block;margin-top:calc(5px*var(--u));font-size:calc(11px*var(--u));letter-spacing:.14em;color:#c9a46a}
+.f3s-rail ol{list-style:none;margin:calc(4px*var(--u)) 0 0;padding:0}
+.f3s-rail li{position:relative;display:flex;align-items:center;gap:calc(12px*var(--u));padding:calc(14px*var(--u)) calc(16px*var(--u)) calc(14px*var(--u)) calc(20px*var(--u));border-bottom:1px solid rgba(200,155,88,.12);color:#b9a98d}
+.f3s-rail li:last-child{border-bottom:0}
+.f3s-rail-icon{flex:none;width:calc(22px*var(--u));height:calc(22px*var(--u));color:#d8b97c}
+.f3s-rail svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.f3s-rail-text{flex:1;font-size:calc(12px*var(--u));letter-spacing:.1em;line-height:1.5;text-transform:uppercase}
+.f3s-rail-text small{display:block;font-size:inherit;opacity:.7}
+.f3s-rail-tick{flex:none;width:calc(20px*var(--u));height:calc(20px*var(--u));color:#e4c383}
+.f3s-rail li.current{color:#f6ead2;background:linear-gradient(90deg,rgba(160,32,36,.7),rgba(90,16,18,.12))}
+.f3s-rail li.current:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#c4272d}
+.f3s-rail li.locked{color:#8f8470}
+.f3s-rail li.locked .f3s-rail-icon{color:#9a8a6c}
+
+/* BACK now owns the bottom-left corner; the sound toggle sits to its right instead of underneath it. */
+.sound-toggle{left:112px!important}
+@media(max-width:720px){.sound-toggle{left:104px!important}}
+
+/* ===== Only the active file is lit =====
+   The wall painting has a hot lamp glow painted around File 002 (that is what marks it as the current file). Once File 002 is finished
+   the glow must go, so a second copy of the wall with that glow divided out (file-02-board-unlit.png, same size and position)
+   fades in over it. File 001 and the later files were never lit in the painting, so only File 002 needs this. */
+.file02-board-art-unlit{display:none}
+.home.file-two-signal .file02-board-art-unlit,.home.file-two-paper .file02-board-art-unlit,.home.file-two-available .file02-board-art-unlit{display:block;position:absolute;z-index:100;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;pointer-events:none;opacity:0;transition:opacity 1.6s ease}
+.home.file-two-completed:not(.wall-intro):not(.wall-three-intro) .file02-board-art-unlit{opacity:1}
+/* the older colour-correction layers are no longer needed once the glow itself is removed */
+.home.file-two-completed .file02-unlit,.home.file-two-completed .file02-desat{display:none!important}
+
+/* The sound toggle was faint, borderless text; give it the same bordered, solid look as BACK so it reads on any scene. */
+.sound-toggle{z-index:999!important;position:fixed!important;bottom:20px!important;top:auto!important;opacity:1!important;padding:10px 14px;border:1px solid #c39752!important;background:#100d09e8!important;color:#e4bf79!important;font:10px var(--mono);letter-spacing:.1em;cursor:pointer;text-shadow:none!important}
+.sound-toggle:hover{background:#2b1c0d!important;color:#ffe0a0!important}
+.sound-toggle:focus-visible{outline:2px solid #e9c786;outline-offset:3px}
+
+/* Fullscreen toggle, next to BACK and SOUND. */
+#fullscreenButton{position:fixed;z-index:999;left:252px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
+#fullscreenButton:hover{background:#2b1c0d;color:#ffe0a0}
+#fullscreenButton:focus-visible{outline:2px solid #e9c786;outline-offset:3px}
+#fullscreenButton[hidden]{display:none}
+body.wall-cinematic #fullscreenButton{opacity:0;pointer-events:none;transition:opacity .4s}
+@media(max-width:720px){#fullscreenButton{left:244px}}
+
+/* Dossiers: a clearer BACK TO PEOPLE button (bigger type, solid gold edge, arrow that slides on hover). */
+.dossiers-slide .dossier-navigation button#backToPeople{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;font:600 clamp(10px,1vw,13px) var(--mono);letter-spacing:.2em;color:#f2dcae;background:linear-gradient(180deg,rgba(58,40,20,.92),rgba(16,12,8,.92));border:1px solid #d3ac68;border-radius:2px;box-shadow:0 6px 22px #000b,inset 0 0 0 1px rgba(255,226,170,.12),0 0 18px rgba(214,165,86,.18);cursor:pointer;transition:background .25s,border-color .25s,color .25s,box-shadow .25s,transform .2s}
+.dossiers-slide .dossier-navigation button#backToPeople .btp-arrow{display:inline-block;font-size:1.25em;line-height:1;transition:transform .25s}
+.dossiers-slide .dossier-navigation button#backToPeople:hover{background:linear-gradient(180deg,rgba(116,80,38,.95),rgba(40,28,14,.95));border-color:#f0cd8a;color:#fff6df;box-shadow:0 8px 26px #000c,inset 0 0 0 1px rgba(255,236,190,.2),0 0 26px rgba(232,182,100,.38);transform:translateY(-1px)}
+.dossiers-slide .dossier-navigation button#backToPeople:hover .btp-arrow{transform:translateX(-5px)}
+.dossiers-slide .dossier-navigation button#backToPeople:active{transform:translateY(1px);box-shadow:0 3px 12px #000c,inset 0 0 0 1px rgba(255,226,170,.12)}
+.dossiers-slide .dossier-navigation button#backToPeople:focus-visible{outline:2px solid #f0cd8a;outline-offset:3px}
+.dossiers-slide .dossier-navigation{bottom:22px;width:min(900px,84vw);justify-content:flex-end}
+@media(max-width:720px){.dossiers-slide .dossier-navigation{bottom:58px;justify-content:center}}

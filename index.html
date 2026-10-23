@@ -9,23 +9,20 @@
   
   
   <link rel="stylesheet" href="assets/fonts/fonts.css" />
-  <link rel="stylesheet" href="style.css?v=1792594784" />
+  <link rel="stylesheet" href="style.css?v=1792685014" />
 </head>
 <body>
   <main id="experience" aria-live="polite">
-    <button id="devFile02Button" type="button" aria-label="Test File 002 directly">TEST FILE 002</button>
     <button id="backButton" type="button" aria-label="Go back to the previous screen" disabled>← BACK</button>
-    <button id="f1Skip" type="button" aria-label="Skip to the end of File 01 (testing)" hidden>SKIP →</button>
     <section class="f3-stage" id="f3Stage" hidden aria-label="File 03 investigation">
       <div class="f3s-chapter" id="f3sChapter" hidden aria-live="polite"><small></small><h2></h2><i aria-hidden="true"></i></div>
       <div class="f3s-modal" id="f3sModal" hidden role="dialog" aria-modal="true"><div class="f3s-modal-card"><h3></h3><div class="f3s-modal-body"></div><div class="f3s-modal-actions"></div></div></div>
       <div class="f3s-toast" id="f3sToast" role="status"></div>
       <button class="f3s-list" id="f3sList" type="button" hidden>← PUZZLE LIST</button>
       <button class="f3s-return" id="f3sReturn" type="button" hidden>← RETURN</button>
-      <button class="f3s-retry" id="f3sRetry" type="button" aria-label="Restart File 03 from the beginning (testing)">↺ RETRY CASE</button>
-      <button class="f3s-skip" id="f3sSkip" type="button" aria-label="Skip to the next screen (testing)">SKIP →</button>
     </section>
     <div class="grain" aria-hidden="true"></div>
+    <button id="fullscreenButton" type="button" aria-label="Enter full screen">⤢ FULLSCREEN</button>
     <button class="sound-toggle" id="soundToggle" aria-label="Turn ambient sound on" title="Sound off">◖)) <span>SOUND OFF</span></button>
     <button class="skip" id="skipIntro">SKIP INTRO <span>↗</span></button>
 
@@ -153,6 +150,7 @@
     <section class="scene home" id="homeScene" aria-label="Recovered investigation wall">
       <img class="accepted-case-art" src="assets/reference/phase-two/file-01-closed.png?v=1792581110" alt="File 01 completed. File 01 closed, awaiting further instruction." />
       <img class="file02-board-art" src="assets/reference/phase-two/file-02-board-blank.png?v=1792581110" alt="File 02 — The Unexpected Signal" />
+      <img class="file02-board-art-unlit" src="assets/reference/phase-two/file-02-board-unlit.png?v=1792685182" alt="" aria-hidden="true" />
       <div class="home-wall dim-wall"></div><div class="home-wall light-wall"></div><div class="home-atmosphere"></div><div class="document-spotlight" aria-hidden="true"></div>
       <div class="home-caption" id="homeCaption"><span>A FILE HAS BEEN RECOVERED.</span><small>CLICK TO OPEN THE ARCHIVE.</small></div>
       <button class="wall-hotspot" id="wallHotspot" aria-label="Open recovered incoming transmission"></button>
@@ -604,22 +602,14 @@
         <button class="people-continue">CONTINUE →</button>
       </div>
       <div class="phase-slide dossiers-slide" data-phase-slide="5" aria-label="Character dossiers">
-        <img src="assets/reference/phase-two/dossiers.png" alt="Four dossier files on Thomas Reed, Peter Shaw, Elena, and Daniel Cross" />
+        <img src="assets/reference/phase-two/dossiers.png?v=1792659208" alt="Four dossier files on Thomas Reed, Peter Shaw, Elena, and Daniel Cross" />
         <div class="phase-vignette"></div>
         <button class="dossier-hotspot dossier-thomas" data-person="0" aria-label="Open Thomas Reed's dossier"></button>
         <button class="dossier-hotspot dossier-peter" data-person="1" aria-label="Open Peter Shaw's dossier"></button>
         <button class="dossier-hotspot dossier-elena" data-person="2" aria-label="Open Elena's dossier"></button>
         <button class="dossier-hotspot dossier-daniel" data-person="3" aria-label="Open Daniel Cross's dossier"></button>
-        <button class="dossier-arrow dossier-arrow-one-prev" data-person="3" aria-label="Previous dossier: Daniel Cross">←</button>
-        <button class="dossier-arrow dossier-arrow-one-next" data-person="1" aria-label="Next dossier: Peter Shaw">→</button>
-        <button class="dossier-arrow dossier-arrow-two-prev" data-person="0" aria-label="Previous dossier: Thomas Reed">←</button>
-        <button class="dossier-arrow dossier-arrow-two-next" data-person="2" aria-label="Next dossier: Elena">→</button>
-        <button class="dossier-arrow dossier-arrow-three-prev" data-person="1" aria-label="Previous dossier: Peter Shaw">←</button>
-        <button class="dossier-arrow dossier-arrow-three-next" data-person="3" aria-label="Next dossier: Daniel Cross">→</button>
-        <button class="dossier-arrow dossier-arrow-four-prev" data-person="2" aria-label="Previous dossier: Elena">←</button>
-        <button class="dossier-arrow dossier-arrow-four-next" data-person="0" aria-label="Next dossier: Thomas Reed">→</button>
         <div class="person-detail" id="personDetail" aria-live="polite"><span class="detail-kicker">RECOVERED PERSONNEL FILE</span><h2 id="personName"></h2><p class="detail-role" id="personRole"></p><p id="personDescription"></p><button id="backToFiles">BACK TO FILES</button></div>
-        <nav class="dossier-navigation" aria-label="Story navigation"><button id="backToPeople">← BACK TO PEOPLE</button></nav>
+        <nav class="dossier-navigation" aria-label="Story navigation"><button id="backToPeople"><span class="btp-arrow" aria-hidden="true">←</span> BACK TO PEOPLE</button></nav>
         <div class="phase-hint dossier-hint">SELECT A DOSSIER TO READ</div>
       </div>
       <div class="phase-slide glitch-slide" data-phase-slide="6" aria-label="Signal interception">
@@ -667,6 +657,6 @@
       </div>
     </section>
   </main>
-  <script src="script.js?v=1792595002"></script>
+  <script src="script.js?v=1792685130"></script>
 </body>
 </html>
