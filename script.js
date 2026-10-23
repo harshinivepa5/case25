@@ -2232,7 +2232,7 @@
     if(id==='p1-read')$('#f3sList').hidden=true;
     if(id===f3s.reviewFrom)f3s.reviewFrom=null;
     f3s.screen=id;saveF3S();
-    $('#f3sList').hidden=!Number.isInteger(def.puzzle);$('#f3sList').dataset.target=['p1-cover','p2-cover','p3-cover','p4-cover'][def.puzzle]||'';
+    $('#f3sList').hidden=!Number.isInteger(def.puzzle)||id==='p1-read';$('#f3sList').dataset.target=['p1-cover','p2-cover','p3-cover','p4-cover'][def.puzzle]||'';
     const back=$('#f3sReturn');back.hidden=!f3s.reviewFrom;if(f3s.reviewFrom)back.textContent=`← RETURN TO ${F3S_CHAPTERS[F3S_SCREENS[f3s.reviewFrom].puzzle??F3S_SCREENS[f3s.reviewFrom].chapter??3][0]}`;
     const chapter=Number.isInteger(def.chapter)&&!resume?def.chapter:null;
     if(chapter!==null)f3sChapterCard(chapter,()=>f3sMount(id,{fromChapter:true}));
