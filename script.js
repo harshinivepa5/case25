@@ -893,7 +893,10 @@
   const previewHome = new URLSearchParams(location.search).get('screen') === 'home';
   // once he has been let into the archive, a refresh or a closed tab brings him back to the wall, not the intro
   let homeSeen=false;try{homeSeen=localStorage.getItem('case25HomeSeen')==='1';}catch{}
-  if(previewHome || progress.caseAccepted || homeSeen) showHomeBoard(); else later(pushIntoLake, 4500);
+  // a returning player (refresh, closed tab, Day 2) skips the intro but enters the access code again; the wall then
+  // opens with all of his progress
+  const returning=progress.caseAccepted||homeSeen;
+  if(previewHome) showHomeBoard(); else if(returning)setTimeout(()=>{resetLogin();openArchive();},0); else later(pushIntoLake, 4500);
   $('#playIntro').addEventListener('click', () => {
     const lake = $('#lakeScene');
     if (lake.classList.contains('lake-pushing')) return;
@@ -953,7 +956,7 @@
     $('#loginError').textContent='';try{localStorage.setItem('case25LoginPassed','1');}catch{}$('#archiveScene').classList.add('decrypting');let pct=0;
     const statuses=[[0,'VERIFYING CREDENTIALS...'],[18,'LOCATING ARCHIVE FRAGMENTS...'],[36,'RESTORING DAMAGED TRANSMISSION...'],[58,'RECONSTRUCTING CASE FILE...'],[79,'VERIFYING RECORD INTEGRITY...'],[100,'ARCHIVE RECOVERED']];
     const fill=$('#archiveProgress .progress-track i'); fill.style.width='0%';
-    const interval=setInterval(()=>{pct=Math.min(100,pct+2);fill.style.width=pct+'%';$('#decryptPercent').textContent=String(pct).padStart(2,'0');const current=statuses.reduce((a,s)=>pct>=s[0]?s:a,statuses[0]);$('#archiveProgress small').textContent=current[1];if(pct===100){clearInterval(interval);$('#archiveProgress small').textContent='ARCHIVE RECOVERED';setTimeout(()=>{$('#archiveScene').classList.remove('decrypting');$('#archiveScene').classList.add('unsealed');later(()=>file1Bars(showTransmission),500);},700);}},reducedMotion?20:120);
+    const interval=setInterval(()=>{pct=Math.min(100,pct+2);fill.style.width=pct+'%';$('#decryptPercent').textContent=String(pct).padStart(2,'0');const current=statuses.reduce((a,s)=>pct>=s[0]?s:a,statuses[0]);$('#archiveProgress small').textContent=current[1];if(pct===100){clearInterval(interval);$('#archiveProgress small').textContent='ARCHIVE RECOVERED';setTimeout(()=>{$('#archiveScene').classList.remove('decrypting');$('#archiveScene').classList.add('unsealed');later(()=>file1Bars(returning?showHomeBoard:showTransmission),500);},700);}},reducedMotion?20:120);
   }
   $('#accessButton').addEventListener('click',submitCode);
   function showTransmission(){
