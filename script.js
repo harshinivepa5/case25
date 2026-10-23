@@ -2316,7 +2316,7 @@
     'p4-q3':{kind:'live',next:'p4-q4',puzzle:3,build:screen=>p4BuildQ(screen,2)},
     'p4-q4':{kind:'live',next:'p4-end',puzzle:3,build:p4BuildChain},
     'p4-end':{kind:'transmission',kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'LAKE ASH · REVIEWED',title:'THE LAKE REMEMBERS.',text:`You counted the minutes.\n\nYou ruled out the one who was already in the air.\n\nA boat in one name. A card in the same name. A message that gave a reason.\n\nEvery piece you chose points the same way.\n\nThere is only one person left to ask.\n\n— M`,next:'p5-cover'},
-    'p5-cover':{kind:'live',next:'p5-q1',chapter:4,build:screen=>cineStory(screen,P5_STORY,'signal',()=>f3sGo('p5-q1'))},
+    'p5-cover':{kind:'live',next:'p5-q1',chapter:4,build:screen=>cineStory(screen,P5_STORY,'interview',()=>f3sGo('p5-q1'))},
     'p5-q1':{kind:'live',next:'p5-q2',puzzle:3,build:p5BuildInterview},
     'p5-q2':{kind:'live',next:'p5-q3',puzzle:3,build:p5BuildConclusion},
     'p5-q3':{kind:'live',next:'final',puzzle:3,build:p5BuildM},
@@ -2822,6 +2822,7 @@ function f3sFindLines(img,boxes){
     fire:{stage:true,fx:'embers',tone:'fire'},
     board:{img:'assets/evidence-board.png',fx:'dust',tone:'warm'},
     signal:{img:'assets/reference/war-room.png',fx:'dust',tone:'cold'},
+    interview:{img:'assets/reference/war-room.png',fx:'dust',tone:'cold',prelude:'room'},
     lake:{img:'assets/lake-ash.png',fx:'mist',tone:'cold'},
     lakenight:{img:'assets/lake-ash.png',fx:'mist',tone:'cold',prelude:true},
     reveal:{img:'assets/lake-ash.png',fx:'mist',tone:'cold',figure:true}
@@ -2895,6 +2896,26 @@ function f3sFindLines(img,boxes){
     laterWait(()=>screen.classList.remove('prelude'),reducedMotion?0:D);
     return D;
   }
+  // Interview room: a bare lamp swings on over an empty chair, a tape recorder wakes with a red REC light and a running clock.
+  function cineRoomPrelude(screen){
+    const D=5600,layer=screen.querySelector('.cine-layer');screen.classList.add('prelude');
+    const reel=`<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="27" fill="#0b0a09" stroke="#5a5247" stroke-width="2"/><g stroke="#8a7f6e" stroke-width="3"><path d="M30 30V8M30 30L49 41M30 30L11 41"/></g><circle cx="30" cy="30" r="6" fill="#1a1612" stroke="#6d6354" stroke-width="2"/></svg>`;
+    layer.querySelector('.cine-img').style.visibility='hidden';
+    layer.querySelector('.cine-img').insertAdjacentHTML('afterend',`<div class="iv-scene" aria-hidden="true">
+      <div class="iv-room"><i class="iv-cone"></i><i class="iv-wire"></i><i class="iv-shade"></i><i class="iv-pool"></i>
+      <svg class="iv-chair" viewBox="0 0 120 170"><path d="M30 6h60l6 88H24zM20 98h80l4 14H16zM28 112h8l-6 54h-8zM84 112h8l6 54h-8z" fill="#050505"/></svg>
+      <div class="iv-rec"><div class="iv-reels"><span>${reel}</span><span>${reel}</span></div><b class="iv-led"></b><em class="iv-clock">REC 00:00:00</em></div></div></div>`);
+    const sc=layer.querySelector('.iv-scene'),room=sc.querySelector('.iv-room');
+    room.animate([{opacity:0},{opacity:.15,offset:.1},{opacity:0,offset:.16},{opacity:.7,offset:.28},{opacity:.2,offset:.34},{opacity:1,offset:.5},{opacity:1}],{duration:D*.7,fill:'both'});
+    sc.querySelector('.iv-cone').animate([{transform:'rotate(-5deg)'},{transform:'rotate(4deg)'},{transform:'rotate(-2deg)'},{transform:'rotate(1deg)'},{transform:'rotate(0)'}],{duration:D*1.4,easing:'ease-out',fill:'forwards'});
+    sc.querySelector('.iv-rec').animate([{opacity:0,transform:'translateY(14px)'},{opacity:0,offset:.5},{opacity:1,transform:'none'}],{duration:D,fill:'both'});
+    sc.querySelector('.iv-led').animate([{opacity:0},{opacity:0,offset:.7},{opacity:1}],{duration:D,fill:'both'});
+    const clock=sc.querySelector('.iv-clock'),t0=performance.now()+D*.7;
+    let seen=false;const tick=()=>{if(clock.isConnected)seen=true;else if(seen)return;const e=Math.max(0,performance.now()-t0)/1000|0;clock.textContent='REC 00:'+String(e/60|0).padStart(2,'0')+':'+String(e%60).padStart(2,'0');setTimeout(tick,500);};tick();
+    laterWait(()=>{if(screen.isConnected)sfx('dread');},reducedMotion?0:900);
+    laterWait(()=>screen.classList.remove('prelude'),reducedMotion?0:D);
+    return D;
+  }
   // Handwritten version of a story screen: each line is written out by a pen in ink, left to right, one after another.
   // A line that starts with "!" is written in blood and drips; "— M" becomes a signature. Blood flecks mark the page.
   function cineHand(screen){
@@ -2944,7 +2965,7 @@ function f3sFindLines(img,boxes){
       <div class="cine-text"><header><small>${f3sEsc(d.kicker)}</small><span>${f3sEsc(d.eyebrow)}</span><h2>${f3sEsc(d.title)}</h2></header><div class="cine-lines" aria-live="polite">${paras.map(p=>`<p>${f3sEsc(p).replace(/\n/g,'<br>')}</p>`).join('')}</div>
       <button type="button" class="f3s-tx-continue cine-go" hidden>${f3sEsc(d.button)} <span>→</span></button></div>`;
     cineFx(screen.querySelector('.cine-fx'),sc.fx);
-    const preludeMs=sc.prelude&&!reducedMotion?cineLakePrelude(screen):0;
+    const preludeMs=sc.prelude&&!reducedMotion?(sc.prelude==='room'?cineRoomPrelude(screen):cineLakePrelude(screen)):0;
     if(d.hand)cineHand(screen);
     const lines=[...screen.querySelectorAll('.cine-lines p')],box=screen.querySelector('.cine-lines'),go=screen.querySelector('.cine-go');
     go.addEventListener('click',onDone);
@@ -3038,7 +3059,7 @@ Someone followed.
 !Only one of them came back.
 
 — M`};
-  const P5_STORY={kicker:'FILE 003 · PUZZLE 05',eyebrow:'OCTOBER 16 · INTERVIEW ROOM 2',title:'THE FINAL TRANSMISSION',button:'BEGIN THE INTERVIEW',text:`Peter Shaw agreed to be interviewed.\n\nHe came alone. He declined a lawyer.\n\nThe recording starts now.\n\nHe will answer four questions.\n\nFor each answer, find the document that says otherwise.`};
+  const P5_STORY={kicker:'FILE 003 · PUZZLE 05',eyebrow:'OCTOBER 16 · INTERVIEW ROOM 2',title:'THE FINAL TRANSMISSION',button:'BEGIN THE INTERVIEW',hand:true,text:`Peter Shaw agreed to be interviewed.\nHe came alone. He declined a lawyer.\n\nThe tape is running.\n\nFour questions.\nFour answers, each one certain.\n\n!Every answer has a paper that says otherwise.`};
   const P4_DOCS=[
     {tag:'BOAT HIRE SLIP',date:'Tue 14 Oct · 17:40',title:'Lake Ash Boat Hire — east dock',body:'Hirer: P. Shaw (signed)\nBoat: No. 6, rowing skiff with outboard\nPaid: card ending 4417 — The Lantern company account\nID: not checked (self-service kiosk)\nDue back: 21:00\nStatus: NOT RETURNED'},
     {tag:'TOLL RECEIPT',date:'14 Oct · 21:00 · verified gate clock',title:'Lake Ash Road — toll gate',body:'Vehicle: car, towards the lake\nPaid: card ending 4417\nCardholder: P. Shaw, The Lantern'},

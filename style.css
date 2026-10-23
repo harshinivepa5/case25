@@ -2638,3 +2638,23 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .home:not(.board-mode) .home-caption span:before{content:'';position:absolute;left:61%;top:100%;width:1.5px;height:0;background:linear-gradient(#6a0a0a,rgba(106,10,10,0));animation:capDrip 9s ease-in 5s infinite}
 .home:not(.board-mode) .home-caption .wall-open{border-color:rgba(190,40,40,.6);color:#f4ece0;box-shadow:0 0 14px rgba(150,15,15,.25),inset 0 0 0 1px rgba(255,255,255,.05)}
 @keyframes capDrip{0%{height:0;opacity:0}15%{opacity:.8}70%{height:18px;opacity:.7}100%{height:22px;opacity:0}}
+/* puzzle 5: interview room */
+.iv-scene{position:absolute;inset:0;background:#020202;overflow:hidden}
+.iv-room{position:absolute;inset:0}
+.iv-room i,.iv-rec,.iv-chair{position:absolute}
+.iv-cone{left:60%;top:0;width:36%;height:84%;margin-left:-4%;transform-origin:50% 0;background:linear-gradient(180deg,rgba(255,200,120,.34),rgba(255,170,80,.06) 85%,transparent);clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);filter:blur(5px)}
+.iv-wire{left:calc(60% + 14%);top:0;width:1px;height:12%;background:#3a342b}
+.iv-shade{left:calc(60% + 11.5%);top:11%;width:5.5%;height:3.2%;background:#14110d;border-radius:60% 60% 0 0;box-shadow:0 8px 26px 6px rgba(255,200,120,.5)}
+.iv-pool{left:62%;top:78%;width:30%;height:9%;border-radius:50%;background:radial-gradient(ellipse,rgba(255,196,120,.3),transparent 70%)}
+.iv-chair{left:calc(60% + 6%);top:52%;width:11%;opacity:.9}
+.iv-rec{left:calc(60% + 16%);top:74%;width:16%;aspect-ratio:1.5;background:#0e0c0a;border:1px solid #3a342b;border-radius:6px;box-shadow:0 10px 30px #000}
+.iv-reels{display:flex;justify-content:space-around;padding:12% 8% 0}
+.iv-reels span{width:36%;animation:ivSpin 3.2s linear infinite}
+.iv-reels span:nth-child(2){animation-duration:2.4s}
+.iv-reels svg{width:100%;display:block}
+.iv-led{position:absolute;left:8%;bottom:12%;width:7px;height:7px;border-radius:50%;background:#c4180f;box-shadow:0 0 10px 2px rgba(220,30,20,.8);animation:ivBlink 1.4s steps(1) infinite}
+.iv-clock{position:absolute;right:8%;bottom:10%;font:normal clamp(8px,.8vw,12px) var(--mono);letter-spacing:.14em;color:#d9d0c0}
+@keyframes ivSpin{to{transform:rotate(360deg)}}
+@keyframes ivBlink{0%,60%{opacity:1}61%,100%{opacity:.15}}
+.cine-interview .cine-grade{opacity:.5}
+@media(max-width:900px){.iv-scene{opacity:.5}}
