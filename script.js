@@ -2433,21 +2433,21 @@
       // ink drops onto the page and spreads until everything is black; the next page surfaces out of the ink
       f3sInk(old);
     }else if(mode==='closed'){
-      // the letter dims to black and the file is stamped CASE CLOSED, so it feels finished; then, after a held silence, a warm light comes up on the card
-      const D=7600;
-      old.forEach(o=>{o.style.pointerEvents='none';o.style.zIndex=4;o.animate([{opacity:1,filter:'brightness(1)'},{opacity:.5,filter:'brightness(.25)',offset:.5},{opacity:0,filter:'brightness(0)'}],{duration:1500,easing:'ease-in',fill:'forwards'});setTimeout(()=>o.remove(),1600);});
+      // no words: the letter is drawn back into the dark, a thin line of warm light opens across the middle like a door,
+      // and the card is revealed outward from it, then settles in with a soft flare
+      const D=4600;
+      old.forEach(o=>{o.style.pointerEvents='none';o.style.zIndex=4;o.style.transformOrigin='50% 60%';
+        o.animate([{transform:'scale(1) rotate(0)',opacity:1,filter:'brightness(1) blur(0)'},{transform:'scale(.94) rotate(-1.2deg)',opacity:.7,filter:'brightness(.35) blur(2px)',offset:.55},{transform:'scale(.88) rotate(-2.4deg) translateY(4%)',opacity:0,filter:'brightness(0) blur(8px)'}],{duration:1900,easing:'cubic-bezier(.5,0,.7,.4)',fill:'forwards'});
+        setTimeout(()=>o.remove(),2000);});
       const wrap=document.createElement('div');wrap.className='f3s-closed';
-      wrap.innerHTML='<div><small>CASE 25 · FILE 003</small><b>CASE CLOSED</b><span>THE RECORD IS COMPLETE. NO FURTHER ENTRIES.</span></div>';
+      wrap.innerHTML='<i class="cl-line"></i><i class="cl-flare"></i>';
       $('#f3Stage').insertBefore(wrap,$('#f3sChapter'));
-      screen.animate([{opacity:0,filter:'brightness(0)'},{opacity:0,offset:.6},{opacity:1,filter:'brightness(.25)',offset:.68},{opacity:1,filter:'brightness(1)'}],{duration:D,easing:'ease-in-out',fill:'backwards'});
-      wrap.animate([{opacity:0},{opacity:1,offset:.12},{opacity:1,offset:.6},{opacity:0}],{duration:D,easing:'ease-in-out',fill:'forwards'}).finished.catch(()=>{}).then(()=>wrap.remove());
-      const [sm,b,sp]=['small','b','span'].map(t=>wrap.querySelector(t));
-      [sm,b,sp].forEach(n=>n.style.opacity=0);
-      sm.animate([{opacity:0,letterSpacing:'.7em'},{opacity:1,letterSpacing:'.32em'}],{duration:1600,delay:1500,easing:'ease-out',fill:'forwards'});
-      b.animate([{opacity:0,transform:'scale(2.4)',filter:'blur(8px)'},{opacity:1,transform:'scale(.97)',filter:'blur(0)',offset:.7},{opacity:1,transform:'scale(1)',filter:'blur(0)'}],{duration:340,delay:2500,easing:'cubic-bezier(.3,0,.2,1)',fill:'forwards'});
-      wrap.animate([{transform:'translate(0,0)'},{transform:'translate(-5px,4px)'},{transform:'translate(4px,-3px)'},{transform:'none'}],{duration:260,delay:2640});
-      sp.animate([{opacity:0},{opacity:.85}],{duration:1400,delay:3300,fill:'forwards'});
-      sfx('dread');setTimeout(()=>sfx('stamp'),2650);setTimeout(()=>sfx('ink'),5200);
+      const line=wrap.querySelector('.cl-line'),flare=wrap.querySelector('.cl-flare');
+      screen.animate([{clipPath:'inset(50% 0 50% 0)',filter:'brightness(1.8)'},{clipPath:'inset(50% 0 50% 0)',offset:.42,filter:'brightness(1.8)'},{clipPath:'inset(18% 0 18% 0)',offset:.68,filter:'brightness(1.3)'},{clipPath:'inset(0 0 0 0)',filter:'brightness(1)'}],{duration:D,easing:'cubic-bezier(.45,0,.2,1)',fill:'backwards'});
+      line.animate([{opacity:0,transform:'scaleX(0)'},{opacity:1,transform:'scaleX(.35)',offset:.25},{opacity:1,transform:'scaleX(1)',offset:.45},{opacity:1,offset:.7},{opacity:0,transform:'scaleX(1)'}],{duration:D,easing:'ease-in-out',fill:'forwards'});
+      flare.animate([{opacity:0},{opacity:0,offset:.4},{opacity:.9,offset:.55},{opacity:0}],{duration:D,fill:'forwards'});
+      wrap.animate([{opacity:1},{opacity:1,offset:.9},{opacity:0}],{duration:D+300,fill:'forwards'}).finished.catch(()=>{}).then(()=>wrap.remove());
+      sfx('dread');setTimeout(()=>sfx('ink'),1900);
     }else if(mode==='seal'){
       // a red M seal fills the dark, cracks in two, and the letter is waiting behind it
       drop(300);
@@ -2710,7 +2710,7 @@ function f3sFindLines(img,boxes){
     const parts=[...box.children];go.style.opacity=0;go.style.pointerEvents='none';
     if(reducedMotion){go.style.opacity=1;go.style.pointerEvents='';return;}
     parts.forEach(p=>p.style.opacity=0);
-    let t=6600;
+    let t=4300;
     parts.forEach((p,i)=>{const h=p.tagName==='H2';
       p.animate([{opacity:0,filter:'blur(6px)',transform:'translateY(6px)'},{opacity:1,filter:'blur(0)',transform:'none'}],{duration:h?1800:1300,delay:t,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'});
       t+=h?1500:p.tagName==='P'?(i===6?1400:950):350;});

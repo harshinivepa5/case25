@@ -2661,17 +2661,7 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .iv-peter{position:absolute;left:calc(60% + 6%);top:52%;width:11%;animation:ivBreathe 4.6s ease-in-out infinite}
 .iv-asker{position:absolute;left:58%;top:47%;width:6.5%;filter:drop-shadow(0 0 14px rgba(0,0,0,.9))}
 @keyframes ivBreathe{50%{transform:translateY(2px)}}
-/* CASE CLOSED beat before the gift card */
-.f3s-closed{position:absolute;inset:0;z-index:31;pointer-events:none;background:#020202;display:grid;place-items:center;text-align:center}
-.f3s-closed small{display:block;font:11px var(--mono);letter-spacing:.32em;color:#9c8f78;margin-bottom:22px}
-.f3s-closed b{display:inline-block;font:700 clamp(34px,5.2vw,78px) 'Special Elite',var(--mono);letter-spacing:.12em;color:#c4281c;padding:.08em .35em;border:4px solid #c4281c;border-radius:6px;transform:rotate(-3deg);text-shadow:0 0 18px rgba(196,40,28,.35)}
-.f3s-closed span{display:block;margin-top:26px;font:11px var(--mono);letter-spacing:.28em;color:#e8e0d0}
-
-/* When a new string is drawn the older ones stay as they were; once it lands, the whole thread flares through every string in turn */
-@keyframes threadFlare{0%,100%{stroke:#b9271d;filter:drop-shadow(0 0 4px rgba(220,50,35,.7)) drop-shadow(0 2px 2px rgba(0,0,0,.7))}35%{stroke:#ff4b38;filter:drop-shadow(0 0 9px rgba(255,80,55,1)) drop-shadow(0 0 22px rgba(255,50,30,.7)) drop-shadow(0 2px 2px rgba(0,0,0,.7))}}
-.home.wall-thread-pulse .wall-string path{animation:threadFlare 1.5s ease-in-out both}
-.home.wall-thread-pulse .wall-string path:nth-child(1){animation-delay:.9s}
-.home.wall-thread-pulse .wall-string path:nth-child(2){animation-delay:.6s}
-.home.wall-thread-pulse .wall-string path:nth-child(3){animation-delay:.3s}
-.home.wall-thread-pulse .wall-string path:nth-child(4){animation-delay:.3s}
-.home.wall-thread-pulse .wall-string path:nth-child(5){animation-delay:0s}
+/* wordless light-door transition before the gift card */
+.f3s-closed{position:absolute;inset:0;z-index:31;pointer-events:none;background:#020202;overflow:hidden}
+.f3s-closed .cl-line{position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:linear-gradient(90deg,transparent,#ffd9a0 30%,#fff3d6 50%,#ffd9a0 70%,transparent);box-shadow:0 0 22px 6px rgba(255,180,90,.55);transform-origin:50% 50%}
+.f3s-closed .cl-flare{position:absolute;inset:0;background:radial-gradient(ellipse 60% 22% at 50% 50%,rgba(255,200,130,.5),transparent 70%)}
