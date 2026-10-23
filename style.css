@@ -2415,3 +2415,6 @@ body.wall-cinematic #buildTag{opacity:0}
 /* after File 02: the wall waits with both files closed until CONTINUE reveals File 03 */
 .home.await-file-three:not(.wall-three-intro) #continueFileThree{display:inline-block!important;animation:f3ContinueIn 1.2s 1.2s ease both}
 @keyframes f3ContinueIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* behind artwork that is shown whole (e.g. a 16:10 full screen), a soft blurred copy fills the edges */
+.f3s-bgblur{position:absolute;z-index:-2;inset:-6%;width:112%;height:112%;object-fit:cover;filter:blur(28px) brightness(.32) saturate(.8);pointer-events:none}

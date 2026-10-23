@@ -2321,7 +2321,9 @@
     const img=screen.querySelector('.f3s-art'),layer=screen.querySelector('.f3s-layer'),stage=$('#f3Stage');
     if(!img||!img.naturalWidth)return;
     const W=stage.clientWidth,H=stage.clientHeight,nw=img.naturalWidth,nh=img.naturalHeight;
-    const scale=W/H<1.3||screen.dataset.fit==='contain'?Math.min(W/nw,H/nh):Math.max(W/nw,H/nh);
+    // fill the screen only when that crops almost nothing; otherwise show the whole artwork over a blurred copy of itself
+    const crop=Math.abs((W/H)/(nw/nh)-1);
+    const scale=crop>.05||screen.dataset.fit==='contain'?Math.min(W/nw,H/nh):Math.max(W/nw,H/nh);
     Object.assign(layer.style,{width:`${nw*scale}px`,height:`${nh*scale}px`,left:`${(W-nw*scale)/2}px`,top:`${(H-nh*scale)/2}px`});
     layer.style.setProperty('--u',scale);
   }
@@ -2375,7 +2377,7 @@
     if(def.kind==='transmission')f3sBuildTransmission(screen,def);
     else if(def.kind==='live'){screen.classList.add('f4-screen');def.build(screen,id);}
     else{
-      screen.innerHTML=`<div class="f3s-layer"><img class="f3s-art" alt="" src="assets/file-003/${def.art||id}.png"></div>`;
+      screen.innerHTML=`<img class="f3s-bgblur" alt="" aria-hidden="true" src="assets/file-003/${def.art||id}.png"><div class="f3s-layer"><img class="f3s-art" alt="" src="assets/file-003/${def.art||id}.png"></div>`;
       f3sBuildControls(screen,id,def);
     }
     stage.insertBefore(screen,$('#f3sChapter'));
