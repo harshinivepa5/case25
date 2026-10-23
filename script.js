@@ -2323,7 +2323,7 @@
     // M's closing letter (final.png) is taller than 16:9, so it is shown whole rather than cropped.
     final:{kind:'message',fit:'contain',art:'final-blank',arrive:'ink',letter:[412,318,1095,1180],cont:[588,1573,688,115],next:'gift'},
     // Thank-you card before the physical gift is handed over; its CONTINUE ends File 03.
-    gift:{kind:'message',art:'gift-blank',arrive:'ink',giftCard:true,cont:[552,701,431,82],label:'GOOD JOB, DETECTIVE',next:null,finish:true}
+    gift:{kind:'message',art:'gift-blank',arrive:'closed',giftCard:true,cont:[552,701,431,82],label:'GOOD JOB, DETECTIVE',next:null,finish:true}
   };
   const F3S_CHAPTERS=[['PUZZLE 01','NORTH QUAY'],['PUZZLE 02','THE MISSING STORY'],['PUZZLE 03','THE IMPOSSIBLE TIMELINE'],['PUZZLE 04','THE UNRESOLVED THREAD'],['PUZZLE 05','THE FINAL TRANSMISSION']];
   function readF3S(){const fresh={screen:'opening',done:{},attempts:{},drafts:{},picks:{}};try{return {...fresh,...JSON.parse(localStorage.getItem(F3S_KEY)||'{}')};}catch{return fresh;}}
@@ -2432,6 +2432,22 @@
     }else if(mode==='ink'){
       // ink drops onto the page and spreads until everything is black; the next page surfaces out of the ink
       f3sInk(old);
+    }else if(mode==='closed'){
+      // the letter dims to black and the file is stamped CASE CLOSED, so it feels finished; then, after a held silence, a warm light comes up on the card
+      const D=7600;
+      old.forEach(o=>{o.style.pointerEvents='none';o.style.zIndex=4;o.animate([{opacity:1,filter:'brightness(1)'},{opacity:.5,filter:'brightness(.25)',offset:.5},{opacity:0,filter:'brightness(0)'}],{duration:1500,easing:'ease-in',fill:'forwards'});setTimeout(()=>o.remove(),1600);});
+      const wrap=document.createElement('div');wrap.className='f3s-closed';
+      wrap.innerHTML='<div><small>CASE 25 · FILE 003</small><b>CASE CLOSED</b><span>THE RECORD IS COMPLETE. NO FURTHER ENTRIES.</span></div>';
+      $('#f3Stage').insertBefore(wrap,$('#f3sChapter'));
+      screen.animate([{opacity:0,filter:'brightness(0)'},{opacity:0,offset:.6},{opacity:1,filter:'brightness(.25)',offset:.68},{opacity:1,filter:'brightness(1)'}],{duration:D,easing:'ease-in-out',fill:'backwards'});
+      wrap.animate([{opacity:0},{opacity:1,offset:.12},{opacity:1,offset:.6},{opacity:0}],{duration:D,easing:'ease-in-out',fill:'forwards'}).finished.catch(()=>{}).then(()=>wrap.remove());
+      const [sm,b,sp]=['small','b','span'].map(t=>wrap.querySelector(t));
+      [sm,b,sp].forEach(n=>n.style.opacity=0);
+      sm.animate([{opacity:0,letterSpacing:'.7em'},{opacity:1,letterSpacing:'.32em'}],{duration:1600,delay:1500,easing:'ease-out',fill:'forwards'});
+      b.animate([{opacity:0,transform:'scale(2.4)',filter:'blur(8px)'},{opacity:1,transform:'scale(.97)',filter:'blur(0)',offset:.7},{opacity:1,transform:'scale(1)',filter:'blur(0)'}],{duration:340,delay:2500,easing:'cubic-bezier(.3,0,.2,1)',fill:'forwards'});
+      wrap.animate([{transform:'translate(0,0)'},{transform:'translate(-5px,4px)'},{transform:'translate(4px,-3px)'},{transform:'none'}],{duration:260,delay:2640});
+      sp.animate([{opacity:0},{opacity:.85}],{duration:1400,delay:3300,fill:'forwards'});
+      sfx('dread');setTimeout(()=>sfx('stamp'),2650);setTimeout(()=>sfx('ink'),5200);
     }else if(mode==='seal'){
       // a red M seal fills the dark, cracks in two, and the letter is waiting behind it
       drop(300);
@@ -2694,7 +2710,7 @@ function f3sFindLines(img,boxes){
     const parts=[...box.children];go.style.opacity=0;go.style.pointerEvents='none';
     if(reducedMotion){go.style.opacity=1;go.style.pointerEvents='';return;}
     parts.forEach(p=>p.style.opacity=0);
-    let t=3400;
+    let t=6600;
     parts.forEach((p,i)=>{const h=p.tagName==='H2';
       p.animate([{opacity:0,filter:'blur(6px)',transform:'translateY(6px)'},{opacity:1,filter:'blur(0)',transform:'none'}],{duration:h?1800:1300,delay:t,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'});
       t+=h?1500:p.tagName==='P'?(i===6?1400:950):350;});
