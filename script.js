@@ -2333,7 +2333,6 @@
     f3sGo(f3s.screen||'opening',{resume:true});
   }
   function closeF3Stage(){
-    setMusic(true);
     const stage=$('#f3Stage');stage.classList.remove('visible');f3sCloseModal();
     $('#backButton').disabled=!sceneHistory.length;
     setTimeout(()=>{stage.hidden=true;stage.querySelectorAll('.f3s-screen').forEach(s=>s.remove());},600);
@@ -2344,7 +2343,7 @@
   function f3sGo(id,{resume=false}={}){
     if(/^p1-q\d$/.test(id)&&!(f3s.live&&f3s.live.p1read))id='p1-read';
     const def=F3S_SCREENS[id];if(!def)return;
-    setMusic(false);ensureSound();
+    ensureSound();
     $('#f3sP1Docs').hidden=!/^p1-q/.test(id);
     if(id==='p1-read')$('#f3sList').hidden=true;
     if(id===f3s.reviewFrom)f3s.reviewFrom=null;
@@ -2621,8 +2620,12 @@
     const lines=[...screen.querySelectorAll('.cine-lines p')],box=screen.querySelector('.cine-lines'),go=screen.querySelector('.cine-go');
     go.addEventListener('click',onDone);
     let n=0,finished=false;
-    const show=i=>{lines[i].classList.add('on');box.scrollTo({top:box.scrollHeight,behavior:reducedMotion?'auto':'smooth'});};
-    const finish=()=>{if(finished)return;finished=true;lines.forEach(p=>p.classList.add('on'));box.scrollTop=box.scrollHeight;go.hidden=false;go.focus({preventScroll:true});};
+    // paragraphs fill the panel like pages: when the next one would not fit, the page clears and it starts a new one
+    const fits=()=>box.scrollHeight<=box.clientHeight+2;
+    const show=i=>{lines[i].classList.add('on');if(!fits()){lines.slice(0,i).forEach(p=>p.classList.add('gone'));}};
+    const finish=()=>{if(finished)return;finished=true;lines.forEach(p=>{p.classList.add('on');p.classList.remove('gone');});
+      let start=lines.length-1;while(start>0){lines.slice(0,start).forEach(p=>p.classList.add('gone'));lines.slice(start-1).forEach(p=>p.classList.remove('gone'));if(!fits()){lines[start-1].classList.add('gone');break;}start--;}
+      go.hidden=false;go.focus({preventScroll:true});};
     const next=()=>{if(finished||!screen.isConnected)return;if(n>=lines.length){laterWait(finish,500);return;}show(n);const len=lines[n].textContent.length;n++;laterWait(next,reducedMotion?0:Math.min(5200,1100+len*38));};
     laterWait(next,700);
     screen.addEventListener('click',e=>{if(!finished&&!e.target.closest('button'))finish();});

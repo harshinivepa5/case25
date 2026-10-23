@@ -2404,3 +2404,10 @@ body.wall-cinematic #buildTag{opacity:0}
 
 /* testing and navigation buttons are not shown to the player */
 #backButton,#devFile03Button,#buildTag{display:none!important}
+
+/* story screens: centred text panel; paragraphs page instead of scrolling off the top */
+.cine-text{left:50%;transform:translateX(-50%);width:min(760px,calc(100vw - 48px));top:13vh;bottom:13vh;padding:26px 34px 22px;box-sizing:border-box;background:radial-gradient(ellipse at 50% 45%,rgba(4,3,2,.82),rgba(4,3,2,.55) 70%,rgba(4,3,2,0));border-radius:4px}
+.cine-lines{-webkit-mask-image:none;mask-image:none;padding-top:0;overflow:hidden}
+.cine-lines p.gone{display:none}
+.cine-lines p{font-size:clamp(15px,1.25vw,18px)}
+@media(max-width:760px){.cine-text{top:auto;bottom:8vh;height:66vh;padding:18px 18px 14px}}
