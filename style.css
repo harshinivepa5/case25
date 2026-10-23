@@ -2418,3 +2418,7 @@ body.wall-cinematic #buildTag{opacity:0}
 
 /* behind artwork that is shown whole (e.g. a 16:10 full screen), a soft blurred copy fills the edges */
 .f3s-bgblur{position:absolute;z-index:-2;inset:-6%;width:112%;height:112%;object-fit:cover;filter:blur(28px) brightness(.32) saturate(.8);pointer-events:none}
+
+/* testing: skip the current File 003 screen */
+.f3s-skip{position:absolute;z-index:80;right:20px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
+.f3s-skip:hover{background:#2b1c0d;color:#ffe0a0}

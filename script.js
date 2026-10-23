@@ -2562,6 +2562,15 @@
   }
   $('#f3sList').addEventListener('click',()=>{const target=$('#f3sList').dataset.target;if(target&&$('#f3sChapter').hidden){f3sCloseModal();f3sGo(target,{resume:true});}});
   $('#f3sReturn').addEventListener('click',()=>{if(f3s.reviewFrom&&$('#f3sChapter').hidden){f3sCloseModal();f3sGo(f3s.reviewFrom,{resume:true});}});
+  // Testing shortcut: jump past the current screen without answering.
+  $('#f3sSkip').addEventListener('click',()=>{
+    if($('#f3Stage').dataset.mode==='f4'){f4Skip();return;}
+    if($('#f3Stage').dataset.mode==='f5'){f5Skip();return;}
+    if(!$('#f3sChapter').hidden)return;
+    const def=F3S_SCREENS[f3s.screen];f3sCloseModal();
+    if(f3s.screen==='p1-read'){f3s.live=f3s.live||{};f3s.live.p1read=true;saveF3S();}
+    if(def.next)f3sGo(def.next);else f3sFinish();
+  });
   $('#f3sModal').addEventListener('keydown',e=>{const m=$('#f3sModal');if(e.key==='Escape'&&(m.classList.contains('tone-docs')||m.classList.contains('tone-hint')))f3sCloseModal();});
   // ---------------------------------------------------------------------------------------------
   // Cinematic story scenes for Files 004–005: slow-moving artwork or a drawn stage with moving figures,
