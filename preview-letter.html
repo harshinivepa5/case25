@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Final Letter Preview</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050403;color:#efe3c9;font-family:'DM Mono',monospace;padding:20px}
+h1{font:600 14px 'DM Mono';letter-spacing:.22em;color:#c99a55;margin:0 0 4px}
+p.lead{margin:0 0 6px;color:#b39a72;font-size:12px}
+h2{font:13px 'DM Mono';letter-spacing:.2em;color:#e6b866;margin:26px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.cell{border:1px solid #2a2418;background:#0a0807;padding:10px}
+.cell header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.cell b{font:11px 'DM Mono';letter-spacing:.16em;color:#c99a55}
+.cell small{display:block;color:#9c8a6c;font-size:11px;margin:2px 0 8px}
+button.play{background:none;border:1px solid #c99a55;color:#c99a55;font:10px 'DM Mono';letter-spacing:.14em;padding:6px 10px;cursor:pointer}
+.stage{position:relative;aspect-ratio:2218/1814;overflow:hidden;background:#030202;container-type:inline-size}
+.art{position:absolute;inset:0;width:100%;height:100%;display:block}
+.prev{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#1b130b,#030202 75%);display:grid;place-items:center;color:#c99a55;font:1.6cqw 'DM Mono';letter-spacing:.3em}
+.letter{position:absolute;left:18.58%;top:17.53%;width:49.37%;color:#2a1f15;font:1.15cqw/1.67cqw 'Special Elite',monospace;white-space:pre-line}
+.letter p{margin:0 0 1.2cqw}
+.letter .mark{display:inline-block;padding:.2cqw 1.2cqw;background:rgba(196,128,86,.28);font-size:1.4cqw}
+.letter .sign{display:block;text-align:right;font:italic 2.8cqw 'Libre Baskerville',serif;margin-top:1cqw}
+.fx{position:absolute;inset:0;pointer-events:none}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<h1>FILE 003 · FINAL LETTER PREVIEW</h1>
+<p class="lead">Part 1: how the letter arrives after Puzzle 5. Part 2: how its text appears instead of typewriting. Press PLAY to replay. Nothing in the game changes.</p>
+<h2>1 · ARRIVAL AFTER PUZZLE 5</h2><div class="grid" id="gA"></div>
+<h2>2 · HOW THE TEXT APPEARS</h2><div class="grid" id="gB"></div>
+<script>
+const PARAS=["Well done, Detective.","You followed the money.\nYou questioned the accounts.\nYou traced the gaps between what was said and what could be proven.","Piece by piece, the scattered records became a story.","Peter Shaw was the last to speak to him. His word stands alone.\nA card no one can name opened the door he says Thomas used.\nThe originals he was asked for never came.","Where the records fall silent, you've made your judgment.","Your findings have been recorded.\nThe archive now holds your account of what happened.","[[THE RECORD IS COMPLETE.]]","I've spent a great deal of time putting these pieces together.\nIt seems only fair that someone, at last, has seen them through."];
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const E='cubic-bezier(.2,.7,.2,1)';
+function cell(host,code,name,desc,run){
+  const c=document.createElement('div');c.className='cell';
+  c.innerHTML=`<header><b>${code} · ${name}</b><button class="play">▶ PLAY</button></header><small>${desc}</small><div class="stage"></div>`;
+  host.append(c);const st=c.querySelector('.stage');
+  const go=()=>{st.getAnimations({subtree:true}).forEach(a=>a.cancel());st.innerHTML='';run(st);};
+  c.querySelector('.play').onclick=go;go();
+}
+function build(st,{hidden=true}={}){
+  st.insertAdjacentHTML('beforeend','<img class="art" src="assets/file-003/final-blank.png" alt="">');
+  const L=document.createElement('div');L.className='letter';
+  PARAS.forEach(t=>{const p=document.createElement('p');if(t.startsWith('[['))p.innerHTML=`<span class="mark">${t.slice(2,-2)}</span>`;else p.textContent=t;L.append(p);});
+  const s=document.createElement('span');s.className='sign';s.textContent='— M';L.append(s);
+  if(hidden)[...L.children].forEach(p=>p.style.opacity=0);
+  st.append(L);return [...L.children];
+}
+const showAll=ps=>ps.forEach(p=>p.style.opacity=1);
+// ---------- arrival ----------
+const A=document.getElementById('gA');
+const prev=st=>{const p=document.createElement('div');p.className='prev';p.textContent='WHO IS M?  ·  ON THE RECORD';st.append(p);return p;};
+cell(A,'F1','LETTER SLIDES ONTO THE DESK','The puzzle screen dims; the letter slides in from below and settles, with a soft shadow.',async st=>{
+  const ps=build(st,{hidden:false}),pv=prev(st);await wait(900);
+  pv.animate([{opacity:1},{opacity:0}],{duration:900,fill:'forwards'});
+  [st.querySelector('.art'),st.querySelector('.letter')].forEach(n=>n.animate([{transform:'translateY(60%) rotate(4deg)',filter:'brightness(.3)'},{transform:'none',filter:'brightness(1)'}],{duration:1600,easing:E,fill:'backwards'}));
+});
+cell(A,'F2','WAX SEAL BREAKS','A red M seal fills the screen, cracks in two, and the letter is behind it.',async st=>{
+  build(st,{hidden:false});const pv=prev(st);
+  const seal=document.createElement('div');seal.className='fx';seal.innerHTML='<div style="position:absolute;left:50%;top:50%;width:22cqw;height:22cqw;margin:-11cqw;border-radius:50%;background:radial-gradient(circle at 40% 35%,#c23a2c,#7a120c 70%);box-shadow:0 0 3cqw rgba(0,0,0,.7);display:grid;place-items:center;font:italic 9cqw \'Libre Baskerville\',serif;color:#5a0a06">M</div>';st.append(seal);
+  await wait(900);pv.remove();
+  const d=seal.firstChild;d.animate([{transform:'scale(.2)',opacity:0},{transform:'scale(1)',opacity:1}],{duration:420,easing:'cubic-bezier(.3,1.3,.4,1)',fill:'forwards'});
+  await wait(900);
+  const l=d.cloneNode(true),r=d.cloneNode(true);l.style.clipPath='inset(0 50% 0 0)';r.style.clipPath='inset(0 0 0 50%)';d.remove();seal.append(l,r);
+  l.animate([{transform:'none'},{transform:'translateX(-60cqw) rotate(-30deg)'}],{duration:900,easing:'ease-in',fill:'forwards'});
+  r.animate([{transform:'none'},{transform:'translateX(60cqw) rotate(30deg)'}],{duration:900,easing:'ease-in',fill:'forwards'});
+});
+cell(A,'F3','SIGNAL RESOLVES','Static and scan lines fill the screen, then tune in on the letter.',async st=>{
+  build(st,{hidden:false});const pv=prev(st);await wait(900);pv.remove();
+  const n=document.createElement('canvas');n.className='fx';n.width=320;n.height=260;st.append(n);const x=n.getContext('2d');
+  let t0=performance.now();const tick=()=>{const k=(performance.now()-t0)/1600;if(k>1){n.remove();return;}const im=x.createImageData(320,260);for(let i=0;i<im.data.length;i+=4){const v=Math.random()*255;im.data[i]=v;im.data[i+1]=v*.85;im.data[i+2]=v*.6;im.data[i+3]=255*(1-k)}x.putImageData(im,0,0);requestAnimationFrame(tick)};tick();
+  n.style.width='100%';n.style.height='100%';
+});
+cell(A,'F4','LAMP SWINGS ON','Darkness, then the lamp swings on from the top-right corner and lights the letter.',async st=>{
+  build(st,{hidden:false});const pv=prev(st);await wait(900);
+  pv.animate([{opacity:1},{opacity:0}],{duration:600,fill:'forwards'});
+  st.querySelectorAll('.art,.letter').forEach(n=>n.animate([{clipPath:'circle(0% at 92% 6%)',filter:'brightness(1.3)'},{clipPath:'circle(45% at 70% 30%)',offset:.5},{clipPath:'circle(150% at 50% 50%)',filter:'brightness(1)'}],{duration:2400,easing:'cubic-bezier(.5,0,.2,1)',fill:'backwards'}));
+});
+// ---------- text ----------
+const B=document.getElementById('gB');
+cell(B,'L1','INK SOAKS IN','Each paragraph appears out of a soft ink blur, one after another.',async st=>{
+  const ps=build(st);for(const p of ps){p.animate([{opacity:0,filter:'blur(.5cqw)'},{opacity:1,filter:'blur(0)'}],{duration:1100,easing:E,fill:'forwards'});await wait(650);}
+});
+cell(B,'L2','READING LAMP','A warm lamp line moves down the page; text appears where the light passes.',async st=>{
+  const ps=build(st,{hidden:false}),L=st.querySelector('.letter');
+  L.animate([{clipPath:'inset(0 0 100% 0)'},{clipPath:'inset(0 0 0 0)'}],{duration:6000,easing:'linear',fill:'both'});
+  const lamp=document.createElement('div');lamp.className='fx';lamp.style.cssText='left:15%;right:30%;height:4%;background:linear-gradient(transparent,rgba(255,190,110,.55),transparent);mix-blend-mode:multiply';st.append(lamp);
+  lamp.animate([{top:'16%'},{top:'88%'}],{duration:6000,easing:'linear',fill:'forwards'});
+});
+cell(B,'L3','DEVELOPING PHOTO','All the text is already there but faint, then darkens paragraph by paragraph like a print developing.',async st=>{
+  const ps=build(st,{hidden:false});ps.forEach(p=>p.style.opacity=.08);await wait(500);
+  for(const p of ps){p.animate([{opacity:.08,filter:'blur(.15cqw)'},{opacity:1,filter:'blur(0)'}],{duration:1400,easing:'ease-in-out',fill:'forwards'});await wait(700);}
+});
+cell(B,'L4','RISE & SETTLE','Each paragraph rises gently into place and settles, like pages being laid down.',async st=>{
+  const ps=build(st);for(const p of ps){p.animate([{opacity:0,transform:'translateY(1.2cqw)'},{opacity:1,transform:'none'}],{duration:900,easing:E,fill:'forwards'});await wait(600);}
+});
+cell(B,'L5','KEY LINES BURN IN','Text fades in calmly; the lines about Peter and THE RECORD IS COMPLETE flare warm before settling.',async st=>{
+  const ps=build(st);for(const [i,p] of ps.entries()){const key=i===3||i===6;
+    p.animate(key?[{opacity:0,color:'#2a1f15',textShadow:'0 0 0 transparent'},{opacity:1,color:'#7a1e10',textShadow:'0 0 1cqw rgba(255,140,60,.8)',offset:.5},{opacity:1,color:'#2a1f15',textShadow:'0 0 0 transparent'}]:[{opacity:0},{opacity:1}],{duration:key?2200:900,fill:'forwards'});
+    await wait(key?1500:600);}
+});
+cell(B,'L6','HANDWRITTEN SIGN-OFF','Paragraphs fade in, then "— M" is written by hand at the end with a slow stroke.',async st=>{
+  const ps=build(st);for(const p of ps.slice(0,-1)){p.animate([{opacity:0},{opacity:1}],{duration:800,fill:'forwards'});await wait(520);}
+  const s=ps[ps.length-1];s.style.opacity=1;s.animate([{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{duration:1400,easing:'ease-in-out',fill:'both'});
+});
+</script></body></html>

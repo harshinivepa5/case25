@@ -2442,3 +2442,18 @@ body:has(#f3Stage.visible) #devFile03Button{display:none}
 .f3s-solved-name{margin-top:14px;color:#c9b48c;font:12px var(--mono);letter-spacing:.4em;opacity:0;animation:f3sRise .9s .9s ease forwards}
 .f3s-chapter.solved::before{animation:none;opacity:0}
 .f3s-veil.on-paper.line,.f3s-veil.on-paper.block{-webkit-backdrop-filter:blur(calc(6px*var(--u))) brightness(.82) sepia(.4);backdrop-filter:blur(calc(6px*var(--u))) brightness(.82) sepia(.4)}
+
+/* final letter: develops paragraph by paragraph; M signs by hand */
+.f3s-letter .f3s-lp{margin:0 0 calc(var(--u)*24px);white-space:pre-line}
+.f3s-letter-sign.written{clip-path:inset(0 0 0 0);animation:f3sSign 1.5s ease-in-out both}
+@keyframes f3sSign{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.f3s-seal-wrap{mix-blend-mode:normal;background:radial-gradient(ellipse at center,#120b06,#020101 75%);display:grid;place-items:center;z-index:35}
+.f3s-seal{grid-area:1/1;width:min(30vw,30vh);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 38% 32%,#d24a38,#8a1610 62%,#5a0a06);box-shadow:0 0 0 6px rgba(120,20,12,.6),0 20px 60px rgba(0,0,0,.8),inset 0 -8px 24px rgba(0,0,0,.45);color:#5a0a06;font:italic min(14vw,14vh) var(--serif);text-shadow:0 2px 0 rgba(255,140,110,.25)}
+/* gift card text */
+.f3s-giftcard{position:absolute;left:calc(var(--x)*var(--u)*1px);top:calc(var(--y)*var(--u)*1px);width:calc(var(--w)*var(--u)*1px);height:calc(var(--h)*var(--u)*1px);box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,rgba(8,6,4,.92) 30%,rgba(8,6,4,.75) 65%,transparent 85%)}
+.f3s-giftcard small{color:#d9ad62;font:calc(var(--u)*22px) var(--type);letter-spacing:.14em}
+.f3s-giftcard i{width:60%;height:1px;margin:calc(var(--u)*24px) 0;background:linear-gradient(90deg,transparent,#c99a55,transparent)}
+.f3s-giftcard h2{margin:0;color:#f3e3c3;font:calc(var(--u)*48px) var(--serif);letter-spacing:.06em;text-shadow:0 0 calc(var(--u)*24px) rgba(255,190,110,.35)}
+.f3s-giftcard b{width:calc(var(--u)*110px);height:1px;margin:calc(var(--u)*28px) 0 calc(var(--u)*30px);background:#c99a55}
+.f3s-giftcard p{margin:0;color:#e9dcc2;font:calc(var(--u)*23px)/1.75 var(--type);letter-spacing:.04em}
+.f3s-giftcard .gc-gap{margin-top:calc(var(--u)*26px);color:#f3d9a6}

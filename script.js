@@ -2307,9 +2307,9 @@
     'p5-q2':{kind:'live',next:'p5-q3',puzzle:3,build:p5BuildConclusion},
     'p5-q3':{kind:'live',next:'final',puzzle:3,build:p5BuildM},
     // M's closing letter (final.png) is taller than 16:9, so it is shown whole rather than cropped.
-    final:{kind:'message',fit:'contain',art:'final-blank',letter:[412,318,1095,1180],cont:[588,1573,688,115],next:'gift'},
+    final:{kind:'message',fit:'contain',art:'final-blank',arrive:'seal',letter:[412,318,1095,1180],cont:[588,1573,688,115],next:'gift'},
     // Thank-you card before the physical gift is handed over; its CONTINUE ends File 03.
-    gift:{kind:'message',cont:[552,701,431,82],label:'GOOD JOB, DETECTIVE',next:null,finish:true}
+    gift:{kind:'message',art:'gift-blank',arrive:'relight',giftCard:true,cont:[552,701,431,82],label:'I FOUND IT',next:null,finish:true}
   };
   const F3S_CHAPTERS=[['PUZZLE 01','NORTH QUAY'],['PUZZLE 02','THE MISSING STORY'],['PUZZLE 03','THE IMPOSSIBLE TIMELINE'],['PUZZLE 04','THE UNRESOLVED THREAD'],['PUZZLE 05','THE CONFRONTATION']];
   function readF3S(){const fresh={screen:'opening',done:{},attempts:{},drafts:{},picks:{}};try{return {...fresh,...JSON.parse(localStorage.getItem(F3S_KEY)||'{}')};}catch{return fresh;}}
@@ -2403,6 +2403,23 @@
       drop(400);
       f3sGlow('radial-gradient(ellipse at 40% 55%,#ffd79a,#ff8a2a 35%,rgba(120,30,0,.6) 65%,transparent 85%)',[{opacity:0},{opacity:1,offset:.35},{opacity:0}],1500);
       screen.animate([{opacity:0,filter:'brightness(1.8) sepia(.6)'},{opacity:1,filter:'brightness(1) sepia(0)'}],{duration:1400,delay:450,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'});
+    }else if(mode==='seal'){
+      // a red M seal fills the dark, cracks in two, and the letter is waiting behind it
+      drop(300);
+      const wrap=document.createElement('div');wrap.className='f3s-glow f3s-seal-wrap';$('#f3Stage').insertBefore(wrap,$('#f3sChapter'));
+      const seal=document.createElement('div');seal.className='f3s-seal';seal.textContent='M';wrap.append(seal);
+      screen.animate([{opacity:0},{opacity:0,offset:.55},{opacity:1}],{duration:2600,fill:'backwards'});
+      wrap.animate([{opacity:1},{opacity:1,offset:.75},{opacity:0}],{duration:2600,fill:'forwards'});
+      seal.animate([{transform:'scale(.2)',opacity:0},{transform:'scale(1)',opacity:1}],{duration:420,delay:200,easing:'cubic-bezier(.3,1.3,.4,1)',fill:'both'});
+      setTimeout(()=>{sfx('stamp');const l=seal.cloneNode(true),r=seal.cloneNode(true);l.style.clipPath='polygon(0 0,54% 0,46% 100%,0 100%)';r.style.clipPath='polygon(54% 0,100% 0,100% 100%,46% 100%)';seal.remove();wrap.append(l,r);
+        l.animate([{transform:'none'},{transform:'translate(-55vw,8vh) rotate(-35deg)'}],{duration:1000,easing:'cubic-bezier(.5,0,.75,0)',fill:'forwards'});
+        r.animate([{transform:'none'},{transform:'translate(55vw,8vh) rotate(35deg)'}],{duration:1000,easing:'cubic-bezier(.5,0,.75,0)',fill:'forwards'});},1300);
+      setTimeout(()=>wrap.remove(),2700);
+    }else if(mode==='relight'){
+      // the room goes dark, holds, and a single warm light comes up on the card
+      drop(700);
+      screen.animate([{opacity:0,filter:'brightness(0)'},{opacity:0,offset:.3},{opacity:1,filter:'brightness(.35)',offset:.6},{opacity:1,filter:'brightness(1)'}],{duration:3200,easing:'ease-in-out',fill:'backwards'});
+      f3sGlow('radial-gradient(ellipse 40% 35% at 50% 45%,rgba(255,190,110,.35),transparent 70%)',[{opacity:0},{opacity:0,offset:.4},{opacity:1,offset:.7},{opacity:0}],3600);
     }else if(mode==='sweep'){
       drop(1400);
       screen.animate([{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{duration:1300,easing:'cubic-bezier(.6,0,.3,1)',fill:'backwards'});
@@ -2430,7 +2447,8 @@
     const prev=old[old.length-1],prevDef=prev&&F3S_SCREENS[prev.dataset.screen];
     let mode=null;
     if(!reducedMotion){
-      if(fromChapter)mode=F3S_OPENINGS[def.chapter]||'swing';
+      if(def.arrive)mode=def.arrive;
+      else if(fromChapter)mode=F3S_OPENINGS[def.chapter]||'swing';
       else if(prevDef&&prev.dataset.screen!==id&&Number.isInteger(prevDef.puzzle)&&prevDef.puzzle===def.puzzle)mode='sweep';
       else if(prevDef&&Number.isInteger(prevDef.puzzle)&&!Number.isInteger(def.puzzle)&&(def.kind==='transmission'||def.kind==='message'))mode='turn';
     }
@@ -2496,7 +2514,6 @@ function f3sFindLines(img,boxes){
     'p3-cover':{light:true,box:[420,180,600,490],notes:[[1400,470,240,190]]},
     'p3-q1':{light:true,box:[340,60,650,560],notes:[[1450,410,200,150]]},'p3-q2':{box:[385,150,700,185],notes:[[1480,660,180,170]]},
     'p3-q3':{light:true,box:[424,150,700,330],notes:[[1420,140,200,100]]},'p3-q4':{box:[415,150,750,425]},
-    gift:{box:[330,120,880,560],letter:true}
   };
   function f3sAnimateText(screen,id){
     const cfg=F3S_TEXT[id],img=screen.querySelector('.f3s-art'),layer=screen.querySelector('.f3s-layer');
@@ -2552,6 +2569,7 @@ function f3sFindLines(img,boxes){
     if(def.kind==='message'){
       const go=add(`<button type="button" class="f3s-hit f3s-go" style="${f3sBox(def.cont)}" aria-label="${def.label?f3sEsc(def.label):'Continue'}">${def.label?`<span class="f3s-go-label">${f3sEsc(def.label)}</span>`:''}</button>`);
       go.addEventListener('click',()=>{if(screen.classList.contains('typing'))return;if(def.finish)f3sFinish();else f3sGo(def.next);});
+      if(def.giftCard)f3sGiftCard(screen,add(`<div class="f3s-giftcard" style="${f3sBox([360,190,816,470])}" aria-live="polite"></div>`),go);
       if(def.letter)f3sTypeLetter(screen,add(`<div class="f3s-letter" style="${f3sBox(def.letter)}" aria-live="polite"></div>`));
     }
     if(def.kind==='choice'){
@@ -2587,19 +2605,38 @@ function f3sFindLines(img,boxes){
   }
   // M's closing letter, typed onto the blank paper. Paragraphs are blank-line separated; the "THE RECORD IS COMPLETE." line is highlighted.
   const F3S_CLOSING=`Well done, Detective.\n\nYou followed the money.\nYou questioned the accounts.\nYou traced the gaps between what was said and what could be proven.\n\nPiece by piece, the scattered records became a story.\n\nNot every detail was recovered. Not every question found an answer.\nBut you took what remained and made sense of it.\n\nThe numbers have been traced. The statements have been examined.\nThe missing pieces have been weighed against what remains.\n\nPeter Shaw was the last to speak to him. His word stands alone.\nA card no one can name opened the door he says Thomas used.\nThe originals he was asked for never came.\n\nWhere the records fall silent, you've made your judgment.\n\nYour findings have been recorded.\nYour deductions have been preserved.\nThe archive now holds your account of what happened.\n\n[[THE RECORD IS COMPLETE.]]\n\nI've spent a great deal of time putting these pieces together.\nIt seems only fair to know that someone, at last, has seen them through.\n\nA pleasure, Detective.`;
+  // M's closing letter develops on the paper like a photograph, paragraph by paragraph. The lines about Peter and
+  // THE RECORD IS COMPLETE flare warm as they come up, and M signs by hand at the end. A click shows it all at once.
   function f3sTypeLetter(screen,box){
-    const parts=F3S_CLOSING.split(/(\[\[.*?\]\])/).map(t=>t.startsWith('[[')?{text:t.slice(2,-2),cls:'f3s-letter-mark'}:{text:t});
-    const sign=document.createElement('div');sign.className='f3s-letter-sign';sign.textContent='— M';
-    const nodes=parts.map(p=>{const n=document.createElement('span');if(p.cls)n.className=p.cls;box.append(n);return n;});box.append(sign);
+    const paras=F3S_CLOSING.split('\n\n');
+    const nodes=paras.map(t=>{const p=document.createElement('p');p.className='f3s-lp';
+      if(t.startsWith('[['))p.innerHTML=`<span class="f3s-letter-mark">${f3sEsc(t.slice(2,-2))}</span>`;else p.textContent=t;box.append(p);return p;});
+    const sign=document.createElement('div');sign.className='f3s-letter-sign';sign.textContent='— M';box.append(sign);
     screen.classList.add('typing');
-    const finish=()=>{parts.forEach((p,i)=>nodes[i].textContent=p.text);nodes.forEach(n=>n.classList.add('shown'));sign.classList.add('shown');screen.classList.remove('typing');};
+    const anims=[];
+    const finish=()=>{anims.forEach(a=>a.finish());nodes.forEach(p=>p.style.opacity=1);sign.classList.add('shown','written');screen.classList.remove('typing');};
     if(reducedMotion){finish();return;}
-    let part=0,ch=0;
-    const step=()=>{if(!screen.isConnected||!screen.classList.contains('typing'))return;const p=parts[part];if(!p){sign.classList.add('shown');laterWait(()=>screen.classList.remove('typing'),900);return;}
-      nodes[part].classList.add('shown');ch=Math.min(p.text.length,ch+2);keyTick();nodes[part].textContent=p.text.slice(0,ch);
-      if(ch>=p.text.length){part++;ch=0;laterWait(step,p.cls?500:30);}else laterWait(step,p.text[ch-1]==='\n'?140:26);};
-    laterWait(step,1300);
+    nodes.forEach(p=>p.style.opacity=.06);
+    let t=2900;
+    nodes.forEach((p,i)=>{const key=/Peter Shaw|\[\[/.test(paras[i]);
+      anims.push(p.animate(key?[{opacity:.06,filter:'blur(1px)',color:'#2a1f15',textShadow:'0 0 0 transparent'},{opacity:1,filter:'blur(0)',color:'#7a1e10',textShadow:'0 0 10px rgba(255,140,60,.75)',offset:.5},{opacity:1,color:'#2a1f15',textShadow:'0 0 0 transparent'}]
+        :[{opacity:.06,filter:'blur(1px)'},{opacity:1,filter:'blur(0)'}],{duration:key?2200:1300,delay:t,easing:'ease-in-out',fill:'forwards'}));
+      t+=key?1600:780;});
+    laterWait(()=>{if(!screen.classList.contains('typing'))return;sign.classList.add('shown','written');laterWait(()=>screen.classList.remove('typing'),1500);},t+300);
     screen.addEventListener('click',e=>{if(screen.classList.contains('typing')&&!e.target.closest('.f3s-skip'))finish();});
+  }
+  // The thank-you card before the physical gift: written live over the blank card, quietly, one line at a time.
+  function f3sGiftCard(screen,box,go){
+    box.innerHTML=`<small>CASE 25 · AN ITEM NOT IN THE ARCHIVE</small><i></i><h2>SOMETHING WAS LEFT FOR YOU</h2><b></b>
+      <p>Every file in this archive was meant for the record.</p><p>This one was not.</p><p class="gc-gap">Look up from the screen, Detective.</p><p>It is closer than you think.</p>`;
+    const parts=[...box.children];go.style.opacity=0;go.style.pointerEvents='none';
+    if(reducedMotion){go.style.opacity=1;go.style.pointerEvents='';return;}
+    parts.forEach(p=>p.style.opacity=0);
+    let t=3400;
+    parts.forEach((p,i)=>{const h=p.tagName==='H2';
+      p.animate([{opacity:0,filter:'blur(6px)',transform:'translateY(6px)'},{opacity:1,filter:'blur(0)',transform:'none'}],{duration:h?1800:1300,delay:t,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'});
+      t+=h?1500:p.tagName==='P'?(i===6?1400:950):350;});
+    go.animate([{opacity:0},{opacity:1}],{duration:1200,delay:t+400,fill:'forwards'}).finished.then(()=>{go.style.opacity=1;go.style.pointerEvents='';}).catch(()=>{});
   }
   function f3sPaintPick(screen,i){f3q('.f3s-opt',screen).forEach((b,n)=>{b.classList.toggle('picked',n===i);b.setAttribute('aria-checked',String(n===i));});}
   function f3sMarkAnswered(screen,id,def){
@@ -2922,7 +2959,7 @@ function f3sFindLines(img,boxes){
     task.querySelector('.f4-submit').addEventListener('click',()=>{
       if(f3sBusy)return;if(pick===null){f3sToast('Choose an answer first.');return;}
       f3s.live=f3s.live||{};f3s.live.mPick=names[pick];saveF3S();
-      f3sModal({tone:'good',title:'ON THE RECORD',body:`<p>You named: <b>${f3sEsc(names[pick])}</b>.</p><p>M does not confirm it. M does not deny it.</p>`,actions:[['CONTINUE →',()=>{f3sCloseModal();f3sGo('final');}]]});
+      f3sGo('final');
     });
   }
   const F4_KEY='case25File004V1';
