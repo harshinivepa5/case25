@@ -65,15 +65,15 @@
   function setMusic(on){musicWanted=on;if(audioContext&&soundBus)soundBus.gain.setTargetAtTime(on?1:.0001,audioContext.currentTime,.5);}
   // Wall intro state and artwork points; showHomeBoard() reads them on page load, so they live up here.
   let wallIntroRun = 0;
-  const WALL_FOUR_CLASSES = ['wall-four-intro','wall-four-card','wall-four-string','wall-four-rest'];
+  const WALL_FOUR_CLASSES = ['wall-thread-pulse','wall-four-intro','wall-four-card','wall-four-string','wall-four-rest'];
   let wallFourRun = 0;
-  const WALL_FIVE_CLASSES = ['wall-five-intro','wall-five-card','wall-five-string','wall-five-rest'];
+  const WALL_FIVE_CLASSES = ['wall-thread-pulse','wall-five-intro','wall-five-card','wall-five-string','wall-five-rest'];
   let wallFiveRun = 0;
   const F5C = [['.file05-art-number', 'FILE 005', 60], ['.file05-art-title', 'THE LAST TRANSMISSION', 40]];
   const F4C = [['.file04-art-number', 'FILE 004', 60], ['.file04-art-title', 'THE LANTERN FIRE', 42]];
   const F3C = [['.file03-art-number', 'FILE 003', 60], ['.file03-art-title', 'THE FINANCIAL TRAIL', 42]];
   const F2C = { num: 'FILE 002', title: 'THE UNEXPECTED SIGNAL', copy: 'Something else is buried\nwithin this archive.' };
-  const WALL_THREE_CLASSES = ['wall-three-intro','wall-three-dot','wall-three-card','wall-three-type','wall-three-string','wall-three-rest'];
+  const WALL_THREE_CLASSES = ['wall-thread-pulse','wall-three-intro','wall-three-dot','wall-three-card','wall-three-type','wall-three-string','wall-three-rest'];
   let wallThreeRun = 0;
   const WALL_ART = {
     pinOne: { x: 642, y: 322 }, pinTwo: { x: 1220, y: 245 }, completed: { x: 650, y: 408 }, twoDone: { x: 1218, y: 379 },
@@ -1139,7 +1139,7 @@
     F3C.forEach(([sel]) => { card.querySelector(sel).textContent = ''; });
     step(600, 'wall-three-card');
     setTimeout(() => { if (run === wallThreeRun) typeFile03Card(run); }, 1500);
-    step(4300, 'wall-three-string'); step(5300, 'wall-three-rest');
+    step(4300, 'wall-three-string'); step(5300, 'wall-three-rest'); step(6100, 'wall-thread-pulse');
     setTimeout(() => { if (run === wallThreeRun) endWallThree(); }, 6900);
   }
   // File 004 reveal: same beats as File 03's, string from File 003 to File 004.
@@ -1173,7 +1173,7 @@
     F4C.forEach(([sel]) => { card.querySelector(sel).textContent = ''; });
     step(600, 'wall-four-card');
     setTimeout(() => { if (run === wallFourRun) typeFile04Card(run); }, 1500);
-    step(4200, 'wall-four-string'); step(5200, 'wall-four-rest');
+    step(4200, 'wall-four-string'); step(5200, 'wall-four-rest'); step(6000, 'wall-thread-pulse');
     setTimeout(() => { if (run === wallFourRun) endWallFour(); }, 6800);
   }
   $('#homeScene').addEventListener('click', event => {
@@ -1212,7 +1212,7 @@
     F5C.forEach(([sel]) => { card.querySelector(sel).textContent = ''; });
     step(600, 'wall-five-card');
     setTimeout(() => { if (run === wallFiveRun) typeFile05Card(run); }, 1500);
-    step(4200, 'wall-five-string'); step(5200, 'wall-five-rest');
+    step(4200, 'wall-five-string'); step(5200, 'wall-five-rest'); step(6000, 'wall-thread-pulse');
     setTimeout(() => { if (run === wallFiveRun) endWallFive(); }, 6800);
   }
   $('#homeScene').addEventListener('click', event => {
