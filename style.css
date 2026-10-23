@@ -2403,7 +2403,7 @@ body.wall-cinematic #buildTag{opacity:0}
 #soundToggle{display:none!important}
 
 /* testing and navigation buttons are not shown to the player */
-#backButton,#buildTag{display:none!important}
+#buildTag{display:none!important}
 
 /* story screens: centred text panel; paragraphs page instead of scrolling off the top */
 .cine-text{left:50%;transform:translateX(-50%);width:min(760px,calc(100vw - 48px));top:13vh;bottom:13vh;padding:26px 34px 22px;box-sizing:border-box;background:radial-gradient(ellipse at 50% 45%,rgba(4,3,2,.82),rgba(4,3,2,.55) 70%,rgba(4,3,2,0));border-radius:4px}
@@ -2518,9 +2518,10 @@ body.wall-cinematic .wall-next-call{opacity:0;pointer-events:none}
 .lk-man{z-index:2}
 .lk-man .m-walker{transform:none;bottom:auto;animation:none!important}
 /* handwritten story text */
-.cine.hand .cine-lines p{font:italic clamp(17px,1.45vw,22px)/1.75 var(--serif);letter-spacing:.01em;color:#efe4cc;opacity:1;filter:none;transform:none}
-.cine.hand .cine-lines .hl{display:block;width:max-content;max-width:100%;clip-path:inset(-20% 100% -40% 0);filter:blur(1.5px)}
-.cine.hand .cine-lines p.on .hl{animation:handWrite calc(var(--n)*55ms) steps(calc(var(--n)*1.6)) forwards,handInk 1.4s ease-out forwards;animation-delay:calc(var(--k)*900ms),calc(var(--k)*900ms + var(--n)*40ms)}
+.cine.hand .cine-lines p{font:italic clamp(17px,1.45vw,22px)/1.75 var(--serif);letter-spacing:.01em;color:#efe4cc;filter:none;transform:none;transition:opacity .3s ease}
+.cine.hand .cine-lines .hl{display:block;width:max-content;max-width:100%;white-space:pre}
+.cine.hand .cine-lines .hl.locked{animation:handLock 1.6s ease-out}
+@keyframes handLock{0%{text-shadow:0 0 14px rgba(255,220,170,.8);letter-spacing:.06em}100%{text-shadow:0 0 0 transparent;letter-spacing:.01em}}
 @keyframes handWrite{to{clip-path:inset(-20% 0 -40% 0)}}
 @keyframes handInk{to{filter:blur(0)}}
 .cine.hand .hl.blood{position:relative;color:#9c1a10;text-shadow:0 0 1px #5a0705,0 0 12px rgba(150,20,10,.35);font-weight:700}
@@ -2550,3 +2551,10 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 @keyframes wallSeam{0%{transform:scaleX(0);opacity:0;top:0;height:2px;border-radius:2px}35%{transform:scaleX(1);opacity:1;top:0;height:2px}65%{top:-1.2vh;height:2.4vh;opacity:.9;border-radius:50%;filter:blur(3px)}100%{top:-5vh;height:10vh;opacity:0;border-radius:50%;filter:blur(18px)}}
 .home.wall-reveal:not(.board-mode) .wall-beacon b{animation:wallBreath 2.8s ease-in-out infinite}
 @keyframes wallBreath{50%{box-shadow:0 0 30px 12px rgba(255,176,80,.7);transform:scale(1.15)}}
+
+.cine-blood-flash{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:3;background:radial-gradient(ellipse at center,transparent 35%,rgba(120,8,4,.75) 100%)}
+.cine.hand .hl.blood.locked{animation:handBlood 2.2s ease-out}
+@keyframes handBlood{0%{text-shadow:0 0 24px rgba(220,20,10,1);transform:scale(1.04)}100%{text-shadow:0 0 1px #5a0705,0 0 12px rgba(150,20,10,.35);transform:none}}
+.cine.hand .cine-lines p.on .hl:not(.locked){color:#d9c9a8}
+/* back button returns */
+#backButton{display:block!important;left:20px!important;top:20px!important;bottom:auto!important}

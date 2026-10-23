@@ -2449,6 +2449,14 @@
       drop(700);
       screen.animate([{opacity:0,filter:'brightness(0)'},{opacity:0,offset:.3},{opacity:1,filter:'brightness(.35)',offset:.6},{opacity:1,filter:'brightness(1)'}],{duration:3200,easing:'ease-in-out',fill:'backwards'});
       f3sGlow('radial-gradient(ellipse 40% 35% at 50% 45%,rgba(255,190,110,.35),transparent 70%)',[{opacity:0},{opacity:0,offset:.4},{opacity:1,offset:.7},{opacity:0}],3600);
+    }else if(mode==='dive'){
+      // from a puzzle's cover into its first page: the camera pushes into the case file, the room falls away,
+      // and the first page settles out of the dark
+      old.forEach(o=>{o.style.zIndex=5;o.style.pointerEvents='none';
+        o.animate([{transform:'scale(1)',filter:'brightness(1) blur(0)',opacity:1},{transform:'scale(1.12)',filter:'brightness(.8) blur(1px)',opacity:1,offset:.45},{transform:'scale(1.45)',filter:'brightness(.2) blur(8px)',opacity:0}],{duration:1500,easing:'cubic-bezier(.55,0,.35,1)',fill:'forwards'});
+        setTimeout(()=>o.remove(),1550);});
+      screen.animate([{opacity:0,transform:'scale(.94)',filter:'brightness(.2) blur(6px)'},{opacity:0,offset:.35},{opacity:1,transform:'scale(1)',filter:'brightness(1) blur(0)'}],{duration:2100,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'});
+      f3sGlow('radial-gradient(ellipse 30% 22% at 50% 50%,rgba(255,200,130,.35),transparent 70%)',[{opacity:0},{opacity:1,offset:.45},{opacity:0}],1800);
     }else if(mode==='sweep'){
       drop(1400);
       screen.animate([{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{duration:1300,easing:'cubic-bezier(.6,0,.3,1)',fill:'backwards'});
@@ -2478,6 +2486,7 @@
     if(!reducedMotion){
       if(def.arrive)mode=def.arrive;
       else if(fromChapter)mode=F3S_OPENINGS[def.chapter]||'swing';
+      else if(prevDef&&prevDef.kind==='cover')mode='dive';
       else if(prevDef&&prev.dataset.screen!==id&&Number.isInteger(prevDef.puzzle)&&prevDef.puzzle===def.puzzle)mode='sweep';
       else if(prevDef&&Number.isInteger(prevDef.puzzle)&&!Number.isInteger(def.puzzle)&&(def.kind==='transmission'||def.kind==='message'))mode='turn';
     }
@@ -2856,6 +2865,7 @@ function f3sFindLines(img,boxes){
   // A line that starts with "!" is written in blood and drips; "— M" becomes a signature. Blood flecks mark the page.
   function cineHand(screen){
     screen.classList.add('hand');
+    screen.querySelector('.cine-layer').insertAdjacentHTML('beforeend','<div class="cine-blood-flash" aria-hidden="true"></div>');
     screen.querySelectorAll('.cine-lines p').forEach(p=>{
       const parts=p.innerHTML.split('<br>');
       p.innerHTML=parts.map((t,k)=>{const blood=t.startsWith('!'),sign=/^— M$/.test(t.trim());
@@ -2866,6 +2876,29 @@ function f3sFindLines(img,boxes){
       <path d="M318 40c10-6 26-4 30 8 4 14-12 22-26 20-12-2-16-20-4-28z" fill="#5a0b07" opacity=".55"/>
       <circle cx="356" cy="72" r="4" fill="#5a0b07" opacity=".6"/><circle cx="300" cy="80" r="2.5" fill="#5a0b07" opacity=".5"/>
       <circle cx="372" cy="54" r="2" fill="#5a0b07" opacity=".5"/></svg>`);
+  }
+  // Each handwritten line arrives like a signal being decoded: the letters churn as random marks, then lock into place
+  // from left to right, flickering. A low pulse lands with every line; the blood line hits harder and the frame jolts.
+  function cineHandLine(screen,p){
+    const GLYPHS='▓▒░#%&@$/\\|<>?!*=+-_ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+    [...p.querySelectorAll('.hl')].forEach((h,k)=>{
+      const node=[...h.childNodes].find(n=>n.nodeType===3);if(!node)return;
+      const text=node.textContent;node.textContent=text.replace(/\S/g,' ');
+      const start=k*900,len=text.length,dur=Math.max(500,len*38);
+      laterWait(()=>{
+        if(!h.isConnected)return;
+        const blood=h.classList.contains('blood');
+        sfx(blood?'sting':'ink');
+        if(blood){screen.animate([{transform:'translate(0,0)'},{transform:'translate(-5px,3px)'},{transform:'translate(4px,-2px)'},{transform:'translate(-2px,1px)'},{transform:'none'}],{duration:380});
+          screen.querySelector('.cine-blood-flash')?.animate([{opacity:0},{opacity:.55,offset:.15},{opacity:0}],{duration:1400});}
+        const t0=performance.now();
+        const tick=()=>{if(!h.isConnected)return;const e=Math.min(1,(performance.now()-t0)/dur),fixed=Math.floor(e*len);
+          let out='';for(let i=0;i<len;i++){const ch=text[i];out+=i<fixed||ch===' '?ch:(i<fixed+6?GLYPHS[Math.random()*GLYPHS.length|0]:' ');}
+          node.textContent=out;h.style.opacity=e<1?(.55+Math.random()*.45):1;
+          if(e<1)requestAnimationFrame(tick);else{node.textContent=text;h.classList.add('locked');}};
+        tick();
+      },start);
+    });
   }
   function cineStory(screen,d,scene,onDone){
     const sc=CINE_SCENES[scene]||CINE_SCENES.board;
@@ -2883,7 +2916,7 @@ function f3sFindLines(img,boxes){
     let n=0,finished=false;
     // paragraphs fill the panel like pages: when the next one would not fit, the page clears and it starts a new one
     const fits=()=>box.scrollHeight<=box.clientHeight+2;
-    const show=i=>{lines[i].classList.add('on');if(!fits()){lines.slice(0,i).forEach(p=>p.classList.add('gone'));}};
+    const show=i=>{lines[i].classList.add('on');if(d.hand&&!reducedMotion)cineHandLine(screen,lines[i]);if(!fits()){lines.slice(0,i).forEach(p=>p.classList.add('gone'));}};
     const finish=()=>{if(finished)return;finished=true;lines.forEach(p=>{p.classList.add('on');p.classList.remove('gone');});
       let start=lines.length-1;while(start>0){lines.slice(0,start).forEach(p=>p.classList.add('gone'));lines.slice(start-1).forEach(p=>p.classList.remove('gone'));if(!fits()){lines[start-1].classList.add('gone');break;}start--;}
       go.hidden=false;go.focus({preventScroll:true});};
