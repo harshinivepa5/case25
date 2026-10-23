@@ -958,8 +958,8 @@
     home.classList.remove('dossier-open','archive-transitioning','document-lit','wall-reveal');
     $('#messageDossier').setAttribute('aria-hidden','true');
     // Hold the untouched wall in silence, then slowly reveal the selected pinned document.
-    later(() => home.classList.add('document-lit'), reducedMotion ? 0 : 1800);
-    later(() => home.classList.add('wall-reveal'), reducedMotion ? 0 : 4800);
+    later(() => home.classList.add('document-lit'), reducedMotion ? 0 : 2200);
+    later(() => home.classList.add('wall-reveal'), reducedMotion ? 0 : 6200);
   }
   $('#skipTyping').addEventListener('click',()=>$('#transmissionCopy').classList.add('typing-done'));
   $('#openInvestigation').addEventListener('click',()=>{ clearTimers(); localStorage.setItem('case25HomeSeen','1'); show(scenes[6]); });
@@ -970,6 +970,13 @@
     progress.file03WallSeen=true;progress.file03Revealed=true;progress.unlockedChapter=Math.max(3,Number(progress.unlockedChapter)||1);
     progress.file03PuzzleComplete=false;
     f3s={screen:'opening',done:{},attempts:{},drafts:{},picks:{},live:{}};saveF3S();
+    persistProgress();showHomeBoard();openFile03();
+  });
+  $('#devPuzzle4Button').addEventListener('click',()=>{
+    progress.caseAccepted=true;progress.file02TransitionSeen=true;progress.fileTwoComplete=true;progress.file02Complete=true;
+    progress.file03WallSeen=true;progress.file03Revealed=true;progress.unlockedChapter=Math.max(3,Number(progress.unlockedChapter)||1);
+    progress.file03PuzzleComplete=false;
+    f3s={screen:'p4-cover',done:{},attempts:{},drafts:{},picks:{},live:{p1read:true}};saveF3S();
     persistProgress();showHomeBoard();openFile03();
   });
   $('#beginChapter')?.addEventListener('click',()=>{ localStorage.setItem('case25Chapter01Started','1'); $('#beginChapter').textContent='CHAPTER 01 READY ✓'; });

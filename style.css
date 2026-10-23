@@ -2535,3 +2535,18 @@ body.wall-cinematic .wall-next-call{opacity:0;pointer-events:none}
 @media(prefers-reduced-motion:reduce){.cine.hand .cine-lines .hl{clip-path:none;filter:none;animation:none!important}}
 .lk-man .m-rig{filter:brightness(.06) contrast(1.4) drop-shadow(0 0 8px rgba(0,0,0,.9))!important}
 .cine.hand .hand-blood{right:auto;left:62%;top:-2%;width:24%}
+
+#devPuzzle4Button{position:fixed;z-index:999;left:20px;bottom:64px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
+#devPuzzle4Button:hover{background:#2b1c0d;color:#ffe0a0}
+body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Button,body:has(#secretLevelScene.active) #devPuzzle4Button{display:none}
+/* first wall: the desk lamp is off, the room is dark; a seam of light opens on the recovered file */
+.wall-lamp-off{position:fixed;z-index:2;inset:0;pointer-events:none;background:radial-gradient(ellipse 17% 22% at 15% 60%,rgba(4,3,2,.94),rgba(4,3,2,.75) 45%,transparent 75%);opacity:0;transition:opacity 1.4s ease}
+.home:not(.board-mode) .wall-lamp-off{opacity:1}
+.home.wall-reveal:not(.board-mode) .wall-lamp-off{opacity:.9}
+.home:not(.board-mode) .document-spotlight{transition:opacity 4s ease-in-out!important}
+.wall-seam{position:fixed;z-index:4;left:42%;top:42%;width:0;height:0;pointer-events:none}
+.wall-seam span{position:absolute;left:-11vw;top:0;width:22vw;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#ffe3ad 30%,#fff3d6 50%,#ffe3ad 70%,transparent);box-shadow:0 0 24px 6px rgba(255,190,100,.55);transform:scaleX(0);opacity:0}
+.home.document-lit:not(.board-mode):not(.dossier-open) .wall-seam span{animation:wallSeam 4.2s cubic-bezier(.5,0,.2,1) .4s forwards}
+@keyframes wallSeam{0%{transform:scaleX(0);opacity:0;top:0;height:2px;border-radius:2px}35%{transform:scaleX(1);opacity:1;top:0;height:2px}65%{top:-1.2vh;height:2.4vh;opacity:.9;border-radius:50%;filter:blur(3px)}100%{top:-5vh;height:10vh;opacity:0;border-radius:50%;filter:blur(18px)}}
+.home.wall-reveal:not(.board-mode) .wall-beacon b{animation:wallBreath 2.8s ease-in-out infinite}
+@keyframes wallBreath{50%{box-shadow:0 0 30px 12px rgba(255,176,80,.7);transform:scale(1.15)}}
