@@ -2566,22 +2566,6 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .home.board-mode .wall-lamp-glow{display:none}
 .home:not(.board-mode) .document-spotlight{transition:opacity 5s ease-in-out 2.2s!important}
 .wall-beacon{display:none!important}
-/* ---- decrypting screen: horror red, black and white ---- */
-.archive-progress{background:#020000!important}
-.archive-progress .reference-access-art{opacity:.22!important;filter:grayscale(1) sepia(1) hue-rotate(-40deg) saturate(3) brightness(.55)!important}
-.archive-progress:after{background:rgba(4,0,0,.86)!important;border-color:rgba(160,20,14,.35)!important;box-shadow:0 0 40px rgba(120,0,0,.35)!important}
-.archive-progress:before{background:rgba(4,0,0,.9)!important}
-.archive-progress .decrypt-mark{color:#f4ece6!important;text-shadow:-2px 0 rgba(255,20,20,.75),2px 0 rgba(0,0,0,.9),0 0 18px rgba(200,10,10,.6)!important;animation:dxGlitch 2.6s steps(1) infinite!important}
-@keyframes dxGlitch{0%,100%{transform:none;opacity:1}7%{transform:translateX(-3px) skewX(-8deg);opacity:.8}8%{transform:translateX(2px);opacity:1}44%{opacity:1}45%{opacity:.25}46%{opacity:1}71%{transform:translateY(1px) scaleY(1.08)}72%{transform:none}}
-.archive-progress .progress-track{border-color:rgba(200,30,22,.95)!important;box-shadow:0 0 26px rgba(190,10,10,.55),inset 0 0 8px #000!important;background:rgba(10,0,0,.95)!important}
-.archive-progress .progress-track i{background:linear-gradient(90deg,#5a0000,#c0150c 70%,#ff4a30)!important;box-shadow:0 0 14px rgba(255,40,20,.8)!important}
-.archive-progress p{color:#fff3ee!important;text-shadow:0 0 10px rgba(255,30,20,.55)}
-.archive-progress small{color:#d6382b!important;letter-spacing:.24em!important;animation:dxFlicker 1.4s steps(2) infinite}
-@keyframes dxFlicker{50%{opacity:.55}}
-.dx-scan{position:absolute;inset:0;z-index:5;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.35) 0 2px,transparent 2px 4px),radial-gradient(ellipse at center,transparent 45%,rgba(90,0,0,.55) 100%);animation:dxPulse 1.6s ease-in-out infinite}
-@keyframes dxPulse{50%{opacity:.7}}
-.file1-bars i{background:#030000!important}
-.file1-bars .fb-label{color:#e8261a!important;text-shadow:0 0 14px rgba(255,20,10,.7),-2px 0 #fff}
 
 /* the man on the dock: long coat, hat, legs swinging */
 .lk-man{position:absolute;inset:0;z-index:2;pointer-events:none}
@@ -2615,3 +2599,13 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .f3s-side footer i.done{background:#c99a55}.f3s-side footer i.on{background:#e6b866;box-shadow:0 0 10px rgba(255,180,90,.7)}
 @media(max-width:1100px){.f4-desk.with-side{grid-template-columns:1fr}.f4-desk.with-side .f4-head,.f4-desk.with-side .f3s-side{grid-column:1;grid-row:auto;position:static}}
 .f4-desk.with-side .f3s-side{margin-top:44px}
+
+/* first wall: a quiet call to action. The lit file breathes, the prompt pops in once, and the whole wall is a clear click target. */
+.home:not(.board-mode) .wall-hotspot{cursor:pointer}
+.home.wall-reveal:not(.board-mode):not(.dossier-open) .document-spotlight{animation:wallBreathe 3.4s ease-in-out infinite}
+@keyframes wallBreathe{0%,100%{filter:brightness(1)}50%{filter:brightness(1.55)}}
+.home.wall-reveal:not(.board-mode) .home-caption{animation:wallPop .9s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes wallPop{0%{opacity:0;transform:translateX(-50%) translateY(14px) scale(.9)}100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+.home:not(.board-mode) .home-caption .wall-open{animation:wallNudge 2.8s ease-in-out 2s infinite}
+@keyframes wallNudge{0%,100%{transform:translateY(0);border-color:rgba(220,180,110,.55)}50%{transform:translateY(-3px);border-color:rgba(255,214,150,.95);box-shadow:0 0 20px rgba(255,180,90,.4)}}
+.home.wall-reveal:not(.board-mode) .wall-hotspot:hover ~ .document-spotlight,.home.wall-reveal:not(.board-mode):has(.wall-hotspot:hover) .document-spotlight{opacity:1;filter:brightness(1.9)}
