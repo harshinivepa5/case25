@@ -2401,3 +2401,6 @@ body.wall-cinematic #buildTag{opacity:0}
 
 /* the sound switch is not shown; sound stays on */
 #soundToggle{display:none!important}
+
+/* testing and navigation buttons are not shown to the player */
+#backButton,#devFile03Button,#buildTag{display:none!important}
