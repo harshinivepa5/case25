@@ -2545,11 +2545,7 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .home:not(.board-mode) .wall-lamp-off{opacity:1}
 .home.wall-reveal:not(.board-mode) .wall-lamp-off{opacity:.9}
 .home:not(.board-mode) .document-spotlight{transition:opacity 4s ease-in-out!important}
-.wall-seam{position:fixed;z-index:4;left:42%;top:42%;width:0;height:0;pointer-events:none}
-.wall-seam span{position:absolute;left:-11vw;top:0;width:22vw;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#ffe3ad 30%,#fff3d6 50%,#ffe3ad 70%,transparent);box-shadow:0 0 24px 6px rgba(255,190,100,.55);transform:scaleX(0);opacity:0}
-.home.document-lit:not(.board-mode):not(.dossier-open) .wall-seam span{animation:wallSeam 4.2s cubic-bezier(.5,0,.2,1) .4s forwards}
-@keyframes wallSeam{0%{transform:scaleX(0);opacity:0;top:0;height:2px;border-radius:2px}35%{transform:scaleX(1);opacity:1;top:0;height:2px}65%{top:-1.2vh;height:2.4vh;opacity:.9;border-radius:50%;filter:blur(3px)}100%{top:-5vh;height:10vh;opacity:0;border-radius:50%;filter:blur(18px)}}
-.home.wall-reveal:not(.board-mode) .wall-beacon b{animation:wallBreath 2.8s ease-in-out infinite}
+.home.document-lit:not(.board-mode):not(.dossier-open) .home.wall-reveal:not(.board-mode) .wall-beacon b{animation:wallBreath 2.8s ease-in-out infinite}
 @keyframes wallBreath{50%{box-shadow:0 0 30px 12px rgba(255,176,80,.7);transform:scale(1.15)}}
 
 .cine-blood-flash{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:3;background:radial-gradient(ellipse at center,transparent 35%,rgba(120,8,4,.75) 100%)}
@@ -2558,3 +2554,31 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .cine.hand .cine-lines p.on .hl:not(.locked){color:#d9c9a8}
 /* back button returns */
 #backButton{display:block!important;left:20px!important;top:20px!important;bottom:auto!important}
+
+/* ---- first wall: the dead desk lamp stutters, catches, and its light slowly spreads over the wall ---- */
+.wall-lamp-off{transition:none!important}
+.home:not(.board-mode) .wall-lamp-off{opacity:1}
+.home.document-lit:not(.board-mode) .wall-lamp-off{animation:lampCatch 5.5s ease-in forwards}
+@keyframes lampCatch{0%{opacity:1}8%{opacity:.35}10%{opacity:1}22%{opacity:1}25%{opacity:.25}28%{opacity:.9}34%{opacity:.4}38%{opacity:1}52%{opacity:.6}100%{opacity:0}}
+.wall-lamp-glow{position:fixed;z-index:3;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen;background:radial-gradient(ellipse 22% 26% at 16% 56%,rgba(255,196,110,.45),rgba(255,150,60,.16) 45%,transparent 75%),radial-gradient(ellipse 60% 55% at 32% 48%,rgba(255,170,80,.12),transparent 70%)}
+.home.document-lit:not(.board-mode) .wall-lamp-glow{animation:lampGlow 6s ease-in-out forwards}
+@keyframes lampGlow{0%,20%{opacity:0}25%{opacity:.6}28%{opacity:.1}38%{opacity:.8}100%{opacity:1}}
+.home.board-mode .wall-lamp-glow{display:none}
+.home:not(.board-mode) .document-spotlight{transition:opacity 5s ease-in-out 2.2s!important}
+.wall-beacon{display:none!important}
+/* ---- decrypting screen: horror red, black and white ---- */
+.archive-progress{background:#020000!important}
+.archive-progress .reference-access-art{opacity:.22!important;filter:grayscale(1) sepia(1) hue-rotate(-40deg) saturate(3) brightness(.55)!important}
+.archive-progress:after{background:rgba(4,0,0,.86)!important;border-color:rgba(160,20,14,.35)!important;box-shadow:0 0 40px rgba(120,0,0,.35)!important}
+.archive-progress:before{background:rgba(4,0,0,.9)!important}
+.archive-progress .decrypt-mark{color:#f4ece6!important;text-shadow:-2px 0 rgba(255,20,20,.75),2px 0 rgba(0,0,0,.9),0 0 18px rgba(200,10,10,.6)!important;animation:dxGlitch 2.6s steps(1) infinite!important}
+@keyframes dxGlitch{0%,100%{transform:none;opacity:1}7%{transform:translateX(-3px) skewX(-8deg);opacity:.8}8%{transform:translateX(2px);opacity:1}44%{opacity:1}45%{opacity:.25}46%{opacity:1}71%{transform:translateY(1px) scaleY(1.08)}72%{transform:none}}
+.archive-progress .progress-track{border-color:rgba(200,30,22,.95)!important;box-shadow:0 0 26px rgba(190,10,10,.55),inset 0 0 8px #000!important;background:rgba(10,0,0,.95)!important}
+.archive-progress .progress-track i{background:linear-gradient(90deg,#5a0000,#c0150c 70%,#ff4a30)!important;box-shadow:0 0 14px rgba(255,40,20,.8)!important}
+.archive-progress p{color:#fff3ee!important;text-shadow:0 0 10px rgba(255,30,20,.55)}
+.archive-progress small{color:#d6382b!important;letter-spacing:.24em!important;animation:dxFlicker 1.4s steps(2) infinite}
+@keyframes dxFlicker{50%{opacity:.55}}
+.dx-scan{position:absolute;inset:0;z-index:5;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.35) 0 2px,transparent 2px 4px),radial-gradient(ellipse at center,transparent 45%,rgba(90,0,0,.55) 100%);animation:dxPulse 1.6s ease-in-out infinite}
+@keyframes dxPulse{50%{opacity:.7}}
+.file1-bars i{background:#030000!important}
+.file1-bars .fb-label{color:#e8261a!important;text-shadow:0 0 14px rgba(255,20,10,.7),-2px 0 #fff}
