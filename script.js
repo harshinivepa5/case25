@@ -2639,7 +2639,7 @@
   // Soft sound cues share the ambient sound switch: nothing plays while sound is off.
   // a soft typewriter key: used by every typed message, throttled so fast typing stays a murmur
   let lastKey=0;
-  function keyTick(){const now=performance.now();if(now-lastKey<46)return;lastKey=now;sfx('key');}
+  function keyTick(){}
   function sfx(kind){
     ensureSound();
     if(!audioContext||audioContext.state!=='running')return;
