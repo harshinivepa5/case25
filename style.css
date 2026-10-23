@@ -2371,7 +2371,7 @@ body.wall-cinematic #fullscreenButton{opacity:0;pointer-events:none;transition:o
 
 .claim-stamp{position:absolute;left:50%;top:50%;z-index:30;padding:.35em .9em;border:.28em solid #b3261a;border-radius:.2em;color:#b3261a;font:700 clamp(28px,5vw,64px) var(--type);letter-spacing:.14em;text-shadow:0 0 18px rgba(179,38,26,.45);mix-blend-mode:screen;pointer-events:none;opacity:0;white-space:nowrap}
 
-#devFile03Button{position:fixed;z-index:999;left:20px;bottom:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
+#devFile03Button{position:fixed;z-index:999;right:20px;top:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}
 #devFile03Button:hover{background:#2b1c0d;color:#ffe0a0}
 body.wall-cinematic #devFile03Button{opacity:0;pointer-events:none;transition:opacity .4s}
 body:has(#secretLevelScene.active) #devFile03Button{display:none}
@@ -2396,5 +2396,8 @@ body:has(#secretLevelScene.active) #devFile03Button{display:none}
 @keyframes f3sStamp{0%{opacity:0;transform:rotate(-4deg) scale(2.4)}100%{opacity:1;transform:rotate(-4deg) scale(1)}}
 @media(prefers-reduced-motion:reduce){.f3s-chapter::before{animation:none;opacity:.5}.f3s-solved{animation:none;opacity:1}}
 
-#buildTag{position:fixed;z-index:999;left:160px;bottom:62px;color:#9c7a45;font:10px var(--mono);letter-spacing:.12em;pointer-events:none}
+#buildTag{position:fixed;z-index:999;right:22px;top:62px;color:#9c7a45;font:10px var(--mono);letter-spacing:.12em;pointer-events:none}
 body.wall-cinematic #buildTag{opacity:0}
+
+/* the sound switch is not shown; sound stays on */
+#soundToggle{display:none!important}
