@@ -2457,3 +2457,13 @@ body:has(#f3Stage.visible) #devFile03Button{display:none}
 .f3s-giftcard b{width:calc(var(--u)*110px);height:1px;margin:calc(var(--u)*28px) 0 calc(var(--u)*30px);background:#c99a55}
 .f3s-giftcard p{margin:0;color:#e9dcc2;font:calc(var(--u)*23px)/1.75 var(--type);letter-spacing:.04em}
 .f3s-giftcard .gc-gap{margin-top:calc(var(--u)*26px);color:#f3d9a6}
+
+/* after File 03: the wall waits with File 03 closed until CONTINUE reveals File 04 */
+#continueFileFour{display:none!important}
+.home.await-file-four:not(.wall-four-intro) #continueFileFour{display:inline-block!important;animation:f3ContinueIn 1.2s 1.2s ease both}
+/* ink bleed between screens */
+.f3s-ink{position:absolute;inset:0;z-index:36;pointer-events:none;filter:url(#f3sInkEdge);overflow:hidden}
+.f3s-ink i{position:absolute;width:190vmax;height:190vmax;border-radius:50%;background:radial-gradient(circle,#030201 0 58%,rgba(10,6,3,.96) 66%,rgba(10,6,3,0) 71%)}
+
+/* skip intro on File 001's story screens, above the slides */
+#phaseTwoScene.active ~ .skip, body:has(#phaseTwoScene.active) #skipIntro{z-index:60}

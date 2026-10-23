@@ -98,7 +98,7 @@
     document.body.classList.toggle('file-one-closed', acceptedCaseOnly);
     const archive = scene === scenes[4];
     // Skip intro only belongs to the opening: title, lake, clues and case file. Elsewhere it would jump back to the archive login.
-    $('#skipIntro').classList.toggle('is-hidden', scenes.indexOf(scene) > 3);
+    $('#skipIntro').classList.toggle('is-hidden', !(scenes.indexOf(scene) <= 3 || scene === scenes[8]));
     $('#soundToggle').classList.toggle('is-hidden', acceptedCaseOnly || archive || scene === scenes[9] || scene === scenes[10] || scene === scenes[11]);
   }
   function paintProgress() {
@@ -130,6 +130,7 @@
     // (file03WallSeen === false means File 02 was just finished and the File 03 reveal has not played yet.)
     $('#homeScene').classList.toggle('file-three-locked', !secondComplete || progress.file03WallSeen === false);
     $('#homeScene').classList.toggle('await-file-three', secondComplete && progress.file03WallSeen === false);
+    $('#homeScene').classList.toggle('await-file-four', !!progress.file03PuzzleComplete && progress.file04WallSeen === false);
     // The spotlight follows the file the player should open next; finished files fall back into the dark.
     const thirdDone = !!progress.file03PuzzleComplete, thirdOpen = secondComplete && progress.file03WallSeen !== false;
     const fourthOpen = thirdDone && progress.file04WallSeen !== false, fourthDone = !!progress.file04Complete;
@@ -895,7 +896,7 @@
     lake.classList.add('lake-pushing');
     later(() => { runClues(); setTimeout(() => lake.classList.remove('lake-pushing'), 900); }, 1150);
   });
-  $('#skipIntro').addEventListener('click', openArchive);
+  $('#skipIntro').addEventListener('click', () => { if ($('#phaseTwoScene').classList.contains('active')) skipFile01ToEnd(); else openArchive(); });
   $('#nextEvidence').addEventListener('click', () => showClue(clueIndex + 1));
   $('#prevEvidence').addEventListener('click', () => showClue(clueIndex - 1));
   $('#reopenCase').addEventListener('click', openArchive);
@@ -1547,6 +1548,10 @@
     }, reducedMotion ? 400 : 4500);
   }
 
+  $('#continueFileFour')?.addEventListener('click', () => {
+    $('#homeScene').classList.remove('await-file-four');
+    playFile04Reveal();
+  });
   $('#continueFileThree')?.addEventListener('click', () => {
     $('#homeScene').classList.remove('await-file-three');
     playFile03Reveal();
@@ -2307,9 +2312,9 @@
     'p5-q2':{kind:'live',next:'p5-q3',puzzle:3,build:p5BuildConclusion},
     'p5-q3':{kind:'live',next:'final',puzzle:3,build:p5BuildM},
     // M's closing letter (final.png) is taller than 16:9, so it is shown whole rather than cropped.
-    final:{kind:'message',fit:'contain',art:'final-blank',arrive:'seal',letter:[412,318,1095,1180],cont:[588,1573,688,115],next:'gift'},
+    final:{kind:'message',fit:'contain',art:'final-blank',arrive:'ink',letter:[412,318,1095,1180],cont:[588,1573,688,115],next:'gift'},
     // Thank-you card before the physical gift is handed over; its CONTINUE ends File 03.
-    gift:{kind:'message',art:'gift-blank',arrive:'relight',giftCard:true,cont:[552,701,431,82],label:'I FOUND IT',next:null,finish:true}
+    gift:{kind:'message',art:'gift-blank',arrive:'ink',giftCard:true,cont:[552,701,431,82],label:'I FOUND IT',next:null,finish:true}
   };
   const F3S_CHAPTERS=[['PUZZLE 01','NORTH QUAY'],['PUZZLE 02','THE MISSING STORY'],['PUZZLE 03','THE IMPOSSIBLE TIMELINE'],['PUZZLE 04','THE UNRESOLVED THREAD'],['PUZZLE 05','THE CONFRONTATION']];
   function readF3S(){const fresh={screen:'opening',done:{},attempts:{},drafts:{},picks:{}};try{return {...fresh,...JSON.parse(localStorage.getItem(F3S_KEY)||'{}')};}catch{return fresh;}}
@@ -2323,7 +2328,8 @@
     const W=stage.clientWidth,H=stage.clientHeight,nw=img.naturalWidth,nh=img.naturalHeight;
     // fill the screen only when that crops almost nothing; otherwise show the whole artwork over a blurred copy of itself
     const crop=Math.abs((W/H)/(nw/nh)-1);
-    const scale=crop>.05||screen.dataset.fit==='contain'?Math.min(W/nw,H/nh):Math.max(W/nw,H/nh);
+    const fit=Math.min(W/nw,H/nh),fill=Math.max(W/nw,H/nh);
+    const scale=screen.dataset.fit==='contain'?fit:Math.min(fill,fit*1.065);
     Object.assign(layer.style,{width:`${nw*scale}px`,height:`${nh*scale}px`,left:`${(W-nw*scale)/2}px`,top:`${(H-nh*scale)/2}px`});
     layer.style.setProperty('--u',scale);
   }
@@ -2386,6 +2392,16 @@
     const g=document.createElement('div');g.className='f3s-glow';g.style.background=bg;$('#f3Stage').insertBefore(g,$('#f3sChapter'));
     g.animate(frames,{duration:ms,fill:'forwards'}).finished.catch(()=>{}).then(()=>g.remove());
   }
+  function f3sInk(old){
+    const stage=$('#f3Stage');
+    if(!$('#f3sInkDefs')){stage.insertAdjacentHTML('beforeend','<svg id="f3sInkDefs" width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="f3sInkEdge" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="70"/></filter></svg>');}
+    const ink=document.createElement('div');ink.className='f3s-ink';stage.insertBefore(ink,$('#f3sChapter'));
+    const drops=[[50,48,0],[28,30,260],[74,66,420],[66,22,560],[22,74,700]];
+    drops.forEach(([x,y,d])=>{const b=document.createElement('i');b.style.left=x+'%';b.style.top=y+'%';ink.append(b);
+      b.animate([{transform:'translate(-50%,-50%) scale(0)'},{transform:'translate(-50%,-50%) scale(.18)',offset:.15},{transform:'translate(-50%,-50%) scale(1)'}],{duration:1500,delay:d,easing:'cubic-bezier(.3,0,.2,1)',fill:'both'});});
+    old.forEach(s=>{s.style.pointerEvents='none';setTimeout(()=>s.remove(),2100);});
+    ink.animate([{opacity:1,filter:'blur(0)'},{opacity:1,offset:.55,filter:'blur(0)'},{opacity:0,filter:'blur(18px)'}],{duration:3800,easing:'ease-in-out',fill:'forwards'}).finished.catch(()=>{}).then(()=>ink.remove());
+  }
   function f3sArrive(screen,mode,old){
     const drop=(ms)=>old.forEach(s=>{s.style.pointerEvents='none';setTimeout(()=>s.remove(),ms);});
     if(mode==='swing'){
@@ -2403,6 +2419,9 @@
       drop(400);
       f3sGlow('radial-gradient(ellipse at 40% 55%,#ffd79a,#ff8a2a 35%,rgba(120,30,0,.6) 65%,transparent 85%)',[{opacity:0},{opacity:1,offset:.35},{opacity:0}],1500);
       screen.animate([{opacity:0,filter:'brightness(1.8) sepia(.6)'},{opacity:1,filter:'brightness(1) sepia(0)'}],{duration:1400,delay:450,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'});
+    }else if(mode==='ink'){
+      // ink drops onto the page and spreads until everything is black; the next page surfaces out of the ink
+      f3sInk(old);
     }else if(mode==='seal'){
       // a red M seal fills the dark, cracks in two, and the letter is waiting behind it
       drop(300);
@@ -2478,7 +2497,7 @@
     file03.p3.complete=true;saveFile03();
     if(progress.file04WallSeen!==true)progress.file04WallSeen=false;persistProgress();
     f3s.screen='final';saveF3S();closeF3Stage();paintProgress();
-    if(progress.file04WallSeen===false)setTimeout(()=>{if($('#f3Stage').hidden)playFile04Reveal();},700);
+    // the wall waits with File 003 closed; CONTINUE reveals File 004 (see #continueFileFour)
   }
 // finds painted text lines inside boxes of an image: returns [[x,y,w,h],...] in image pixels
 function f3sFindLines(img,boxes){
@@ -2616,12 +2635,12 @@ function f3sFindLines(img,boxes){
     const anims=[];
     const finish=()=>{anims.forEach(a=>a.finish());nodes.forEach(p=>p.style.opacity=1);sign.classList.add('shown','written');screen.classList.remove('typing');};
     if(reducedMotion){finish();return;}
-    nodes.forEach(p=>p.style.opacity=.06);
-    let t=2900;
+    nodes.forEach(p=>p.style.opacity=0);
+    let t=3400;
     nodes.forEach((p,i)=>{const key=/Peter Shaw|\[\[/.test(paras[i]);
-      anims.push(p.animate(key?[{opacity:.06,filter:'blur(1px)',color:'#2a1f15',textShadow:'0 0 0 transparent'},{opacity:1,filter:'blur(0)',color:'#7a1e10',textShadow:'0 0 10px rgba(255,140,60,.75)',offset:.5},{opacity:1,color:'#2a1f15',textShadow:'0 0 0 transparent'}]
-        :[{opacity:.06,filter:'blur(1px)'},{opacity:1,filter:'blur(0)'}],{duration:key?2200:1300,delay:t,easing:'ease-in-out',fill:'forwards'}));
-      t+=key?1600:780;});
+      anims.push(p.animate(key?[{opacity:0,filter:'blur(7px)',color:'#5a0f08'},{opacity:.9,filter:'blur(1.5px)',color:'#5a0f08',offset:.45},{opacity:1,filter:'blur(0)',color:'#2a1f15'}]
+        :[{opacity:0,filter:'blur(6px)'},{opacity:.85,filter:'blur(1.2px)',offset:.5},{opacity:1,filter:'blur(0)'}],{duration:key?2600:1700,delay:t,easing:'ease-out',fill:'forwards'}));
+      t+=key?1700:900;});
     laterWait(()=>{if(!screen.classList.contains('typing'))return;sign.classList.add('shown','written');laterWait(()=>screen.classList.remove('typing'),1500);},t+300);
     screen.addEventListener('click',e=>{if(screen.classList.contains('typing')&&!e.target.closest('.f3s-skip'))finish();});
   }
