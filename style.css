@@ -2632,3 +2632,9 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .file1-bars .fb-drip{transform-box:fill-box;transform-origin:50% 0;animation:fbDrip 2.4s ease-in .5s both}
 .file1-bars .fb-d2{animation-delay:.9s}.file1-bars .fb-d3{animation-delay:1.3s}
 @keyframes fbDrip{from{transform:scaleY(0);opacity:0}15%{opacity:1}to{transform:scaleY(1);opacity:.9}}
+/* wall caption: white with a faint red edge, a trace of blood */
+.home:not(.board-mode) .home-caption span{position:relative;color:#f1ece4;text-shadow:-1px 0 rgba(190,24,24,.55),1px 0 rgba(255,255,255,.12),0 2px 8px #000}
+.home:not(.board-mode) .home-caption span:after{content:'';position:absolute;left:34%;top:100%;width:1.5px;height:0;background:linear-gradient(#7a0c0c,rgba(122,12,12,0));border-radius:0 0 2px 2px;animation:capDrip 7s ease-in 3s infinite}
+.home:not(.board-mode) .home-caption span:before{content:'';position:absolute;left:61%;top:100%;width:1.5px;height:0;background:linear-gradient(#6a0a0a,rgba(106,10,10,0));animation:capDrip 9s ease-in 5s infinite}
+.home:not(.board-mode) .home-caption .wall-open{border-color:rgba(190,40,40,.6);color:#f4ece0;box-shadow:0 0 14px rgba(150,15,15,.25),inset 0 0 0 1px rgba(255,255,255,.05)}
+@keyframes capDrip{0%{height:0;opacity:0}15%{opacity:.8}70%{height:18px;opacity:.7}100%{height:22px;opacity:0}}
