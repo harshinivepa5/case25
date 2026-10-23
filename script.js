@@ -2325,7 +2325,7 @@
     // Thank-you card before the physical gift is handed over; its CONTINUE ends File 03.
     gift:{kind:'message',art:'gift-blank',arrive:'ink',giftCard:true,cont:[552,701,431,82],label:'GOOD JOB, DETECTIVE',next:null,finish:true}
   };
-  const F3S_CHAPTERS=[['PUZZLE 01','NORTH QUAY'],['PUZZLE 02','THE MISSING STORY'],['PUZZLE 03','THE IMPOSSIBLE TIMELINE'],['PUZZLE 04','THE UNRESOLVED THREAD'],['PUZZLE 05','THE CONFRONTATION']];
+  const F3S_CHAPTERS=[['PUZZLE 01','NORTH QUAY'],['PUZZLE 02','THE MISSING STORY'],['PUZZLE 03','THE IMPOSSIBLE TIMELINE'],['PUZZLE 04','THE UNRESOLVED THREAD'],['PUZZLE 05','THE FINAL TRANSMISSION']];
   function readF3S(){const fresh={screen:'opening',done:{},attempts:{},drafts:{},picks:{}};try{return {...fresh,...JSON.parse(localStorage.getItem(F3S_KEY)||'{}')};}catch{return fresh;}}
   let f3s=readF3S(),f3sBusy=false;
   function saveF3S(){try{localStorage.setItem(F3S_KEY,JSON.stringify(f3s));}catch{}}
@@ -2475,6 +2475,17 @@
     const m=id.match(/^p([45])-q(\d)$/),desk=screen.querySelector('.f4-desk');if(!m||!desk)return;
     const P=Number(m[1]),q=Number(m[2]),steps=P===4?['THE BOAT','THE ROAD','THE BLOOD','BUILD THE CASE']:['THE INTERVIEW','THE CONCLUSION','WHO IS M?'];
     desk.classList.add('with-side');
+    // header in the same layout as puzzles 1 to 3: a paper tag with the puzzle's name, the question count with its dots,
+    // and the question's own title
+    const names=P===4?['THE HIRE SLIP','THE ROAD TO THE LAKE','THE BLOOD ON THE BOAT','BUILD THE CASE']:['THE INTERVIEW','THE CONCLUSION','WHO IS M?'];
+    const head=desk.querySelector('.f4-head');
+    if(head){
+      const lead=head.querySelector('p')?.textContent||'';
+      head.className='f4-head qh';
+      head.innerHTML=`<div class="qh-tag"><span>${f3sEsc(F3S_CHAPTERS[P-1][1])}</span></div>
+        <div class="qh-count">QUESTION 0${q} / 0${steps.length}<span>${steps.map((_,i)=>`<i class="${i<q-1?'done':i===q-1?'on':''}"></i>`).join('')}</span></div>
+        <h2>${f3sEsc(names[q-1])}</h2><p>${f3sEsc(lead)}</p>`;
+    }
     const side=document.createElement('aside');side.className='f3s-side';
     side.innerHTML=`<header><b>CASE 25</b><small>THE LAST TRANSMISSION</small></header>`+
       F3S_CHAPTERS.slice(0,5).map(([k,t],i)=>`<div class="${i+1<P?'done':i+1===P?'on':''}"><small>${k.replace('PUZZLE 0','PUZZLE ')}</small>${f3sEsc(t)}</div>`).join('')+
@@ -3023,7 +3034,7 @@ When it does, you will know a name.
 Do not look away from it.
 
 — M`};
-  const P5_STORY={kicker:'FILE 003 · PUZZLE 05',eyebrow:'OCTOBER 16 · INTERVIEW ROOM 2',title:'THE CONFRONTATION',button:'BEGIN THE INTERVIEW',text:`Peter Shaw agreed to be interviewed.\n\nHe came alone. He declined a lawyer.\n\nThe recording starts now.\n\nHe will answer four questions.\n\nFor each answer, find the document that says otherwise.`};
+  const P5_STORY={kicker:'FILE 003 · PUZZLE 05',eyebrow:'OCTOBER 16 · INTERVIEW ROOM 2',title:'THE FINAL TRANSMISSION',button:'BEGIN THE INTERVIEW',text:`Peter Shaw agreed to be interviewed.\n\nHe came alone. He declined a lawyer.\n\nThe recording starts now.\n\nHe will answer four questions.\n\nFor each answer, find the document that says otherwise.`};
   const P4_DOCS=[
     {tag:'BOAT HIRE SLIP',date:'Tue 14 Oct · 17:40',title:'Lake Ash Boat Hire — east dock',body:'Hirer: P. Shaw (signed)\nBoat: No. 6, rowing skiff with outboard\nPaid: card ending 4417 — The Lantern company account\nID: not checked (self-service kiosk)\nDue back: 21:00\nStatus: NOT RETURNED'},
     {tag:'TOLL RECEIPT',date:'14 Oct · 21:00 · verified gate clock',title:'Lake Ash Road — toll gate',body:'Vehicle: car, towards the lake\nPaid: card ending 4417\nCardholder: P. Shaw, The Lantern'},

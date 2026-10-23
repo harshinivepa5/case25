@@ -2609,3 +2609,15 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .home:not(.board-mode) .home-caption .wall-open{animation:wallNudge 2.8s ease-in-out 2s infinite}
 @keyframes wallNudge{0%,100%{transform:translateY(0);border-color:rgba(220,180,110,.55)}50%{transform:translateY(-3px);border-color:rgba(255,214,150,.95);box-shadow:0 0 20px rgba(255,180,90,.4)}}
 .home.wall-reveal:not(.board-mode) .wall-hotspot:hover ~ .document-spotlight,.home.wall-reveal:not(.board-mode):has(.wall-hotspot:hover) .document-spotlight{opacity:1;filter:brightness(1.9)}
+
+/* question header, as on puzzles 1 to 3 */
+.f4-head.qh{padding-top:6px}
+.qh-tag{display:inline-block;position:relative;margin:2px 0 14px;padding:10px 26px 9px;transform:rotate(-2deg);background:linear-gradient(160deg,#e4d0a6,#cfb583 75%,#bda06b);box-shadow:0 6px 16px rgba(0,0,0,.55),inset 0 0 14px rgba(120,80,30,.35);color:#2a1d12;font:clamp(14px,1.5vw,19px) var(--type);letter-spacing:.06em}
+.qh-tag:before{content:"";position:absolute;left:-12px;top:-14px;width:18px;height:38px;border:2px solid #9a9a9a;border-radius:9px;transform:rotate(-16deg);opacity:.85}
+.qh-count{display:flex;align-items:center;gap:18px;color:#d9b36b;font:clamp(11px,1.1vw,14px) var(--mono);letter-spacing:.2em}
+.qh-count span{display:flex;gap:8px}
+.qh-count i{width:15px;height:15px;border-radius:50%;border:1.5px solid #c99a55}
+.qh-count i.done{background:#c99a55}.qh-count i.on{background:#e6b866;box-shadow:0 0 10px rgba(255,180,90,.8)}
+.f4-head.qh h2{margin-top:10px}
+.f4-desk.with-side .f3s-side{margin-top:0}
+.f3s-side footer{display:none}
