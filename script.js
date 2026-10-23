@@ -196,7 +196,7 @@
     const on=document.createElement('i'),off=document.createElement('i');off.style.visibility='hidden';off.textContent=text;
     el.replaceChildren(on,off);el.classList.add('typing');let n=0;
     return new Promise(done=>{
-      const tick=()=>{if(token!==refSwapToken)return done();n++;on.textContent=text.slice(0,n);off.textContent=text.slice(n);if(n<text.length)setTimeout(tick,ms);else{el.classList.remove('typing');done();}};
+      const tick=()=>{if(token!==refSwapToken)return done();n++;keyTick();on.textContent=text.slice(0,n);off.textContent=text.slice(n);if(n<text.length)setTimeout(tick,ms);else{el.classList.remove('typing');done();}};
       tick();
     });
   }
@@ -341,7 +341,7 @@
     line.el.classList.add('typing');let n=0;
     const tick=()=>{
       if(seq!==introSeq)return;
-      n++;line.on.textContent=line.t.slice(0,n);line.off.textContent=line.t.slice(n);
+      n++;keyTick();line.on.textContent=line.t.slice(0,n);line.off.textContent=line.t.slice(n);
       if(n>=line.t.length){line.el.classList.remove('typing');done();return;}
       const ch=line.t[n-1],step=line.s*INTRO_TYPE_SPEED,jitter=/[.,]/.test(ch)?step*5:Math.random()*step*.7;
       laterWait(tick,step+jitter);
@@ -1369,7 +1369,7 @@
         if(!alive()||skipped){caret.remove();return done();}
         b.el.classList.add('tw-on');
         const part=b.parts[pi];if(!part){caret.remove();return done();}
-        ci++;part.on.textContent=part.text.slice(0,ci);part.off.textContent=part.text.slice(ci);part.on.after(caret);
+        ci++;keyTick();part.on.textContent=part.text.slice(0,ci);part.off.textContent=part.text.slice(ci);part.on.after(caret);
         if(ci>=part.text.length){pi++;ci=0;}
         const ch=part.text[ci-1]||'',extra=/[.,:;?!]/.test(ch)?ms*7:Math.random()*ms*.6;
         setTimeout(tick,ms+extra);
@@ -1988,7 +1988,7 @@
       const tick=()=>{
         if(!alive())return done();
         if(skipped){l.on.textContent=l.t;l.off.textContent='';l.el.classList.remove('typing');return done();}
-        n++;l.on.textContent=l.t.slice(0,n);l.off.textContent=l.t.slice(n);
+        n++;keyTick();l.on.textContent=l.t.slice(0,n);l.off.textContent=l.t.slice(n);
         if(n>=l.t.length){l.el.classList.remove('typing');return done();}
         const ch=l.t[n-1];setTimeout(tick,ms+(/[.,;:?!…—]/.test(ch)?ms*6:Math.random()*ms*.7));
       };tick();
@@ -2087,8 +2087,46 @@
     clearTimers();button.disabled=true;progress.caseAccepted=true;progress.chapterOneComplete=true;persistProgress();phaseSlides[11].classList.add('case-accepted');
     showHomeBoard(); if(progress.file02TransitionSeen) playWallIntro();
   });
-  function stopSound(){audioNodes.forEach(n=>{try{n.stop?.();n.disconnect?.();}catch{}});audioNodes=[];if(audioContext){audioContext.close().catch(()=>{});audioContext=null;}$('#soundToggle').innerHTML='◖)) <span>SOUND OFF</span>';$('#soundToggle').setAttribute('aria-label','Turn ambient sound on');}
-  async function startSound(){if(audioContext){if(audioContext.state==='suspended')await audioContext.resume();return;}const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;audioContext=new Ctx();await audioContext.resume();const master=audioContext.createGain();master.gain.value=1;master.connect(audioContext.destination);const b=audioContext.createBuffer(1,audioContext.sampleRate*4,audioContext.sampleRate);const a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=(Math.random()*2-1)*.24;const src=audioContext.createBufferSource();src.buffer=b;src.loop=true;const lp=audioContext.createBiquadFilter();lp.type='lowpass';lp.frequency.value=520;const ng=audioContext.createGain();ng.gain.value=.38;src.connect(lp);lp.connect(ng);ng.connect(master);src.start();const wind=audioContext.createOscillator(),wg=audioContext.createGain();wind.type='sine';wind.frequency.value=86;wg.gain.value=.03;wind.connect(wg);wg.connect(master);wind.start();const droneA=audioContext.createOscillator(),droneB=audioContext.createOscillator(),dg=audioContext.createGain();droneA.type='sine';droneB.type='triangle';droneA.frequency.value=55;droneB.frequency.value=82.4;dg.gain.value=.035;droneA.connect(dg);droneB.connect(dg);dg.connect(master);droneA.start();droneB.start();const heart=audioContext.createOscillator(),hg=audioContext.createGain();heart.frequency.value=48;hg.gain.value=.0001;heart.connect(hg);hg.connect(master);heart.start();const t=audioContext.currentTime+.5;for(let beat=0;beat<80;beat++)for(const off of [0,.17]){const x=t+beat*1.2+off;hg.gain.setValueAtTime(.0001,x);hg.gain.exponentialRampToValueAtTime(off?.07:.11,x+.045);hg.gain.exponentialRampToValueAtTime(.0001,x+.22);}audioNodes.push(src,wind,droneA,droneB,heart,lp,ng,wg,dg,hg);$('#soundToggle').innerHTML='◖)) <span>SOUND ON</span>';$('#soundToggle').setAttribute('aria-label','Turn ambient sound off');}
+  function stopSound(){clearInterval(scoreTimer);scoreTimer=null;audioNodes.forEach(n=>{try{n.stop?.();n.disconnect?.();}catch{}});audioNodes=[];if(audioContext){audioContext.close().catch(()=>{});audioContext=null;}$('#soundToggle').innerHTML='◖)) <span>SOUND OFF</span>';$('#soundToggle').setAttribute('aria-label','Turn ambient sound on');}
+  let scoreTimer=null;
+  // A slow thriller score built from scratch: low drone, a drifting minor pad, a steady low pulse with a heartbeat under it,
+  // and a thin high note that surfaces now and then. Nothing is a sample, so the page stays fully offline.
+  async function startSound(){
+    if(audioContext){if(audioContext.state==='suspended')await audioContext.resume();return;}
+    const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;
+    audioContext=new Ctx();await audioContext.resume();
+    const c=audioContext,master=c.createGain();master.gain.value=.9;
+    const comp=c.createDynamicsCompressor();comp.threshold.value=-20;comp.ratio.value=4;master.connect(comp);comp.connect(c.destination);
+    const delay=c.createDelay(1),fb=c.createGain(),wet=c.createGain();delay.delayTime.value=.34;fb.gain.value=.38;wet.gain.value=.35;delay.connect(fb);fb.connect(delay);delay.connect(wet);wet.connect(master);
+    const bus=c.createGain();bus.connect(master);bus.connect(delay);
+    const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=380;lp.Q.value=4;
+    const lfo=c.createOscillator(),lfoG=c.createGain();lfo.frequency.value=.07;lfoG.gain.value=240;lfo.connect(lfoG);lfoG.connect(lp.frequency);lfo.start();
+    const droneG=c.createGain();droneG.gain.value=.18;lp.connect(droneG);droneG.connect(bus);
+    [[55,'sawtooth',0],[55,'sawtooth',7],[82.41,'sawtooth',-5],[27.5,'sine',0]].forEach(([f,t,d])=>{const o=c.createOscillator();o.type=t;o.frequency.value=f;o.detune.value=d;o.connect(lp);o.start();audioNodes.push(o);});
+    const padG=c.createGain();padG.gain.value=.07;padG.connect(bus);
+    const pad=[220,261.63,329.63].map(f=>{const o=c.createOscillator();o.type='triangle';o.frequency.value=f;o.connect(padG);o.start();audioNodes.push(o);return o;});
+    const trem=c.createOscillator(),tg=c.createGain();trem.frequency.value=.11;tg.gain.value=.04;trem.connect(tg);tg.connect(padG.gain);trem.start();
+    const chords=[[220,261.63,329.63],[233.08,277.18,349.23],[220,261.63,311.13],[196,246.94,311.13]];let ci=0;
+    const changeChord=()=>{ci=(ci+1)%chords.length;const t=c.currentTime;pad.forEach((o,i)=>{o.frequency.cancelScheduledValues(t);o.frequency.setValueAtTime(o.frequency.value,t);o.frequency.linearRampToValueAtTime(chords[ci][i],t+4);});};
+    const pulse=(t,f,v)=>{const o=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();o.type='sawtooth';o.frequency.value=f;fl.type='lowpass';fl.frequency.setValueAtTime(900,t);fl.frequency.exponentialRampToValueAtTime(140,t+.28);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+.32);o.connect(fl);fl.connect(g);g.connect(bus);o.start(t);o.stop(t+.35);};
+    const thump=(t,v)=>{const o=c.createOscillator(),g=c.createGain();o.frequency.setValueAtTime(70,t);o.frequency.exponentialRampToValueAtTime(38,t+.18);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+.3);o.connect(g);g.connect(master);o.start(t);o.stop(t+.35);};
+    const sting=t=>{const o=c.createOscillator(),g=c.createGain(),vib=c.createOscillator(),vg=c.createGain(),f=[932.33,987.77,1108.73][Math.random()*3|0];o.type='sine';o.frequency.setValueAtTime(f,t);o.frequency.linearRampToValueAtTime(f*.985,t+3.5);vib.frequency.value=5.5;vg.gain.value=6;vib.connect(vg);vg.connect(o.frequency);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.06,t+1.2);g.gain.exponentialRampToValueAtTime(.0001,t+4);o.connect(g);g.connect(bus);o.start(t);vib.start(t);o.stop(t+4.2);vib.stop(t+4.2);};
+    const step=.33;let next=c.currentTime+.4,n=0,nextSting=c.currentTime+10;
+    const schedule=()=>{
+      if(audioContext!==c)return;
+      while(next<c.currentTime+1.2){
+        const bar=Math.floor(n/8),k=n%8;
+        if(k===0||k===3||k===6)pulse(next,[55,55,58.27,55][bar%4],k===0?.24:.15);
+        if(k===0&&bar%2===1){thump(next,.3);thump(next+.2,.2);}
+        if(k===0&&bar%8===0)changeChord();
+        n++;next+=step;
+      }
+      if(c.currentTime+1.2>nextSting){sting(nextSting);nextSting+=14+Math.random()*14;}
+    };
+    schedule();scoreTimer=setInterval(schedule,400);
+    audioNodes.push(lfo,trem);
+    $('#soundToggle').innerHTML='◖)) <span>SOUND ON</span>';$('#soundToggle').setAttribute('aria-label','Turn ambient sound off');
+  }
   // Sound starts by itself on the first interaction in the file stages, and stays off once the player switches it off.
   let soundUserOff=false;
   function ensureSound(){if(soundUserOff)return;if(!audioContext)startSound();else if(audioContext.state==='suspended')audioContext.resume();}
@@ -2202,7 +2240,7 @@
     card.hidden=false;card.classList.remove('out');void card.offsetWidth;card.classList.add('in');
     $$('#f3Stage .f3s-screen').forEach(s=>s.classList.add('leave'));
     if(reducedMotion){h.textContent=title;laterWait(()=>{card.hidden=true;done();},900);return;}
-    let i=0;const type=()=>{h.textContent=title.slice(0,++i);if(i<title.length)laterWait(type,70);else laterWait(()=>{card.classList.add('out');laterWait(()=>{card.hidden=true;card.classList.remove('in','out');},900);done();},1300);};
+    let i=0;const type=()=>{keyTick();h.textContent=title.slice(0,++i);if(i<title.length)laterWait(type,70);else laterWait(()=>{card.classList.add('out');laterWait(()=>{card.hidden=true;card.classList.remove('in','out');},900);done();},1300);};
     laterWait(type,700);
   }
   function f3sMount(id,{fromChapter=false}={}){
@@ -2227,7 +2265,7 @@
     const copy=screen.querySelector('.f3s-tx-copy'),button=screen.querySelector('.f3s-tx-continue');
     const finish=()=>{copy.textContent=def.text;button.hidden=false;button.focus();};
     if(reducedMotion){finish();return;}
-    let i=0;const type=()=>{if(!screen.isConnected||!button.hidden)return;copy.textContent=def.text.slice(0,i+=2);copy.scrollTop=copy.scrollHeight;if(i<def.text.length)laterWait(type,22);else finish();};
+    let i=0;const type=()=>{if(!screen.isConnected||!button.hidden)return;keyTick();copy.textContent=def.text.slice(0,i+=2);copy.scrollTop=copy.scrollHeight;if(i<def.text.length)laterWait(type,22);else finish();};
     laterWait(type,900);
     screen.addEventListener('click',e=>{if(button.hidden&&!e.target.closest('button'))finish();});
   }
@@ -2294,7 +2332,7 @@
     if(reducedMotion){finish();return;}
     let part=0,ch=0;
     const step=()=>{if(!screen.isConnected||!screen.classList.contains('typing'))return;const p=parts[part];if(!p){sign.classList.add('shown');laterWait(()=>screen.classList.remove('typing'),900);return;}
-      nodes[part].classList.add('shown');ch=Math.min(p.text.length,ch+2);nodes[part].textContent=p.text.slice(0,ch);
+      nodes[part].classList.add('shown');ch=Math.min(p.text.length,ch+2);keyTick();nodes[part].textContent=p.text.slice(0,ch);
       if(ch>=p.text.length){part++;ch=0;laterWait(step,p.cls?500:30);}else laterWait(step,p.text[ch-1]==='\n'?140:26);};
     laterWait(step,1300);
     screen.addEventListener('click',e=>{if(screen.classList.contains('typing')&&!e.target.closest('.f3s-skip,.f3s-retry'))finish();});
@@ -2479,12 +2517,15 @@
   // ---------------------------------------------------------------------------------------------
   // File 003, puzzles 4 and 5. Built live on the same desk as File 004: the lake evidence, then the interview.
   // Soft sound cues share the ambient sound switch: nothing plays while sound is off.
+  // a soft typewriter key: used by every typed message, throttled so fast typing stays a murmur
+  let lastKey=0;
+  function keyTick(){const now=performance.now();if(now-lastKey<46)return;lastKey=now;sfx('key');}
   function sfx(kind){
     ensureSound();
     if(!audioContext||audioContext.state!=='running')return;
     const c=audioContext,t0=c.currentTime;
     const tone=(f,d,type='sine',v=.08,f2=0,delay=0)=>{const o=c.createOscillator(),g=c.createGain(),t=t0+delay;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(Math.min(v*7,.9),t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);};
-    ({click:()=>tone(620,.05,'square',.02),good:()=>{tone(523,.6,'sine',.06);tone(784,.7,'sine',.05,0,.12);},bad:()=>tone(120,.4,'sawtooth',.05,70),stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);},paper:()=>{const n=c.sampleRate*.45|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1700;g.gain.value=.4;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);}})[kind]?.();
+    ({click:()=>tone(620,.05,'square',.02),key:()=>{const n=c.sampleRate*.03|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='highpass';f.frequency.value=1800;g.gain.value=.45;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);tone(180,.03,'square',.02);},good:()=>{tone(523,.6,'sine',.06);tone(784,.7,'sine',.05,0,.12);},bad:()=>tone(120,.4,'sawtooth',.05,70),stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);},paper:()=>{const n=c.sampleRate*.45|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1700;g.gain.value=.4;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);}})[kind]?.();
   }
   // ---------------------------------------------------------------------------------------------
   // File 003, puzzle 1: the five documents are read first, then stay one click away during the questions.
@@ -2577,7 +2618,7 @@
   ];
   function p5Type(el,text,done){
     if(reducedMotion){el.textContent=text;done&&done();return;}
-    let i=0;const tick=()=>{if(!el.isConnected)return;el.textContent=text.slice(0,++i);if(i<text.length)laterWait(tick,26);else done&&done();};tick();
+    let i=0;const tick=()=>{if(!el.isConnected)return;keyTick();el.textContent=text.slice(0,++i);if(i<text.length)laterWait(tick,26);else done&&done();};tick();
   }
   function p5BuildInterview(screen){
     const {docs,task}=f4Desk(screen,{file:'FILE 003 · PUZZLE 05',step:'THE CONFRONTATION',title:'FOUR ANSWERS. FOUR DOCUMENTS.',lead:'For each answer Peter gives, choose the document that says otherwise.'});
