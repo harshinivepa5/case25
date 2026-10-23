@@ -2582,3 +2582,17 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 @keyframes dxPulse{50%{opacity:.7}}
 .file1-bars i{background:#030000!important}
 .file1-bars .fb-label{color:#e8261a!important;text-shadow:0 0 14px rgba(255,20,10,.7),-2px 0 #fff}
+
+/* the man on the dock: long coat, hat, legs swinging */
+.lk-man{position:absolute;inset:0;z-index:2;pointer-events:none}
+.lk-man .m-walker{position:absolute;aspect-ratio:120/300;filter:brightness(.5) drop-shadow(0 0 10px rgba(0,0,0,.95))}
+.lk-man svg{width:100%;height:100%;display:block}
+.lk-man .lm-leg{transform-box:fill-box;transform-origin:50% 0;animation:lmStep .9s ease-in-out infinite alternate}
+.lk-man .lm-r{animation-delay:-.9s}
+@keyframes lmStep{from{transform:rotate(9deg)}to{transform:rotate(-9deg)}}
+.lk-man .m-walker{animation:lmBob .45s ease-in-out infinite alternate}
+@keyframes lmBob{to{translate:0 -1.2%}}
+/* M signs last, slowly */
+.cine.hand .hl.sign.sign-wait{opacity:0}
+.cine.hand .hl.sign.sign-write{animation:signWrite 2.8s cubic-bezier(.4,0,.2,1) both}
+@keyframes signWrite{0%{clip-path:inset(-30% 100% -30% 0);opacity:.2;filter:blur(3px)}60%{opacity:1;filter:blur(.5px)}100%{clip-path:inset(-30% 0 -30% 0);opacity:1;filter:none}}

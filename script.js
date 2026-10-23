@@ -958,7 +958,7 @@
     home.classList.remove('dossier-open','archive-transitioning','document-lit','wall-reveal');
     $('#messageDossier').setAttribute('aria-hidden','true');
     // Hold the untouched wall in silence, then slowly reveal the selected pinned document.
-    later(() => home.classList.add('document-lit'), reducedMotion ? 0 : 2200);
+    later(() => { home.classList.add('document-lit'); sfx('dread'); }, reducedMotion ? 0 : 2200);
     later(() => home.classList.add('wall-reveal'), reducedMotion ? 0 : 6200);
   }
   $('#skipTyping').addEventListener('click',()=>$('#transmissionCopy').classList.add('typing-done'));
@@ -2855,7 +2855,17 @@ function f3sFindLines(img,boxes){
     a('.lk-ring',[{transform:'scale(.3)',transformOrigin:'612px 636px',opacity:0},{opacity:1,offset:.15},{transform:'scale(3.2)',transformOrigin:'612px 636px',opacity:0}],{duration:3200,delay:1800,stagger:1600,iterations:2});
     a('.lk-watcher',[{opacity:0},{opacity:0,offset:.45},{opacity:.85,offset:.6},{opacity:.85,offset:.82},{opacity:0}],{duration:D+800});
     // the man on the dock: walks away along the planks toward the lantern, shrinking, and is swallowed by the mist
-    const man=document.createElement('div');man.className='m-pass run lk-man';man.innerHTML=mWalkerHTML();layer.querySelector('.lk-scene').after(man);
+    const man=document.createElement('div');man.className='lk-man';
+    man.innerHTML=`<div class="m-walker"><svg viewBox="0 0 120 300" aria-hidden="true">
+      <g class="lm-leg lm-l"><path d="M48 168 L44 262 L40 292 L56 292 L58 262 L60 172Z" fill="#030304"/></g>
+      <g class="lm-leg lm-r"><path d="M62 168 L66 262 L64 292 L80 292 L76 262 L74 170Z" fill="#030304"/></g>
+      <path d="M38 64 Q60 52 84 64 L92 120 L96 196 Q60 206 26 196 L30 120Z" fill="#040405"/>
+      <path d="M30 70 Q22 120 24 168 L32 170 Q34 120 40 76Z M90 70 Q98 120 96 168 L88 170 Q86 120 80 76Z" fill="#030304"/>
+      <rect x="52" y="44" width="16" height="16" fill="#040405"/>
+      <ellipse cx="60" cy="34" rx="15" ry="17" fill="#040405"/>
+      <path d="M38 22 L82 22 L78 14 Q60 4 42 14Z" fill="#020203"/><rect x="34" y="20" width="52" height="5" rx="2" fill="#020203"/>
+    </svg></div>`;
+    layer.querySelector('.lk-scene').after(man);
     const w=man.querySelector('.m-walker');
     w.animate([{left:'0%',bottom:'-10%',height:'62%',opacity:0,filter:'blur(0)'},{opacity:.95,offset:.12},{left:'11%',bottom:'6%',height:'40%',offset:.55,opacity:.92,filter:'blur(.4px)'},{left:'19%',bottom:'24%',height:'22%',opacity:.55,offset:.85,filter:'blur(2px)'},{left:'22%',bottom:'29%',height:'17%',opacity:0,filter:'blur(7px)'}],{duration:7200,delay:300,easing:'linear',fill:'both'});
     laterWait(()=>screen.classList.remove('prelude'),reducedMotion?0:D);
@@ -2882,6 +2892,7 @@ function f3sFindLines(img,boxes){
   function cineHandLine(screen,p){
     const GLYPHS='▓▒░#%&@$/\\|<>?!*=+-_ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
     [...p.querySelectorAll('.hl')].forEach((h,k)=>{
+      if(h.classList.contains('sign')){h.classList.add('sign-wait');laterWait(()=>{h.classList.remove('sign-wait');h.classList.add('sign-write');},k*900+600);return;}
       const node=[...h.childNodes].find(n=>n.nodeType===3);if(!node)return;
       const text=node.textContent;node.textContent=text.replace(/\S/g,' ');
       const start=k*900,len=text.length,dur=Math.max(500,len*38);
@@ -2941,7 +2952,7 @@ function f3sFindLines(img,boxes){
     const tone=(f,d,type='sine',v=.08,f2=0,delay=0)=>{const o=c.createOscillator(),g=c.createGain(),t=t0+delay;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(Math.min(v*7,.9),t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);};
     const swell=(f,d,v,delay=0)=>{const o=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter(),t=t0+delay;o.type='triangle';o.frequency.value=f;lp.type='lowpass';lp.frequency.value=900;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.35);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(lp);lp.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);};
     const knock=(v,delay=0)=>{const n=c.sampleRate*.18|0,b=c.createBuffer(1,n,c.sampleRate),dd=b.getChannelData(0);for(let i=0;i<n;i++)dd[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='lowpass';f.frequency.value=320;g.gain.value=v;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0+delay);};
-    ({right:()=>{knock(.9);swell(146.83,1.8,.07,.05);swell(220,1.8,.05,.12);swell(293.66,2,.035,.2);},wrong:()=>{knock(.8);knock(.5,.16);swell(92.5,.9,.05,.02);},ink:()=>{knock(.35);swell(61.7,2.6,.08,.1);},key:()=>{const n=c.sampleRate*.03|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1100;f.Q.value=.8;g.gain.value=.3;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);},stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);},paper:()=>{const n=c.sampleRate*.45|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1700;g.gain.value=.4;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);}})[kind]?.();
+    ({right:()=>{knock(.9);swell(146.83,1.8,.07,.05);swell(220,1.8,.05,.12);swell(293.66,2,.035,.2);},wrong:()=>{knock(.8);knock(.5,.16);swell(92.5,.9,.05,.02);},ink:()=>{knock(.35);swell(61.7,2.6,.08,.1);},dread:()=>{[[55,.09],[58.27,.06],[82.41,.05],[116.54,.03],[123.47,.025]].forEach(([f,v],i)=>{const o=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter(),t=t0+i*.6;o.type=i<2?'sawtooth':'triangle';o.frequency.value=f;o.detune.setValueAtTime(-30,t);o.detune.linearRampToValueAtTime(18,t+7);lp.type='lowpass';lp.frequency.setValueAtTime(180,t);lp.frequency.linearRampToValueAtTime(900,t+6);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+4.5);g.gain.exponentialRampToValueAtTime(.0001,t+9);o.connect(lp);lp.connect(g);g.connect(c.destination);o.start(t);o.stop(t+9.2);});knock(.7,4.2);swell(41.2,3,.12,4.2);},key:()=>{const n=c.sampleRate*.03|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1100;f.Q.value=.8;g.gain.value=.3;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);},stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);},paper:()=>{const n=c.sampleRate*.45|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1700;g.gain.value=.4;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);}})[kind]?.();
   }
   // ---------------------------------------------------------------------------------------------
   // File 003, puzzle 1: the five documents are read first, then stay one click away during the questions.
