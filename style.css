@@ -2491,3 +2491,5 @@ body:has(#f3Stage.visible) #devFile03Button{display:none}
 .f3s-chapter.from-ink{background:#030201}
 .f3s-chapter.from-ink .f3s-solved{animation:f3sFromInk 1.4s ease-out both}
 @keyframes f3sFromInk{0%{opacity:0;filter:blur(10px);transform:rotate(-4deg) scale(1.15)}60%{opacity:1;filter:blur(1px)}100%{opacity:1;filter:none;transform:rotate(-4deg) scale(1)}}
+.f3s-giftcard h2{font-size:calc(var(--u)*62px)}
+.f3s-giftcard .gc-gap{color:#e9dcc2}

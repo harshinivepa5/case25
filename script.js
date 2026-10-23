@@ -2315,7 +2315,7 @@
     // M's closing letter (final.png) is taller than 16:9, so it is shown whole rather than cropped.
     final:{kind:'message',fit:'contain',art:'final-blank',arrive:'ink',letter:[412,318,1095,1180],cont:[588,1573,688,115],next:'gift'},
     // Thank-you card before the physical gift is handed over; its CONTINUE ends File 03.
-    gift:{kind:'message',art:'gift-blank',arrive:'ink',giftCard:true,cont:[552,701,431,82],label:'I FOUND IT',next:null,finish:true}
+    gift:{kind:'message',art:'gift-blank',arrive:'ink',giftCard:true,cont:[552,701,431,82],label:'GOOD JOB, DETECTIVE',next:null,finish:true}
   };
   const F3S_CHAPTERS=[['PUZZLE 01','NORTH QUAY'],['PUZZLE 02','THE MISSING STORY'],['PUZZLE 03','THE IMPOSSIBLE TIMELINE'],['PUZZLE 04','THE UNRESOLVED THREAD'],['PUZZLE 05','THE CONFRONTATION']];
   function readF3S(){const fresh={screen:'opening',done:{},attempts:{},drafts:{},picks:{}};try{return {...fresh,...JSON.parse(localStorage.getItem(F3S_KEY)||'{}')};}catch{return fresh;}}
@@ -2648,8 +2648,8 @@ function f3sFindLines(img,boxes){
   }
   // The thank-you card before the physical gift: written live over the blank card, quietly, one line at a time.
   function f3sGiftCard(screen,box,go){
-    box.innerHTML=`<small>CASE 25 · AN ITEM NOT IN THE ARCHIVE</small><i></i><h2>SOMETHING WAS LEFT FOR YOU</h2><b></b>
-      <p>Every file in this archive was meant for the record.</p><p>This one was not.</p><p class="gc-gap">Look up from the screen, Detective.</p><p>It is closer than you think.</p>`;
+    box.innerHTML=`<small>CASE 25 · SUPPLEMENTARY ITEM</small><i></i><h2>ONE LAST THING</h2><b></b>
+      <p>Before you go, Detective,</p><p>there is one small thing waiting for you.</p><p class="gc-gap">It’s our way of saying thank you</p><p>for seeing the investigation through.</p>`;
     const parts=[...box.children];go.style.opacity=0;go.style.pointerEvents='none';
     if(reducedMotion){go.style.opacity=1;go.style.pointerEvents='';return;}
     parts.forEach(p=>p.style.opacity=0);
