@@ -2839,6 +2839,7 @@ function f3sFindLines(img,boxes){
     board:{img:'assets/evidence-board.png',fx:'dust',tone:'warm'},
     signal:{img:'assets/reference/war-room.png',fx:'dust',tone:'cold'},
     interview:{img:'assets/reference/war-room.png',fx:'dust',tone:'cold',prelude:'room'},
+    concert:{stage:false,fx:'dust',tone:'warm',prelude:'concert'},
     lake:{img:'assets/lake-ash.png',fx:'mist',tone:'cold'},
     lakenight:{img:'assets/lake-ash.png',fx:'mist',tone:'cold',prelude:true},
     reveal:{img:'assets/lake-ash.png',fx:'mist',tone:'cold',figure:true}
@@ -2936,6 +2937,55 @@ function f3sFindLines(img,boxes){
     laterWait(()=>screen.classList.remove('prelude'),reducedMotion?0:D);
     return D;
   }
+  // File 004 opening: The Lantern on a good night. The neon sign buzzes on, the stage lights click on one by one and sweep
+  // through the haze, a singer stands in the follow spot and the crowd sways. The story then turns the room against itself.
+  function cineConcertPrelude(screen){
+    const D=5600,layer=screen.querySelector('.cine-layer');screen.classList.add('prelude');
+    const COL=['#ffb347','#ff5d7d','#5f8dff','#ffd27a','#ff7a3d','#9a6bff','#ffc56b'];
+    const LX=[150,380,610,840,1070,1300,1500];
+    const beams=LX.map((x,i)=>`<g class="cc-light" style="--i:${i};--sd:${(-i*1.3).toFixed(1)}s"><path class="cc-beam" d="M${x} 92 L${x-170} 860 L${x+170} 860 Z" fill="url(#ccB${i})" style="transform-origin:${x}px 92px"/><rect x="${x-16}" y="70" width="32" height="24" rx="4" fill="#0c0a09"/><circle class="cc-lamp" cx="${x}" cy="92" r="9" fill="#1a1512"/></g>`).join('');
+    const grads=LX.map((_,i)=>`<linearGradient id="ccB${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${COL[i]}" stop-opacity=".75"/><stop offset=".55" stop-color="${COL[i]}" stop-opacity=".16"/><stop offset="1" stop-color="${COL[i]}" stop-opacity="0"/></linearGradient>`).join('');
+    let crowd='';for(let i=0;i<26;i++){const x=10+i*63+(i%3)*9,y=812+(i%4)*14,r=27+(i%5)*3,up=i%4===1||i%7===3;
+      crowd+=`<g class="cc-fan" style="--d:${(i*0.137%1.1).toFixed(2)}s"><ellipse cx="${x}" cy="${y+60}" rx="${r*1.9}" ry="${r*1.2}"/><circle cx="${x}" cy="${y}" r="${r}"/>${up?`<path d="M${x+r*.8} ${y+30} L${x+r*1.5} ${y-70} L${x+r*1.5+12} ${y-74} L${x+r*1.2+10} ${y+34}Z"/>`:''}</g>`;}
+    layer.firstElementChild.style.visibility='hidden';
+    layer.firstElementChild.insertAdjacentHTML('afterend',`<svg class="cc-scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>${grads}<radialGradient id="ccPool"><stop offset="0" stop-color="#ffe2b0" stop-opacity=".55"/><stop offset="1" stop-color="#ffb060" stop-opacity="0"/></radialGradient>
+      <linearGradient id="ccFollow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2d6" stop-opacity=".5"/><stop offset="1" stop-color="#fff2d6" stop-opacity=".04"/></linearGradient>
+      <filter id="ccGlow" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="ccSoft"><feGaussianBlur stdDeviation="10"/></filter></defs>
+      <rect width="1600" height="900" fill="#070504"/>
+      <g opacity=".5" stroke="#140d09" stroke-width="2">${Array.from({length:14},(_,i)=>`<path d="M0 ${150+i*36}H1600"/>`).join('')}</g>
+      <text class="cc-neon" x="1575" y="330" text-anchor="end" filter="url(#ccGlow)">THE L<tspan class="cc-a">A</tspan>NTERN</text>
+      <rect x="0" y="62" width="1600" height="10" fill="#0d0a08"/>
+      <rect class="cc-stage" x="760" y="640" width="840" height="34" fill="#1c130d"/>
+      <ellipse class="cc-pool" cx="1180" cy="660" rx="260" ry="40" fill="url(#ccPool)" filter="url(#ccSoft)"/>
+      <path class="cc-follow" d="M1150 0 L1050 660 L1310 660 L1210 0 Z" fill="url(#ccFollow)"/>
+      <g class="cc-singer" fill="#030202"><line x1="1128" y1="470" x2="1128" y2="655" stroke="#030202" stroke-width="5"/><rect x="1118" y="462" width="18" height="10" rx="4"/>
+        <circle cx="1182" cy="468" r="24"/><path d="M1152 500 Q1182 488 1214 500 L1226 600 L1138 600 Z"/><path d="M1150 600 L1146 656 L1166 656 L1176 604Z M1192 604 L1200 656 L1220 656 L1214 600Z"/>
+        <path d="M1150 560 Q1190 520 1236 548 Q1252 572 1226 590 Q1186 600 1150 580Z"/><path d="M1144 520 L1132 470 L1140 468 L1156 516Z"/></g>
+      <g class="cc-amp" fill="#0c0807"><rect x="1400" y="540" width="120" height="100" rx="6"/><circle cx="1460" cy="590" r="32" fill="#140e0b"/><rect x="800" y="560" width="96" height="80" rx="6"/></g>
+      ${beams}
+      <g class="cc-crowd" fill="#020101">${crowd}</g>
+    </svg>`);
+    const sc=layer.querySelector('.cc-scene'),lights=[...sc.querySelectorAll('.cc-light')];
+    sc.querySelector('.cc-neon').animate([{opacity:0},{opacity:0,offset:.15},{opacity:.9,offset:.2},{opacity:.1,offset:.26},{opacity:.95,offset:.34},{opacity:.3,offset:.4},{opacity:1}],{duration:2200,fill:'both'});
+    lights.forEach((l,i)=>laterWait(()=>{if(!sc.isConnected)return;l.classList.add('on');if(i%3===0)sfx('key');},reducedMotion?0:1700+i*330));
+    sc.querySelectorAll('.cc-follow,.cc-pool,.cc-singer').forEach(n=>n.animate([{opacity:0},{opacity:0,offset:.6},{opacity:1}],{duration:D,fill:'both'}));
+    sc.querySelector('.cc-crowd').animate([{opacity:0,transform:'translateY(40px)'},{opacity:0,offset:.55},{opacity:1,transform:'none'}],{duration:D,easing:'ease-out',fill:'both'});
+    laterWait(()=>screen.classList.remove('prelude'),reducedMotion?0:D);
+    return D;
+  }
+  // Story-telling text: each word surfaces from a soft blur, one after another; names glow gold, a line starting
+  // with "!" is the warning and comes in red.
+  function cineTell(screen){
+    screen.classList.add('tell');
+    screen.querySelectorAll('.cine-lines p').forEach(p=>{
+      let w=0;
+      p.innerHTML=p.innerHTML.split('<br>').map(line=>{const warn=line.startsWith('!');if(warn)line=line.slice(1);
+        line=line.replace(/The Lantern|Thomas Reed|Peter Shaw/g,m=>m.replace(/ /g,' '));
+        return `<span class="tl${warn?' warn':''}">`+line.split(' ').map(word=>`<span class="tw${/ /.test(word)?' name':''}" style="--w:${w++}">${word}</span>`).join(' ')+'</span>';}).join('<br>');
+    });
+  }
   // Handwritten version of a story screen: each line is written out by a pen in ink, left to right, one after another.
   // A line that starts with "!" is written in blood and drips; "— M" becomes a signature. Blood flecks mark the page.
   function cineHand(screen){
@@ -2985,14 +3035,15 @@ function f3sFindLines(img,boxes){
       <div class="cine-text"><header><small>${f3sEsc(d.kicker)}</small><span>${f3sEsc(d.eyebrow)}</span><h2>${f3sEsc(d.title)}</h2></header><div class="cine-lines" aria-live="polite">${paras.map(p=>`<p>${f3sEsc(p).replace(/\n/g,'<br>')}</p>`).join('')}</div>
       <button type="button" class="f3s-tx-continue cine-go" hidden>${f3sEsc(d.button)} <span>→</span></button></div>`;
     cineFx(screen.querySelector('.cine-fx'),sc.fx);
-    const preludeMs=sc.prelude&&!reducedMotion?(sc.prelude==='room'?cineRoomPrelude(screen):cineLakePrelude(screen)):0;
+    const preludeMs=sc.prelude&&!reducedMotion?(sc.prelude==='room'?cineRoomPrelude(screen):sc.prelude==='concert'?cineConcertPrelude(screen):cineLakePrelude(screen)):0;
     if(d.hand)cineHand(screen);
+    if(d.tell)cineTell(screen);
     const lines=[...screen.querySelectorAll('.cine-lines p')],box=screen.querySelector('.cine-lines'),go=screen.querySelector('.cine-go');
     go.addEventListener('click',onDone);
     let n=0,finished=false;
     // paragraphs fill the panel like pages: when the next one would not fit, the page clears and it starts a new one
     const fits=()=>box.scrollHeight<=box.clientHeight+2;
-    const show=i=>{lines[i].classList.add('on');if(d.hand&&!reducedMotion)cineHandLine(screen,lines[i]);if(!fits()){lines.slice(0,i).forEach(p=>p.classList.add('gone'));}};
+    const show=i=>{lines[i].classList.add('on');if(d.cue)d.cue(screen,lines[i].textContent);if(d.hand&&!reducedMotion)cineHandLine(screen,lines[i]);if(!fits()){lines.slice(0,i).forEach(p=>p.classList.add('gone'));}};
     const finish=()=>{if(finished)return;finished=true;lines.forEach(p=>{p.classList.add('on');p.classList.remove('gone');});
       let start=lines.length-1;while(start>0){lines.slice(0,start).forEach(p=>p.classList.add('gone'));lines.slice(start-1).forEach(p=>p.classList.remove('gone'));if(!fits()){lines[start-1].classList.add('gone');break;}start--;}
       go.hidden=false;go.focus({preventScroll:true});};
@@ -3198,7 +3249,12 @@ Do not look away from it.
     {q:'Which conclusion does the evidence support?',options:['The fire was deliberately started to cover something up.','Peter Shaw altered the maintenance record.','The inspection’s completion is not supported by any source record and the referenced certificate is missing — but who changed the record, and why, cannot be established.','The inspection was done; the certificate was simply misfiled.'],answer:2,hint:'Separate what the documents show from what they would need to show to blame a person or prove intent.',explain:'The records show a gap: a completed inspection that no source record supports, and a missing certificate. They do not show who changed the record, why, or that the fire was deliberate.'}
   ];
   const F4_STORY={
-    s1:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'A NIGHT AT THE LANTERN',title:'EVERY PLACE HAS A STORY.',button:'EXAMINE THE RECORDS',text:`Before the money. Before Lake Ash.\nThere was The Lantern.\n\nThomas Reed and Peter Shaw built it together — a small venue with a big stage, live music every night, and a crowd that kept coming back.\n\nIt worked. For a while, it worked very well.\n\nBut success is expensive. Costs rose. Repairs were postponed. Electrical equipment that needed attention was kept running a little longer, and then a little longer again.\n\nSafety concerns were raised. They were written down.\n\nWhether anyone acted on them is another matter.\n\nEvery place has a story it tells the public.\nThis is the story its records left behind.`},
+    s1:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'A NIGHT AT THE LANTERN',title:'EVERY PLACE HAS A STORY.',button:'EXAMINE THE RECORDS',tell:true,
+      cue:(screen,t)=>{const sc=screen.querySelector('.cc-scene');if(!sc)return;
+        if(/kept running/.test(t)){sc.classList.add('flicker');sfx('dread');laterWait(()=>sc.classList.remove('flicker'),2600);}
+        if(/Someone warned/.test(t)){const l=sc.querySelectorAll('.cc-light.on')[3];if(l){l.classList.add('pop');sfx('sting');}}
+        if(/Whether anyone/.test(t))sc.classList.add('hush');},
+      text:`Before the money. Before Lake Ash.\nThere was The Lantern.\n\nTwo friends. One stage.\nThomas Reed and Peter Shaw built it from nothing: a small room with a big sound, live music every night, and a crowd that always came back.\n\nFor a while, it was everything they wanted.\n\nBut success is expensive.\nCosts rose. Repairs waited.\nWiring that needed attention was kept running a little longer…\nand then a little longer again.\n\n!Someone warned them. It was written down.\n\nWhether anyone listened is another matter.\n\nEvery place has a story it tells the public.\nThis is the story its records left behind.`},
     s2:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'THE OFFICIAL VERSION',title:'THE NIGHT OF 21 SEPTEMBER.',button:'CROSS-EXAMINE THE REPORT',text:`You found the warnings, Detective. Now here is what followed.\n\nOn the night of 21 September, fire broke out behind the stage during a live set.\n\nThe room was cleared. One person did not make it out.\nA musician died in the fire.\n\nInvestigators classified it as accidental — caused by faulty electrical equipment.\n\nCase closed.\n\nExcept the maintenance records are incomplete.\nAnd nothing in them confirms that the electrical inspection was ever carried out.\n\nThe official conclusion was an accident.\nThe evidence still has a gap.`},
     s4:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'THE STORY WIDENS',title:'THE FIRE WAS ONLY THE BEGINNING.',button:'CONTINUE',text:`Your findings are on record. Now the rest of it.\n\nYears after the fire, irregularities surfaced in The Lantern’s accounts. Money had been diverted into a failed private investment, then hidden behind falsified accounts and supplier invoices.\n\nElena, the accounts manager, found the discrepancy — and helped conceal it.\n\nPeter began quietly collecting records. Records that could place the blame on Thomas, and keep his own name out of it.\n\nThen Thomas disappeared near Lake Ash. His damaged boat, his watch and his jacket were recovered. His body was never found. The authorities presumed he had drowned.\n\nAnd Daniel Cross — the journalist investigating both the fire and the money — knew things he never published.\n\nThe fire was not the end of the story.\nIt was the first part of a much larger case.`},
     final:{kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'FILE 004 · CLOSED',title:'ONE FILE REMAINS.',button:'RETURN TO THE CASE',text:`Detective,\n\nYou have examined what happened at The Lantern and questioned the records that supposedly explain it.\n\nYou have also seen how easily an unanswered question becomes an accusation.\n\nThe fire, the missing money and the disappearance are now part of the same investigation. Whether they are part of the same deception remains for you to determine.\n\nYour findings have been recorded.\n\nOne file remains.\n\n— M`}
@@ -3231,7 +3287,7 @@ Do not look away from it.
     old.forEach(s=>{s.classList.add('leave');setTimeout(()=>s.remove(),1100);});
   }
   function f4BuildStory(screen,id){
-    cineStory(screen,F4_STORY[id],{s1:'stage',s2:'fire',s4:'board',final:'signal'}[id],()=>{const next=f4Next(id);if(next)f4Go(next);else f4Finish();});
+    cineStory(screen,F4_STORY[id],{s1:'concert',s2:'fire',s4:'board',final:'signal'}[id],()=>{const next=f4Next(id);if(next)f4Go(next);else f4Finish();});
   }
   const f4Doc=(d,extra='')=>`<article class="f4-doc" ${extra}><small>${f3sEsc(d.tag)}</small><time>${f3sEsc(d.date)}</time><h4>${f3sEsc(d.title)}</h4><p>${f3sEsc(d.body)}</p></article>`;
   function f4Desk(screen,{step,title,lead,file='FILE 004 · THE LANTERN FIRE'}){

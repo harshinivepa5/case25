@@ -2665,3 +2665,40 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .f3s-closed{position:absolute;inset:0;z-index:31;pointer-events:none;background:#020202;overflow:hidden}
 .f3s-closed .cl-line{position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:linear-gradient(90deg,transparent,#ffd9a0 30%,#fff3d6 50%,#ffd9a0 70%,transparent);box-shadow:0 0 22px 6px rgba(255,180,90,.55);transform-origin:50% 50%}
 .f3s-closed .cl-flare{position:absolute;inset:0;background:radial-gradient(ellipse 60% 22% at 50% 50%,rgba(255,200,130,.5),transparent 70%)}
+/* File 004 opening: concert at The Lantern */
+.cc-scene{position:absolute;inset:0;width:100%;height:100%}
+.cc-neon{font:italic 700 50px var(--serif);letter-spacing:.1em;fill:#ffcf8a;stroke:#ff9a3c;stroke-width:1.5;animation:ccBuzz 5s steps(1) infinite 3s}
+.cc-scene.hush .cc-neon .cc-a{animation:ccDie 2.4s steps(1) forwards}
+.cc-beam{opacity:0;mix-blend-mode:screen;transition:opacity .25s ease}
+.cc-light.on .cc-beam{opacity:.5;animation:ccSweep 7s ease-in-out var(--sd) infinite alternate}
+.cc-light.on .cc-lamp{fill:#fff3d8;filter:drop-shadow(0 0 10px #ffd08a)}
+.cc-light.on .cc-lamp{animation:ccFlash .35s ease-out}
+.cc-scene.flicker .cc-light.on .cc-beam{animation:ccSweep 7s ease-in-out var(--sd) infinite alternate,ccFlick .5s steps(1) 5}
+.cc-scene.flicker .cc-follow{animation:ccFlick .6s steps(1) 4}
+.cc-light.pop .cc-beam{opacity:0!important;animation:none!important}
+.cc-light.pop .cc-lamp{fill:#1a1512;filter:none;animation:ccPop .5s ease-out}
+.cc-scene.hush .cc-crowd{opacity:.3!important;transition:opacity 3s ease}
+.cc-scene.hush .cc-light.on:not(.pop) .cc-beam{opacity:.18;transition:opacity 3s ease}
+.cc-scene.hush .cc-follow{opacity:.45;transition:opacity 3s ease}
+.cc-fan{transform-box:fill-box;transform-origin:50% 100%;animation:ccBob 1.15s ease-in-out var(--d) infinite}
+.cc-singer{transform-box:fill-box;transform-origin:50% 100%;animation:ccSway 2.3s ease-in-out infinite}
+@keyframes ccSweep{from{transform:rotate(-13deg)}to{transform:rotate(13deg)}}
+@keyframes ccBob{50%{transform:translateY(-9px)}}
+@keyframes ccSway{50%{transform:rotate(1.5deg)}}
+@keyframes ccFlash{0%{fill:#fff;filter:drop-shadow(0 0 30px #fff)}}
+@keyframes ccFlick{0%{opacity:.5}20%{opacity:.05}40%{opacity:.6}60%{opacity:0}80%{opacity:.4}}
+@keyframes ccPop{0%{fill:#fff;filter:drop-shadow(0 0 40px #fff) drop-shadow(0 0 80px #ffb060)}30%{fill:#ffb060}}
+@keyframes ccBuzz{0%,92%,100%{opacity:1}93%{opacity:.4}95%{opacity:.9}96%{opacity:.3}}
+@keyframes ccDie{0%{opacity:1}15%{opacity:.1}25%{opacity:.9}40%{opacity:.05}55%{opacity:.6}70%,100%{opacity:.06}}
+/* story-telling text */
+.cine.tell .cine-lines p{font:clamp(16px,1.35vw,21px)/1.75 var(--serif);letter-spacing:.005em;color:#efe4cc;filter:none;transform:none;transition:opacity .2s ease}
+.cine.tell .tw{display:inline-block;opacity:0;filter:blur(7px);transform:translateY(.35em)}
+.cine.tell p.on .tw{animation:twIn 1s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(var(--w)*70ms)}
+.cine.tell .tw.name{color:#f2c27a;text-shadow:0 0 14px rgba(255,180,90,.45)}
+.cine.tell .tl.warn .tw{color:#d8402e;font-style:italic;text-shadow:0 0 14px rgba(200,40,25,.45)}
+.cine.tell p.on .tl.warn .tw{animation:twIn 1s cubic-bezier(.2,.7,.2,1) forwards,twWarn 1.8s steps(1) forwards;animation-delay:calc(var(--w)*110ms),calc(var(--w)*110ms)}
+@keyframes twIn{to{opacity:1;filter:blur(0);transform:none}}
+@keyframes twWarn{0%{opacity:0}10%{opacity:1}14%{opacity:.2}20%{opacity:1}}
+.cine-concert .cine-text{background:linear-gradient(90deg,rgba(4,3,2,.82),rgba(4,3,2,.55) 60%,transparent)}
+@media(prefers-reduced-motion:reduce){.cine.tell .tw{opacity:1;filter:none;transform:none;animation:none!important}}
+.cine-concert .cine-lines p{max-width:min(620px,52vw)}
