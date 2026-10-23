@@ -2369,7 +2369,7 @@
   function f3sChapterCard(index,done){
     const card=$('#f3sChapter'),[kicker,title]=F3S_CHAPTERS[index],small=card.querySelector('small'),h=card.querySelector('h2'),rule=card.querySelector('i');
     card.querySelector('.f3s-solved')?.remove();
-    $$('#f3Stage .f3s-screen').forEach(s=>s.classList.add('leave'));
+    $$('#f3Stage .f3s-screen').forEach(s=>{s.classList.add('leave');setTimeout(()=>s.remove(),900);});
     const showTitle=()=>{
       // the next puzzle on its own screen: the lamp relights behind it and the title types in
       small.textContent=kicker;h.textContent='';small.style.visibility=rule.style.visibility='';

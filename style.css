@@ -2483,3 +2483,6 @@ body:has(#f3Stage.visible) #devFile03Button{display:none}
 .home:not(.board-mode) .wall-hotspot{left:0!important;top:0!important;width:100vw!important;height:100vh!important;transform:none!important}
 .home.wall-reveal:not(.board-mode) .wall-hotspot:focus{outline:none}
 @media(prefers-reduced-motion:reduce){.wall-beacon i,.home-caption .wall-open{animation:none!important}}
+
+/* a screen that arrived with an effect still fades away when the next puzzle's title takes over */
+.f3s-screen.fx-on.leave{opacity:0!important;transition:opacity .8s ease!important;pointer-events:none}
