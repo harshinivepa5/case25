@@ -2453,10 +2453,12 @@
       // from a puzzle's cover into its first page: the camera pushes into the case file, the room falls away,
       // and the first page settles out of the dark
       old.forEach(o=>{o.style.zIndex=5;o.style.pointerEvents='none';
-        o.animate([{transform:'scale(1)',filter:'brightness(1) blur(0)',opacity:1},{transform:'scale(1.12)',filter:'brightness(.8) blur(1px)',opacity:1,offset:.45},{transform:'scale(1.45)',filter:'brightness(.2) blur(8px)',opacity:0}],{duration:1500,easing:'cubic-bezier(.55,0,.35,1)',fill:'forwards'});
+        o.animate([{transform:'scale(1)',filter:'brightness(1) blur(0)',opacity:1},{transform:'scale(1.12)',filter:'brightness(.6) blur(2px)',opacity:.9,offset:.3},{transform:'scale(1.45)',filter:'brightness(.1) blur(10px)',opacity:0,offset:.55},{transform:'scale(1.5)',opacity:0}],{duration:1500,easing:'cubic-bezier(.55,0,.35,1)',fill:'forwards'});
         setTimeout(()=>o.remove(),1550);});
-      screen.animate([{opacity:0,transform:'scale(.94)',filter:'brightness(.2) blur(6px)'},{opacity:0,offset:.35},{opacity:1,transform:'scale(1)',filter:'brightness(1) blur(0)'}],{duration:2100,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'});
-      f3sGlow('radial-gradient(ellipse 30% 22% at 50% 50%,rgba(255,200,130,.35),transparent 70%)',[{opacity:0},{opacity:1,offset:.45},{opacity:0}],1800);
+      screen.animate([{opacity:0,transform:'scale(.94)',filter:'brightness(.2) blur(6px)'},{opacity:0,offset:.5},{opacity:1,transform:'scale(1)',filter:'brightness(1) blur(0)'}],{duration:2100,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'});
+      f3sGlow('radial-gradient(ellipse at center,transparent 30%,rgba(110,6,4,.75) 100%)',[{opacity:0},{opacity:1,offset:.4},{opacity:.4,offset:.5},{opacity:.9,offset:.58},{opacity:0}],2000);
+      f3sGlow('repeating-linear-gradient(0deg,rgba(0,0,0,.45) 0 2px,transparent 2px 4px)',[{opacity:0},{opacity:.8,offset:.4},{opacity:0}],1700);
+      sfx('ink');
     }else if(mode==='sweep'){
       drop(1400);
       screen.animate([{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{duration:1300,easing:'cubic-bezier(.6,0,.3,1)',fill:'backwards'});
@@ -2468,11 +2470,22 @@
         setTimeout(()=>s.remove(),1150);});
     }
   }
+  // A case sidebar on the live puzzle pages, like the painted ones: the five puzzles, the current one marked, and the step.
+  function f3sSide(screen,id){
+    const m=id.match(/^p([45])-q(\d)$/),desk=screen.querySelector('.f4-desk');if(!m||!desk)return;
+    const P=Number(m[1]),q=Number(m[2]),steps=P===4?['THE BOAT','THE ROAD','THE BLOOD','BUILD THE CASE']:['THE INTERVIEW','THE CONCLUSION','WHO IS M?'];
+    desk.classList.add('with-side');
+    const side=document.createElement('aside');side.className='f3s-side';
+    side.innerHTML=`<header><b>CASE 25</b><small>THE LAST TRANSMISSION</small></header>`+
+      F3S_CHAPTERS.slice(0,5).map(([k,t],i)=>`<div class="${i+1<P?'done':i+1===P?'on':''}"><small>${k.replace('PUZZLE 0','PUZZLE ')}</small>${f3sEsc(t)}</div>`).join('')+
+      `<footer><small>${P===4?'QUESTION':'STEP'} 0${q} / 0${steps.length}</small><b>${steps[q-1]}</b><span>${steps.map((_,i)=>`<i class="${i<q-1?'done':i===q-1?'on':''}"></i>`).join('')}</span></footer>`;
+    desk.prepend(side);
+  }
   function f3sMount(id,{fromChapter=false}={}){
     const def=F3S_SCREENS[id],stage=$('#f3Stage'),old=[...stage.querySelectorAll('.f3s-screen')];
     const screen=document.createElement('section');screen.className=`f3s-screen f3s-${def.kind}`+(fromChapter?' from-chapter':'');screen.dataset.screen=id;if(def.fit)screen.dataset.fit=def.fit;
     if(def.kind==='transmission')f3sBuildTransmission(screen,def);
-    else if(def.kind==='live'){screen.classList.add('f4-screen');def.build(screen,id);}
+    else if(def.kind==='live'){screen.classList.add('f4-screen');def.build(screen,id);f3sSide(screen,id);}
     else{
       screen.innerHTML=`<img class="f3s-bgblur" alt="" aria-hidden="true" src="assets/file-003/${def.art||id}.png"><div class="f3s-layer"><img class="f3s-art" alt="" src="assets/file-003/${def.art||id}.png"></div>`;
       f3sBuildControls(screen,id,def);
@@ -2486,7 +2499,7 @@
     if(!reducedMotion){
       if(def.arrive)mode=def.arrive;
       else if(fromChapter)mode=F3S_OPENINGS[def.chapter]||'swing';
-      else if(prevDef&&prevDef.kind==='cover')mode='dive';
+      else if(prevDef&&(prevDef.kind==='cover'||/-cover$/.test(prev.dataset.screen)))mode='dive';
       else if(prevDef&&prev.dataset.screen!==id&&Number.isInteger(prevDef.puzzle)&&prevDef.puzzle===def.puzzle)mode='sweep';
       else if(prevDef&&Number.isInteger(prevDef.puzzle)&&!Number.isInteger(def.puzzle)&&(def.kind==='transmission'||def.kind==='message'))mode='turn';
     }
