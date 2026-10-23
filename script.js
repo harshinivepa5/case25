@@ -2520,14 +2520,15 @@
     if(f3sBusy)return;
     let correct=false,missing=[];
     if(def.kind==='choice'){const pick=f3s.picks[id];if(!Number.isInteger(pick)){f3sNudge(screen,'.f3s-opt','Choose an answer first.');return;}correct=pick===def.answer;}
-    if(def.kind==='written'){const text=(f3s.drafts[id]||'').trim();if(text.split(/\s+/).length<4){f3sNudge(screen,'.f3s-text','Write your answer first.');return;}const r=def.grade(text);correct=r.accepted;missing=(r.missing||[]).filter(m=>typeof m==='string');}
+    // written answers are never marked wrong: whatever the detective submits, the file's own conclusion follows
+    if(def.kind==='written'){const text=(f3s.drafts[id]||'').trim();if(!text){f3sNudge(screen,'.f3s-text','Write your answer first.');return;}correct=true;}
     if(def.kind==='times'){const t=f3s.drafts[id]||[];if(t.filter(Boolean).length<3){f3sNudge(screen,'.f3s-time','Enter all three times.');return;}correct=p3TimesCorrect(t).every(Boolean);}
     if(def.kind==='timeline'){const r=f3sTimelineResult(f3s.drafts[id]);correct=r.accepted;missing=r.missing;}
     const tries=(f3s.attempts[id]||0)+1;f3s.attempts[id]=tries;saveF3S();
     const explain=def.explain||def.model;
     if(correct){
       f3s.done[id]=true;saveF3S();f3sMarkAnswered(screen,id,def);f3sStamp(screen,'VERIFIED');
-      f3sModal({tone:'good',title:def.doneTitle||['EVIDENCE VERIFIED','DEDUCTION ACCEPTED','RECORD CONFIRMED'][tries%3],body:`<p>${f3sEsc(explain)}</p>`,actions:[['CONTINUE →',()=>{f3sCloseModal();f3sGo(def.next);}]]});
+      f3sModal({tone:'good',title:def.doneTitle||(def.kind==='written'?'WHAT THE FILE SHOWS':['EVIDENCE VERIFIED','DEDUCTION ACCEPTED','RECORD CONFIRMED'][tries%3]),body:`<p>${f3sEsc(explain)}</p>`,actions:[['CONTINUE →',()=>{f3sCloseModal();f3sGo(def.next);}]]});
       return;
     }
     if(def.kind==='choice'){const b=f3q('.f3s-opt',screen)[f3s.picks[id]];b.classList.remove('wrong');void b.offsetWidth;b.classList.add('wrong');}
