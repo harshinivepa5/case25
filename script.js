@@ -3054,10 +3054,6 @@ When it does, you will know a name.
 
 Do not look away from it.
 
-He went to the water.
-Someone followed.
-!Only one of them came back.
-
 — M`};
   const P5_STORY={kicker:'FILE 003 · PUZZLE 05',eyebrow:'OCTOBER 16 · INTERVIEW ROOM 2',title:'THE FINAL TRANSMISSION',button:'BEGIN THE INTERVIEW',hand:true,text:`Peter Shaw agreed to be interviewed.\nHe came alone. He declined a lawyer.\n\nThe tape is running.\n\nFour questions.\nFour answers, each one certain.\n\n!Every answer has a paper that says otherwise.`};
   const P4_DOCS=[
