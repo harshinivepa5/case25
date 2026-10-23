@@ -133,6 +133,7 @@
     $('#homeScene').classList.toggle('await-file-three', secondComplete && progress.file03WallSeen === false);
     $('#homeScene').classList.toggle('await-file-four', !!progress.file03PuzzleComplete && progress.file04WallSeen === false);
     $('#homeScene').classList.toggle('peter-charged', !!progress.file03PuzzleComplete);
+    $('#homeScene').classList.toggle('cliff-seen', !!progress.cliffSeen);
     $('#homeScene').classList.toggle('await-file-five', !!progress.file04Complete && progress.file05WallSeen === false);
     // The spotlight follows the file the player should open next; finished files fall back into the dark.
     const thirdDone = !!progress.file03PuzzleComplete, thirdOpen = secondComplete && progress.file03WallSeen !== false;
@@ -169,6 +170,7 @@
     paintProgress(); show(home);
     // Place the wall overlays (File 002/03 marks, string) now; the board image may have loaded before its listener.
     requestAnimationFrame(()=>{wallGeometry();placeClipping();if(progress.arrestNew&&progress.file03PuzzleComplete)dropClipping();});
+    if(progress.file03PuzzleComplete&&!progress.cliffSeen&&!progress.arrestNew&&!progress.file04WallSeen)setTimeout(()=>{if($('#homeScene').classList.contains('active')&&$('#f3Stage').hidden&&$('#cliffhanger').hidden)playCliffhanger();},reducedMotion?0:2500);
   }
   function roundXp(n=roundNumber){const state=n===roundNumber?round:readRound(n);return state.questions.reduce((sum,q)=>sum+(q.complete?Number(q.xpAwarded)||0:0),0);}
   function earnedXp(){return [1,2,3].reduce((sum,n)=>sum+roundXp(n),0);}
@@ -1026,6 +1028,32 @@
     clip.style.left=(r.left-h.left-r.width*1.32)+'px';clip.style.top=(r.top-h.top+r.height*.18)+'px';clip.style.width=(r.width*1.18)+'px';clip.style.fontSize=(r.width/16)+'px';
   }
   addEventListener('resize',()=>requestAnimationFrame(placeClipping));
+  // The Day 1 cliffhanger: M's transmission pops up over the wall after File 003. It leaves nothing behind on the wall;
+  // a small REPLAY button plays it again.
+  const CLIFF_LINES=['Detective,','You found the man I wanted you to find.','Before you opened the first file, I sealed an envelope.\nRead it now.','@sealed','Every page was placed so you would arrive exactly where you are tonight.','So tell me: did you solve this case,\nor did you follow the path I laid down?','You asked who M was watching.\nYou never asked why M chose you.','@subject','!See you at the end.','— M'];
+  let cliffRun=0;
+  function playCliffhanger(){
+    const box=$('#cliffhanger'),letter=box.querySelector('.cliff-letter'),go=box.querySelector('.cliff-go'),sealed=box.querySelector('.cliff-sealed'),subj=box.querySelector('.cliff-subject');
+    if(!$('#homeScene').classList.contains('active'))return;
+    const run=++cliffRun;
+    letter.innerHTML=CLIFF_LINES.filter(t=>t[0]!=='@').map(t=>`<p class="${t[0]==='!'?'red':t==='— M'?'sign':''}">${f3sEsc(t.replace(/^!/,'')).replace(/\n/g,'<br>')}</p>`).join('');
+    const ps=[...letter.children];ps.forEach(p=>p.classList.remove('on'));sealed.classList.remove('on');subj.classList.remove('on');go.hidden=true;
+    box.hidden=false;box.classList.remove('out');void box.offsetWidth;box.classList.add('in');sfx('dread');
+    const T=(ms,fn)=>setTimeout(()=>{if(run===cliffRun&&!box.hidden)fn();},reducedMotion?0:ms);
+    let t=1800,i=0;
+    CLIFF_LINES.forEach(line=>{
+      if(line==='@sealed'){T(t,()=>{sealed.classList.add('on');sfx('paper');});t+=4200;return;}
+      if(line==='@subject'){T(t,()=>{subj.classList.add('on');sfx('stamp');});t+=2600;return;}
+      const p=ps[i++],red=line[0]==='!';T(t,()=>{p.classList.add('on');if(red)sfx('sting');});t+=red?2200:Math.min(2600,900+line.length*22);
+    });
+    T(t+400,()=>{go.hidden=false;go.focus({preventScroll:true});});
+    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(go.hidden){cliffRun++;ps.forEach(p=>p.classList.add('on'));sealed.classList.add('on');subj.classList.add('on');go.hidden=false;}};
+  }
+  $('#cliffhanger .cliff-go').addEventListener('click',()=>{
+    const box=$('#cliffhanger');cliffRun++;progress.cliffSeen=true;persistProgress();paintProgress();
+    box.classList.add('out');sfx('ink');setTimeout(()=>{box.hidden=true;box.classList.remove('in','out');},reducedMotion?0:1400);
+  });
+  $('#cliffReplay').addEventListener('click',()=>playCliffhanger());
   function dropClipping(){
     const clip=$('#arrestClipping'),hd=clip.querySelector('h5'),text='LANTERN CO-OWNER CHARGED IN LAKE ASH DISAPPEARANCE';
     progress.arrestNew=false;persistProgress();
@@ -2585,6 +2613,7 @@
     progress.arrestNew=true;persistProgress();
     f3s.screen='final';saveF3S();closeF3Stage();paintProgress();
     requestAnimationFrame(()=>{placeClipping();dropClipping();});
+    setTimeout(()=>{if($('#f3Stage').hidden&&!progress.cliffSeen&&$('#cliffhanger').hidden)playCliffhanger();},reducedMotion?0:6200);
     // the wall waits with File 003 closed; CONTINUE reveals File 004 (see #continueFileFour)
   }
 // finds painted text lines inside boxes of an image: returns [[x,y,w,h],...] in image pixels
