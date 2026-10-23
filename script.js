@@ -2161,7 +2161,7 @@
   const F3S_SCREENS={
     opening:{kind:'transmission',kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'ARCHIVE FRAGMENT 005',title:'WHAT REMAINS',text:F3_OPENING,next:'p1-cover'},
     'p1-cover':{kind:'cover',chapter:0,begin:[545,676,373,62],next:'p1-read'},
-    'p1-read':{kind:'live',puzzle:0,build:screen=>p1BuildRead(screen)},
+    'p1-read':{kind:'live',next:'p1-q1',puzzle:0,build:screen=>p1BuildRead(screen)},
     'p1-q1':{kind:'choice',puzzle:0,opt:[[434,390,656,55],[434,456,656,56],[434,521,656,56]],radio:[470,13],submit:[597,608,329,51],answer:0,options:F3_QUESTIONS[0].options,hint:F3_QUESTIONS[0].hint,explain:F3_QUESTIONS[0].explain,next:'p1-q2'},
     'p1-q2':{kind:'choice',puzzle:0,opt:[[382,387,716,55],[382,452,716,55],[382,517,716,55],[382,582,716,55]],radio:[421,13],submit:[550,664,385,57],answer:1,options:F3_QUESTIONS[1].options,hint:F3_QUESTIONS[1].hint,explain:F3_QUESTIONS[1].explain,next:'p1-q3'},
     'p1-q3':{kind:'choice',puzzle:0,opt:[[382,409,708,55],[382,472,708,55],[382,536,708,54],[382,598,708,54]],radio:[418,13],submit:[547,680,375,54],answer:1,options:['Yes, it’s a verified record.','No, it’s not reliable enough.','Only some of the matches can be trusted.','Not enough information to say.'],hint:'Who verified the allocation sheet? Look for original approvals or signatures, and for bank confirmations behind each match.',explain:'The allocation sheet (PA-07) is an unverified copy. Its invoice matches are suggestions, not independently established facts: there are no original approvals or signatures and no supporting bank confirmations.',next:'p1-q4'},
@@ -2179,16 +2179,16 @@
     'p3-q3':{kind:'choice',puzzle:2,docs:'p3',faces:true,opt:[[434,489,679,64],[434,563,679,62],[434,636,679,64],[434,712,679,63]],evidence:[436,796,328,60],submit:[803,796,311,60],answer:2,options:['Peter definitely lied because the access log shows someone at the rear entrance earlier.','The vehicle on camera proves Peter followed Thomas.','Peter’s account remains uncorroborated, but the records do not conclusively disprove it.','The recovered watch proves Thomas died at Lake Ash.'],hint:'Which record identifies a person? The access log records a credential, and the camera cannot identify the plate or occupants.',explain:'Peter’s account remains uncorroborated, but the supplied records do not conclusively disprove it. The log records a credential, not a person; the camera cannot identify the vehicle’s occupants; and the search summary does not establish when Thomas disappeared.',next:'p3-q4'},
     'p3-q4':{kind:'written',puzzle:2,docs:'p3',text:[425,582,728,190],counter:[[968,744,176,18],1000,'characters'],evidence:[427,791,323,61],submit:[781,791,372,61],grade:t=>{const r=p3DeductionResult(t);return {accepted:r.accepted,missing:r.missing.map(i=>P3_DEDUCTION_MISSING[i])};},hint:'Separate established facts, reported claims, unknowns, and the evidence you would still need.',model:F3S_MODELS['p3-q4'],next:'p3-end'},
     'p3-end':{kind:'transmission',kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'TIMELINE REVIEWED',title:'THE CLOCK WAS NEVER THE PROBLEM.',text:`You corrected the clock.\n\nYou separated the record from the witness.\n\nBut you could not establish the moment the story changed.\n\nThat is not a failure of calculation, Detective.\n\nIt is a failure of the evidence.\n\nOne thread is still loose.\nIt runs through every file you have opened.\n\nPull it carefully.\n\n— M`,next:'p4-cover'},
-    'p4-cover':{kind:'live',chapter:3,build:screen=>cineStory(screen,P4_STORY,'lake',()=>f3sGo('p4-q1'))},
-    'p4-q1':{kind:'live',puzzle:3,build:screen=>p4BuildQ(screen,0)},
-    'p4-q2':{kind:'live',puzzle:3,build:screen=>p4BuildQ(screen,1)},
-    'p4-q3':{kind:'live',puzzle:3,build:screen=>p4BuildQ(screen,2)},
-    'p4-q4':{kind:'live',puzzle:3,build:p4BuildChain},
+    'p4-cover':{kind:'live',next:'p4-q1',chapter:3,build:screen=>cineStory(screen,P4_STORY,'lake',()=>f3sGo('p4-q1'))},
+    'p4-q1':{kind:'live',next:'p4-q2',puzzle:3,build:screen=>p4BuildQ(screen,0)},
+    'p4-q2':{kind:'live',next:'p4-q3',puzzle:3,build:screen=>p4BuildQ(screen,1)},
+    'p4-q3':{kind:'live',next:'p4-q4',puzzle:3,build:screen=>p4BuildQ(screen,2)},
+    'p4-q4':{kind:'live',next:'p4-end',puzzle:3,build:p4BuildChain},
     'p4-end':{kind:'transmission',kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'LAKE ASH · REVIEWED',title:'THE LAKE REMEMBERS.',text:`You counted the minutes.\n\nYou ruled out the one who was already in the air.\n\nA boat in one name. A card in the same name. A message that gave a reason.\n\nEvery piece you chose points the same way.\n\nThere is only one person left to ask.\n\n— M`,next:'p5-cover'},
-    'p5-cover':{kind:'live',chapter:4,build:screen=>cineStory(screen,P5_STORY,'signal',()=>f3sGo('p5-q1'))},
-    'p5-q1':{kind:'live',puzzle:3,build:p5BuildInterview},
-    'p5-q2':{kind:'live',puzzle:3,build:p5BuildConclusion},
-    'p5-q3':{kind:'live',puzzle:3,build:p5BuildM},
+    'p5-cover':{kind:'live',next:'p5-q1',chapter:4,build:screen=>cineStory(screen,P5_STORY,'signal',()=>f3sGo('p5-q1'))},
+    'p5-q1':{kind:'live',next:'p5-q2',puzzle:3,build:p5BuildInterview},
+    'p5-q2':{kind:'live',next:'p5-q3',puzzle:3,build:p5BuildConclusion},
+    'p5-q3':{kind:'live',next:'final',puzzle:3,build:p5BuildM},
     // M's closing letter (final.png) is taller than 16:9, so it is shown whole rather than cropped.
     final:{kind:'message',fit:'contain',art:'final-blank',letter:[412,318,1095,1180],cont:[588,1573,688,115],next:'gift'},
     // Thank-you card before the physical gift is handed over; its CONTINUE ends File 03.
@@ -2450,6 +2450,7 @@
     if($('#f3Stage').dataset.mode==='f5'){f5Skip();return;}
     if(!$('#f3sChapter').hidden)return;
     const def=F3S_SCREENS[f3s.screen];f3sCloseModal();
+    if(f3s.screen==='p1-read'){f3s.live=f3s.live||{};f3s.live.p1read=true;saveF3S();}
     if(def.next)f3sGo(def.next);else f3sFinish();
   });
   $('#f3sModal').addEventListener('keydown',e=>{const m=$('#f3sModal');if(e.key==='Escape'&&(m.classList.contains('tone-docs')||m.classList.contains('tone-hint')))f3sCloseModal();});
