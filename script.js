@@ -3033,6 +3033,10 @@ When it does, you will know a name.
 
 Do not look away from it.
 
+He went to the water.
+Someone followed.
+!Only one of them came back.
+
 — M`};
   const P5_STORY={kicker:'FILE 003 · PUZZLE 05',eyebrow:'OCTOBER 16 · INTERVIEW ROOM 2',title:'THE FINAL TRANSMISSION',button:'BEGIN THE INTERVIEW',text:`Peter Shaw agreed to be interviewed.\n\nHe came alone. He declined a lawyer.\n\nThe recording starts now.\n\nHe will answer four questions.\n\nFor each answer, find the document that says otherwise.`};
   const P4_DOCS=[
