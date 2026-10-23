@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Text Motion Preview</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050403;color:#efe3c9;font-family:'DM Mono',monospace;padding:20px}
+h1{font:600 14px 'DM Mono';letter-spacing:.22em;color:#c99a55;margin:0 0 4px}
+p.lead{margin:0 0 18px;color:#b39a72;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.cell{border:1px solid #2a2418;background:#0a0807;padding:10px}
+.cell header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.cell b{font:11px 'DM Mono';letter-spacing:.16em;color:#c99a55}
+.cell small{display:block;color:#9c8a6c;font-size:11px;margin:2px 0 8px}
+button.play{background:none;border:1px solid #c99a55;color:#c99a55;font:10px 'DM Mono';letter-spacing:.14em;padding:6px 10px;cursor:pointer}
+.stage{position:relative;aspect-ratio:1538/1023;overflow:hidden;background:#030202;container-type:inline-size}
+.stage img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.cover{position:absolute;pointer-events:none;-webkit-backdrop-filter:blur(.7cqw) brightness(.3);backdrop-filter:blur(.7cqw) brightness(.3);-webkit-mask-image:linear-gradient(90deg,transparent,#000 1.2cqw,#000 calc(100% - 1.2cqw),transparent);mask-image:linear-gradient(90deg,transparent,#000 1.2cqw,#000 calc(100% - 1.2cqw),transparent)}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<h1>FILE 003 · TEXT MOTION PREVIEW</h1>
+<p class="lead">The words are painted into each picture, so these effects reveal the real painted text. Press PLAY to replay. Nothing in the game changes.</p>
+<div class="grid" id="g"></div>
+<script>
+const W=1538,H=1023,IMG='assets/file-003/p1-end.png';
+// painted text on this screen, in picture pixels: [y-centre, x-start, x-end]
+const TITLE=[[244,236,560],[292,236,870]];
+const LINES=[[370,236,370],[420,236,580],[446,236,760],[473,236,710],[500,236,720],[552,236,900],[579,236,370],[634,236,800],[662,236,760],[691,236,730],[746,236,1000],[774,236,670],[830,236,280]];
+const ALL=[...TITLE,...LINES],LH=30;
+const pct=(v,d)=>(v/d*100)+'%';
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function strip(st,[y,x0,x1],pad=8){const d=document.createElement('div');d.className='cover';d.style.cssText=`left:${pct(x0-pad,W)};width:${pct(x1-x0+pad*2,W)};top:${pct(y-LH/2,H)};height:${pct(LH,H)}`;st.append(d);return d;}
+function cell(code,name,desc,run){
+  const c=document.createElement('div');c.className='cell';
+  c.innerHTML=`<header><b>${code} · ${name}</b><button class="play">▶ PLAY</button></header><small>${desc}</small><div class="stage"><img src="${IMG}" alt=""></div>`;
+  document.getElementById('g').append(c);const st=c.querySelector('.stage');
+  const go=()=>{st.querySelectorAll('.cover,.fx').forEach(n=>n.remove());st.getAnimations({subtree:true}).forEach(a=>a.cancel());run(st);};
+  c.querySelector('.play').onclick=go;go();
+}
+cell('T1','TYPED LINE BY LINE','Each line is uncovered left to right, like it is being typed, one after another.',async st=>{
+  const cs=ALL.map(l=>strip(st,l));
+  for(let i=0;i<cs.length;i++){const [y,x0,x1]=ALL[i];const ms=Math.max(350,(x1-x0)*2.2);
+    cs[i].animate([{clipPath:'inset(0 0 0 0)'},{clipPath:'inset(0 0 0 100%)'}],{duration:ms,easing:'linear',fill:'forwards'});await wait(ms+(i===1||i===2?250:120));}
+});
+cell('T2','INK BLEED','Each line appears from a soft blur, as if ink is soaking into the paper.',async st=>{
+  const cs=ALL.map(l=>strip(st,l,14));
+  cs.forEach((c,i)=>c.animate([{opacity:1},{opacity:0}],{duration:1100,delay:300+i*320,easing:'ease-in',fill:'forwards'}));
+});
+cell('T3','READING LAMP','A warm lamp line moves down the page; text appears as the light passes over it.',async st=>{
+  const top=TITLE[0][0]-LH,bot=LINES[LINES.length-1][0]+LH;
+  const veil=document.createElement('div');veil.className='cover';veil.style.cssText=`left:${pct(220,W)};width:${pct(780,W)};top:${pct(top,H)};height:${pct(bot-top,H)}`;st.append(veil);
+  const lamp=document.createElement('div');lamp.className='fx';lamp.style.cssText=`position:absolute;left:${pct(200,W)};width:${pct(820,W)};height:${pct(40,H)};background:linear-gradient(transparent,rgba(255,200,120,.35),transparent);mix-blend-mode:screen;pointer-events:none`;st.append(lamp);
+  const D=4200;
+  veil.animate([{clipPath:'inset(0 0 0 0)'},{clipPath:'inset(100% 0 0 0)'}],{duration:D,easing:'linear',fill:'forwards'});
+  lamp.animate([{top:pct(top-20,H),opacity:0},{opacity:1,offset:.05},{opacity:1,offset:.95},{top:pct(bot-20,H),opacity:0}],{duration:D,easing:'linear',fill:'forwards'});
+});
+cell('T4','PROJECTOR FLICKER','Each paragraph flickers on like an old projector bulb catching, then holds steady.',async st=>{
+  const groups=[[0,1],[2],[3,4,5,6],[7,8],[9,10,11],[12,13],[14]];
+  const cs=ALL.map(l=>strip(st,l,10));
+  for(const g of groups){g.forEach(i=>cs[i].animate([{opacity:1},{opacity:.2},{opacity:.9},{opacity:0},{opacity:.6},{opacity:0}],{duration:700,fill:'forwards'}));await wait(650);}
+});
+cell('T5','WORD-BY-WORD FADE','Each line fades in in small steps from left to right, like words surfacing one at a time.',async st=>{
+  const cs=ALL.map(l=>strip(st,l));
+  for(let i=0;i<cs.length;i++){const steps=6;cs[i].animate([{clipPath:'inset(0 0 0 0)'},{clipPath:'inset(0 0 0 100%)'}],{duration:900,easing:`steps(${steps})`,fill:'forwards'});await wait(380);}
+});
+cell('T6','TITLE STAMP + LINES RISE','The heading slams in like a stamp, then the lines rise in gently one by one.',async st=>{
+  const ts=TITLE.map(l=>strip(st,l,12)),cs=LINES.map(l=>strip(st,l,10));
+  ts.forEach(c=>c.animate([{opacity:1},{opacity:0}],{duration:160,delay:400,fill:'forwards'}));
+  st.querySelector('img').animate([{transform:'none'},{transform:'translate(-2px,2px)'},{transform:'translate(2px,-1px)'},{transform:'none'}],{duration:220,delay:420});
+  cs.forEach((c,i)=>c.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-30%)'}],{duration:800,delay:1000+i*260,easing:'ease-out',fill:'forwards'}));
+});
+</script></body></html>

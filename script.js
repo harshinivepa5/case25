@@ -2311,7 +2311,7 @@
     // Thank-you card before the physical gift is handed over; its CONTINUE ends File 03.
     gift:{kind:'message',cont:[552,701,431,82],label:'GOOD JOB, DETECTIVE',next:null,finish:true}
   };
-  const F3S_CHAPTERS=[['PUZZLE 01','NORTH QUAY'],['PUZZLE 02','THE MISSING STORY'],['PUZZLE 03','THE IMPOSSIBLE TIMELINE'],['PUZZLE 04','THE LAST NIGHT AT LAKE ASH'],['PUZZLE 05','THE CONFRONTATION']];
+  const F3S_CHAPTERS=[['PUZZLE 01','NORTH QUAY'],['PUZZLE 02','THE MISSING STORY'],['PUZZLE 03','THE IMPOSSIBLE TIMELINE'],['PUZZLE 04','THE UNRESOLVED THREAD'],['PUZZLE 05','THE CONFRONTATION']];
   function readF3S(){const fresh={screen:'opening',done:{},attempts:{},drafts:{},picks:{}};try{return {...fresh,...JSON.parse(localStorage.getItem(F3S_KEY)||'{}')};}catch{return fresh;}}
   let f3s=readF3S(),f3sBusy=false;
   function saveF3S(){try{localStorage.setItem(F3S_KEY,JSON.stringify(f3s));}catch{}}
@@ -2360,16 +2360,25 @@
     [def.next,def.next&&F3S_SCREENS[def.next]?.next].filter(n=>n&&!F3S_SCREENS[n].kind.includes('transmission')&&F3S_SCREENS[n].kind!=='live').forEach(n=>{const i=new Image();i.src=`assets/file-003/${n}.png`;});
   }
   function f3sChapterCard(index,done){
-    const card=$('#f3sChapter'),[kicker,title]=F3S_CHAPTERS[index];
-    card.querySelector('small').textContent=kicker;const h=card.querySelector('h2');h.textContent='';
-    // the puzzle just finished is stamped SOLVED, the lamp relights behind the next title, and the title types in
+    const card=$('#f3sChapter'),[kicker,title]=F3S_CHAPTERS[index],small=card.querySelector('small'),h=card.querySelector('h2'),rule=card.querySelector('i');
     card.querySelector('.f3s-solved')?.remove();
-    if(index>=1&&index<=4){const st=document.createElement('b');st.className='f3s-solved';st.textContent=`${F3S_CHAPTERS[index-1][0]} · SOLVED`;card.prepend(st);laterWait(()=>sfx('stamp'),reducedMotion?0:450);}
-    card.hidden=false;card.classList.remove('out');void card.offsetWidth;card.classList.add('in');
     $$('#f3Stage .f3s-screen').forEach(s=>s.classList.add('leave'));
-    if(reducedMotion){h.textContent=title;laterWait(()=>{card.hidden=true;done();},900);return;}
-    let i=0;const type=()=>{keyTick();h.textContent=title.slice(0,++i);if(i<title.length)laterWait(type,70);else laterWait(()=>{card.classList.add('out');laterWait(()=>{card.hidden=true;card.classList.remove('in','out');},900);done();},1300);};
-    laterWait(type,700);
+    const showTitle=()=>{
+      // the next puzzle on its own screen: the lamp relights behind it and the title types in
+      small.textContent=kicker;h.textContent='';small.style.visibility=rule.style.visibility='';
+      card.hidden=false;card.classList.remove('out','solved');void card.offsetWidth;card.classList.add('in');
+      if(reducedMotion){h.textContent=title;laterWait(()=>{card.hidden=true;done();},900);return;}
+      let i=0;const type=()=>{keyTick();h.textContent=title.slice(0,++i);if(i<title.length)laterWait(type,70);else laterWait(()=>{card.classList.add('out');laterWait(()=>{card.hidden=true;card.classList.remove('in','out');},900);done();},1300);};
+      laterWait(type,700);
+    };
+    if(index<1||index>4){showTitle();return;}
+    // first, its own screen: the puzzle just finished is stamped SOLVED, then the screen fades to black
+    small.textContent='';h.textContent='';small.style.visibility=rule.style.visibility='hidden';
+    const st=document.createElement('b');st.className='f3s-solved big';st.textContent=`${F3S_CHAPTERS[index-1][0]} · SOLVED`;card.prepend(st);
+    const sub=document.createElement('b');sub.className='f3s-solved-name';sub.textContent=F3S_CHAPTERS[index-1][1];st.after(sub);
+    card.hidden=false;card.classList.remove('out','in');card.classList.add('solved');void card.offsetWidth;card.classList.add('in');
+    laterWait(()=>sfx('stamp'),reducedMotion?0:450);
+    laterWait(()=>{card.classList.add('out');laterWait(()=>{st.remove();sub.remove();card.hidden=true;card.classList.remove('in','out','solved');laterWait(showTitle,250);},900);},reducedMotion?600:2300);
   }
   // Puzzle openings, one per puzzle: 1 lamp swing, 2 the lamp catches, 3 lamp swing, 4 a match strike, 5 a film burn.
   const F3S_OPENINGS=['swing','catch','swing','match','burn'];
@@ -2453,6 +2462,75 @@
     f3s.screen='final';saveF3S();closeF3Stage();paintProgress();
     if(progress.file04WallSeen===false)setTimeout(()=>{if($('#f3Stage').hidden)playFile04Reveal();},700);
   }
+// finds painted text lines inside boxes of an image: returns [[x,y,w,h],...] in image pixels
+function f3sFindLines(img,boxes){
+  const cv=document.createElement('canvas');cv.width=img.naturalWidth;cv.height=img.naturalHeight;
+  const x=cv.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0);
+  const out=[];
+  for(const [bx,by,bw,bh] of boxes){
+    const d=x.getImageData(bx,by,bw,bh).data,L=new Float32Array(bw*bh);
+    for(let i=0;i<bw*bh;i++)L[i]=.3*d[i*4]+.59*d[i*4+1]+.11*d[i*4+2];
+    const ink=new Uint8Array(bw*bh),rows=new Float32Array(bh);
+    for(let y=0;y<bh;y++){const row=Array.from(L.subarray(y*bw,(y+1)*bw)).sort((a,b)=>a-b),med=row[bw>>1];
+      for(let c=0;c<bw;c++){if(Math.abs(L[y*bw+c]-med)>58){ink[y*bw+c]=1;rows[y]++;}}}
+    const need=Math.max(3,bw*.006);let y=0;
+    while(y<bh){if(rows[y]<need){y++;continue;}let y1=y;let gap=0;
+      while(y1<bh&&gap<=3){if(rows[y1]>=need)gap=0;else gap++;y1++;}
+      const top=y,bot=y1-gap;y=y1;if(bot-top<6)continue;
+      const cols=new Uint16Array(bw);for(let r=top;r<bot;r++)for(let c=0;c<bw;c++)cols[c]+=ink[r*bw+c];
+      let c0=0,c1=bw-1;while(c0<bw&&cols[c0]<2)c0++;while(c1>0&&cols[c1]<2)c1--;if(c1-c0<12)continue;
+      out.push([bx+c0,by+top,c1-c0+1,bot-top]);}
+  }
+  return out;
+}
+
+  // Painted text comes alive: each screen's text block is found line by line on the artwork. The heading lands like a stamp,
+  // the other lines are typed in one after another; where the lines cannot be told apart, a reading lamp reveals the block.
+  // M's handwritten notes bleed in like ink. Boxes are [x, y, w, h] in the artwork's own pixels.
+  const F3S_TEXT={
+    'p1-cover':{light:true,box:[400,200,520,460],notes:[[1265,610,270,190]]},
+    'p1-q1':{box:[424,160,680,222]},'p1-q2':{box:[372,150,736,230]},'p1-q3':{box:[372,150,728,250],notes:[[1280,575,240,120]]},
+    'p1-q4':{box:[370,160,790,415]},'p1-end':{box:[230,225,760,620],letter:true},
+    'p2-cover':{box:[420,180,520,450],notes:[[1130,560,300,170]]},
+    'p2-q1':{box:[380,150,850,385]},'p2-q2':{box:[400,150,870,380]},'p2-q3':{box:[380,150,900,400]},'p2-q4':{box:[370,150,930,420]},
+    'p3-cover':{light:true,box:[420,180,600,490],notes:[[1400,470,240,190]]},
+    'p3-q1':{light:true,box:[340,60,650,560],notes:[[1450,410,200,150]]},'p3-q2':{box:[385,150,700,185],notes:[[1480,660,180,170]]},
+    'p3-q3':{light:true,box:[424,150,700,330],notes:[[1420,140,200,100]]},'p3-q4':{box:[415,150,750,425]},
+    gift:{box:[330,120,880,560],letter:true}
+  };
+  function f3sAnimateText(screen,id){
+    const cfg=F3S_TEXT[id],img=screen.querySelector('.f3s-art'),layer=screen.querySelector('.f3s-layer');
+    if(!cfg||reducedMotion||f3s.done[id]||!img)return;
+    const veil=(box,cls)=>{const v=document.createElement('div');v.className='f3s-veil '+cls+(cfg.light?' on-paper':'');v.setAttribute('style',f3sBox(box));layer.append(v);return v;};
+    const go=()=>{
+      let lines=[];try{lines=f3sFindLines(img,[cfg.box]);}catch{}
+      const start=fromLamp=>{
+        if(lines.length>=2&&!fromLamp){
+          const tall=lines.reduce((a,b)=>b[3]>a[3]?b:a);
+          let t=cfg.letter?250:350;
+          lines.forEach(l=>{
+            const pad=[l[0]-8,l[1]-5,l[2]+16,l[3]+10],v=veil(pad,'line');
+            if(l===tall&&!cfg.letter){v.animate([{opacity:1},{opacity:0}],{duration:160,delay:t,fill:'forwards'});
+              layer.animate([{transform:'none'},{transform:'translate(-2px,2px)'},{transform:'translate(2px,-1px)'},{transform:'none'}],{duration:220,delay:t+20});t+=420;return;}
+            const ms=Math.min(1500,Math.max(320,l[2]*(cfg.letter?2.6:1.5)));
+            v.animate([{clipPath:'inset(0 0 0 0)'},{clipPath:'inset(0 0 0 100%)'}],{duration:ms,delay:t,easing:'linear',fill:'forwards'});
+            t+=ms+(cfg.letter?140:70);
+          });
+          return t;
+        }
+        const [x,y,w,h]=cfg.box,v=veil(cfg.box,'block'),D=Math.min(4200,1400+h*4);
+        v.animate([{clipPath:'inset(0 0 0 0)'},{clipPath:'inset(100% 0 0 0)'}],{duration:D,delay:300,easing:'linear',fill:'forwards'});
+        const lamp=veil([x-20,y-20,w+40,40],'lamp');
+        lamp.animate([{transform:'translateY(0)',opacity:0},{opacity:1,offset:.06},{opacity:1,offset:.94},{transform:`translateY(calc(${h}px * var(--u)))`,opacity:0}],{duration:D,delay:300,easing:'linear',fill:'forwards'});
+        return D+300;
+      };
+      const end=start(false);
+      (cfg.notes||[]).forEach((n,i)=>veil(n,'ink').animate([{opacity:1},{opacity:0}],{duration:1300,delay:Math.min(end,2600)+i*300,easing:'ease-in',fill:'forwards'}));
+      // a click anywhere on the artwork shows everything at once
+      screen.addEventListener('pointerdown',()=>layer.querySelectorAll('.f3s-veil').forEach(v=>{v.getAnimations().forEach(a=>a.finish());v.remove();}),{once:true,capture:true});
+    };
+    if(img.complete&&img.naturalWidth)go();else img.addEventListener('load',go,{once:true});
+  }
   function f3sBuildControls(screen,id,def){
     const layer=screen.querySelector('.f3s-layer'),add=html=>{layer.insertAdjacentHTML('beforeend',html);return layer.lastElementChild;};
     const done=!!f3s.done[id];
@@ -2505,6 +2583,7 @@
       s.addEventListener('click',()=>{if(screen.classList.contains('answered'))f3sGo(def.next);else f3sSubmit(screen,id,def);});
     }
     if(done)f3sMarkAnswered(screen,id,def);
+    f3sAnimateText(screen,id);
   }
   // M's closing letter, typed onto the blank paper. Paragraphs are blank-line separated; the "THE RECORD IS COMPLETE." line is highlighted.
   const F3S_CLOSING=`Well done, Detective.\n\nYou followed the money.\nYou questioned the accounts.\nYou traced the gaps between what was said and what could be proven.\n\nPiece by piece, the scattered records became a story.\n\nNot every detail was recovered. Not every question found an answer.\nBut you took what remained and made sense of it.\n\nThe numbers have been traced. The statements have been examined.\nThe missing pieces have been weighed against what remains.\n\nPeter Shaw was the last to speak to him. His word stands alone.\nA card no one can name opened the door he says Thomas used.\nThe originals he was asked for never came.\n\nWhere the records fall silent, you've made your judgment.\n\nYour findings have been recorded.\nYour deductions have been preserved.\nThe archive now holds your account of what happened.\n\n[[THE RECORD IS COMPLETE.]]\n\nI've spent a great deal of time putting these pieces together.\nIt seems only fair to know that someone, at last, has seen them through.\n\nA pleasure, Detective.`;
@@ -2747,7 +2826,7 @@
     if(!(replay||support))missing.push('Point to evidence in the documents, such as the replay row T-31-R or the unverified allocation sheet.');
     return {accepted:!missing.length,missing};
   }
-  const P4_STORY={kicker:'FILE 003 · PUZZLE 04',eyebrow:'LAKE ASH · OCTOBER 14',title:'THE LAST NIGHT AT LAKE ASH',button:'EXAMINE THE EVIDENCE',text:`Until now, you have read what the records could not prove.\n\nThe police have since reopened the lake evidence.\n\nA boat. A toll receipt. A laboratory note. And the last message Thomas Reed ever sent.\n\nSeven documents. One night.\n\nDecide what they mean.`};
+  const P4_STORY={kicker:'FILE 003 · PUZZLE 04',eyebrow:'LAKE ASH · OCTOBER 14',title:'THE UNRESOLVED THREAD',button:'EXAMINE THE EVIDENCE',text:`Until now, you have read what the records could not prove.\n\nThe police have since reopened the lake evidence.\n\nA boat. A toll receipt. A laboratory note. And the last message Thomas Reed ever sent.\n\nSeven documents. One night.\n\nDecide what they mean.`};
   const P5_STORY={kicker:'FILE 003 · PUZZLE 05',eyebrow:'OCTOBER 16 · INTERVIEW ROOM 2',title:'THE CONFRONTATION',button:'BEGIN THE INTERVIEW',text:`Peter Shaw agreed to be interviewed.\n\nHe came alone. He declined a lawyer.\n\nThe recording starts now.\n\nHe will answer four questions.\n\nFor each answer, find the document that says otherwise.`};
   const P4_DOCS=[
     {tag:'BOAT HIRE SLIP',date:'Tue 14 Oct · 17:40',title:'Lake Ash Boat Hire — east dock',body:'Hirer: P. Shaw (signed)\nBoat: No. 6, rowing skiff with outboard\nPaid: card ending 4417 — The Lantern company account\nID: not checked (self-service kiosk)\nDue back: 21:00\nStatus: NOT RETURNED'},
@@ -2764,7 +2843,7 @@
     {q:'The lab found Thomas’s blood type on the boat. No body has been recovered. Where does that leave Thomas?',options:['Alive and hiding: no body means no death.','Most likely hurt on that boat the night he vanished. The lake is deep and cold, so a missing body is what you would expect.','Drowned by accident; the blood means nothing.','Nothing can be said about him at all.'],answer:1,hint:'Think about what the lab note says about the lake as well as the blood.',explain:'The blood is consistent with Thomas, but the sample is too degraded for DNA, so it is not proof. Taken with the hired boat and 38 m of cold water, a missing body is what you would expect — it does not mean he is alive.'}
   ];
   function p4BuildQ(screen,n){
-    const {docs,task}=f4Desk(screen,{file:'FILE 003 · PUZZLE 04',step:`QUESTION ${n+1} / 4`,title:'THE LAST NIGHT AT LAKE ASH',lead:'Seven documents from the night of October 14. Read them all before you answer.'});
+    const {docs,task}=f4Desk(screen,{file:'FILE 003 · PUZZLE 04',step:`QUESTION ${n+1} / 4`,title:'THE UNRESOLVED THREAD',lead:'Seven documents from the night of October 14. Read them all before you answer.'});
     docs.innerHTML=P4_DOCS.map(d=>f4Doc(d)).join('');
     task.insertAdjacentHTML('afterbegin','');
     f4Ask(task,'p4-'+n,P4_QS[n],()=>f3sGo('p4-q'+(n+2)),f3s,saveF3S);
