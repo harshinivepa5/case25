@@ -2283,3 +2283,6 @@ body:has(#secretLevelScene.active) #devFile03Button{display:none}
 .f3s-solved{padding:.35em .9em;border:2px solid #b3261a;color:#d8483a;font:700 14px var(--mono);letter-spacing:.3em;transform:rotate(-4deg);opacity:0;animation:f3sStamp .45s .35s cubic-bezier(.3,1.2,.4,1) forwards}
 @keyframes f3sStamp{0%{opacity:0;transform:rotate(-4deg) scale(2.4)}100%{opacity:1;transform:rotate(-4deg) scale(1)}}
 @media(prefers-reduced-motion:reduce){.f3s-chapter::before{animation:none;opacity:.5}.f3s-solved{animation:none;opacity:1}}
+
+#buildTag{position:fixed;z-index:999;left:476px;bottom:30px;color:#9c7a45;font:10px var(--mono);letter-spacing:.12em;pointer-events:none}
+body.wall-cinematic #buildTag{opacity:0}

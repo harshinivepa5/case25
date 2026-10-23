@@ -939,6 +939,8 @@
     round = readRound(1);
     showHomeBoard(); playWallIntro();
   });
+  // shows which copy of the game the browser is running, so a stale cached copy is easy to spot
+  {const m=(document.querySelector('script[src*="script.js"]')?.getAttribute('src')||'').match(/v=(\d+)/);const t=$('#buildTag');if(t)t.textContent='BUILD '+(m?m[1].slice(-6):'?');}
   $('#devFile03Button').addEventListener('click',()=>{
     progress.caseAccepted=true;progress.file02TransitionSeen=true;progress.fileTwoComplete=true;progress.file02Complete=true;
     progress.file03WallSeen=true;progress.file03Revealed=true;progress.unlockedChapter=Math.max(3,Number(progress.unlockedChapter)||1);
