@@ -2826,7 +2826,6 @@ function f3sFindLines(img,boxes){
       <ellipse class="lk-ring" cx="612" cy="636" rx="40" ry="7" fill="none" stroke="rgba(190,200,215,.18)" stroke-width="1.2"/>
       <ellipse class="lk-ring lk-ring2" cx="612" cy="636" rx="40" ry="7" fill="none" stroke="rgba(190,200,215,.14)" stroke-width="1"/>
       <circle class="lk-lamp" cx="408" cy="510" r="70" fill="url(#lkLamp)"/>
-      <g class="lk-walker"><path d="${fig}" transform="translate(150 610) scale(.55)" fill="#020203"/></g>
       <g class="lk-watcher"><path d="${fig}" transform="translate(1388 352) scale(.24)" fill="#05070a"/></g>
     </svg>`;
     layer.querySelector('.cine-img').insertAdjacentHTML('afterend',svg);
@@ -2838,10 +2837,28 @@ function f3sFindLines(img,boxes){
     a('.lk-pool',[{transform:'scale(.05)',transformOrigin:'610px 636px',opacity:0},{opacity:1,offset:.2},{transform:'scale(1)',transformOrigin:'610px 636px',opacity:1}],{duration:5200,delay:1400,stagger:900,easing:'cubic-bezier(.3,0,.3,1)'});
     a('.lk-drip',[{transform:'translateY(0) scaleY(.2)',opacity:0},{opacity:1,offset:.2},{transform:'translateY(34px) scaleY(1)',opacity:0}],{duration:1800,delay:900,stagger:500,iterations:3});
     a('.lk-ring',[{transform:'scale(.3)',transformOrigin:'612px 636px',opacity:0},{opacity:1,offset:.15},{transform:'scale(3.2)',transformOrigin:'612px 636px',opacity:0}],{duration:3200,delay:1800,stagger:1600,iterations:2});
-    a('.lk-walker',[{transform:'translate(0,40px) scale(1.25)',opacity:0},{opacity:.95,offset:.15},{opacity:.9,offset:.7},{transform:'translate(250px,-110px) scale(.55)',opacity:0}],{duration:5200,delay:600,easing:'linear'});
     a('.lk-watcher',[{opacity:0},{opacity:0,offset:.45},{opacity:.85,offset:.6},{opacity:.85,offset:.82},{opacity:0}],{duration:D+800});
+    // the man on the dock: walks away along the planks toward the lantern, shrinking, and is swallowed by the mist
+    const man=document.createElement('div');man.className='m-pass run lk-man';man.innerHTML=mWalkerHTML();layer.querySelector('.lk-scene').after(man);
+    const w=man.querySelector('.m-walker');
+    w.animate([{left:'0%',bottom:'-10%',height:'62%',opacity:0,filter:'blur(0)'},{opacity:.95,offset:.12},{left:'11%',bottom:'6%',height:'40%',offset:.55,opacity:.92,filter:'blur(.4px)'},{left:'19%',bottom:'24%',height:'22%',opacity:.55,offset:.85,filter:'blur(2px)'},{left:'22%',bottom:'29%',height:'17%',opacity:0,filter:'blur(7px)'}],{duration:7200,delay:300,easing:'linear',fill:'both'});
     laterWait(()=>screen.classList.remove('prelude'),reducedMotion?0:D);
     return D;
+  }
+  // Handwritten version of a story screen: each line is written out by a pen in ink, left to right, one after another.
+  // A line that starts with "!" is written in blood and drips; "— M" becomes a signature. Blood flecks mark the page.
+  function cineHand(screen){
+    screen.classList.add('hand');
+    screen.querySelectorAll('.cine-lines p').forEach(p=>{
+      const parts=p.innerHTML.split('<br>');
+      p.innerHTML=parts.map((t,k)=>{const blood=t.startsWith('!'),sign=/^— M$/.test(t.trim());
+        return `<span class="hl${blood?' blood':''}${sign?' sign':''}" style="--k:${k};--n:${Math.max(4,(blood?t.slice(1):t).length)}">${blood?t.slice(1):t}${blood?'<i class="drip"></i><i class="drip d2"></i>':''}</span>`;}).join('');
+    });
+    const t=screen.querySelector('.cine-text');
+    t.insertAdjacentHTML('afterbegin',`<svg class="hand-blood" viewBox="0 0 400 300" aria-hidden="true">
+      <path d="M318 40c10-6 26-4 30 8 4 14-12 22-26 20-12-2-16-20-4-28z" fill="#5a0b07" opacity=".55"/>
+      <circle cx="356" cy="72" r="4" fill="#5a0b07" opacity=".6"/><circle cx="300" cy="80" r="2.5" fill="#5a0b07" opacity=".5"/>
+      <circle cx="372" cy="54" r="2" fill="#5a0b07" opacity=".5"/></svg>`);
   }
   function cineStory(screen,d,scene,onDone){
     const sc=CINE_SCENES[scene]||CINE_SCENES.board;
@@ -2853,6 +2870,7 @@ function f3sFindLines(img,boxes){
       <button type="button" class="f3s-tx-continue cine-go" hidden>${f3sEsc(d.button)} <span>→</span></button></div>`;
     cineFx(screen.querySelector('.cine-fx'),sc.fx);
     const preludeMs=sc.prelude&&!reducedMotion?cineLakePrelude(screen):0;
+    if(d.hand)cineHand(screen);
     const lines=[...screen.querySelectorAll('.cine-lines p')],box=screen.querySelector('.cine-lines'),go=screen.querySelector('.cine-go');
     go.addEventListener('click',onDone);
     let n=0,finished=false;
@@ -2862,7 +2880,7 @@ function f3sFindLines(img,boxes){
     const finish=()=>{if(finished)return;finished=true;lines.forEach(p=>{p.classList.add('on');p.classList.remove('gone');});
       let start=lines.length-1;while(start>0){lines.slice(0,start).forEach(p=>p.classList.add('gone'));lines.slice(start-1).forEach(p=>p.classList.remove('gone'));if(!fits()){lines[start-1].classList.add('gone');break;}start--;}
       go.hidden=false;go.focus({preventScroll:true});};
-    const next=()=>{if(finished||!screen.isConnected)return;if(n>=lines.length){laterWait(finish,500);return;}show(n);const len=lines[n].textContent.length;n++;laterWait(next,reducedMotion?0:Math.min(5200,1100+len*38));};
+    const next=()=>{if(finished||!screen.isConnected)return;if(n>=lines.length){laterWait(finish,500);return;}show(n);const len=d.hand?lines[n].textContent.length*1.5+lines[n].querySelectorAll('.hl').length*20:lines[n].textContent.length;n++;laterWait(next,reducedMotion?0:Math.min(5200,1100+len*38));};
     laterWait(next,700+preludeMs);
     screen.addEventListener('click',e=>{if(!finished&&!e.target.closest('button')){screen.classList.remove('prelude');finish();}});
   }
@@ -2923,9 +2941,9 @@ function f3sFindLines(img,boxes){
     if(!(replay||support))missing.push('Point to evidence in the documents, such as the replay row T-31-R or the unverified allocation sheet.');
     return {accepted:!missing.length,missing};
   }
-  const P4_STORY={kicker:'FILE 003 · PUZZLE 04',eyebrow:'LAKE ASH · OCTOBER 14',title:'THE UNRESOLVED THREAD',button:'EXAMINE THE EVIDENCE',text:`He went to the water.
+  const P4_STORY={kicker:'FILE 003 · PUZZLE 04',eyebrow:'LAKE ASH · OCTOBER 14',title:'THE UNRESOLVED THREAD',button:'EXAMINE THE EVIDENCE',hand:true,text:`He went to the water.
 Someone followed.
-Only one of them came back.
+!Only one of them came back.
 
 At 17:40, a name was signed at the dock.
 At 19:58, a message was read.
