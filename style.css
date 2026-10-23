@@ -2702,3 +2702,16 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .cine-concert .cine-text{background:linear-gradient(90deg,rgba(4,3,2,.82),rgba(4,3,2,.55) 60%,transparent)}
 @media(prefers-reduced-motion:reduce){.cine.tell .tw{opacity:1;filter:none;transform:none;animation:none!important}}
 .cine-concert .cine-lines p{max-width:min(620px,52vw)}
+#continueFileFive{display:none!important}
+.home.await-file-five:not(.wall-five-intro) #continueFileFive{display:inline-block!important;animation:f3ContinueIn 1.2s 1.2s ease both}
+/* Thomas's handwritten margin note on the April memo */
+.f4-hand{margin:10px 0 0;padding-top:8px;border-top:1px dashed rgba(42,29,18,.25);font:italic 15px/1.45 var(--serif);color:#1d2a52;transform:rotate(-1.6deg);transform-origin:0 0}
+.f4-task{position:relative}
+.f4-stamp{position:absolute;left:50%;top:45%;z-index:5;pointer-events:none;padding:.1em .4em;border:4px solid #b3261b;border-radius:6px;color:#b3261b;font:700 clamp(30px,3.4vw,48px) var(--type);letter-spacing:.14em;background:rgba(20,8,5,.35);text-shadow:0 0 12px rgba(180,30,20,.4);mix-blend-mode:screen}
+/* After File 003: Peter's arrest, pinned to the wall beside File 003 */
+.arrest-clipping{display:none}
+.home.peter-charged.board-mode:not(.file-three-locked) .arrest-clipping{display:block;position:absolute;z-index:128;padding:.9em 1em 1em;background:linear-gradient(170deg,#e9dcbf,#d7c49c 70%,#c7b184);color:#1f1810;transform:rotate(-4deg);box-shadow:0 .5em 1.2em rgba(0,0,0,.65);clip-path:polygon(0 3%,6% 0,14% 2%,23% 0,35% 2%,47% 0,58% 2%,70% 0,82% 2%,93% 0,100% 3%,99% 30%,100% 62%,98% 97%,88% 100%,74% 98%,60% 100%,45% 98%,31% 100%,17% 98%,4% 100%,1% 70%,0 38%);filter:sepia(.35) brightness(.78);pointer-events:none}
+.arrest-clipping i{position:absolute;left:50%;top:.35em;width:.7em;height:.7em;margin-left:-.35em;border-radius:50%;background:radial-gradient(circle at 35% 35%,#e05a4a,#7a120c);box-shadow:0 .15em .25em rgba(0,0,0,.6)}
+.arrest-clipping small{display:block;margin-top:.5em;padding-bottom:.35em;border-bottom:1px solid #3a2d1c;font:600 .55em var(--mono);letter-spacing:.12em;color:#4a3a26}
+.arrest-clipping h5{margin:.45em 0 .4em;min-height:2.4em;font:700 1.12em/1.12 var(--serif);letter-spacing:-.01em;color:#140f09}
+.arrest-clipping p{margin:0;font:.62em/1.45 var(--serif);color:#3a2d1e;columns:2;column-gap:.9em}

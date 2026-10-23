@@ -132,6 +132,8 @@
     $('#homeScene').classList.toggle('file-three-locked', !secondComplete || progress.file03WallSeen === false);
     $('#homeScene').classList.toggle('await-file-three', secondComplete && progress.file03WallSeen === false);
     $('#homeScene').classList.toggle('await-file-four', !!progress.file03PuzzleComplete && progress.file04WallSeen === false);
+    $('#homeScene').classList.toggle('peter-charged', !!progress.file03PuzzleComplete);
+    $('#homeScene').classList.toggle('await-file-five', !!progress.file04Complete && progress.file05WallSeen === false);
     // The spotlight follows the file the player should open next; finished files fall back into the dark.
     const thirdDone = !!progress.file03PuzzleComplete, thirdOpen = secondComplete && progress.file03WallSeen !== false;
     const fourthOpen = thirdDone && progress.file04WallSeen !== false, fourthDone = !!progress.file04Complete;
@@ -166,7 +168,7 @@
     $('#messageDossier').setAttribute('aria-hidden','true');
     paintProgress(); show(home);
     // Place the wall overlays (File 002/03 marks, string) now; the board image may have loaded before its listener.
-    requestAnimationFrame(wallGeometry);
+    requestAnimationFrame(()=>{wallGeometry();placeClipping();if(progress.arrestNew&&progress.file03PuzzleComplete)dropClipping();});
   }
   function roundXp(n=roundNumber){const state=n===roundNumber?round:readRound(n);return state.questions.reduce((sum,q)=>sum+(q.complete?Number(q.xpAwarded)||0:0),0);}
   function earnedXp(){return [1,2,3].reduce((sum,n)=>sum+roundXp(n),0);}
@@ -887,7 +889,9 @@
   }
   // Requested flow: title (2), Lake Ash opening (1), clues (3), case file (4), login (5), decryption, transmission, homepage.
   const previewHome = new URLSearchParams(location.search).get('screen') === 'home';
-  if(previewHome || progress.caseAccepted) showHomeBoard(); else later(pushIntoLake, 4500);
+  // once he has been let into the archive, a refresh or a closed tab brings him back to the wall, not the intro
+  let homeSeen=false;try{homeSeen=localStorage.getItem('case25HomeSeen')==='1';}catch{}
+  if(previewHome || progress.caseAccepted || homeSeen) showHomeBoard(); else later(pushIntoLake, 4500);
   $('#playIntro').addEventListener('click', () => {
     const lake = $('#lakeScene');
     if (lake.classList.contains('lake-pushing')) return;
@@ -1014,6 +1018,23 @@
   // Wall intro on the painted File 01 / File 002 board: a light finds File 01, its COMPLETED mark pulses,
   // a light finds File 002, a red string ties the two pins together, then the rest of the wall comes up.
   // Points are pixels on file-02-board.png; wallGeometry() turns them into on-screen positions.
+  // After File 003 the papers report Peter's arrest: a clipping pinned to the wall beside File 003. The first time,
+  // it is slapped onto the wall and its headline types itself; afterwards it simply hangs there.
+  function placeClipping(){
+    const clip=$('#arrestClipping'),card=$('#file03ArtCard');if(!clip||!card)return;
+    const r=card.getBoundingClientRect(),h=$('#homeScene').getBoundingClientRect();if(!r.width)return;
+    clip.style.left=(r.left-h.left-r.width*1.32)+'px';clip.style.top=(r.top-h.top+r.height*.18)+'px';clip.style.width=(r.width*1.18)+'px';clip.style.fontSize=(r.width/16)+'px';
+  }
+  addEventListener('resize',()=>requestAnimationFrame(placeClipping));
+  function dropClipping(){
+    const clip=$('#arrestClipping'),hd=clip.querySelector('h5'),text='LANTERN CO-OWNER CHARGED IN LAKE ASH DISAPPEARANCE';
+    progress.arrestNew=false;persistProgress();
+    if(reducedMotion){hd.textContent=text;return;}
+    hd.textContent='';
+    clip.animate([{opacity:0,transform:'rotate(-14deg) scale(1.9)',filter:'blur(6px) brightness(1.6)'},{opacity:1,transform:'rotate(-3deg) scale(.97)',filter:'blur(0) brightness(1)',offset:.75},{opacity:1,transform:'rotate(-4deg) scale(1)'}],{duration:620,delay:1400,easing:'cubic-bezier(.3,0,.2,1)',fill:'backwards'});
+    later(()=>{sfx('stamp');$('#homeScene').animate([{transform:'none'},{transform:'translate(-3px,2px)'},{transform:'translate(2px,-1px)'},{transform:'none'}],{duration:260});},1850);
+    let i=0;const type=()=>{hd.textContent=text.slice(0,++i);if(i<text.length)later(type,42);};later(type,2300);
+  }
   function wallGeometry() {
     const home = $('#homeScene'), img = $('.file02-board-art');
     if (!img.naturalWidth || !home.clientWidth) return;
@@ -1557,6 +1578,10 @@
     }, reducedMotion ? 400 : 4500);
   }
 
+  $('#continueFileFive')?.addEventListener('click', () => {
+    $('#homeScene').classList.remove('await-file-five');
+    playFile05Reveal();
+  });
   $('#continueFileFour')?.addEventListener('click', () => {
     $('#homeScene').classList.remove('await-file-four');
     playFile04Reveal();
@@ -1964,6 +1989,8 @@
   let visitedPeople=new Set();
   function setPhase(index){
     clearTimers();
+    // File 001 remembers the slide he is on, so a refresh resumes there
+    if(!progress.caseAccepted&&progress.phaseAt!==index){progress.phaseAt=index;persistProgress();}
     phaseSlides[4].classList.remove('brief-return');
     const prevSlide=phaseSlides.findIndex(slide=>slide.classList.contains('active'));
     phaseSlides.forEach((slide,i)=>slide.classList.toggle('active',i===index));
@@ -2101,7 +2128,7 @@
   function startPhaseTwo(){
     if($('#phaseTwoScene').classList.contains('active'))return;
     clearTimers(); visitedPeople=new Set(); $('#recordsScene').classList.add('case-ready');
-    show(scenes[8]); setPhase(0);
+    show(scenes[8]); setPhase(progress.caseAccepted?0:Math.max(0,Math.min(11,Number(progress.phaseAt)||0)));
   }
   $$('[data-next-phase]').forEach(button=>button.addEventListener('click',()=>{
     const current=phaseSlides.findIndex(slide=>slide.classList.contains('active'));
@@ -2555,7 +2582,9 @@
     // The older File 03 state is what page load checks for completion, so keep it in step.
     file03.p3.complete=true;saveFile03();
     if(progress.file04WallSeen!==true)progress.file04WallSeen=false;persistProgress();
+    progress.arrestNew=true;persistProgress();
     f3s.screen='final';saveF3S();closeF3Stage();paintProgress();
+    requestAnimationFrame(()=>{placeClipping();dropClipping();});
     // the wall waits with File 003 closed; CONTINUE reveals File 004 (see #continueFileFour)
   }
 // finds painted text lines inside boxes of an image: returns [[x,y,w,h],...] in image pixels
@@ -3225,20 +3254,20 @@ Do not look away from it.
     });
   }
   const F4_KEY='case25File004V1';
-  F3S_CHAPTERS.push(['PUZZLE 01','RECONSTRUCT THE NIGHT'],['PUZZLE 02','THE MISSING PIECE']);
-  const F4_CH1=F3S_CHAPTERS.length-2,F4_CH2=F3S_CHAPTERS.length-1;
+  F3S_CHAPTERS.push(['PUZZLE 01','RECONSTRUCT THE NIGHT'],['PUZZLE 02','THE MISSING PIECE'],['PUZZLE 03','THE SECOND CARD']);
+  const F4_CH1=F3S_CHAPTERS.length-3,F4_CH2=F3S_CHAPTERS.length-2,F4_CH3=F3S_CHAPTERS.length-1;
   // Puzzle 1 documents, shown out of order. `order` is their true chronological position.
   const F4_P1_DOCS=[
     {id:'witness',order:4,tag:'WITNESS STATEMENT',date:'22 Sep 2016',title:'Statement of R. Okafor, bar staff',body:'“The stage lights flickered twice during the second set. Then there was smoke coming from behind the panel at the back of the stage. People started shouting and we got everyone out through the side door.” Taken the morning after the fire.'},
     {id:'log',order:1,tag:'MAINTENANCE LOG',date:'03/03/2016',title:'The Lantern — quarterly safety checks',body:'Fire extinguishers — checked ✓ (signed J.M.)\nEmergency lighting — checked ✓ (signed J.M.)\nStage circuit B tripping; wiring behind panel warm to the touch. Full electrical inspection of stage circuits — SCHEDULED. No completion signature.'},
     {id:'report',order:5,tag:'INCIDENT REPORT',date:'30 September 2016',title:'Fire at The Lantern — IR-0921',body:'Fire broke out at The Lantern during a live performance on the night of 21 September. Origin: rear of the stage. Investigation ongoing; venue maintenance and inspection records have been requested.'},
-    {id:'costs',order:2,tag:'APPROVAL MEMO',date:'19 April 2016',title:'Operating budget — cost reductions',body:'Non-essential maintenance and contractor work deferred to Q3 to cover rising costs. Approved — T. Reed.'},
+    {id:'costs',order:2,tag:'APPROVAL MEMO',date:'19 April 2016',title:'Operating budget — cost reductions',body:'Non-essential maintenance and contractor work deferred to Q3 to cover rising costs. Approved — T. Reed.',note:'Every place has a story it tells the public. Ours will not be this one. — T.'},
     {id:'email',order:3,tag:'EMAIL',date:'Thu 02.06.2016',title:'From: Peter Shaw  To: Thomas Reed',body:'“The electrician flagged the stage wiring again today. We can’t keep pushing this to next quarter, Tom. If something happens on a full night, it’s on us.”'}
   ];
   const F4_P1_CHECKS=['Fire extinguishers','Emergency lighting','Electrical inspection of the stage circuits','Fire exit signage'];
   // Puzzle 2 documents and its three linked questions.
   const F4_P2_DOCS=[
-    {tag:'MAINTENANCE RECORD MR-114 · VERSION A',date:'As released to investigators',title:'Stage circuits — September 2016',body:'05 Sep — Fire alarm test — COMPLETED\n09 Sep — Extinguisher check — COMPLETED\n12 Sep — Electrical inspection, stage circuits — COMPLETED · ref INS-0417 (attached)\n16 Sep — Emergency lighting — COMPLETED'},
+    {tag:'MAINTENANCE RECORD MR-114 · VERSION A',date:'As released to investigators',title:'Stage circuits — September 2016',body:'05 Sep — Fire alarm test — COMPLETED\n09 Sep — Extinguisher check — COMPLETED\n12 Sep — Electrical inspection, stage circuits — COMPLETED · ref INS-0417 (attached)\n16 Sep — Emergency lighting — COMPLETED\n\nFile history: last edited 23 Sep 2016, 01:12 · user: pshaw'},
     {tag:'MAINTENANCE RECORD MR-114 · VERSION B',date:'Original working copy',title:'Stage circuits — September 2016',body:'05 Sep — Fire alarm test — COMPLETED\n09 Sep — Extinguisher check — COMPLETED\n12 Sep — Electrical inspection, stage circuits — SCHEDULED · awaiting contractor\n16 Sep — Emergency lighting — COMPLETED'},
     {tag:'CONTRACTOR INSPECTION REGISTER',date:'September 2016',title:'Halden Electrical Ltd — job register',body:'INS-0415 — 05 Sep — Fire alarm system — signed\nINS-0416 — 09 Sep — Extinguishers — signed\nINS-0418 — 16 Sep — Emergency lighting — signed'},
     {tag:'ARCHIVE INDEX',date:'Released file IR-0921',title:'Attachments to the incident file',body:'Attachment 1 — Incident report IR-0921 — IN FILE\nAttachment 2 — Maintenance record MR-114 — IN FILE\nAttachment 3 — INS-0417 Electrical inspection certificate — NOT IN FILE'}
@@ -3246,7 +3275,7 @@ Do not look away from it.
   const F4_P2_QUESTIONS=[
     {q:'Which entry differs between the two versions of the maintenance record?',options:['05 Sep — Fire alarm test','09 Sep — Extinguisher check','12 Sep — Electrical inspection, stage circuits','16 Sep — Emergency lighting'],answer:2,hint:'Read Version A and Version B line by line. Only one status changes.',explain:'The 12 September electrical inspection reads COMPLETED in the version released to investigators, but SCHEDULED — awaiting contractor — in the original working copy.'},
     {q:'Which inspection reference is missing from the released file?',options:['INS-0415','INS-0416','INS-0417','INS-0418'],answer:2,hint:'Compare the reference Version A cites with the contractor register and the archive index.',explain:'INS-0417 is cited as the electrical inspection certificate, but it is not in the contractor register and the archive index marks it NOT IN FILE.'},
-    {q:'Which conclusion does the evidence support?',options:['The fire was deliberately started to cover something up.','Peter Shaw altered the maintenance record.','The inspection’s completion is not supported by any source record and the referenced certificate is missing — but who changed the record, and why, cannot be established.','The inspection was done; the certificate was simply misfiled.'],answer:2,hint:'Separate what the documents show from what they would need to show to blame a person or prove intent.',explain:'The records show a gap: a completed inspection that no source record supports, and a missing certificate. They do not show who changed the record, why, or that the fire was deliberate.'}
+    {q:'Which conclusion does the evidence support?',options:['The fire was started deliberately to hide something.','The inspection was done; the certificate was simply misfiled.','Two days after the fire, the record was rewritten under Peter Shaw’s login to say the inspection was done, citing a certificate that was never issued.','Thomas Reed rewrote the record to protect the venue.'],answer:2,hint:'Version A has a file history at the bottom. Whose login, and when?',explain:'Version A was last edited at 01:12 on 23 September, two days after the fire, under the login pshaw. That edit turns SCHEDULED into COMPLETED and cites INS-0417, a certificate the contractor never issued. The man who warned about the wiring is the man who rewrote the record after a musician died.'}
   ];
   const F4_STORY={
     s1:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'A NIGHT AT THE LANTERN',title:'EVERY PLACE HAS A STORY.',button:'EXAMINE THE RECORDS',tell:true,
@@ -3255,12 +3284,12 @@ Do not look away from it.
         if(/Someone warned/.test(t)){const l=sc.querySelectorAll('.cc-light.on')[3];if(l){l.classList.add('pop');sfx('sting');}}
         if(/Whether anyone/.test(t))sc.classList.add('hush');},
       text:`Before the money. Before Lake Ash.\nThere was The Lantern.\n\nTwo friends. One stage.\nThomas Reed and Peter Shaw built it from nothing: a small room with a big sound, live music every night, and a crowd that always came back.\n\nFor a while, it was everything they wanted.\n\nBut success is expensive.\nCosts rose. Repairs waited.\nWiring that needed attention was kept running a little longer…\nand then a little longer again.\n\n!Someone warned them. It was written down.\n\nWhether anyone listened is another matter.\n\nEvery place has a story it tells the public.\nThis is the story its records left behind.`},
-    s2:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'THE OFFICIAL VERSION',title:'THE NIGHT OF 21 SEPTEMBER.',button:'CROSS-EXAMINE THE REPORT',text:`You found the warnings, Detective. Now here is what followed.\n\nOn the night of 21 September, fire broke out behind the stage during a live set.\n\nThe room was cleared. One person did not make it out.\nA musician died in the fire.\n\nInvestigators classified it as accidental — caused by faulty electrical equipment.\n\nCase closed.\n\nExcept the maintenance records are incomplete.\nAnd nothing in them confirms that the electrical inspection was ever carried out.\n\nThe official conclusion was an accident.\nThe evidence still has a gap.`},
-    s4:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'THE STORY WIDENS',title:'THE FIRE WAS ONLY THE BEGINNING.',button:'CONTINUE',text:`Your findings are on record. Now the rest of it.\n\nYears after the fire, irregularities surfaced in The Lantern’s accounts. Money had been diverted into a failed private investment, then hidden behind falsified accounts and supplier invoices.\n\nElena, the accounts manager, found the discrepancy — and helped conceal it.\n\nPeter began quietly collecting records. Records that could place the blame on Thomas, and keep his own name out of it.\n\nThen Thomas disappeared near Lake Ash. His damaged boat, his watch and his jacket were recovered. His body was never found. The authorities presumed he had drowned.\n\nAnd Daniel Cross — the journalist investigating both the fire and the money — knew things he never published.\n\nThe fire was not the end of the story.\nIt was the first part of a much larger case.`},
-    final:{kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'FILE 004 · CLOSED',title:'ONE FILE REMAINS.',button:'RETURN TO THE CASE',text:`Detective,\n\nYou have examined what happened at The Lantern and questioned the records that supposedly explain it.\n\nYou have also seen how easily an unanswered question becomes an accusation.\n\nThe fire, the missing money and the disappearance are now part of the same investigation. Whether they are part of the same deception remains for you to determine.\n\nYour findings have been recorded.\n\nOne file remains.\n\n— M`}
+    s2:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'THE OFFICIAL VERSION',title:'THE NIGHT OF 21 SEPTEMBER.',button:'CROSS-EXAMINE THE REPORT',tell:true,text:`You found the warnings, Detective.\nNow here is what followed.\n\n21 September. A full room. The second set.\nThe stage lights flickered twice.\nThen the smoke came from behind the panel.\n\nThe room was cleared in four minutes.\n!One person did not make it out.\n\nA musician died on the stage that Thomas and Peter built.\n\nThe investigators called it an accident. Faulty equipment.\nNo one was charged. The file was closed.\n\nBut nothing in the records confirms the wiring was ever inspected.\nAnd someone made sure the record said it was.`},
+    s4:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'NINE YEARS LATER',title:'THE FIRE WAS ONLY THE BEGINNING.',button:'CONTINUE',tell:true,text:`Your findings are on record.\n\nThe Lantern reopened eight months after the fire.\nNew wiring. The same two names over the door.\nNobody ever saw the edit Peter made.\n\nBut Peter remembered it.\nAnd for nine years he kept a second file:\nthe April memo with Thomas’s signature, the deferred repairs, every page that could put the fire on Thomas alone.\n\nIn case anyone ever asked.\n\nThen Thomas went to the water at Lake Ash.\nPeter’s name on the boat. Peter’s card on the road.\n\n!Tonight Peter Shaw is in a cell.\n\nThe case against him has never looked stronger.`},
+    final:{kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'FILE 004 · CLOSED',title:'ONE FILE REMAINS.',button:'RETURN TO THE CASE',hand:true,text:`Detective.\n\nYou found the warning.\nYou found the edit.\nYou found the man who made it.\n\nHe kept a file on his oldest friend for nine years.\nHe was waiting for the day he would need it.\n\nI told you once that every place has a story it tells the public.\n!Some people do too.\n\nTonight the last file opens.\nRead it the way you read today:\nnot for what it says, but for who could have written it.\n\n— M`}
   };
   const F4_FLOW=['s1','p1','s2','p2','verdict','s4','final'];
-  function readF4(){const fresh={screen:'s1',attempts:{},done:{},order:[],check:null,p2:[null,null,null],p2step:0,verdict:'',verdictSaved:false};try{return {...fresh,...JSON.parse(localStorage.getItem(F4_KEY)||'{}')};}catch{return fresh;}}
+  function readF4(){const fresh={screen:'s1',attempts:{},done:{},order:[],check:null,p2:[null,null,null],p2step:0,p3step:0,p3text:'',verdict:'',verdictSaved:false};try{return {...fresh,...JSON.parse(localStorage.getItem(F4_KEY)||'{}')};}catch{return fresh;}}
   let f4=readF4();
   const saveF4=()=>{try{localStorage.setItem(F4_KEY,JSON.stringify(f4));}catch{}};
   const f4Next=id=>F4_FLOW[F4_FLOW.indexOf(id)+1];
@@ -3275,27 +3304,68 @@ Do not look away from it.
   }
   function f4Go(id,{resume=false}={}){
     f4.screen=id;saveF4();
-    const chapter=id==='p1'?F4_CH1:id==='p2'?F4_CH2:null;
+    const chapter=id==='p1'?F4_CH1:id==='p2'?F4_CH2:id==='p3'?F4_CH3:null;
     if(chapter!==null&&!resume)f3sChapterCard(chapter,()=>f4Mount(id,true));else f4Mount(id,false);
   }
   function f4Mount(id,fromChapter){
     const stage=$('#f3Stage'),old=[...stage.querySelectorAll('.f3s-screen')];
     const screen=document.createElement('section');screen.className='f3s-screen f4-screen'+(fromChapter?' from-chapter':'');screen.dataset.screen=id;
-    if(F4_STORY[id])f4BuildStory(screen,id);else if(id==='p1')f4BuildP1(screen);else if(id==='p2')f4BuildP2(screen);else f4BuildVerdict(screen);
+    if(F4_STORY[id])f4BuildStory(screen,id);else if(id==='p1')f4BuildP1(screen);else if(id==='p2')f4BuildP2(screen);else if(id==='p3')f4BuildP3(screen);else f4BuildVerdict(screen);
+    if(!F4_STORY[id])f4DeskEnter(screen);
     stage.insertBefore(screen,$('#f3sChapter'));
-    requestAnimationFrame(()=>screen.classList.add('enter'));
-    old.forEach(s=>{s.classList.add('leave');setTimeout(()=>s.remove(),1100);});
+    // each kind of screen has its own way in: story screens bleed up out of ink, a puzzle's desk is lit by its lamp,
+    // the verdict arrives as a page turned over
+    const mode=reducedMotion||!old.length?null:F4_STORY[id]?'ink':fromChapter?{p1:'swing',p2:'catch',p3:'match'}[id]:id==='verdict'?'turn':'sweep';
+    if(mode){screen.classList.add('fx-on','enter');f3sArrive(screen,mode,old);}
+    else{requestAnimationFrame(()=>screen.classList.add('enter'));old.forEach(s=>{s.classList.add('leave');setTimeout(()=>s.remove(),1100);});}
   }
   function f4BuildStory(screen,id){
-    cineStory(screen,F4_STORY[id],{s1:'concert',s2:'fire',s4:'board',final:'signal'}[id],()=>{const next=f4Next(id);if(next)f4Go(next);else f4Finish();});
+    cineStory(screen,F4_STORY[id],{s1:'concert',s2:'fire',s4:'lake',final:'signal'}[id],()=>{const next=f4Next(id);if(next)f4Go(next);else f4Finish();});
   }
-  const f4Doc=(d,extra='')=>`<article class="f4-doc" ${extra}><small>${f3sEsc(d.tag)}</small><time>${f3sEsc(d.date)}</time><h4>${f3sEsc(d.title)}</h4><p>${f3sEsc(d.body)}</p></article>`;
+  const f4Doc=(d,extra='')=>`<article class="f4-doc" ${extra}><small>${f3sEsc(d.tag)}</small><time>${f3sEsc(d.date)}</time><h4>${f3sEsc(d.title)}</h4><p>${f3sEsc(d.body)}</p>${d.note?`<p class="f4-hand">${f3sEsc(d.note)}</p>`:''}</article>`;
   function f4Desk(screen,{step,title,lead,file='FILE 004 · THE LANTERN FIRE'}){
     screen.classList.add('f4-desk-screen');
     screen.innerHTML=`<div class="f4-desk-bg"></div><div class="f4-desk"><header class="f4-head"><small>${f3sEsc(file)} · ${f3sEsc(step)}</small><h2>${f3sEsc(title)}</h2><p>${f3sEsc(lead)}</p></header><div class="f4-docs"></div><section class="f4-task" aria-live="polite"></section></div>`;
     return {docs:screen.querySelector('.f4-docs'),task:screen.querySelector('.f4-task')};
   }
   // A two-try question: hint first, then the answer. Calls done() once settled.
+  // Text decodes like a signal locking in: the letters churn as random marks, then settle from left to right.
+  function f4Decode(el,ms=900){
+    if(reducedMotion||!el)return;const text=el.textContent,G='▓▒░#%&@/\\|<>?*=+ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';const t0=performance.now();
+    const tick=()=>{if(!el.isConnected)return;const e=Math.min(1,(performance.now()-t0)/ms),n=Math.floor(e*text.length);
+      el.textContent=text.split('').map((ch,i)=>i<n||ch===' '?ch:G[Math.random()*G.length|0]).join('');if(e<1)requestAnimationFrame(tick);else el.textContent=text;};tick();
+  }
+  // A puzzle desk comes alive: the documents are dropped onto the desk one by one, the title decodes, and the question
+  // panel is drawn down like a blind with a line of lamp light on its edge.
+  function f4DeskEnter(screen){
+    if(reducedMotion)return;
+    const head=screen.querySelector('.f4-head h2');if(head){head.style.opacity=0;laterWait(()=>{head.style.opacity='';f4Decode(head,1100);sfx('ink');},700);}
+    screen.querySelectorAll('.f4-head small,.f4-head p').forEach((n,i)=>n.animate([{opacity:0,letterSpacing:'.5em'},{opacity:1,letterSpacing:''}],{duration:1200,delay:500+i*400,easing:'ease-out',fill:'backwards'}));
+    screen.querySelectorAll('.f4-doc').forEach((d,i)=>{const r=(i%2?1:-1)*(6+i*3);
+      d.animate([{opacity:0,transform:`translateY(-70vh) rotate(${r*2}deg) scale(1.1)`,filter:'blur(3px)'},{opacity:1,transform:`translateY(8px) rotate(${r/4}deg) scale(1)`,filter:'blur(0)',offset:.78},{transform:'none'}],{duration:900,delay:1100+i*260,easing:'cubic-bezier(.3,.1,.3,1)',fill:'backwards'});
+      laterWait(()=>{if(screen.isConnected)sfx('paper');},1100+i*260+700);});
+    const task=screen.querySelector('.f4-task');
+    if(task)task.animate([{clipPath:'inset(0 0 100% 0)',boxShadow:'0 -2px 30px 4px rgba(255,190,110,.9)'},{clipPath:'inset(0 0 0 0)',boxShadow:'0 20px 50px rgba(0,0,0,.6)'}],{duration:1100,delay:1300,easing:'cubic-bezier(.6,0,.2,1)',fill:'backwards'});
+  }
+  // Question to question: the answered panel is stamped, then burns down to black; the next question decodes in and
+  // its options are dealt onto the panel like cards.
+  function f4Swap(box,build){
+    if(reducedMotion||!box.childElementCount){build();f4DealIn(box,false);return;}
+    const stamp=document.createElement('b');stamp.className='f4-stamp';stamp.textContent='VERIFIED';box.append(stamp);
+    stamp.animate([{opacity:0,transform:'translate(-50%,-50%) rotate(-12deg) scale(2.6)'},{opacity:1,transform:'translate(-50%,-50%) rotate(-12deg) scale(.95)',offset:.7},{opacity:1,transform:'translate(-50%,-50%) rotate(-12deg) scale(1)'}],{duration:320,easing:'cubic-bezier(.3,0,.2,1)',fill:'forwards'});
+    sfx('stamp');box.animate([{transform:'none'},{transform:'translate(-4px,3px)'},{transform:'translate(3px,-2px)'},{transform:'none'}],{duration:240,delay:180});
+    const out=box.animate([{filter:'brightness(1) sepia(0)',opacity:1,clipPath:'inset(0 0 0 0)'},{filter:'brightness(1.6) sepia(.9) saturate(2)',opacity:1,clipPath:'inset(0 0 0 0)',offset:.35},{filter:'brightness(.2) sepia(1)',opacity:0,clipPath:'inset(100% 0 0 0)'}],{duration:900,delay:750,easing:'ease-in',fill:'forwards'});
+    out.finished.catch(()=>{}).then(()=>{stamp.remove();build();out.cancel();f4DealIn(box,true);});
+  }
+  function f4DealIn(box,swap){
+    if(reducedMotion)return;
+    if(swap){sfx('ink');box.animate([{clipPath:'inset(0 0 100% 0)'},{clipPath:'inset(0 0 0 0)'}],{duration:800,easing:'cubic-bezier(.6,0,.2,1)'});}
+    const d=swap?250:2200;
+    box.querySelectorAll('.f4-step').forEach(n=>n.animate([{opacity:0,transform:'translateX(-12px)'},{opacity:1,transform:'none'}],{duration:600,delay:d,fill:'backwards'}));
+    const q=box.querySelector('.f4-q');if(q){q.style.visibility='hidden';laterWait(()=>{q.style.visibility='';f4Decode(q,Math.min(1600,300+q.textContent.length*9));},d+150);}
+    box.querySelectorAll('.f4-opt,.f4-verdict-text').forEach((o,i)=>o.animate([{opacity:0,transform:'translateX(40px) rotate(3deg)'},{opacity:1,transform:'none'}],{duration:650,delay:d+700+i*140,easing:'cubic-bezier(.2,.8,.2,1)',fill:'backwards'}));
+    box.querySelectorAll('.f4-actions').forEach(n=>n.animate([{opacity:0},{opacity:1}],{duration:600,delay:d+1400,fill:'backwards'}));
+  }
   function f4Ask(task,key,q,done,store=f4,save=saveF4){
     task.innerHTML=`<p class="f4-q">${f3sEsc(q.q)}</p><div class="f4-options" role="radiogroup">${q.options.map((o,i)=>`<button type="button" class="f4-opt" role="radio" aria-checked="false" data-i="${i}"><i>${'ABCD'[i]}</i><span>${f3sEsc(o)}</span></button>`).join('')}</div><div class="f4-actions"><button type="button" class="f4-btn f4-submit">SUBMIT →</button></div>`;
     let pick=null;const opts=[...task.querySelectorAll('.f4-opt')];
@@ -3323,8 +3393,7 @@ Do not look away from it.
     const submit=task.querySelector('.f4-submit');const sync=()=>{submit.disabled=order.length<5;};
     task.querySelector('.f4-reset').addEventListener('click',()=>{if(task.classList.contains('locked'))return;order=[];paint();sync();});
     const toCheck=()=>{task.classList.add('locked');docs.classList.add('ordered');
-      const box=document.createElement('section');box.className='f4-task';task.after(box);task.remove();
-      f4Ask(box,'p1-check',{q:'One safety check has no verified completion record. Which one?',options:F4_P1_CHECKS,answer:2,hint:'Look at the maintenance log. Which line has no signature against it?',explain:'The extinguishers and emergency lighting were signed off. The electrical inspection of the stage circuits was only ever SCHEDULED — there is no completion record. The concerns existed before the fire, Thomas approved deferring maintenance, and Peter knew about the wiring.'},()=>{f4.done.p1=true;saveF4();f4Go(f4Next('p1'));});};
+      f4Swap(task,()=>{task.classList.remove('locked');f4Ask(task,'p1-check',{q:'One safety check has no verified completion record. Which one?',options:F4_P1_CHECKS,answer:2,hint:'Look at the maintenance log. Which line has no signature against it?',explain:'The extinguishers and emergency lighting were signed off. The electrical inspection of the stage circuits was only ever SCHEDULED — there is no completion record. The concerns existed before the fire, Thomas approved deferring maintenance, and Peter knew about the wiring.'},()=>{f4.done.p1=true;saveF4();f4Go(f4Next('p1'));});});};
     const showCorrect=()=>{order=F4_P1_DOCS.map((d,i)=>[d.order,i]).sort((a,b)=>a[0]-b[0]).map(p=>p[1]);paint();cards.forEach(c=>c.classList.add('right'));};
     submit.addEventListener('click',()=>{
       if(f3sBusy||order.length<5)return;
@@ -3339,10 +3408,38 @@ Do not look away from it.
   function f4BuildP2(screen){
     const {docs,task}=f4Desk(screen,{step:'PUZZLE 02',title:'THE MISSING PIECE',lead:'Two versions of the same maintenance record, the contractor’s own register, and the index of what was actually released. Something does not match.'});
     docs.innerHTML=F4_P2_DOCS.map(d=>f4Doc(d)).join('');docs.classList.add('f4-four');
-    const ask=n=>{const box=task.closest('.f4-desk').querySelector('.f4-task');const step=document.createElement('p');step.className='f4-step';step.textContent=`QUESTION ${n+1} / 3`;
-      f4Ask(box,'p2-'+n,F4_P2_QUESTIONS[n],()=>{if(n<2){f4.p2step=n+1;saveF4();ask(n+1);}else{f4.done.p2=true;saveF4();f4Go(f4Next('p2'));}});
-      box.classList.remove('settled');box.prepend(step);};
+    const ask=n=>{const box=task.closest('.f4-desk').querySelector('.f4-task');
+      f4Swap(box,()=>{box.classList.remove('settled');f4Ask(box,'p2-'+n,F4_P2_QUESTIONS[n],()=>{if(n<2){f4.p2step=n+1;saveF4();ask(n+1);}else{f4.done.p2=true;saveF4();f4Go(f4Next('p2'));}});
+        const step=document.createElement('p');step.className='f4-step';step.textContent=`QUESTION ${n+1} / 3`;box.prepend(step);});};
     ask(Math.min(f4.p2step||0,2));
+  }
+  // Puzzle 03, The Second Card: the card that put "Peter" at Lake Ash had a twin. Nothing here says Thomas is alive;
+  // it only takes away the proof that Peter was the one holding the card.
+  const F4_P3_DOCS=[
+    {tag:'BANK CARD REGISTER',date:'The Lantern Ltd · company account',title:'Cards issued on the account',body:'Card ending 4417 · issued 2019 · cardholder P. Shaw · ACTIVE\nReplacement card ending 4417 · requested Mon 29 Sep (reason: “card damaged”) · ACTIVE\nOriginal card: not cancelled'},
+    {tag:'BRANCH COLLECTION SLIP',date:'Thu 02 Oct · 11:20',title:'Replacement card collected in branch',body:'Card ending 4417 (replacement)\nCollected by: T. Reed, director, with company letter of authority\nID shown: driving licence, T. Reed\nSigned for: T. R.'},
+    {tag:'INTERVIEW EXTRACT',date:'16 Oct · Interview Room 2',title:'Peter Shaw, on the card',body:'“I never asked for a new card. Mine was never damaged and it never left my wallet. Check it, it’s right here.”'},
+    {tag:'BOAT HIRE SLIP',date:'Tue 14 Oct · 17:40',title:'Lake Ash Boat Hire, east dock',body:'Hirer: P. Shaw (signed)\nPaid: card ending 4417, The Lantern company account\nID: not checked (self-service kiosk)'}
+  ];
+  const F4_P3_QUESTIONS=[
+    {q:'How many working cards ending 4417 existed on the night of 14 October?',options:['One, Peter’s','Two','None, it had been cancelled','Three'],answer:1,hint:'Read the register line by line. Was the original card cancelled when the replacement was issued?',explain:'Two. The replacement was issued and the original was never cancelled, so two cards with the same number were both active on 14 October.'},
+    {q:'Who held them?',options:['Peter Shaw, both of them','Peter Shaw and Thomas Reed','Thomas Reed, both of them','The bank kept the replacement'],answer:1,hint:'Peter says his card never left his wallet. Who signed for the replacement at the branch?',explain:'Peter kept the original. The replacement was collected on 2 October by Thomas Reed, twelve days before Lake Ash, and Peter says he never asked for it.'}
+  ];
+  function f4BuildP3(screen){
+    const {docs,task}=f4Desk(screen,{step:'PUZZLE 03',title:'THE SECOND CARD',lead:'Four records about one card. The card that put Peter Shaw’s name at Lake Ash.'});
+    docs.innerHTML=F4_P3_DOCS.map(d=>f4Doc(d)).join('');docs.classList.add('f4-four');
+    const box=task;
+    const written=()=>f4Swap(box,()=>{box.classList.remove('settled');
+      box.innerHTML=`<p class="f4-step">QUESTION 3 / 3</p><p class="f4-q">Look again at the boat hire slip. With two cards in two pockets, what does it prove about who was at Lake Ash, and what does it no longer prove?</p><textarea class="f4-verdict-text" placeholder="Write it in your own words, Detective…" spellcheck="true"></textarea><div class="f4-actions"><button type="button" class="f4-btn f4-submit">RECORD IT →</button></div>`;
+      const t=box.querySelector('textarea');t.value=f4.p3text||'';t.addEventListener('input',()=>{f4.p3text=t.value;saveF4();});
+      box.querySelector('.f4-submit').addEventListener('click',()=>{
+        if(f3sBusy)return;if(!t.value.trim()){f3sToast('Write a few words first, Detective.');t.focus();return;}
+        f4.done.p3=true;saveF4();
+        f3sModal({tone:'good',title:'ON RECORD',body:'<p>The slip proves that a card ending 4417 paid for Boat No. 6 at 17:40, and that whoever typed the name typed <b>P. Shaw</b>. Nobody checked a face.</p><p class="f3s-left">It no longer proves that Peter was the one at the dock. There were two cards. One was in Peter’s wallet. The other was signed for by Thomas Reed, twelve days before he went to the water.</p>',actions:[['CONTINUE →',()=>{f3sCloseModal();f4Go(f4Next('p3'));}]]});
+      });});
+    const ask=n=>f4Swap(box,()=>{box.classList.remove('settled');f4Ask(box,'p3-'+n,F4_P3_QUESTIONS[n],()=>{if(n<1){f4.p3step=1;saveF4();ask(1);}else{f4.p3step=2;saveF4();written();}});
+      const step=document.createElement('p');step.className='f4-step';step.textContent=`QUESTION ${n+1} / 3`;box.prepend(step);});
+    if((f4.p3step||0)>=2)written();else ask(f4.p3step||0);
   }
   function f4BuildVerdict(screen){
     const {docs,task}=f4Desk(screen,{step:'YOUR PROVISIONAL VERDICT',title:'THE LANTERN FIRE — INVESTIGATOR’S FINDINGS',lead:'Before the file tells you anything more, put your own assessment on record.'});
@@ -3353,45 +3450,66 @@ Do not look away from it.
     const upd=()=>{count.textContent=`${words()} words`;f4.verdict=t.value;saveF4();};t.addEventListener('input',upd);upd();
     task.querySelector('.f4-submit').addEventListener('click',()=>{
       if(f3sBusy)return;
-      if(words()<15){f3sToast('Write a few sentences first — at least 15 words.');t.focus();return;}
+      if(words()<3){f3sToast('Write a few words first, Detective.');t.focus();return;}
       // Not graded: acknowledge the reasoning habits we can see, and note the ones worth adding.
       const v=t.value.toLowerCase(),seen=[],missing=[];
       (/inspect|maintenance|record|log|ins-?0417|certificate|attachment/.test(v)?seen:missing).push('the documents themselves');
       (/unverif|not (been )?verified|cannot|can't|not proven|no evidence|unclear|unknown|uncertain|not establish/.test(v)?seen:missing).push('what the records cannot prove');
       (/need|would want|require|interview|original|forensic|contractor|witness|more evidence/.test(v)?seen:missing).push('the evidence you would still need');
       f4.verdictSaved=true;saveF4();
-      f3sModal({tone:'good',title:'FINDINGS RECORDED',body:`<p>Your assessment is now part of the case file.</p>${seen.length?`<p>You grounded it in ${seen.join(', ')}.</p>`:''}${missing.length?`<p class="f3s-left">Worth keeping in mind as the case widens: ${missing.join(', ')}.</p>`:''}`,actions:[['CONTINUE →',()=>{f3sCloseModal();f4Go(f4Next('verdict'));}]]});
+      f3sModal({tone:'good',title:'FINDINGS RECORDED',body:`<p>Your assessment is now part of the case file.</p>${seen.length?`<p>You grounded it in ${seen.join(', ')}.</p>`:''}<p class="f3s-left"><b>The file’s own reading:</b> the wiring was flagged in March, maintenance was deferred in April on Thomas’s approval, and Peter warned him again in June. The inspection was never carried out. Two days after a musician died, the record handed to investigators was rewritten under Peter Shaw’s login to say it was, citing a certificate that does not exist.</p>`,actions:[['CONTINUE →',()=>{f3sCloseModal();f4Go(f4Next('verdict'));}]]});
     });
   }
   function f4Finish(){
     progress.file04Complete=true;if(progress.file05WallSeen!==true)progress.file05WallSeen=false;persistProgress();
     f4.screen='final';saveF4();closeF3Stage();paintProgress();
-    if(progress.file05WallSeen===false)setTimeout(()=>{if($('#f3Stage').hidden)playFile05Reveal();},700);
+    // the wall waits with File 004 closed; CONTINUE reveals File 005 (see #continueFileFive)
   }
   function f4Skip(){if(!$('#f3sChapter').hidden)return;f3sCloseModal();const next=f4Next(f4.screen);if(next)f4Go(next);else f4Finish();}
-  function f4Retry(){if(!$('#f3sChapter').hidden)return;f4={screen:'s1',attempts:{},done:{},order:[],check:null,p2:[null,null,null],p2step:0,verdict:'',verdictSaved:false};saveF4();progress.file04Complete=false;persistProgress();paintProgress();f3sCloseModal();f4Go('s1');}
+  function f4Retry(){if(!$('#f3sChapter').hidden)return;f4={screen:'s1',attempts:{},done:{},order:[],check:null,p2:[null,null,null],p2step:0,p3step:0,p3text:'',verdict:'',verdictSaved:false};saveF4();progress.file04Complete=false;persistProgress();paintProgress();f3sCloseModal();f4Go('s1');}
   // ---------------------------------------------------------------------------------------------
   // File 005 — The Last Transmission. Runs inside #f3Stage (data-mode="f5") with the same parts as File 004.
   // Opening → physical evidence envelope → the one final deduction → Thomas's transmission → case closed → Why Case 25?
   const F5_KEY='case25File005V1';
-  const F5_EXHIBITS=[
-    {tag:'EXHIBIT A',date:'Physical envelope',title:'Thomas’s private note',body:'A handwritten note containing the phrase “Count the silence, not the sound.”\n\nIt suggests Thomas had considered an absence and was worried about Peter’s intentions. It does not, on its own, prove Thomas survived.'},
-    {tag:'EXHIBIT B',date:'Physical envelope',title:'M’s original transmission',body:'An earlier message that repeats the same unusual phrase — and shows M knows private circumstances surrounding The Lantern.\n\nThe repeated phrase is a clue to compare, not proof by itself.'},
-    {tag:'EXHIBIT C',date:'Physical envelope',title:'Lake Ash search summary',body:'The damaged boat, the recovered watch and jacket — and no body.\n\nThe authorities presumed drowning. The record does not conclusively establish Thomas’s death.'},
-    {tag:'EXHIBIT D',date:'Physical envelope',title:'Archive cross-reference',body:'A short record showing M has access to details linking the private note, the disappearance and the earlier case files.\n\nCompare the records before deciding who created the archive.'}
+  // File 005 is told in three puzzles. Each one takes back one piece of the Lake Ash night: the card, the blood, the voice.
+  // Nothing says Thomas is alive until the player has put it together.
+  F3S_CHAPTERS.push(['PUZZLE 01','THE SECOND CARD'],['PUZZLE 02','THE OLD BLOOD'],['PUZZLE 03','THE VOICE IN THE ARCHIVE']);
+  const F5_CH=[F3S_CHAPTERS.length-3,F3S_CHAPTERS.length-2,F3S_CHAPTERS.length-1];
+  const F5_P1_DOCS=[
+    {tag:'BANK CARD REGISTER',date:'The Lantern Ltd · company account',title:'Cards issued on the account',body:'Card ending 4417 · issued 2019 · cardholder P. Shaw · ACTIVE\nReplacement card ending 4417 · requested Mon 29 Sep (reason: “card damaged”) · ACTIVE\nOriginal card: not cancelled'},
+    {tag:'BRANCH COLLECTION SLIP',date:'Thu 02 Oct · 11:20',title:'Replacement card collected in branch',body:'Card ending 4417 (replacement)\nCollected by: T. Reed, director, with company letter of authority\nID shown: driving licence, T. Reed\nSigned for: T. R.'},
+    {tag:'INTERVIEW EXTRACT',date:'16 Oct · Interview Room 2',title:'Peter Shaw, on the card',body:'“I never asked for a new card. Mine was never damaged and it never left my wallet. Check it, it’s right here.”'},
+    {tag:'BOAT HIRE SLIP',date:'Tue 14 Oct · 17:40',title:'Lake Ash Boat Hire, east dock',body:'Hirer: P. Shaw (signed)\nPaid: card ending 4417, The Lantern company account\nID: not checked (self-service kiosk)'}
   ];
-  const F5_QUESTION={q:'One exhibit contains a private phrase. Another repeats it. A third leaves Thomas’s fate unresolved. The fourth connects the archive to information from the earlier files. Which conclusion best explains the evidence as a whole?',
-    options:['Peter Shaw created the archive to frame Thomas.','Daniel Cross created it to protect his investigation.','Thomas Reed created the archive after secretly staging his disappearance.','Elena Ward created it to conceal the financial discrepancy.'],answer:2,
-    hint:'Who could have known the phrase in Thomas’s private note? And whose death was never actually proven?',
-    explain:'Only someone with Thomas’s private phrase could repeat it. Thomas’s death was presumed, never established. And M knows what links every file. The evidence points to Thomas.'};
+  const F5_P1_QS=[
+    {q:'How many working cards ending 4417 existed on the night of 14 October?',options:['One, Peter’s','Two','None, it had been cancelled','Three'],answer:1,hint:'Read the register line by line. Was the original card cancelled when the replacement was issued?',explain:'Two. The replacement was issued and the original was never cancelled, so two cards with the same number were both active on 14 October.'},
+    {q:'Who held them?',options:['Peter Shaw, both of them','Peter Shaw and Thomas Reed','Thomas Reed, both of them','The bank kept the replacement'],answer:1,hint:'Peter says his card never left his wallet. Who signed for the replacement at the branch?',explain:'Peter kept the original. The replacement was collected on 2 October by Thomas Reed, twelve days before Lake Ash. Peter says he never asked for it.'}
+  ];
+  const F5_P2_DOCS=[
+    {tag:'LABORATORY NOTE',date:'15 Oct',title:'Blood on the boat gunwale',body:'Blood type A positive, consistent with Thomas Reed’s medical file.\nSample degraded: cells broken down, as in blood several days old.\nDNA inconclusive.'},
+    {tag:'HOSPITAL RECORD',date:'St. Agnes Hospital · blood bank',title:'Autologous donation: patient’s own blood',body:'Patient: Thomas Reed · Type A positive\n12 Sep: two units donated and stored for planned knee surgery\n10 Oct, 09:40: both units withdrawn at the patient’s own request. Surgery cancelled.'},
+    {tag:'BLOOD BANK GUIDANCE',date:'Storage notice',title:'Stored blood out of the refrigerator',body:'Once removed from cold storage, stored blood begins to break down within hours and is visibly degraded within days.'},
+    {tag:'SEARCH SUMMARY',date:'Lake Ash · 15–18 Oct',title:'Items recovered',body:'Boat No. 6, drifting, east shore.\nJacket: folded, under the stern seat. Watch: in the jacket pocket, stopped at 23:47.\nNo body recovered.'}
+  ];
+  const F5_P2_QS=[
+    {q:'Whose blood was on the boat, and when had it left the hospital?',options:['Thomas’s, from a wound that night','Peter’s, his type matched','Thomas’s own stored blood, withdrawn on 10 October, four days earlier','Someone else’s; the type was common'],answer:2,hint:'The lab says the blood was already days old. Which record shows Thomas’s blood leaving a refrigerator before the 14th?',explain:'The blood was Thomas’s, but it was not spilled that night. Two units of his own stored blood left the hospital at his request on 10 October, and by the 14th they had broken down exactly as the lab found.'},
+    {q:'A drowning man does not fold his jacket. What explains every record at Lake Ash?',options:['Peter killed Thomas and hid the body in the lake.','Thomas fell overboard by accident.','Thomas staged his own death: his stored blood, a copy of Peter’s card, Peter’s name on the slip.','A stranger robbed and killed Thomas.'],answer:2,hint:'Put the card, the blood and the folded jacket together. Who could have arranged all three?',explain:'Every piece of Lake Ash was placed: blood he had stored himself, a card he had collected himself, a name typed into a kiosk nobody watched, and a jacket folded neatly by a man who was not in a hurry.'}
+  ];
+  const F5_P3_DOCS=[
+    {tag:'APPROVAL MEMO · FILE 004',date:'19 April 2016',title:'Margin note, in Thomas’s hand',body:'“Every place has a story it tells the public. Ours will not be this one. — T.”'},
+    {tag:'TRANSMISSION · FILE 004',date:'From M',title:'The opening of the Lantern file',body:'“Every place has a story it tells the public.\nThis is the story its records left behind.”'},
+    {tag:'OFFICE SAFE LOG',date:'The Lantern · Tue 30 Sep',title:'Safe opened outside hours',body:'23:05 · code entered: T. REED\nContents on record: one file, “PROJECT NORTH QUAY / FIRE”, kept by P. Shaw.'},
+    {tag:'PHYSICAL EVIDENCE',date:'If you were given handwritten notes',title:'Compare the hands',body:'Lay M’s handwritten note beside Thomas’s margin note.\nLook at the S. Look at the way the line runs uphill.'}
+  ];
+  const F5_P3_Q={q:'Who has been sending the transmissions?',options:['Peter Shaw','Daniel Cross','Elena Ward','Thomas Reed'],answer:3,hint:'Whose words did M use? Whose hand? And who opened Peter’s safe two weeks before Lake Ash?',explain:'M uses Thomas’s own private line, writes in Thomas’s hand, and knew what was in Peter’s safe because Thomas opened it on 30 September. M is Thomas Reed.'};
   const F5_STORY={
-    s1:{kicker:'CASE 25 · RESTRICTED ARCHIVE',eyebrow:'FILE 005 · CLASSIFICATION: FINAL REVIEW',title:'THE LAST TRANSMISSION',button:'OPEN FINAL FILE',text:`You have followed the money.\n\nYou have questioned the accounts.\n\nYou have examined the fire and reconstructed the events surrounding Thomas Reed’s disappearance.\n\nYet one question remains unanswered.\n\nIf Thomas drowned at Lake Ash, why was no body ever recovered? And who has been sending you messages containing information that was never meant to become public?\n\nOne file remains.\n\n— M`},
-    s4:{kicker:'INCOMING TRANSMISSION · ARCHIVE FRAGMENT 005',eyebrow:'SOURCE IDENTIFIED: THOMAS REED',title:'YOU FOUND ME.',button:'CLOSE CASE 25',text:`Well done, Detective.\n\nYou found me.\n\nThough I suspect you were looking for a different answer.\n\nYou began with a disappearance and a story that seemed to point towards Peter. You followed the money, examined the old fire, and questioned the records.\n\nThe evidence did not tell you everything. It told you where the accepted story stopped making sense.\n\nI never told Peter I was leaving. I could not risk giving him the chance to prepare for my disappearance.\n\nI staged the apparent drowning because I needed time and distance. I knew that if I remained at The Lantern, Peter’s version of events would become the only version anyone heard.\n\nSo I created Case 25.\n\nI wanted you to see the records, to question what was missing, and to discover the difference between what could be proved and what people wanted you to believe.\n\nBut I did not create this archive because I was innocent.\n\nI diverted the money. I concealed the loss. I helped create the circumstances that brought us here.\n\nPeter betrayed me, but that does not erase what I did.\n\nI wanted the truth about The Lantern to be known before my own wrongdoing became the entire story.\n\nYou have found the source of the transmissions. You have followed the evidence back to me.\n\nThe case is yours now, Detective.\n\nTHE RECORD IS COMPLETE.\n\n— Thomas Reed`}
+    s1:{kicker:'CASE 25 · RESTRICTED ARCHIVE',eyebrow:'FILE 005 · FINAL REVIEW',title:'THE LAST TRANSMISSION',button:'OPEN THE LAST FILE',tell:true,text:`Peter Shaw has been in a cell for two nights.\nThe charge is murder.\n\nThe papers say the case is closed.\nThe police say the evidence speaks for itself.\n\nIt does.\nIt says exactly what it was built to say.\n\n!Three records were never read side by side.\n\nA bank slip. A hospital form. A note in the margin of an old memo.\n\nRead them together, Detective.\nThen tell me who walked away from Lake Ash.`},
+    s4:{kicker:'INCOMING TRANSMISSION · SOURCE IDENTIFIED',eyebrow:'THOMAS REED · ALIVE',title:'YOU FOUND ME.',button:'CLOSE CASE 25',hand:true,text:`Hello, Detective.\nYes. It’s me.\n\nNine years ago a musician died on my stage.\nPeter rewrote the record that night, and I let him.\nThat is the part of this I will carry.\n\nThen I opened his safe.\nHe had kept a file on me for nine years.\nThe memo with my signature. The repairs I deferred.\nEverything he needed to bury me with the fire, the day anyone asked.\n\nSo I gave him a different story to be buried in.\n\nMy blood, from a hospital fridge.\nHis card, from a bank counter.\nHis name, typed into a machine no one was watching.\nA jacket, folded the way I fold it.\n\nI did not lie to you once.\nEvery record you read was real.\nI only chose the order you read them in.\n\nPeter is in a cell for a murder that never happened.\nHe is not innocent. He is just not guilty of this.\n\nAnd I am nowhere.\n\n!Thank you, Detective.\n!I couldn’t have put him there without you.\n\n— T.`}
   };
-  const F5_FLOW=['s1','envelope','deduction','s4','closed','why'];
+  const F5_FLOW=['s1','p1','p2','p3','s4','closed','why'];
   const F5_FILES=[['FILE 001','THE DISAPPEARANCE'],['FILE 002','THE UNEXPECTED SIGNAL'],['FILE 003','THE FINANCIAL TRAIL'],['FILE 004','THE LANTERN FIRE'],['FILE 005','THE LAST TRANSMISSION']];
-  const F5_FINDINGS=[['Thomas Reed','Staged his disappearance and created Case 25 as M.'],['Peter Shaw','Tried to control the narrative surrounding Thomas’s absence.'],['Elena Ward','Helped conceal the financial shortfall.'],['Daniel Cross','Investigated the scandal, but is not established as M.'],['The Lantern fire','Officially ruled accidental; deliberate arson remains unproven.'],['The disappearance','Thomas survived; the original evidence never conclusively established his death.']];
-  function readF5(){const fresh={screen:'s1',attempts:{}};try{return {...fresh,...JSON.parse(localStorage.getItem(F5_KEY)||'{}')};}catch{return fresh;}}
+  const F5_FINDINGS=[['Thomas Reed','Alive. Staged his death at Lake Ash with his own stored blood and a copy of Peter’s card. He is M.'],['Peter Shaw','Rewrote the fire record in 2016 and kept a file to blame Thomas. Now in custody for a murder that never happened.'],['The Lantern fire','The wiring was never inspected. A musician died. The record was falsified afterwards.'],['Lake Ash','No body. The blood was days old. The jacket was folded.'],['Daniel Cross','A journalist who knew too much. Never M.'],['Case 25','Every record was real. Only the order was chosen.']];
+  function readF5(){const fresh={screen:'s1',attempts:{},p1step:0,p2step:0,p1text:'',p3text:'',p3step:0};try{return {...fresh,...JSON.parse(localStorage.getItem(F5_KEY)||'{}')};}catch{return fresh;}}
   let f5=readF5();
   const saveF5=()=>{try{localStorage.setItem(F5_KEY,JSON.stringify(f5));}catch{}};
   const f5Next=id=>F5_FLOW[F5_FLOW.indexOf(id)+1];
@@ -3401,32 +3519,54 @@ Do not look away from it.
     $('#f3sList').hidden=true;$('#f3sReturn').hidden=true;$('#backButton').disabled=false;
     requestAnimationFrame(()=>stage.classList.add('visible'));
     if(!F5_FLOW.includes(f5.screen)||progress.file05Complete)f5.screen='s1';
-    f5Go(f5.screen);
+    f5Go(f5.screen,{resume:true});
   }
-  function f5Go(id){
+  function f5Go(id,{resume=false}={}){
     f5.screen=id;saveF5();
+    const n=['p1','p2','p3'].indexOf(id);
+    if(n>=0&&!resume)f3sChapterCard(F5_CH[n],()=>f5Mount(id,true));else f5Mount(id,false);
+  }
+  function f5Mount(id,fromChapter){
     const stage=$('#f3Stage'),old=[...stage.querySelectorAll('.f3s-screen')];
     const screen=document.createElement('section');screen.className='f3s-screen f4-screen f5-screen';screen.dataset.screen=id;
-    if(F5_STORY[id])f5BuildStory(screen,id);else if(id==='envelope')f5BuildEnvelope(screen);else if(id==='deduction')f5BuildDeduction(screen);else if(id==='closed')f5BuildClosed(screen);else f5BuildWhy(screen);
+    if(F5_STORY[id])f5BuildStory(screen,id);else if(id==='p1')f5BuildP1(screen);else if(id==='p2')f5BuildP2(screen);else if(id==='p3')f5BuildP3(screen);else if(id==='closed')f5BuildClosed(screen);else f5BuildWhy(screen);
     stage.insertBefore(screen,$('#f3sChapter'));
-    requestAnimationFrame(()=>screen.classList.add('enter'));
-    old.forEach(s=>{s.classList.add('leave');setTimeout(()=>s.remove(),1100);});
+    if(/^p\d$/.test(id))f4DeskEnter(screen);
+    const mode=reducedMotion||!old.length?null:F5_STORY[id]?'ink':fromChapter?{p1:'swing',p2:'match',p3:'catch'}[id]:id==='closed'?'turn':id==='why'?'relight':'sweep';
+    if(mode){screen.classList.add('fx-on','enter');f3sArrive(screen,mode,old);}
+    else{requestAnimationFrame(()=>screen.classList.add('enter'));old.forEach(s=>{s.classList.add('leave');setTimeout(()=>s.remove(),1100);});}
   }
   const f5Continue=id=>{const next=f5Next(id);if(next)f5Go(next);else f5Finish();};
   function f5BuildStory(screen,id){
-    cineStory(screen,F5_STORY[id],id==='s4'?'reveal':'lake',()=>f5Continue(id));
+    cineStory(screen,F5_STORY[id],id==='s4'?'reveal':'lakenight',()=>f5Continue(id));
   }
-  function f5BuildEnvelope(screen){
-    const {docs,task}=f4Desk(screen,{file:'FILE 005 · THE LAST TRANSMISSION',step:'FINAL EVIDENCE',title:'FOUR EXHIBITS. ONE DEDUCTION.',lead:'Open the physical envelope marked CASE 25 — FINAL EVIDENCE and lay the exhibits out in this order. Do not read them as separate stories. Their meaning lies in what connects them. — M'});
-    docs.innerHTML=F5_EXHIBITS.map(d=>f4Doc(d)).join('');docs.classList.add('f4-four');
-    task.innerHTML=`<p class="f4-step">CASE 25 — FINAL EVIDENCE</p><p class="f4-q">File 005 · The Last Transmission<br>Classification: Restricted</p><p class="f4-sub">When all four exhibits are on the table in front of you, continue.</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit">I HAVE THE EXHIBITS →</button></div>`;
-    task.querySelector('.f4-submit').addEventListener('click',()=>f5Continue('envelope'));
+  // two choice questions, then a written one that is always accepted and answered with the file's own reading
+  function f5Puzzle(screen,key,{title,lead,docs:list,qs,written,reading}){
+    const {docs,task}=f4Desk(screen,{file:'FILE 005 · THE LAST TRANSMISSION',step:key.toUpperCase().replace('P','PUZZLE 0'),title,lead});
+    docs.innerHTML=list.map(d=>f4Doc(d)).join('');docs.classList.add('f4-four');
+    const total=qs.length+(written?1:0),stepKey=key+'step';
+    const done=()=>{f5.done=f5.done||{};f5.done[key]=true;saveF5();f5Continue(key);};
+    const writeQ=()=>f4Swap(task,()=>{task.classList.remove('settled');
+      task.innerHTML=`<p class="f4-step">QUESTION ${total} / ${total}</p><p class="f4-q">${f3sEsc(written)}</p><textarea class="f4-verdict-text" placeholder="Write it in your own words, Detective…" spellcheck="true"></textarea><div class="f4-actions"><button type="button" class="f4-btn f4-submit">RECORD IT →</button></div>`;
+      const t=task.querySelector('textarea');t.value=f5[key+'text']||'';t.addEventListener('input',()=>{f5[key+'text']=t.value;saveF5();});
+      task.querySelector('.f4-submit').addEventListener('click',()=>{if(!t.value.trim()){f3sToast('Write a few words first, Detective.');t.focus();return;}
+        f3sModal({tone:'good',title:'ON RECORD',body:reading,actions:[['CONTINUE →',()=>{f3sCloseModal();done();}]]});});});
+    const ask=n=>f4Swap(task,()=>{task.classList.remove('settled');f4Ask(task,key+'-'+n,qs[n],()=>{f5[stepKey]=n+1;saveF5();if(n+1<qs.length)ask(n+1);else if(written)writeQ();else done();},f5,saveF5);
+      const st=document.createElement('p');st.className='f4-step';st.textContent=`QUESTION ${n+1} / ${total}`;task.prepend(st);});
+    const at=f5[stepKey]||0;if(at>=qs.length&&written)writeQ();else ask(Math.min(at,qs.length-1));
   }
-  function f5BuildDeduction(screen){
-    const {docs,task}=f4Desk(screen,{file:'FILE 005 · THE LAST TRANSMISSION',step:'FINAL DEDUCTION',title:'WHO IS M?',lead:'You have four exhibits. Decide what they mean together.'});
-    docs.innerHTML=F5_EXHIBITS.map(d=>f4Doc({...d,body:d.body.split('\n\n')[0]})).join('');docs.classList.add('f4-four');
-    f4Ask(task,'deduction',F5_QUESTION,()=>f5Continue('deduction'),f5,saveF5);
-    task.querySelector('.f4-submit').textContent='SUBMIT FINAL DEDUCTION →';
+  function f5BuildP1(screen){
+    f5Puzzle(screen,'p1',{title:'THE SECOND CARD',lead:'Four records about one card: the card that put Peter Shaw’s name at Lake Ash.',docs:F5_P1_DOCS,qs:F5_P1_QS,
+      written:'Look again at the boat hire slip. With two cards in two pockets, what does it prove about who was at Lake Ash, and what does it no longer prove?',
+      reading:'<p>The slip proves that a card ending 4417 paid for Boat No. 6 at 17:40, and that whoever stood at the kiosk typed <b>P. Shaw</b>. Nobody checked a face.</p><p class="f3s-left">It no longer proves Peter was at the dock. One card was in Peter’s wallet. The other was signed for by Thomas Reed, twelve days before he went to the water.</p>'});
+  }
+  function f5BuildP2(screen){
+    f5Puzzle(screen,'p2',{title:'THE OLD BLOOD',lead:'The lab note from the boat, and three records nobody filed beside it.',docs:F5_P2_DOCS,qs:F5_P2_QS});
+  }
+  function f5BuildP3(screen){
+    f5Puzzle(screen,'p3',{title:'THE VOICE IN THE ARCHIVE',lead:'M has written to you since the first file. Listen to how M writes.',docs:F5_P3_DOCS,qs:[F5_P3_Q],
+      written:'Thomas found Peter’s file on 30 September and walked away from Lake Ash on 14 October. In your own words: why did he do it this way?',
+      reading:'<p>Peter had spent nine years building a file to bury Thomas with the fire. Thomas found it, and turned it around.</p><p class="f3s-left">He could not prove what Peter did in 2016 without confessing what he had done himself. So he gave Peter a crime he could be convicted of: a murder, built from Peter’s own name and Peter’s own card. Then he disappeared, and sent a detective to find it.</p>'});
   }
   function f5BuildClosed(screen){
     screen.classList.add('f5-closed');
@@ -3445,5 +3585,5 @@ Do not look away from it.
     f5.screen='why';saveF5();closeF3Stage();paintProgress();
   }
   function f5Skip(){f3sCloseModal();f5Continue(f5.screen);}
-  function f5Retry(){f5={screen:'s1',attempts:{}};saveF5();progress.file05Complete=false;persistProgress();paintProgress();f3sCloseModal();f5Go('s1');}
+  function f5Retry(){f5={screen:'s1',attempts:{},p1step:0,p2step:0,p3step:0,p1text:'',p3text:''};saveF5();progress.file05Complete=false;persistProgress();paintProgress();f3sCloseModal();f5Go('s1');}
 })();
