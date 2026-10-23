@@ -2462,8 +2462,8 @@ body:has(#f3Stage.visible) #devFile03Button{display:none}
 #continueFileFour{display:none!important}
 .home.await-file-four:not(.wall-four-intro) #continueFileFour{display:inline-block!important;animation:f3ContinueIn 1.2s 1.2s ease both}
 /* ink bleed between screens */
-.f3s-ink{position:absolute;inset:0;z-index:36;pointer-events:none;filter:url(#f3sInkEdge);overflow:hidden}
-.f3s-ink i{position:absolute;width:190vmax;height:190vmax;border-radius:50%;background:radial-gradient(circle,#030201 0 58%,rgba(10,6,3,.96) 66%,rgba(10,6,3,0) 71%)}
+.f3s-ink{position:absolute;inset:0;z-index:36;pointer-events:none;overflow:hidden}
+.f3s-ink i{position:absolute;background:radial-gradient(circle,#030201 0 56%,rgba(12,7,3,.95) 63%,rgba(30,14,6,.5) 68%,rgba(10,6,3,0) 72%);filter:blur(3px)}
 
 /* skip intro on File 001's story screens, above the slides */
 #phaseTwoScene.active ~ .skip, body:has(#phaseTwoScene.active) #skipIntro{z-index:60}
@@ -2486,3 +2486,8 @@ body:has(#f3Stage.visible) #devFile03Button{display:none}
 
 /* a screen that arrived with an effect still fades away when the next puzzle's title takes over */
 .f3s-screen.fx-on.leave{opacity:0!important;transition:opacity .8s ease!important;pointer-events:none}
+
+/* the SOLVED stamp rises out of the ink */
+.f3s-chapter.from-ink{background:#030201}
+.f3s-chapter.from-ink .f3s-solved{animation:f3sFromInk 1.4s ease-out both}
+@keyframes f3sFromInk{0%{opacity:0;filter:blur(10px);transform:rotate(-4deg) scale(1.15)}60%{opacity:1;filter:blur(1px)}100%{opacity:1;filter:none;transform:rotate(-4deg) scale(1)}}

@@ -2369,7 +2369,6 @@
   function f3sChapterCard(index,done){
     const card=$('#f3sChapter'),[kicker,title]=F3S_CHAPTERS[index],small=card.querySelector('small'),h=card.querySelector('h2'),rule=card.querySelector('i');
     card.querySelector('.f3s-solved')?.remove();
-    $$('#f3Stage .f3s-screen').forEach(s=>{s.classList.add('leave');setTimeout(()=>s.remove(),900);});
     const showTitle=()=>{
       // the next puzzle on its own screen: the lamp relights behind it and the title types in
       small.textContent=kicker;h.textContent='';small.style.visibility=rule.style.visibility='';
@@ -2378,14 +2377,16 @@
       let i=0;const type=()=>{keyTick();h.textContent=title.slice(0,++i);if(i<title.length)laterWait(type,70);else laterWait(()=>{card.classList.add('out');laterWait(()=>{card.hidden=true;card.classList.remove('in','out');},900);done();},1300);};
       laterWait(type,700);
     };
-    if(index<1||index>4){showTitle();return;}
+    if(index<1||index>4){$$('#f3Stage .f3s-screen').forEach(s=>{s.classList.add('leave');setTimeout(()=>s.remove(),900);});showTitle();return;}
     // first, its own screen: the puzzle just finished is stamped SOLVED, then the screen fades to black
     small.textContent='';h.textContent='';small.style.visibility=rule.style.visibility='hidden';
     const st=document.createElement('b');st.className='f3s-solved big';st.textContent=`${F3S_CHAPTERS[index-1][0]} · SOLVED`;card.prepend(st);
     const sub=document.createElement('b');sub.className='f3s-solved-name';sub.textContent=F3S_CHAPTERS[index-1][1];st.after(sub);
-    card.hidden=false;card.classList.remove('out','in');card.classList.add('solved');void card.offsetWidth;card.classList.add('in');
-    laterWait(()=>sfx('stamp'),reducedMotion?0:450);
-    laterWait(()=>{card.classList.add('out');laterWait(()=>{st.remove();sub.remove();card.hidden=true;card.classList.remove('in','out','solved');laterWait(showTitle,250);},900);},reducedMotion?600:2300);
+    const ink=reducedMotion?0:1500;
+    if(!reducedMotion){f3sInk($$('#f3Stage .f3s-screen'));sfx('ink');}
+    // the solved stamp surfaces out of the ink, holds, then sinks back into black before the next title
+    laterWait(()=>{card.hidden=false;card.classList.remove('out','in');card.classList.add('solved','from-ink');void card.offsetWidth;card.classList.add('in');laterWait(()=>sfx('stamp'),reducedMotion?0:500);},ink);
+    laterWait(()=>{card.classList.add('out');laterWait(()=>{st.remove();sub.remove();card.hidden=true;card.classList.remove('in','out','solved','from-ink');laterWait(showTitle,250);},900);},ink+(reducedMotion?600:2400));
   }
   // Puzzle openings, one per puzzle: 1 lamp swing, 2 the lamp catches, 3 lamp swing, 4 a match strike, 5 a film burn.
   const F3S_OPENINGS=['swing','catch','swing','match','burn'];
@@ -2395,10 +2396,10 @@
   }
   function f3sInk(old){
     const stage=$('#f3Stage');
-    if(!$('#f3sInkDefs')){stage.insertAdjacentHTML('beforeend','<svg id="f3sInkDefs" width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="f3sInkEdge" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="70"/></filter></svg>');}
     const ink=document.createElement('div');ink.className='f3s-ink';stage.insertBefore(ink,$('#f3sChapter'));
-    const drops=[[50,48,0],[28,30,260],[74,66,420],[66,22,560],[22,74,700]];
-    drops.forEach(([x,y,d])=>{const b=document.createElement('i');b.style.left=x+'%';b.style.top=y+'%';ink.append(b);
+    const drops=[[50,48,0,1],[30,32,180,.8],[72,64,320,.9],[64,24,440,.7],[24,72,560,.85],[84,40,620,.6],[42,82,700,.7],[12,18,780,.6]];
+    const shapes=['47% 53% 41% 59% / 55% 44% 56% 45%','58% 42% 52% 48% / 46% 57% 43% 54%','44% 56% 61% 39% / 52% 41% 59% 48%','53% 47% 45% 55% / 60% 50% 50% 40%'];
+    drops.forEach(([x,y,d,k],n)=>{const b=document.createElement('i');b.style.left=x+'%';b.style.top=y+'%';b.style.borderRadius=shapes[n%4];b.style.width=b.style.height=(190*k)+'vmax';ink.append(b);
       b.animate([{transform:'translate(-50%,-50%) scale(0)'},{transform:'translate(-50%,-50%) scale(.18)',offset:.15},{transform:'translate(-50%,-50%) scale(1)'}],{duration:1500,delay:d,easing:'cubic-bezier(.3,0,.2,1)',fill:'both'});});
     old.forEach(s=>{s.style.pointerEvents='none';setTimeout(()=>s.remove(),2100);});
     ink.animate([{opacity:1,filter:'blur(0)'},{opacity:1,offset:.55,filter:'blur(0)'},{opacity:0,filter:'blur(18px)'}],{duration:3800,easing:'ease-in-out',fill:'forwards'}).finished.catch(()=>{}).then(()=>ink.remove());
@@ -2729,7 +2730,7 @@ function f3sFindLines(img,boxes){
   function f3sToast(message){const t=$('#f3sToast');t.textContent=message;t.classList.remove('show');void t.offsetWidth;t.classList.add('show');}
   function f3sStamp(screen,label){const s=document.createElement('div');s.className='f3s-stamp';s.textContent=label;screen.append(s);setTimeout(()=>s.remove(),2200);}
   function f3sModal({tone,title,body,actions}){
-    sfx(({reveal:'sting'})[tone]);
+    sfx(({reveal:'sting',good:'right',bad:'wrong'})[tone]);
     const m=$('#f3sModal');f3sBusy=true;
     m.className=`f3s-modal tone-${tone}`;m.querySelector('h3').textContent=title;m.querySelector('.f3s-modal-body').innerHTML=body;
     const row=m.querySelector('.f3s-modal-actions');row.replaceChildren();
@@ -2843,7 +2844,9 @@ function f3sFindLines(img,boxes){
     if(!audioContext||audioContext.state!=='running')return;
     const c=audioContext,t0=c.currentTime;
     const tone=(f,d,type='sine',v=.08,f2=0,delay=0)=>{const o=c.createOscillator(),g=c.createGain(),t=t0+delay;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(Math.min(v*7,.9),t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);};
-    ({key:()=>{const n=c.sampleRate*.03|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1100;f.Q.value=.8;g.gain.value=.3;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);},stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);},paper:()=>{const n=c.sampleRate*.45|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1700;g.gain.value=.4;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);}})[kind]?.();
+    const swell=(f,d,v,delay=0)=>{const o=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter(),t=t0+delay;o.type='triangle';o.frequency.value=f;lp.type='lowpass';lp.frequency.value=900;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.35);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(lp);lp.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);};
+    const knock=(v,delay=0)=>{const n=c.sampleRate*.18|0,b=c.createBuffer(1,n,c.sampleRate),dd=b.getChannelData(0);for(let i=0;i<n;i++)dd[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='lowpass';f.frequency.value=320;g.gain.value=v;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0+delay);};
+    ({right:()=>{knock(.9);swell(146.83,1.8,.07,.05);swell(220,1.8,.05,.12);swell(293.66,2,.035,.2);},wrong:()=>{knock(.8);knock(.5,.16);swell(92.5,.9,.05,.02);},ink:()=>{knock(.35);swell(61.7,2.6,.08,.1);},key:()=>{const n=c.sampleRate*.03|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1100;f.Q.value=.8;g.gain.value=.3;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);},stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);},paper:()=>{const n=c.sampleRate*.45|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1700;g.gain.value=.4;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);}})[kind]?.();
   }
   // ---------------------------------------------------------------------------------------------
   // File 003, puzzle 1: the five documents are read first, then stay one click away during the questions.
