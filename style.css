@@ -2467,3 +2467,19 @@ body:has(#f3Stage.visible) #devFile03Button{display:none}
 
 /* skip intro on File 001's story screens, above the slides */
 #phaseTwoScene.active ~ .skip, body:has(#phaseTwoScene.active) #skipIntro{z-index:60}
+
+/* first wall: the light rises slowly, a pulsing pin marks the recovered file, and the whole wall opens the archive */
+.home:not(.board-mode) .dim-wall,.home:not(.board-mode) .light-wall{transition:opacity 3.2s ease-in-out,filter 3.2s ease-in-out,transform 14s ease}
+.home:not(.board-mode) .document-spotlight{transition:opacity 2.6s ease-in-out!important}
+.wall-beacon{position:fixed;z-index:4;left:42%;top:42%;width:0;height:0;pointer-events:none;opacity:0;transition:opacity 1.6s ease 1s}
+.home.wall-reveal:not(.board-mode):not(.dossier-open) .wall-beacon{opacity:1}
+.wall-beacon b{position:absolute;left:-7px;top:-7px;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,#ffe2a8,#e09a3c 55%,#7a3c10);box-shadow:0 0 18px 6px rgba(255,176,80,.55)}
+.wall-beacon i{position:absolute;left:-7px;top:-7px;width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(255,196,110,.8);animation:wallPing 2.4s ease-out infinite}
+.wall-beacon i+i{animation-delay:1.2s}
+@keyframes wallPing{from{transform:scale(1);opacity:.9}to{transform:scale(7);opacity:0}}
+.home:not(.board-mode) .home-caption .wall-open{display:inline-block;margin-top:16px;padding:10px 20px;border:1px solid rgba(220,180,110,.7);color:#f2dcae;font:11px var(--mono);letter-spacing:.24em;background:rgba(14,10,6,.7);animation:wallCall 2.6s ease-in-out 1s infinite}
+.home-caption .wall-open em{font-style:normal}
+@keyframes wallCall{0%,100%{box-shadow:0 0 0 rgba(255,180,90,0)}50%{box-shadow:0 0 22px rgba(255,180,90,.45)}}
+.home:not(.board-mode) .wall-hotspot{left:0!important;top:0!important;width:100vw!important;height:100vh!important;transform:none!important}
+.home.wall-reveal:not(.board-mode) .wall-hotspot:focus{outline:none}
+@media(prefers-reduced-motion:reduce){.wall-beacon i,.home-caption .wall-open{animation:none!important}}

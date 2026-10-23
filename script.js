@@ -958,8 +958,8 @@
     home.classList.remove('dossier-open','archive-transitioning','document-lit','wall-reveal');
     $('#messageDossier').setAttribute('aria-hidden','true');
     // Hold the untouched wall in silence, then slowly reveal the selected pinned document.
-    later(() => home.classList.add('document-lit'), reducedMotion ? 0 : 3000);
-    later(() => home.classList.add('wall-reveal'), reducedMotion ? 0 : 7200);
+    later(() => home.classList.add('document-lit'), reducedMotion ? 0 : 1800);
+    later(() => home.classList.add('wall-reveal'), reducedMotion ? 0 : 4800);
   }
   $('#skipTyping').addEventListener('click',()=>$('#transmissionCopy').classList.add('typing-done'));
   $('#openInvestigation').addEventListener('click',()=>{ clearTimers(); localStorage.setItem('case25HomeSeen','1'); show(scenes[6]); });
