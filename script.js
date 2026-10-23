@@ -1268,6 +1268,7 @@
     progress.file03Revealed=true;
     persistProgress(); paintProgress(); openFile03();
   });
+  $('#file02Call').addEventListener('click',()=>$('#file02ArtBegin').click());
   $('#file02ArtBegin').addEventListener('click',()=>{
     if(progress.fileTwoComplete||progress.file02Complete){
       startSecretReward();
