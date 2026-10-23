@@ -2302,7 +2302,7 @@
     'p3-q3':{kind:'choice',puzzle:2,docs:'p3',faces:true,opt:[[434,489,679,64],[434,563,679,62],[434,636,679,64],[434,712,679,63]],evidence:[436,796,328,60],submit:[803,796,311,60],answer:2,options:['Peter definitely lied because the access log shows someone at the rear entrance earlier.','The vehicle on camera proves Peter followed Thomas.','Peter’s account remains uncorroborated, but the records do not conclusively disprove it.','The recovered watch proves Thomas died at Lake Ash.'],hint:'Which record identifies a person? The access log records a credential, and the camera cannot identify the plate or occupants.',explain:'Peter’s account remains uncorroborated, but the supplied records do not conclusively disprove it. The log records a credential, not a person; the camera cannot identify the vehicle’s occupants; and the search summary does not establish when Thomas disappeared.',next:'p3-q4'},
     'p3-q4':{kind:'written',puzzle:2,docs:'p3',text:[425,582,728,190],counter:[[968,744,176,18],1000,'characters'],evidence:[427,791,323,61],submit:[781,791,372,61],grade:t=>{const r=p3DeductionResult(t);return {accepted:r.accepted,missing:r.missing.map(i=>P3_DEDUCTION_MISSING[i])};},hint:'Separate established facts, reported claims, unknowns, and the evidence you would still need.',model:F3S_MODELS['p3-q4'],next:'p3-end'},
     'p3-end':{kind:'transmission',kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'TIMELINE REVIEWED',title:'THE CLOCK WAS NEVER THE PROBLEM.',text:`You corrected the clock.\n\nYou separated the record from the witness.\n\nBut you could not establish the moment the story changed.\n\nThat is not a failure of calculation, Detective.\n\nIt is a failure of the evidence.\n\nOne thread is still loose.\nIt runs through every file you have opened.\n\nPull it carefully.\n\n— M`,next:'p4-cover'},
-    'p4-cover':{kind:'live',next:'p4-q1',chapter:3,build:screen=>cineStory(screen,P4_STORY,'lake',()=>f3sGo('p4-q1'))},
+    'p4-cover':{kind:'live',next:'p4-q1',chapter:3,build:screen=>cineStory(screen,P4_STORY,'lakenight',()=>f3sGo('p4-q1'))},
     'p4-q1':{kind:'live',next:'p4-q2',puzzle:3,build:screen=>p4BuildQ(screen,0)},
     'p4-q2':{kind:'live',next:'p4-q3',puzzle:3,build:screen=>p4BuildQ(screen,1)},
     'p4-q3':{kind:'live',next:'p4-q4',puzzle:3,build:screen=>p4BuildQ(screen,2)},
@@ -2782,6 +2782,7 @@ function f3sFindLines(img,boxes){
     board:{img:'assets/evidence-board.png',fx:'dust',tone:'warm'},
     signal:{img:'assets/reference/war-room.png',fx:'dust',tone:'cold'},
     lake:{img:'assets/lake-ash.png',fx:'mist',tone:'cold'},
+    lakenight:{img:'assets/lake-ash.png',fx:'mist',tone:'cold',prelude:true},
     reveal:{img:'assets/lake-ash.png',fx:'mist',tone:'cold',figure:true}
   };
   function cineFx(canvas,kind){
@@ -2807,6 +2808,40 @@ function f3sFindLines(img,boxes){
     };
     if(!reducedMotion)requestAnimationFrame(tick);
   }
+  // Puzzle 4's lake, before M speaks: the camera drifts toward the boat, the lantern gutters, something dark seeps
+  // out from under the hull, a figure walks the dock and is gone, another stands on the far shore. Then the words come.
+  // Coordinates are pixels of assets/lake-ash.png (1672x941); the layer is sized to that picture as it covers the screen.
+  function cineLakePrelude(screen){
+    const D=7600,layer=screen.querySelector('.cine-layer');screen.classList.add('prelude');
+    const W=1672,H=941,fig='M60 4c10 0 16 8 16 18 0 8-4 14-9 17 13 4 21 15 23 32l6 62-14 3-3 66-10 2-6-52-6 52-10-2-3-66-14-3 6-62c2-17 10-28 23-32-5-3-9-9-9-17 0-10 6-18 16-18z';
+    const svg=`<svg class="lk-scene" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><radialGradient id="lkBlood" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#5a0907" stop-opacity=".8"/><stop offset=".55" stop-color="#330403" stop-opacity=".55"/><stop offset="1" stop-color="#1a0201" stop-opacity="0"/></radialGradient>
+      <radialGradient id="lkLamp"><stop offset="0" stop-color="#ffcf7a" stop-opacity=".9"/><stop offset=".4" stop-color="#ff9a3a" stop-opacity=".35"/><stop offset="1" stop-color="#ff9a3a" stop-opacity="0"/></radialGradient>
+      <filter id="lkSoft"><feGaussianBlur stdDeviation="4"/></filter></defs>
+      <image href="assets/lake-ash.png" width="${W}" height="${H}"/>
+      <ellipse class="lk-pool" cx="610" cy="640" rx="190" ry="34" fill="url(#lkBlood)" filter="url(#lkSoft)"/>
+      <ellipse class="lk-pool lk-pool2" cx="700" cy="668" rx="120" ry="20" fill="url(#lkBlood)" filter="url(#lkSoft)"/>
+      ${[540,600,668].map((x,i)=>`<rect class="lk-drip" style="--i:${i}" x="${x}" y="600" width="3" height="26" rx="1.5" fill="#4a0704"/>`).join('')}
+      <ellipse class="lk-ring" cx="612" cy="636" rx="40" ry="7" fill="none" stroke="rgba(190,200,215,.18)" stroke-width="1.2"/>
+      <ellipse class="lk-ring lk-ring2" cx="612" cy="636" rx="40" ry="7" fill="none" stroke="rgba(190,200,215,.14)" stroke-width="1"/>
+      <circle class="lk-lamp" cx="408" cy="510" r="70" fill="url(#lkLamp)"/>
+      <g class="lk-walker"><path d="${fig}" transform="translate(150 610) scale(.55)" fill="#020203"/></g>
+      <g class="lk-watcher"><path d="${fig}" transform="translate(1388 352) scale(.24)" fill="#05070a"/></g>
+    </svg>`;
+    layer.querySelector('.cine-img').insertAdjacentHTML('afterend',svg);
+    layer.querySelector('.cine-img').style.visibility='hidden';
+    const sc=layer.querySelector('.lk-scene');
+    sc.animate([{transform:'scale(1.02)',transformOrigin:'38% 66%'},{transform:'scale(1.16)',transformOrigin:'38% 66%'}],{duration:D+9000,easing:'cubic-bezier(.3,0,.2,1)',fill:'forwards'});
+    const a=(sel,k,o)=>sc.querySelectorAll(sel).forEach((n,i)=>n.animate(k,{fill:'both',...o,delay:(o.delay||0)+(o.stagger||0)*i}));
+    a('.lk-lamp',[{opacity:.9},{opacity:.35},{opacity:.95},{opacity:.2},{opacity:.85},{opacity:.6},{opacity:.9}],{duration:2600,iterations:Infinity});
+    a('.lk-pool',[{transform:'scale(.05)',transformOrigin:'610px 636px',opacity:0},{opacity:1,offset:.2},{transform:'scale(1)',transformOrigin:'610px 636px',opacity:1}],{duration:5200,delay:1400,stagger:900,easing:'cubic-bezier(.3,0,.3,1)'});
+    a('.lk-drip',[{transform:'translateY(0) scaleY(.2)',opacity:0},{opacity:1,offset:.2},{transform:'translateY(34px) scaleY(1)',opacity:0}],{duration:1800,delay:900,stagger:500,iterations:3});
+    a('.lk-ring',[{transform:'scale(.3)',transformOrigin:'612px 636px',opacity:0},{opacity:1,offset:.15},{transform:'scale(3.2)',transformOrigin:'612px 636px',opacity:0}],{duration:3200,delay:1800,stagger:1600,iterations:2});
+    a('.lk-walker',[{transform:'translate(0,40px) scale(1.25)',opacity:0},{opacity:.95,offset:.15},{opacity:.9,offset:.7},{transform:'translate(250px,-110px) scale(.55)',opacity:0}],{duration:5200,delay:600,easing:'linear'});
+    a('.lk-watcher',[{opacity:0},{opacity:0,offset:.45},{opacity:.85,offset:.6},{opacity:.85,offset:.82},{opacity:0}],{duration:D+800});
+    laterWait(()=>screen.classList.remove('prelude'),reducedMotion?0:D);
+    return D;
+  }
   function cineStory(screen,d,scene,onDone){
     const sc=CINE_SCENES[scene]||CINE_SCENES.board;
     screen.classList.add('cine',`cine-${scene}`,`tone-${sc.tone}`);
@@ -2816,6 +2851,7 @@ function f3sFindLines(img,boxes){
       <div class="cine-text"><header><small>${f3sEsc(d.kicker)}</small><span>${f3sEsc(d.eyebrow)}</span><h2>${f3sEsc(d.title)}</h2></header><div class="cine-lines" aria-live="polite">${paras.map(p=>`<p>${f3sEsc(p).replace(/\n/g,'<br>')}</p>`).join('')}</div>
       <button type="button" class="f3s-tx-continue cine-go" hidden>${f3sEsc(d.button)} <span>→</span></button></div>`;
     cineFx(screen.querySelector('.cine-fx'),sc.fx);
+    const preludeMs=sc.prelude&&!reducedMotion?cineLakePrelude(screen):0;
     const lines=[...screen.querySelectorAll('.cine-lines p')],box=screen.querySelector('.cine-lines'),go=screen.querySelector('.cine-go');
     go.addEventListener('click',onDone);
     let n=0,finished=false;
@@ -2826,8 +2862,8 @@ function f3sFindLines(img,boxes){
       let start=lines.length-1;while(start>0){lines.slice(0,start).forEach(p=>p.classList.add('gone'));lines.slice(start-1).forEach(p=>p.classList.remove('gone'));if(!fits()){lines[start-1].classList.add('gone');break;}start--;}
       go.hidden=false;go.focus({preventScroll:true});};
     const next=()=>{if(finished||!screen.isConnected)return;if(n>=lines.length){laterWait(finish,500);return;}show(n);const len=lines[n].textContent.length;n++;laterWait(next,reducedMotion?0:Math.min(5200,1100+len*38));};
-    laterWait(next,700);
-    screen.addEventListener('click',e=>{if(!finished&&!e.target.closest('button'))finish();});
+    laterWait(next,700+preludeMs);
+    screen.addEventListener('click',e=>{if(!finished&&!e.target.closest('button')){screen.classList.remove('prelude');finish();}});
   }
   // ---------------------------------------------------------------------------------------------
   // File 004 — The Lantern Fire. Runs inside the File 03 stage (#f3Stage, data-mode="f4") and reuses its
