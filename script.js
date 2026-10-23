@@ -2886,7 +2886,24 @@ function f3sFindLines(img,boxes){
     if(!(replay||support))missing.push('Point to evidence in the documents, such as the replay row T-31-R or the unverified allocation sheet.');
     return {accepted:!missing.length,missing};
   }
-  const P4_STORY={kicker:'FILE 003 · PUZZLE 04',eyebrow:'LAKE ASH · OCTOBER 14',title:'THE UNRESOLVED THREAD',button:'EXAMINE THE EVIDENCE',text:`Until now, you have read what the records could not prove.\n\nThe police have since reopened the lake evidence.\n\nA boat. A toll receipt. A laboratory note. And the last message Thomas Reed ever sent.\n\nSeven documents. One night.\n\nDecide what they mean.`};
+  const P4_STORY={kicker:'FILE 003 · PUZZLE 04',eyebrow:'LAKE ASH · OCTOBER 14',title:'THE UNRESOLVED THREAD',button:'EXAMINE THE EVIDENCE',text:`He went to the water.
+Someone followed.
+Only one of them came back.
+
+At 17:40, a name was signed at the dock.
+At 19:58, a message was read.
+At 21:00, a road was paid for.
+At 23:47, a watch stopped.
+
+Until now, I have let you doubt.
+Doubt is safe. It never accuses anyone.
+
+Somewhere in these seven pages, doubt runs out.
+When it does, you will know a name.
+
+Do not look away from it.
+
+— M`};
   const P5_STORY={kicker:'FILE 003 · PUZZLE 05',eyebrow:'OCTOBER 16 · INTERVIEW ROOM 2',title:'THE CONFRONTATION',button:'BEGIN THE INTERVIEW',text:`Peter Shaw agreed to be interviewed.\n\nHe came alone. He declined a lawyer.\n\nThe recording starts now.\n\nHe will answer four questions.\n\nFor each answer, find the document that says otherwise.`};
   const P4_DOCS=[
     {tag:'BOAT HIRE SLIP',date:'Tue 14 Oct · 17:40',title:'Lake Ash Boat Hire — east dock',body:'Hirer: P. Shaw (signed)\nBoat: No. 6, rowing skiff with outboard\nPaid: card ending 4417 — The Lantern company account\nID: not checked (self-service kiosk)\nDue back: 21:00\nStatus: NOT RETURNED'},
