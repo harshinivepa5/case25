@@ -2658,3 +2658,6 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 @keyframes ivBlink{0%,60%{opacity:1}61%,100%{opacity:.15}}
 .cine-interview .cine-grade{opacity:.5}
 @media(max-width:900px){.iv-scene{opacity:.5}}
+.iv-peter{position:absolute;left:calc(60% + 6%);top:52%;width:11%;animation:ivBreathe 4.6s ease-in-out infinite}
+.iv-asker{position:absolute;left:58%;top:47%;width:6.5%;filter:drop-shadow(0 0 14px rgba(0,0,0,.9))}
+@keyframes ivBreathe{50%{transform:translateY(2px)}}

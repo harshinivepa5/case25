@@ -2904,10 +2904,14 @@ function f3sFindLines(img,boxes){
     layer.querySelector('.cine-img').insertAdjacentHTML('afterend',`<div class="iv-scene" aria-hidden="true">
       <div class="iv-room"><i class="iv-cone"></i><i class="iv-wire"></i><i class="iv-shade"></i><i class="iv-pool"></i>
       <svg class="iv-chair" viewBox="0 0 120 170"><path d="M30 6h60l6 88H24zM20 98h80l4 14H16zM28 112h8l-6 54h-8zM84 112h8l6 54h-8z" fill="#050505"/></svg>
+      <svg class="iv-peter" viewBox="0 0 120 170"><g fill="#010101" stroke="rgba(255,205,130,.28)" stroke-width="1"><ellipse cx="58" cy="30" rx="11" ry="13"/><path d="M52 40h14v8H52z"/><path d="M32 54Q58 40 86 54L90 100H30Z"/><path d="M30 98H98L102 112H28Z"/><path d="M94 104l8 52h-10l-6-40z"/></g></svg>
+      <svg class="iv-asker" viewBox="0 0 120 300"><g fill="#010101" stroke="rgba(255,205,130,.22)" stroke-width="1"><ellipse cx="60" cy="38" rx="14" ry="16"/><path d="M36 26h48l-4-9Q60 6 40 17z"/><rect x="32" y="25" width="56" height="5" rx="2"/><path d="M38 64Q60 52 82 64L92 120 96 200Q60 210 26 200L30 120Z"/><path d="M42 198L38 292H56L60 202ZM62 202L66 292H84L80 198Z"/></g></svg>
       <div class="iv-rec"><div class="iv-reels"><span>${reel}</span><span>${reel}</span></div><b class="iv-led"></b><em class="iv-clock">REC 00:00:00</em></div></div></div>`);
     const sc=layer.querySelector('.iv-scene'),room=sc.querySelector('.iv-room');
     room.animate([{opacity:0},{opacity:.15,offset:.1},{opacity:0,offset:.16},{opacity:.7,offset:.28},{opacity:.2,offset:.34},{opacity:1,offset:.5},{opacity:1}],{duration:D*.7,fill:'both'});
     sc.querySelector('.iv-cone').animate([{transform:'rotate(-5deg)'},{transform:'rotate(4deg)'},{transform:'rotate(-2deg)'},{transform:'rotate(1deg)'},{transform:'rotate(0)'}],{duration:D*1.4,easing:'ease-out',fill:'forwards'});
+    sc.querySelector('.iv-asker').animate([{opacity:0,transform:'translateX(-40px)'},{opacity:0,offset:.55},{opacity:1,transform:'none'}],{duration:D+1800,easing:'ease-out',fill:'both'});
+    sc.querySelector('.iv-peter').animate([{opacity:0},{opacity:0,offset:.7},{opacity:1}],{duration:D+2600,fill:'both'});
     sc.querySelector('.iv-rec').animate([{opacity:0,transform:'translateY(14px)'},{opacity:0,offset:.5},{opacity:1,transform:'none'}],{duration:D,fill:'both'});
     sc.querySelector('.iv-led').animate([{opacity:0},{opacity:0,offset:.7},{opacity:1}],{duration:D,fill:'both'});
     const clock=sc.querySelector('.iv-clock'),t0=performance.now()+D*.7;
