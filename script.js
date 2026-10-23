@@ -5,7 +5,8 @@
     [
       'case25ChapterProgressV1', 'case25RoundOneResultsV1', 'case25RoundTwoResultsV1',
       'case25RoundThreeResultsV1', 'case25RoundThreeResultsV2', 'case25SecretLevelStateV1', 'case25File03NorthQuayV1',
-      'case25FinancialCaseV1', 'case25HomeSeen', 'case25Chapter01Started'
+      'case25FinancialCaseV1', 'case25HomeSeen', 'case25Chapter01Started',
+      'case25File003StageV2', 'case25File004V1', 'case25File005V1', 'case25LoginPassed'
     ].forEach(key => localStorage.removeItem(key));
     const cleanUrl = new URL(location.href);
     cleanUrl.searchParams.delete('restart');
