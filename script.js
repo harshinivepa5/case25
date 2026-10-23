@@ -170,7 +170,6 @@
     paintProgress(); show(home);
     // Place the wall overlays (File 002/03 marks, string) now; the board image may have loaded before its listener.
     requestAnimationFrame(()=>{wallGeometry();placeClipping();if(progress.arrestNew&&progress.file03PuzzleComplete)dropClipping();});
-    if(progress.file03PuzzleComplete&&!progress.cliffSeen&&!progress.arrestNew&&!progress.file04WallSeen)setTimeout(()=>{if($('#homeScene').classList.contains('active')&&$('#f3Stage').hidden&&$('#cliffhanger').hidden)playCliffhanger();},reducedMotion?0:2500);
   }
   function roundXp(n=roundNumber){const state=n===roundNumber?round:readRound(n);return state.questions.reduce((sum,q)=>sum+(q.complete?Number(q.xpAwarded)||0:0),0);}
   function earnedXp(){return [1,2,3].reduce((sum,n)=>sum+roundXp(n),0);}
@@ -893,10 +892,10 @@
   const previewHome = new URLSearchParams(location.search).get('screen') === 'home';
   // once he has been let into the archive, a refresh or a closed tab brings him back to the wall, not the intro
   let homeSeen=false;try{homeSeen=localStorage.getItem('case25HomeSeen')==='1';}catch{}
-  // a returning player (refresh, closed tab, Day 2) skips the intro but enters the access code again; the wall then
-  // opens with all of his progress
+  // a returning player (refresh, closed tab, Day 2) sees the intro and enters the access code again, then the wall
+  // opens with all of his progress instead of the first-time transmission
   const returning=progress.caseAccepted||homeSeen;
-  if(previewHome) showHomeBoard(); else if(returning)setTimeout(()=>{resetLogin();openArchive();},0); else later(pushIntoLake, 4500);
+  if(previewHome) showHomeBoard(); else later(pushIntoLake, 4500);
   $('#playIntro').addEventListener('click', () => {
     const lake = $('#lakeScene');
     if (lake.classList.contains('lake-pushing')) return;
@@ -1031,6 +1030,63 @@
     clip.style.left=(r.left-h.left-r.width*1.32)+'px';clip.style.top=(r.top-h.top+r.height*.18)+'px';clip.style.width=(r.width*1.18)+'px';clip.style.fontSize=(r.width/16)+'px';
   }
   addEventListener('resize',()=>requestAnimationFrame(placeClipping));
+  // A police siren made in the browser: two tones sliding up and down, far away, then fading.
+  function sirenSfx(ms){
+    ensureSound();if(!audioContext||audioContext.state!=='running')return;
+    const c=audioContext,t=c.currentTime,o=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter(),l=c.createOscillator(),lg=c.createGain();
+    o.type='sawtooth';o.frequency.value=720;l.frequency.value=.7;lg.gain.value=170;l.connect(lg);lg.connect(o.frequency);
+    lp.type='lowpass';lp.frequency.value=1300;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.045,t+1.2);g.gain.setValueAtTime(.045,t+ms/1000-1.6);g.gain.exponentialRampToValueAtTime(.0001,t+ms/1000);
+    o.connect(lp);lp.connect(g);g.connect(c.destination);o.start(t);l.start(t);o.stop(t+ms/1000+.1);l.stop(t+ms/1000+.1);
+  }
+  // Peter Shaw is taken into custody. Night outside The Lantern: rain, police lights washing red and blue, press flashes.
+  // Two officers walk him from the door to the car. A last flash freezes the frame, it drains to black and white,
+  // and the morning paper spins in with the photograph on its front page.
+  function arrestScene(screen,done){
+    screen.classList.add('ar-screen');
+    const fig=(x,s,cls)=>`<g transform="translate(${x} 0)"><g class="ar-bob ${cls}"><g transform="scale(${s})">
+      <circle cx="0" cy="-190" r="17"/><path d="M-26 -168 Q0 -178 26 -168 L32 -80 L-32 -80Z"/><path d="M-28 -82 L-24 0 L-8 0 L0 -60 L8 0 L24 0 L28 -82Z"/></g></g></g>`;
+    screen.innerHTML=`<div class="ar-stage"><svg class="ar-street" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><linearGradient id="arSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#05070c"/><stop offset="1" stop-color="#0d0f16"/></linearGradient>
+      <linearGradient id="arWet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14161d"/><stop offset="1" stop-color="#050506"/></linearGradient>
+      <radialGradient id="arDoor"><stop offset="0" stop-color="#ffcf8a" stop-opacity=".85"/><stop offset="1" stop-color="#ff9a3c" stop-opacity="0"/></radialGradient></defs>
+      <rect width="1600" height="900" fill="url(#arSky)"/>
+      <rect x="80" y="120" width="760" height="560" fill="#0b0a0b"/><rect x="80" y="120" width="760" height="14" fill="#151314"/>
+      ${[0,1,2,3].map(i=>`<rect x="${130+i*170}" y="200" width="110" height="140" fill="#14100c"/><rect x="${130+i*170}" y="200" width="110" height="140" fill="#ffb060" opacity="${[.08,.18,.05,.12][i]}"/>`).join('')}
+      <text class="ar-neon" x="460" y="175" text-anchor="middle">THE LANTERN</text>
+      <ellipse cx="560" cy="620" rx="160" ry="120" fill="url(#arDoor)"/><rect x="510" y="470" width="100" height="210" fill="#2a1a0c"/><rect x="516" y="476" width="88" height="204" fill="#ffcf8a" opacity=".55"/>
+      <rect y="680" width="1600" height="220" fill="url(#arWet)"/>
+      <rect class="ar-reflect" x="510" y="690" width="100" height="160" fill="#ffcf8a" opacity=".12"/>
+      <g class="ar-car" fill="#030304"><path d="M1060 690 L1090 610 Q1110 585 1170 585 L1390 585 Q1440 585 1460 620 L1500 640 Q1530 650 1530 690Z"/><circle cx="1140" cy="700" r="34"/><circle cx="1440" cy="700" r="34"/>
+        <rect class="ar-bar r" x="1200" y="570" width="60" height="14" rx="4" fill="#ff2a2a"/><rect class="ar-bar b" x="1262" y="570" width="60" height="14" rx="4" fill="#2a5bff"/></g>
+      <g class="ar-group" fill="#030304" stroke="rgba(150,170,230,.28)" stroke-width="1.5" transform="translate(560 682)">${fig(-70,1.05,'ar-cop')}${fig(0,1,'ar-peter')}${fig(72,1.08,'ar-cop')}</g>
+    </svg>
+    <div class="ar-wash r"></div><div class="ar-wash b"></div><div class="ar-rain"></div><div class="ar-flash"></div>
+    <div class="ar-cap"><small></small><b></b></div>
+    <div class="ar-paper"><header><span>THE LAKE ASH COURIER</span><span>THURSDAY 16 OCTOBER</span></header><h1></h1><div class="ar-paper-body"><div class="ar-photo"><svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#2b2b2b"/><rect x="40" y="40" width="150" height="150" fill="#3c3c3c"/><rect x="90" y="110" width="40" height="80" fill="#9a9a9a"/><g fill="#111" transform="translate(240 230) scale(.55)">${[-70,0,72].map(x=>`<g transform="translate(${x} 0)"><circle cx="0" cy="-190" r="17"/><path d="M-26 -168 Q0 -178 26 -168 L32 -80 L-32 -80Z"/><path d="M-28 -82 L-24 0 L-8 0 L0 -60 L8 0 L24 0 L28 -82Z"/></g>`).join('')}</g></svg><i>Peter Shaw is led from The Lantern in the early hours.</i></div><p>Peter Shaw, co-owner of The Lantern, was charged last night after boat-hire and card records placed him at the lake on the night Thomas Reed vanished.</p><p>Police say the evidence is “clear and documented”. Mr Shaw denies the charge.</p></div></div>
+    <button type="button" class="f4-btn ar-go" hidden>CONTINUE →</button></div>`;
+    const st=screen.querySelector('.ar-stage'),group=st.querySelector('.ar-group'),cap=st.querySelector('.ar-cap'),flash=st.querySelector('.ar-flash'),paper=st.querySelector('.ar-paper'),go=st.querySelector('.ar-go');
+    const T=(ms,fn)=>laterWait(()=>{if(screen.isConnected)fn();},reducedMotion?0:ms);
+    const type=(el,text,speed=45)=>{let i=0;const k=()=>{if(!el.isConnected)return;el.textContent=text.slice(0,++i);if(i<text.length)laterWait(k,speed);};k();};
+    const flashOnce=(v=.8)=>flash.animate([{opacity:0},{opacity:v,offset:.08},{opacity:0}],{duration:420});
+    go.addEventListener('click',done);
+    let finished=false;
+    const showPaper=()=>{if(finished)return;finished=true;
+      st.classList.add('frozen');flashOnce(1);sfx('stamp');
+      paper.classList.add('on');paper.animate([{transform:'translate(-50%,-50%) rotate(-900deg) scale(.05)',opacity:0},{opacity:1,offset:.25},{transform:'translate(-50%,-50%) rotate(-3deg) scale(1.06)',offset:.85},{transform:'translate(-50%,-50%) rotate(-3deg) scale(1)'}],{duration:reducedMotion?1:1500,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'});
+      T(1550,()=>{sfx('stamp');st.animate([{transform:'none'},{transform:'translate(-4px,3px)'},{transform:'translate(3px,-2px)'},{transform:'none'}],{duration:260});});
+      T(1900,()=>{type(paper.querySelector('h1'),'LANTERN CO-OWNER CHARGED IN LAKE ASH DISAPPEARANCE',38);sfx('sting');});
+      T(4600,()=>{go.hidden=false;go.focus({preventScroll:true});});};
+    if(reducedMotion){showPaper();return;}
+    sirenSfx(9500);
+    group.animate([{transform:'translate(560px,682px) scale(.82)',opacity:0},{opacity:1,offset:.08},{transform:'translate(1080px,700px) scale(1.08)'}],{duration:6200,delay:1600,easing:'linear',fill:'both'});
+    st.querySelectorAll('.ar-bob').forEach((n,i)=>n.animate([{transform:'translateY(0)'},{transform:'translateY(-5px)'},{transform:'translateY(0)'}],{duration:620,iterations:Infinity,delay:i*90}));
+    T(900,()=>{cap.querySelector('small').classList.add('on');type(cap.querySelector('small'),'16 OCTOBER · 05:52 · OUTSIDE THE LANTERN',40);});
+    T(3200,()=>{type(cap.querySelector('b'),'Peter Shaw is taken into custody.',55);});
+    [2400,3100,3350,4700,5600,5800,6900].forEach(ms=>T(ms,()=>flashOnce(.35+Math.random()*.4)));
+    T(4300,()=>sfx('key'));
+    T(8200,showPaper);
+    screen.addEventListener('click',e=>{if(!e.target.closest('button')&&!finished){screen.getAnimations({subtree:true}).forEach(a=>{if(a.effect?.target?.closest?.('.ar-group'))a.finish();});showPaper();}});
+  }
   // The Day 1 cliffhanger: M's transmission pops up over the wall after File 003. It leaves nothing behind on the wall;
   // a small REPLAY button plays it again.
   const CLIFF_LINES=['Detective,','You found the man I wanted you to find.','Before you opened the first file, I sealed an envelope.\nRead it now.','@sealed','Every page was placed so you would arrive exactly where you are tonight.','So tell me: did you solve this case,\nor did you follow the path I laid down?','You asked who M was watching.\nYou never asked why M chose you.','@subject','!See you at the end.','— M'];
@@ -1614,6 +1670,7 @@
     playFile05Reveal();
   });
   $('#continueFileFour')?.addEventListener('click', () => {
+    if (!progress.cliffSeen) { playCliffhanger(); return; }
     $('#homeScene').classList.remove('await-file-four');
     playFile04Reveal();
   });
@@ -2379,7 +2436,9 @@
     'p5-q2':{kind:'live',next:'p5-q3',puzzle:3,build:p5BuildConclusion},
     'p5-q3':{kind:'live',next:'final',puzzle:3,build:p5BuildM},
     // M's closing letter (final.png) is taller than 16:9, so it is shown whole rather than cropped.
-    final:{kind:'message',fit:'contain',art:'final-blank',arrive:'ink',letter:[412,318,1095,1180],cont:[588,1573,688,115],next:'gift'},
+    final:{kind:'message',fit:'contain',art:'final-blank',arrive:'ink',letter:[412,318,1095,1180],cont:[588,1573,688,115],next:'arrest'},
+    // Peter is taken into custody: a night street outside The Lantern, then the morning paper spins in.
+    arrest:{kind:'live',next:'gift',arrive:'ink',build:screen=>arrestScene(screen,()=>f3sGo('gift'))},
     // Thank-you card before the physical gift is handed over; its CONTINUE ends File 03.
     gift:{kind:'message',art:'gift-blank',arrive:'closed',giftCard:true,cont:[552,701,431,82],label:'GOOD JOB, DETECTIVE',next:null,finish:true}
   };
@@ -2613,10 +2672,9 @@
     // The older File 03 state is what page load checks for completion, so keep it in step.
     file03.p3.complete=true;saveFile03();
     if(progress.file04WallSeen!==true)progress.file04WallSeen=false;persistProgress();
-    progress.arrestNew=true;persistProgress();
+    progress.arrestNew=false;persistProgress();
     f3s.screen='final';saveF3S();closeF3Stage();paintProgress();
-    requestAnimationFrame(()=>{placeClipping();dropClipping();});
-    setTimeout(()=>{if($('#f3Stage').hidden&&!progress.cliffSeen&&$('#cliffhanger').hidden)playCliffhanger();},reducedMotion?0:6200);
+    requestAnimationFrame(placeClipping);
     // the wall waits with File 003 closed; CONTINUE reveals File 004 (see #continueFileFour)
   }
 // finds painted text lines inside boxes of an image: returns [[x,y,w,h],...] in image pixels
@@ -3536,7 +3594,7 @@ Do not look away from it.
   const F5_P3_Q={q:'Who has been sending the transmissions?',options:['Peter Shaw','Daniel Cross','Elena Ward','Thomas Reed'],answer:3,hint:'Whose words did M use? Whose hand? And who opened Peter’s safe two weeks before Lake Ash?',explain:'M uses Thomas’s own private line, writes in Thomas’s hand, and knew what was in Peter’s safe because Thomas opened it on 30 September. M is Thomas Reed.'};
   const F5_STORY={
     s1:{kicker:'CASE 25 · RESTRICTED ARCHIVE',eyebrow:'FILE 005 · FINAL REVIEW',title:'THE LAST TRANSMISSION',button:'OPEN THE LAST FILE',tell:true,text:`Peter Shaw has been in a cell for two nights.\nThe charge is murder.\n\nThe papers say the case is closed.\nThe police say the evidence speaks for itself.\n\nIt does.\nIt says exactly what it was built to say.\n\n!Three records were never read side by side.\n\nA bank slip. A hospital form. A note in the margin of an old memo.\n\nRead them together, Detective.\nThen tell me who walked away from Lake Ash.`},
-    s4:{kicker:'INCOMING TRANSMISSION · SOURCE IDENTIFIED',eyebrow:'THOMAS REED · ALIVE',title:'YOU FOUND ME.',button:'CLOSE CASE 25',hand:true,text:`Hello, Detective.\nYes. It’s me.\n\nNine years ago a musician died on my stage.\nPeter rewrote the record that night, and I let him.\nThat is the part of this I will carry.\n\nThen I opened his safe.\nHe had kept a file on me for nine years.\nThe memo with my signature. The repairs I deferred.\nEverything he needed to bury me with the fire, the day anyone asked.\n\nSo I gave him a different story to be buried in.\n\nMy blood, from a hospital fridge.\nHis card, from a bank counter.\nHis name, typed into a machine no one was watching.\nA jacket, folded the way I fold it.\n\nI did not lie to you once.\nEvery record you read was real.\nI only chose the order you read them in.\n\nPeter is in a cell for a murder that never happened.\nHe is not innocent. He is just not guilty of this.\n\nAnd I am nowhere.\n\n!Thank you, Detective.\n!I couldn’t have put him there without you.\n\n— T.`}
+    s4:{kicker:'INCOMING TRANSMISSION · SOURCE IDENTIFIED',eyebrow:'THOMAS REED · ALIVE',title:'YOU FOUND ME.',button:'CLOSE CASE 25',hand:true,text:`Hello, Detective.\nYes. It’s me.\n!I am M.\n\nNine years ago a musician died on my stage.\nPeter rewrote the record that night, and I let him.\nThat is the part of this I will carry.\n\nThen I opened his safe.\nHe had kept a file on me for nine years.\nThe memo with my signature. The repairs I deferred.\nEverything he needed to bury me with the fire, the day anyone asked.\n\nSo I gave him a different story to be buried in.\n\nMy blood, from a hospital fridge.\nHis card, from a bank counter.\nHis name, typed into a machine no one was watching.\nA jacket, folded the way I fold it.\n\nI did not lie to you once.\nEvery record you read was real.\nI only chose the order you read them in.\n\nPeter is in a cell for a murder that never happened.\nHe is not innocent. He is just not guilty of this.\n\nAnd I am nowhere.\n\n!Thank you, Detective.\n!I couldn’t have put him there without you.\n\n— T.`}
   };
   const F5_FLOW=['s1','p1','p2','p3','s4','closed','why'];
   const F5_FILES=[['FILE 001','THE DISAPPEARANCE'],['FILE 002','THE UNEXPECTED SIGNAL'],['FILE 003','THE FINANCIAL TRAIL'],['FILE 004','THE LANTERN FIRE'],['FILE 005','THE LAST TRANSMISSION']];
