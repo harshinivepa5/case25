@@ -2275,3 +2275,11 @@ body:has(#secretLevelScene.active) #devFile03Button{display:none}
 .p1v-frame img{display:block;width:100%;height:auto;max-height:calc(100vh - 300px);object-fit:contain;border:1px solid rgba(201,154,85,.35);box-shadow:0 14px 34px rgba(0,0,0,.6);background:#0a0705}
 .f3s-modal.tone-p1docs{--tone:#8f7a5a}.f3s-modal.tone-p1docs .f3s-modal-card{width:min(1180px,100%)}
 .f3s-modal.tone-p1docs .p1v-frame img{max-height:calc(100vh - 260px)}
+
+/* between puzzles: lamp relights behind the title, the finished puzzle is stamped SOLVED */
+.f3s-chapter::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse 46% 40% at 50% 46%,rgba(255,176,84,.34),rgba(255,140,50,.08) 55%,transparent 76%)}
+.f3s-chapter.in::before{animation:f3sRelight 2.8s .35s ease-out forwards}
+@keyframes f3sRelight{0%{opacity:0}35%{opacity:.95}55%{opacity:.7}100%{opacity:.55}}
+.f3s-solved{padding:.35em .9em;border:2px solid #b3261a;color:#d8483a;font:700 14px var(--mono);letter-spacing:.3em;transform:rotate(-4deg);opacity:0;animation:f3sStamp .45s .35s cubic-bezier(.3,1.2,.4,1) forwards}
+@keyframes f3sStamp{0%{opacity:0;transform:rotate(-4deg) scale(2.4)}100%{opacity:1;transform:rotate(-4deg) scale(1)}}
+@media(prefers-reduced-motion:reduce){.f3s-chapter::before{animation:none;opacity:.5}.f3s-solved{animation:none;opacity:1}}

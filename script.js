@@ -57,7 +57,9 @@
   };
   let progress = readProgress();
   const persistProgress = () => localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
-  let timers = [], clueIndex = 0, audioContext = null, audioNodes = [];
+  let timers = [], clueIndex = 0, audioContext = null, audioNodes = []; let scoreTimer = null, scoreGain = null, musicWanted = true;
+  // The File 003 puzzles play with sound effects only: the score fades out while the stage is open and returns after.
+  function setMusic(on){musicWanted=on;if(audioContext&&scoreGain)scoreGain.gain.setTargetAtTime(on?1:.0001,audioContext.currentTime,.5);}
   // Wall intro state and artwork points; showHomeBoard() reads them on page load, so they live up here.
   let wallIntroRun = 0;
   const WALL_FOUR_CLASSES = ['wall-four-intro','wall-four-card','wall-four-string','wall-four-rest'];
@@ -2087,8 +2089,7 @@
     clearTimers();button.disabled=true;progress.caseAccepted=true;progress.chapterOneComplete=true;persistProgress();phaseSlides[11].classList.add('case-accepted');
     showHomeBoard(); if(progress.file02TransitionSeen) playWallIntro();
   });
-  function stopSound(){clearInterval(scoreTimer);scoreTimer=null;audioNodes.forEach(n=>{try{n.stop?.();n.disconnect?.();}catch{}});audioNodes=[];if(audioContext){audioContext.close().catch(()=>{});audioContext=null;}$('#soundToggle').innerHTML='◖)) <span>SOUND OFF</span>';$('#soundToggle').setAttribute('aria-label','Turn ambient sound on');}
-  let scoreTimer=null;
+  function stopSound(){clearInterval(scoreTimer);scoreTimer=null;scoreGain=null;audioNodes.forEach(n=>{try{n.stop?.();n.disconnect?.();}catch{}});audioNodes=[];if(audioContext){audioContext.close().catch(()=>{});audioContext=null;}$('#soundToggle').innerHTML='◖)) <span>SOUND OFF</span>';$('#soundToggle').setAttribute('aria-label','Turn ambient sound on');}
   // A slow thriller score built from scratch: low drone, a drifting minor pad, a steady low pulse with a heartbeat under it,
   // and a thin high note that surfaces now and then. Nothing is a sample, so the page stays fully offline.
   async function startSound(){
@@ -2097,8 +2098,9 @@
     audioContext=new Ctx();await audioContext.resume();
     const c=audioContext,master=c.createGain();master.gain.value=.9;
     const comp=c.createDynamicsCompressor();comp.threshold.value=-20;comp.ratio.value=4;master.connect(comp);comp.connect(c.destination);
-    const delay=c.createDelay(1),fb=c.createGain(),wet=c.createGain();delay.delayTime.value=.34;fb.gain.value=.38;wet.gain.value=.35;delay.connect(fb);fb.connect(delay);delay.connect(wet);wet.connect(master);
-    const bus=c.createGain();bus.connect(master);bus.connect(delay);
+    const delay=c.createDelay(1),fb=c.createGain(),wet=c.createGain();delay.delayTime.value=.34;fb.gain.value=.38;wet.gain.value=.35;delay.connect(fb);fb.connect(delay);delay.connect(wet);
+    const musicGain=c.createGain();musicGain.gain.value=musicWanted?1:.0001;musicGain.connect(master);scoreGain=musicGain;wet.connect(musicGain);
+    const bus=c.createGain();bus.connect(musicGain);bus.connect(delay);
     const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=380;lp.Q.value=4;
     const lfo=c.createOscillator(),lfoG=c.createGain();lfo.frequency.value=.07;lfoG.gain.value=240;lfo.connect(lfoG);lfoG.connect(lp.frequency);lfo.start();
     const droneG=c.createGain();droneG.gain.value=.18;lp.connect(droneG);droneG.connect(bus);
@@ -2109,7 +2111,7 @@
     const chords=[[220,261.63,329.63],[233.08,277.18,349.23],[220,261.63,311.13],[196,246.94,311.13]];let ci=0;
     const changeChord=()=>{ci=(ci+1)%chords.length;const t=c.currentTime;pad.forEach((o,i)=>{o.frequency.cancelScheduledValues(t);o.frequency.setValueAtTime(o.frequency.value,t);o.frequency.linearRampToValueAtTime(chords[ci][i],t+4);});};
     const pulse=(t,f,v)=>{const o=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();o.type='sawtooth';o.frequency.value=f;fl.type='lowpass';fl.frequency.setValueAtTime(900,t);fl.frequency.exponentialRampToValueAtTime(140,t+.28);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+.32);o.connect(fl);fl.connect(g);g.connect(bus);o.start(t);o.stop(t+.35);};
-    const thump=(t,v)=>{const o=c.createOscillator(),g=c.createGain();o.frequency.setValueAtTime(70,t);o.frequency.exponentialRampToValueAtTime(38,t+.18);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+.3);o.connect(g);g.connect(master);o.start(t);o.stop(t+.35);};
+    const thump=(t,v)=>{const o=c.createOscillator(),g=c.createGain();o.frequency.setValueAtTime(70,t);o.frequency.exponentialRampToValueAtTime(38,t+.18);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+.3);o.connect(g);g.connect(musicGain);o.start(t);o.stop(t+.35);};
     const sting=t=>{const o=c.createOscillator(),g=c.createGain(),vib=c.createOscillator(),vg=c.createGain(),f=[932.33,987.77,1108.73][Math.random()*3|0];o.type='sine';o.frequency.setValueAtTime(f,t);o.frequency.linearRampToValueAtTime(f*.985,t+3.5);vib.frequency.value=5.5;vg.gain.value=6;vib.connect(vg);vg.connect(o.frequency);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.06,t+1.2);g.gain.exponentialRampToValueAtTime(.0001,t+4);o.connect(g);g.connect(bus);o.start(t);vib.start(t);o.stop(t+4.2);vib.stop(t+4.2);};
     const step=.33;let next=c.currentTime+.4,n=0,nextSting=c.currentTime+10;
     const schedule=()=>{
@@ -2149,7 +2151,7 @@
   ];
   const P3_DEDUCTION_MISSING=['Correct the access-log times: the clock was seven minutes fast.','Say the credential record does not identify who used it.','Treat Peter’s 20:10 as an uncorroborated estimate.','Note that the camera clock is unverified.','Explain that the next-morning search records do not establish when Thomas disappeared.','Name what remains unknown about his movements or whether he died at Lake Ash.','List the additional evidence needed to reconstruct his movements.','Do not state murder, death at Lake Ash, or a lie as established fact.'];
   const F3S_MODELS={
-    'p1-q4':'The bank export supports three underlying transfers — T-17, T-22 and T-31 — tentatively matched to invoices NQ-104, NQ-118 and NQ-123. T-31-R is a replay of T-31, not a separate payment. NQ-104-R did not receive a separately confirmed payment; its revision or replacement status still needs supplier confirmation. The PA-07 allocation sheet is an unverified copy, so its matches are suggestions rather than established facts, and the original approvals/signatures and bank confirmations are missing. The ₹2.40 crore balance remains unreconciled. The records do not prove delivery, account ownership, personal benefit or anyone’s culpability.',
+    'p1-q4':'Three payments left the expansion account: T-17, T-22 and T-31. A fourth row, T-31-R, only repeated the last. One invoice, NQ-104, was reissued as NQ-104-R and never paid separately. The sheet that ties payments to invoices was never signed, and the bank never confirmed it. So ₹2.40 crore moved out of the account with nothing to show where it arrived, and nobody who could say. The statement closes at the end of June. Thomas Reed was last seen in October. Somewhere between those two dates, the story stopped being about the money.',
     'p3-q4':'Established: the rear-entrance clock was seven minutes fast, so the credential and door activity happened at 19:45:31–19:47:18 — but the log records a credential, not who used it. Reported: Peter says Thomas left alone at about 20:10, an uncorroborated estimate. Uncertain: the camera’s 20:16:11 vehicle cannot be placed because its clock is unverified and the plate and occupants are not visible; the boat (07:10) and watch and jacket (08:05) were found the next morning, but those records do not establish when Thomas disappeared or whether he died at Lake Ash. Needed: a calibrated camera clock, identification of the credential user and vehicle, independent witnesses, and phone or travel records.',
     'p4-q4':'Peter is a central suspect because the ₹2.40 crore remains unreconciled with no supporting records, his claim that Thomas left alone at about 20:10 is uncorroborated, an unknown credential opened the rear door at 20:09–20:10 — the same time as his statement — and he never supplied the requested originals despite repeated follow-ups. But the gaps are serious: nothing shows Peter received the money, the access log does not identify who used the unknown card, the camera does not show the plate or driver, and missing originals do not prove he destroyed them. Suspicion is not proof.',
     'p3-q2':'Order: rear-entrance credential at 19:45:31 (Corrected), Peter’s reported departure at about 20:10 (Estimated), the vehicle at displayed 20:16:11 (Unverified), the damaged boat at 07:10 and the watch and jacket at 08:05 the next morning (Search Record). The vehicle cannot be placed precisely: the camera clock is unverified, so its 20:16:11 cannot be aligned with the corrected venue times or Peter’s estimate.'
@@ -2161,7 +2163,7 @@
     'p1-q1':{kind:'choice',puzzle:0,opt:[[434,390,656,55],[434,456,656,56],[434,521,656,56]],radio:[470,13],submit:[597,608,329,51],answer:0,options:F3_QUESTIONS[0].options,hint:F3_QUESTIONS[0].hint,explain:F3_QUESTIONS[0].explain,next:'p1-q2'},
     'p1-q2':{kind:'choice',puzzle:0,opt:[[382,387,716,55],[382,452,716,55],[382,517,716,55],[382,582,716,55]],radio:[421,13],submit:[550,664,385,57],answer:1,options:F3_QUESTIONS[1].options,hint:F3_QUESTIONS[1].hint,explain:F3_QUESTIONS[1].explain,next:'p1-q3'},
     'p1-q3':{kind:'choice',puzzle:0,opt:[[382,409,708,55],[382,472,708,55],[382,536,708,54],[382,598,708,54]],radio:[418,13],submit:[547,680,375,54],answer:1,options:['Yes, it’s a verified record.','No, it’s not reliable enough.','Only some of the matches can be trusted.','Not enough information to say.'],hint:'Who verified the allocation sheet? Look for original approvals or signatures, and for bank confirmations behind each match.',explain:'The allocation sheet (PA-07) is an unverified copy. Its invoice matches are suggestions, not independently established facts: there are no original approvals or signatures and no supporting bank confirmations.',next:'p1-q4'},
-    'p1-q4':{kind:'written',puzzle:0,text:[380,582,770,106],submit:[583,708,371,52],grade:t=>p1Deduction(t),hint:'Name the three underlying transfers and their invoices, explain T-31-R and NQ-104-R, describe PA-07 as unverified, and say what the records cannot prove.',model:F3S_MODELS['p1-q4'],next:'p1-end'},
+    'p1-q4':{kind:'written',puzzle:0,text:[380,582,770,106],submit:[583,708,371,52],grade:()=>({accepted:true,missing:[]}),doneTitle:'WHAT THE FILE SHOWS',hint:'Name the three underlying transfers and their invoices, explain T-31-R and NQ-104-R, describe PA-07 as unverified, and say what the records cannot prove.',model:F3S_MODELS['p1-q4'],next:'p1-end'},
     'p1-end':{kind:'message',cont:[996,825,426,71],next:'p2-cover'},
     'p2-cover':{kind:'cover',chapter:1,begin:[482,637,373,64],review:[[[36,140,300,92],0]],next:'p2-q1'},
     'p2-q1':{kind:'written',puzzle:1,docs:'p2',docBtn:[636,814,400,44],text:[450,543,755,140],submit:[618,704,418,63],grade:t=>evaluateP2(t,0),hint:P2_QUESTIONS[0].hint,model:P2_QUESTIONS[0].explain,next:'p2-q2'},
@@ -2214,6 +2216,7 @@
     f3sGo(f3s.screen||'opening',{resume:true});
   }
   function closeF3Stage(){
+    setMusic(true);
     const stage=$('#f3Stage');stage.classList.remove('visible');f3sCloseModal();
     $('#backButton').disabled=!sceneHistory.length;
     setTimeout(()=>{stage.hidden=true;stage.querySelectorAll('.f3s-screen').forEach(s=>s.remove());},600);
@@ -2222,9 +2225,11 @@
   const F3S_PUZZLE_START=['p1-q1','p2-q1','p3-q1','p4-q1'];
   function f3sReview(n){if(f3sBusy)return;if(!f3s.reviewFrom)f3s.reviewFrom=f3s.screen;f3sGo(F3S_PUZZLE_START[n]);}
   function f3sGo(id,{resume=false}={}){
+    if(/^p1-q\d$/.test(id)&&!(f3s.live&&f3s.live.p1read))id='p1-read';
     const def=F3S_SCREENS[id];if(!def)return;
-    ensureSound();
+    setMusic(false);ensureSound();
     $('#f3sP1Docs').hidden=!/^p1-q/.test(id);
+    if(id==='p1-read')$('#f3sList').hidden=true;
     if(id===f3s.reviewFrom)f3s.reviewFrom=null;
     f3s.screen=id;saveF3S();
     $('#f3sList').hidden=!Number.isInteger(def.puzzle);$('#f3sList').dataset.target=['p1-cover','p2-cover','p3-cover','p4-cover'][def.puzzle]||'';
@@ -2237,6 +2242,9 @@
   function f3sChapterCard(index,done){
     const card=$('#f3sChapter'),[kicker,title]=F3S_CHAPTERS[index];
     card.querySelector('small').textContent=kicker;const h=card.querySelector('h2');h.textContent='';
+    // the puzzle just finished is stamped SOLVED, the lamp relights behind the next title, and the title types in
+    card.querySelector('.f3s-solved')?.remove();
+    if(index>=1&&index<=4){const st=document.createElement('b');st.className='f3s-solved';st.textContent=`${F3S_CHAPTERS[index-1][0]} · SOLVED`;card.prepend(st);laterWait(()=>sfx('stamp'),reducedMotion?0:450);}
     card.hidden=false;card.classList.remove('out');void card.offsetWidth;card.classList.add('in');
     $$('#f3Stage .f3s-screen').forEach(s=>s.classList.add('leave'));
     if(reducedMotion){h.textContent=title;laterWait(()=>{card.hidden=true;done();},900);return;}
@@ -2390,7 +2398,7 @@
     const explain=def.explain||def.model;
     if(correct){
       f3s.done[id]=true;saveF3S();f3sMarkAnswered(screen,id,def);f3sStamp(screen,'VERIFIED');
-      f3sModal({tone:'good',title:['EVIDENCE VERIFIED','DEDUCTION ACCEPTED','RECORD CONFIRMED'][tries%3],body:`<p>${f3sEsc(explain)}</p>`,actions:[['CONTINUE →',()=>{f3sCloseModal();f3sGo(def.next);}]]});
+      f3sModal({tone:'good',title:def.doneTitle||['EVIDENCE VERIFIED','DEDUCTION ACCEPTED','RECORD CONFIRMED'][tries%3],body:`<p>${f3sEsc(explain)}</p>`,actions:[['CONTINUE →',()=>{f3sCloseModal();f3sGo(def.next);}]]});
       return;
     }
     if(def.kind==='choice'){const b=f3q('.f3s-opt',screen)[f3s.picks[id]];b.classList.remove('wrong');void b.offsetWidth;b.classList.add('wrong');}
@@ -2407,7 +2415,7 @@
   function f3sToast(message){const t=$('#f3sToast');t.textContent=message;t.classList.remove('show');void t.offsetWidth;t.classList.add('show');}
   function f3sStamp(screen,label){const s=document.createElement('div');s.className='f3s-stamp';s.textContent=label;screen.append(s);setTimeout(()=>s.remove(),2200);}
   function f3sModal({tone,title,body,actions}){
-    sfx(({good:'good',bad:'bad',reveal:'sting',hint:'click'})[tone]);
+    sfx(({reveal:'sting'})[tone]);
     const m=$('#f3sModal');f3sBusy=true;
     m.className=`f3s-modal tone-${tone}`;m.querySelector('h3').textContent=title;m.querySelector('.f3s-modal-body').innerHTML=body;
     const row=m.querySelector('.f3s-modal-actions');row.replaceChildren();
@@ -2430,7 +2438,7 @@
     if($('#f3Stage').dataset.mode==='f4'){f4Retry();return;}
     if($('#f3Stage').dataset.mode==='f5'){f5Retry();return;}
     if(!$('#f3sChapter').hidden)return;
-    f3s={screen:'opening',done:{},attempts:{},drafts:{},picks:{}};saveF3S();
+    f3s={screen:'opening',done:{},attempts:{},drafts:{},picks:{},live:{}};saveF3S();
     progress.file03PuzzleComplete=false;persistProgress();file03.p3.complete=false;saveFile03();paintProgress();
     f3sCloseModal();f3sGo('opening');
   });
@@ -2525,7 +2533,7 @@
     if(!audioContext||audioContext.state!=='running')return;
     const c=audioContext,t0=c.currentTime;
     const tone=(f,d,type='sine',v=.08,f2=0,delay=0)=>{const o=c.createOscillator(),g=c.createGain(),t=t0+delay;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(Math.min(v*7,.9),t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);};
-    ({click:()=>tone(620,.05,'square',.02),key:()=>{const n=c.sampleRate*.03|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='highpass';f.frequency.value=1800;g.gain.value=.45;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);tone(180,.03,'square',.02);},good:()=>{tone(523,.6,'sine',.06);tone(784,.7,'sine',.05,0,.12);},bad:()=>tone(120,.4,'sawtooth',.05,70),stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);},paper:()=>{const n=c.sampleRate*.45|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1700;g.gain.value=.4;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);}})[kind]?.();
+    ({key:()=>{const n=c.sampleRate*.03|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1100;f.Q.value=.8;g.gain.value=.3;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);},stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);},paper:()=>{const n=c.sampleRate*.45|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1700;g.gain.value=.4;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);}})[kind]?.();
   }
   // ---------------------------------------------------------------------------------------------
   // File 003, puzzle 1: the five documents are read first, then stay one click away during the questions.
@@ -2544,7 +2552,7 @@
     task.innerHTML=`<p class="f4-step">DOCUMENTS OPENED <b class="p1v-count">0 / 5</b></p><p class="f4-q">Not every entry represents a separate event.</p><p class="f4-sub">Open all five documents to begin the questions.</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit" disabled>BEGIN THE QUESTIONS →</button></div>`;
     const btn=task.querySelector('.f4-submit'),count=task.querySelector('.p1v-count'),seen=new Set();
     p1Viewer(docs,0,i=>{seen.add(i);count.textContent=`${seen.size} / 5`;btn.disabled=seen.size<5;});
-    btn.addEventListener('click',()=>f3sGo('p1-q1'));
+    btn.addEventListener('click',()=>{if(seen.size<5)return;f3s.live=f3s.live||{};f3s.live.p1read=true;saveF3S();f3sGo('p1-q1');});
   }
   function p1OpenDocs(){
     if(!$('#f3sChapter').hidden)return;
