@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Transition Preview</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+:root{--gold:#c99a55;--ink:#efe3c9}
+*{box-sizing:border-box}
+body{margin:0;background:#050403;color:var(--ink);font-family:'DM Mono',monospace;padding:20px}
+h1{font:600 14px 'DM Mono';letter-spacing:.22em;color:var(--gold);margin:0 0 4px}
+p.lead{margin:0 0 18px;color:#b39a72;font-size:12px}
+h2{font:13px 'DM Mono';letter-spacing:.2em;color:#e6b866;margin:26px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.cell{border:1px solid #2a2418;background:#0a0807;padding:10px}
+.cell header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.cell b{font:11px 'DM Mono';letter-spacing:.16em;color:var(--gold)}
+.cell small{display:block;color:#9c8a6c;font-size:11px;margin:2px 0 8px}
+button.play{background:none;border:1px solid var(--gold);color:var(--gold);font:10px 'DM Mono';letter-spacing:.14em;padding:6px 10px;cursor:pointer}
+button.play:hover{background:#2b1c0d}
+.stage{position:relative;aspect-ratio:16/9;overflow:hidden;background:#030202;isolation:isolate}
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(ellipse at center,#120c07 0%,#030202 70%)}
+.card small{color:var(--gold);font:10px 'DM Mono';letter-spacing:.5em}
+.card h3{margin:0;color:#f1e3c6;font:clamp(16px,2.4vw,30px) 'Special Elite',monospace;letter-spacing:.08em}
+.card i{width:50%;height:2px;background:linear-gradient(90deg,transparent,#a3221b,transparent)}
+.fx{position:absolute;inset:0;pointer-events:none}
+.stamp{position:absolute;left:50%;top:46%;padding:.3em .8em;border:3px solid #b3261a;color:#d8483a;font:700 clamp(14px,2vw,24px) 'DM Mono';letter-spacing:.24em;transform:translate(-50%,-50%) rotate(-8deg);opacity:0;mix-blend-mode:screen}
+.pick{margin-top:8px;font-size:11px;color:#8a7b66}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<h1>FILE 003 · TRANSITION PREVIEW</h1>
+<p class="lead">Press PLAY on any box to watch it. These use the real File 003 art. Nothing here changes the game.</p>
+
+<h2>A · PUZZLE TITLE → PUZZLE 1 SCREEN</h2>
+<div class="grid" id="gA"></div>
+
+<h2>B · QUESTION → NEXT QUESTION</h2>
+<div class="grid" id="gB"></div>
+
+<script>
+const IMG={cover:'assets/file-003/p1-cover.png',q1:'assets/file-003/p1-q1.png',q2:'assets/file-003/p1-q2.png'};
+const E='cubic-bezier(.2,.7,.2,1)';
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function makeCell(host,code,name,desc,run){
+  const c=document.createElement('div');c.className='cell';
+  c.innerHTML=`<header><b>${code} · ${name}</b><button class="play">▶ PLAY</button></header><small>${desc}</small><div class="stage"></div>`;
+  host.append(c);const st=c.querySelector('.stage');
+  const go=()=>{st.innerHTML='';st.getAnimations({subtree:true}).forEach(a=>a.cancel());run(st);};
+  c.querySelector('.play').onclick=go;go();
+}
+const el=(st,html)=>{st.insertAdjacentHTML('beforeend',html);return st.lastElementChild;};
+const titleCard=st=>el(st,`<div class="card"><small>PUZZLE 01</small><h3>NORTH QUAY</h3><i></i></div>`);
+const img=(st,src)=>el(st,`<img src="${src}" alt="">`);
+
+// ---------- A: title -> puzzle screen ----------
+const A=document.getElementById('gA');
+makeCell(A,'A1','LAMP RELIGHT','Title glows, lamp dips to black, the desk lights up slowly from the centre.',async st=>{
+  const card=titleCard(st);card.animate([{opacity:0},{opacity:1}],{duration:700,fill:'both'});
+  await wait(1700);
+  card.animate([{opacity:1,filter:'brightness(1)'},{opacity:0,filter:'brightness(.2)'}],{duration:800,fill:'forwards'});
+  await wait(600);
+  const i=img(st,IMG.cover);
+  i.animate([{opacity:0,filter:'brightness(0)',transform:'scale(1.04)'},{opacity:1,filter:'brightness(.45)',offset:.45},{opacity:1,filter:'brightness(1)',transform:'scale(1)'}],{duration:2400,easing:E,fill:'both'});
+});
+makeCell(A,'A2','IRIS OPEN','A small circle of light opens from the centre and widens into the puzzle screen.',async st=>{
+  const i=img(st,IMG.cover);i.style.clipPath='circle(0% at 50% 50%)';
+  const card=titleCard(st);card.animate([{opacity:0},{opacity:1}],{duration:700,fill:'both'});
+  await wait(1700);
+  card.animate([{opacity:1},{opacity:0}],{duration:900,fill:'forwards'});
+  i.animate([{clipPath:'circle(0% at 50% 50%)',filter:'brightness(1.6)'},{clipPath:'circle(12% at 50% 50%)',filter:'brightness(1.3)',offset:.3},{clipPath:'circle(75% at 50% 50%)',filter:'brightness(1)'}],{duration:2000,easing:'cubic-bezier(.6,0,.2,1)',fill:'forwards'});
+});
+makeCell(A,'A3','FOLDER OPENS','The title card lifts away like a folder cover; the puzzle screen settles out of a soft blur.',async st=>{
+  const i=img(st,IMG.cover);i.style.opacity=0;
+  const card=titleCard(st);card.animate([{opacity:0},{opacity:1}],{duration:700,fill:'both'});
+  await wait(1700);
+  i.animate([{opacity:0,filter:'blur(10px) brightness(.4)',transform:'scale(1.08)'},{opacity:1,filter:'blur(0) brightness(1)',transform:'scale(1)'}],{duration:1600,easing:E,fill:'forwards'});
+  card.style.transformOrigin='50% 0';
+  card.animate([{transform:'perspective(900px) rotateX(0)',opacity:1},{transform:'perspective(900px) rotateX(-80deg)',opacity:0}],{duration:1000,easing:'cubic-bezier(.5,0,.75,0)',fill:'forwards'});
+});
+makeCell(A,'A4','FILM BURN','A warm amber flash burns through the title, then the screen appears through the glow.',async st=>{
+  const i=img(st,IMG.cover);i.style.opacity=0;
+  const card=titleCard(st);card.animate([{opacity:0},{opacity:1}],{duration:700,fill:'both'});
+  await wait(1700);
+  const b=el(st,'<div class="fx" style="background:radial-gradient(ellipse at 40% 55%,#ffd79a,#ff8a2a 35%,rgba(120,30,0,.6) 65%,transparent 85%);mix-blend-mode:screen;opacity:0"></div>');
+  b.animate([{opacity:0},{opacity:1,offset:.35},{opacity:0}],{duration:1500,fill:'forwards'});
+  await wait(450);card.remove();
+  i.animate([{opacity:0,filter:'brightness(1.8) sepia(.6)'},{opacity:1,filter:'brightness(1) sepia(0)'}],{duration:1400,easing:E,fill:'forwards'});
+});
+
+// ---------- more lamp-light options ----------
+const dust=(st,n=36)=>{const f=el(st,'<div class="fx"></div>');for(let k=0;k<n;k++){const d=document.createElement('i');const s=1+Math.random()*2.2;d.style.cssText=`position:absolute;left:${Math.random()*100}%;top:${Math.random()*100}%;width:${s}px;height:${s}px;border-radius:50%;background:rgba(255,220,170,.8);box-shadow:0 0 6px rgba(255,190,110,.8)`;f.append(d);d.animate([{opacity:0,transform:'translate(0,0)'},{opacity:.9,offset:.3},{opacity:0,transform:`translate(${(Math.random()-.5)*60}px,${-20-Math.random()*50}px)`}],{duration:3000+Math.random()*2000,delay:Math.random()*1500,iterations:Infinity});}return f;};
+makeCell(A,'A5','LAMP RELIGHT + DUST','Same as A1, but dust drifts in the light and the camera eases in slowly as the desk lights up.',async st=>{
+  const card=titleCard(st);card.animate([{opacity:0},{opacity:1}],{duration:700,fill:'both'});
+  await wait(1700);
+  card.animate([{opacity:1,filter:'brightness(1)'},{opacity:0,filter:'brightness(.2)'}],{duration:800,fill:'forwards'});
+  await wait(600);
+  const i=img(st,IMG.cover);
+  i.animate([{opacity:0,filter:'brightness(0)',transform:'scale(1.12)'},{opacity:1,filter:'brightness(.45)',offset:.4},{opacity:1,filter:'brightness(1)',transform:'scale(1)'}],{duration:3400,easing:E,fill:'both'});
+  dust(st).animate([{opacity:0},{opacity:1}],{duration:1800,delay:600,fill:'both'});
+});
+makeCell(A,'A6','LAMP SWING','The light pool starts at the lamp in the corner and swings across the desk, revealing the screen as it moves.',async st=>{
+  const card=titleCard(st);card.animate([{opacity:0},{opacity:1}],{duration:700,fill:'both'});
+  await wait(1700);
+  card.animate([{opacity:1},{opacity:0}],{duration:700,fill:'forwards'});
+  const i=img(st,IMG.cover);
+  i.animate([{clipPath:'circle(0% at 92% 8%)',filter:'brightness(1.3)'},{clipPath:'circle(40% at 70% 30%)',filter:'brightness(1.15)',offset:.5},{clipPath:'circle(120% at 50% 50%)',filter:'brightness(1)'}],{duration:2400,easing:'cubic-bezier(.5,0,.2,1)',fill:'both'});
+  const g=el(st,'<div class="fx" style="background:radial-gradient(circle at 92% 8%,rgba(255,200,120,.5),transparent 40%);mix-blend-mode:screen"></div>');
+  g.animate([{opacity:0},{opacity:1,offset:.3},{opacity:0}],{duration:2400,fill:'forwards'});
+});
+makeCell(A,'A7','LAMP CATCHES','The room is dark; the lamp catches with two small flickers, then holds steady on the screen.',async st=>{
+  const card=titleCard(st);card.animate([{opacity:0},{opacity:1}],{duration:700,fill:'both'});
+  await wait(1700);
+  card.animate([{opacity:1},{opacity:0}],{duration:700,fill:'forwards'});
+  await wait(500);
+  const i=img(st,IMG.cover);
+  i.animate([{opacity:0,filter:'brightness(0)'},{opacity:1,filter:'brightness(.7)',offset:.1},{filter:'brightness(.05)',offset:.18},{filter:'brightness(.8)',offset:.28},{filter:'brightness(.15)',offset:.34},{filter:'brightness(.6)',offset:.5},{opacity:1,filter:'brightness(1)'}],{duration:2600,easing:'ease-out',fill:'both'});
+});
+makeCell(A,'A8','MATCH STRIKE','A match flares under the title; its warm glow spreads outward until the whole desk is lit.',async st=>{
+  const i=img(st,IMG.cover);i.style.clipPath='circle(0% at 50% 62%)';
+  const card=titleCard(st);card.animate([{opacity:0},{opacity:1}],{duration:700,fill:'both'});
+  await wait(1700);
+  const f=el(st,'<div class="fx" style="background:radial-gradient(circle at 50% 62%,#fff1c4 0,#ffb24a 3%,rgba(255,120,30,.35) 9%,transparent 18%);mix-blend-mode:screen;opacity:0"></div>');
+  f.animate([{opacity:0},{opacity:1,offset:.08},{opacity:.6,offset:.2},{opacity:.9,offset:.3},{opacity:0}],{duration:2600,fill:'forwards'});
+  card.animate([{opacity:1},{opacity:0}],{duration:900,delay:300,fill:'forwards'});
+  i.animate([{clipPath:'circle(0% at 50% 62%)',filter:'sepia(.6) brightness(1.4)'},{clipPath:'circle(6% at 50% 62%)',offset:.25},{clipPath:'circle(110% at 50% 62%)',filter:'sepia(0) brightness(1)'}],{duration:2600,delay:200,easing:'cubic-bezier(.55,0,.25,1)',fill:'both'});
+});
+
+// ---------- B: question -> question ----------
+const B=document.getElementById('gB');
+const twoQ=(st)=>{const a=img(st,IMG.q1),b=img(st,IMG.q2);b.style.opacity=0;return [a,b];};
+makeCell(B,'B1','STAMP & DISSOLVE','A red VERIFIED stamp lands, then the next question dissolves in.',async st=>{
+  const [a,b]=twoQ(st);await wait(900);
+  const s=el(st,'<div class="stamp">VERIFIED</div>');
+  s.animate([{opacity:0,transform:'translate(-50%,-50%) rotate(-8deg) scale(2.4)'},{opacity:1,transform:'translate(-50%,-50%) rotate(-8deg) scale(1)'}],{duration:380,easing:'cubic-bezier(.3,1.2,.4,1)',fill:'forwards'});
+  await wait(900);
+  s.animate([{opacity:1},{opacity:0}],{duration:600,fill:'forwards'});
+  b.animate([{opacity:0},{opacity:1}],{duration:1100,easing:'ease-in-out',fill:'forwards'});
+});
+makeCell(B,'B2','PAGE TURN','The current sheet turns away like a page; the next one is underneath.',async st=>{
+  const [a,b]=twoQ(st);b.style.opacity=1;st.append(a);await wait(900);
+  a.style.transformOrigin='0 50%';
+  a.animate([{transform:'perspective(1400px) rotateY(0)',filter:'brightness(1)'},{transform:'perspective(1400px) rotateY(-95deg)',filter:'brightness(.3)'}],{duration:1100,easing:'cubic-bezier(.5,0,.6,1)',fill:'forwards'});
+});
+makeCell(B,'B3','LAMP SWEEP','A warm band of lamp light sweeps across and leaves the next question behind it.',async st=>{
+  const [a,b]=twoQ(st);b.style.opacity=1;b.style.clipPath='inset(0 100% 0 0)';await wait(900);
+  b.animate([{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{duration:1300,easing:'cubic-bezier(.6,0,.3,1)',fill:'forwards'});
+  const l=el(st,'<div class="fx" style="background:linear-gradient(90deg,transparent,rgba(255,200,120,.55),transparent);width:30%;mix-blend-mode:screen"></div>');
+  l.animate([{transform:'translateX(-40%)'},{transform:'translateX(340%)'}],{duration:1300,easing:'cubic-bezier(.6,0,.3,1)',fill:'forwards'});
+});
+makeCell(B,'B4','FLICKER CUT','The lamp flickers twice, goes dark for a beat, and comes back on the next question.',async st=>{
+  const [a,b]=twoQ(st);await wait(900);
+  st.animate([{filter:'brightness(1)'},{filter:'brightness(.35)',offset:.15},{filter:'brightness(1)',offset:.3},{filter:'brightness(.2)',offset:.45},{filter:'brightness(0)',offset:.6},{filter:'brightness(0)',offset:.72},{filter:'brightness(1)'}],{duration:1300,fill:'none'});
+  await wait(800);b.style.opacity=1;
+});
+</script>
+</body></html>

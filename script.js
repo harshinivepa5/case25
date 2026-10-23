@@ -2371,6 +2371,40 @@
     let i=0;const type=()=>{keyTick();h.textContent=title.slice(0,++i);if(i<title.length)laterWait(type,70);else laterWait(()=>{card.classList.add('out');laterWait(()=>{card.hidden=true;card.classList.remove('in','out');},900);done();},1300);};
     laterWait(type,700);
   }
+  // Puzzle openings, one per puzzle: 1 lamp swing, 2 the lamp catches, 3 lamp swing, 4 a match strike, 5 a film burn.
+  const F3S_OPENINGS=['swing','catch','swing','match','burn'];
+  function f3sGlow(bg,frames,ms){
+    const g=document.createElement('div');g.className='f3s-glow';g.style.background=bg;$('#f3Stage').insertBefore(g,$('#f3sChapter'));
+    g.animate(frames,{duration:ms,fill:'forwards'}).finished.catch(()=>{}).then(()=>g.remove());
+  }
+  function f3sArrive(screen,mode,old){
+    const drop=(ms)=>old.forEach(s=>{s.style.pointerEvents='none';setTimeout(()=>s.remove(),ms);});
+    if(mode==='swing'){
+      drop(400);
+      screen.animate([{clipPath:'circle(0% at 92% 8%)',filter:'brightness(1.3)'},{clipPath:'circle(42% at 70% 30%)',filter:'brightness(1.15)',offset:.5},{clipPath:'circle(150% at 50% 50%)',filter:'brightness(1)'}],{duration:2400,easing:'cubic-bezier(.5,0,.2,1)',fill:'backwards'});
+      f3sGlow('radial-gradient(circle at 92% 8%,rgba(255,200,120,.5),transparent 42%)',[{opacity:0},{opacity:1,offset:.3},{opacity:0}],2400);
+    }else if(mode==='catch'){
+      drop(400);
+      screen.animate([{opacity:0,filter:'brightness(0)'},{opacity:1,filter:'brightness(.7)',offset:.1},{filter:'brightness(.05)',offset:.18},{filter:'brightness(.8)',offset:.28},{filter:'brightness(.15)',offset:.34},{filter:'brightness(.6)',offset:.5},{opacity:1,filter:'brightness(1)'}],{duration:2600,easing:'ease-out',fill:'backwards'});
+    }else if(mode==='match'){
+      drop(400);
+      f3sGlow('radial-gradient(circle at 50% 62%,#fff1c4 0,#ffb24a 3%,rgba(255,120,30,.35) 9%,transparent 18%)',[{opacity:0},{opacity:1,offset:.08},{opacity:.6,offset:.2},{opacity:.9,offset:.3},{opacity:0}],2600);
+      screen.animate([{clipPath:'circle(0% at 50% 62%)',filter:'sepia(.6) brightness(1.4)'},{clipPath:'circle(6% at 50% 62%)',offset:.25},{clipPath:'circle(150% at 50% 62%)',filter:'sepia(0) brightness(1)'}],{duration:2600,delay:200,easing:'cubic-bezier(.55,0,.25,1)',fill:'backwards'});
+    }else if(mode==='burn'){
+      drop(400);
+      f3sGlow('radial-gradient(ellipse at 40% 55%,#ffd79a,#ff8a2a 35%,rgba(120,30,0,.6) 65%,transparent 85%)',[{opacity:0},{opacity:1,offset:.35},{opacity:0}],1500);
+      screen.animate([{opacity:0,filter:'brightness(1.8) sepia(.6)'},{opacity:1,filter:'brightness(1) sepia(0)'}],{duration:1400,delay:450,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'});
+    }else if(mode==='sweep'){
+      drop(1400);
+      screen.animate([{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{duration:1300,easing:'cubic-bezier(.6,0,.3,1)',fill:'backwards'});
+      const band=document.createElement('div');band.className='f3s-glow f3s-band';$('#f3Stage').insertBefore(band,$('#f3sChapter'));
+      band.animate([{transform:'translateX(-40%)'},{transform:'translateX(340%)'}],{duration:1300,easing:'cubic-bezier(.6,0,.3,1)',fill:'forwards'}).finished.catch(()=>{}).then(()=>band.remove());
+    }else if(mode==='turn'){
+      old.forEach(s=>{s.style.zIndex=5;s.style.pointerEvents='none';s.style.transformOrigin='0 50%';
+        s.animate([{transform:'perspective(1600px) rotateY(0)',filter:'brightness(1)'},{transform:'perspective(1600px) rotateY(-95deg)',filter:'brightness(.3)'}],{duration:1100,easing:'cubic-bezier(.5,0,.6,1)',fill:'forwards'});
+        setTimeout(()=>s.remove(),1150);});
+    }
+  }
   function f3sMount(id,{fromChapter=false}={}){
     const def=F3S_SCREENS[id],stage=$('#f3Stage'),old=[...stage.querySelectorAll('.f3s-screen')];
     const screen=document.createElement('section');screen.className=`f3s-screen f3s-${def.kind}`+(fromChapter?' from-chapter':'');screen.dataset.screen=id;if(def.fit)screen.dataset.fit=def.fit;
@@ -2382,7 +2416,21 @@
     }
     stage.insertBefore(screen,$('#f3sChapter'));
     const img=screen.querySelector('.f3s-art');
-    const reveal=()=>{f3sFit(screen);requestAnimationFrame(()=>screen.classList.add('enter'));old.forEach(s=>{s.classList.add('leave');setTimeout(()=>s.remove(),1100);});if(def.kind==='transmission')f3sTypeTransmission(screen,def);};
+    // how this screen arrives: a puzzle's own lamp-light opening after its title card, a lamp sweep between questions,
+    // and a page turn from the last question to M's message. Anything else keeps the plain dissolve.
+    const prev=old[old.length-1],prevDef=prev&&F3S_SCREENS[prev.dataset.screen];
+    let mode=null;
+    if(!reducedMotion){
+      if(fromChapter)mode=F3S_OPENINGS[def.chapter]||'swing';
+      else if(prevDef&&prev.dataset.screen!==id&&Number.isInteger(prevDef.puzzle)&&prevDef.puzzle===def.puzzle)mode='sweep';
+      else if(prevDef&&Number.isInteger(prevDef.puzzle)&&!Number.isInteger(def.puzzle)&&(def.kind==='transmission'||def.kind==='message'))mode='turn';
+    }
+    const reveal=()=>{
+      f3sFit(screen);
+      if(mode){screen.classList.add('fx-on','enter');f3sArrive(screen,mode,old);}
+      else{requestAnimationFrame(()=>screen.classList.add('enter'));old.forEach(s=>{s.classList.add('leave');setTimeout(()=>s.remove(),1100);});}
+      if(def.kind==='transmission')f3sTypeTransmission(screen,def);
+    };
     if(img&&!img.complete){img.addEventListener('load',reveal,{once:true});img.addEventListener('error',reveal,{once:true});}else reveal();
   }
   function f3sBuildTransmission(screen,def){
