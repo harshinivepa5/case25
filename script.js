@@ -1926,7 +1926,7 @@
     if(!ov){
       ov=document.createElement('div');ov.className='file1-bars';ov.setAttribute('aria-hidden','true');
       for(let i=0;i<N;i++){const b=document.createElement('i');b.style.top=(i*100/N)+'%';b.style.height=(100/N+.4)+'%';ov.append(b);}
-      const lab=document.createElement('i');lab.className='fb-label';lab.textContent='ARCHIVE UNSEALED';ov.append(lab);host.append(ov);
+      const lab=document.createElement('i');lab.className='fb-label';lab.innerHTML='<b data-t="ARCHIVE UNSEALED">ARCHIVE UNSEALED</b><u></u><svg viewBox="0 0 600 120" aria-hidden="true"><path class="fb-drip" d="M168 6 v34 q0 8 -3 8 q-3 0 -3 -8 v-34z" fill="#8a0f0a"/><path class="fb-drip fb-d2" d="M332 6 v54 q0 9 -3.5 9 q-3.5 0 -3.5 -9 v-54z" fill="#7a0c08"/><path class="fb-drip fb-d3" d="M452 6 v22 q0 6 -2.5 6 q-2.5 0 -2.5 -6 v-22z" fill="#8a0f0a"/><circle cx="120" cy="64" r="2.2" fill="#6a0a07" opacity=".7"/><circle cx="486" cy="58" r="1.6" fill="#6a0a07" opacity=".6"/><circle cx="498" cy="70" r="1" fill="#6a0a07" opacity=".6"/></svg>';ov.append(lab);host.append(ov);
     }
     const bars=[...ov.querySelectorAll('i:not(.fb-label)')],lab=ov.querySelector('.fb-label');
     ov.classList.add('on');

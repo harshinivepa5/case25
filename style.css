@@ -2621,3 +2621,14 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .f4-head.qh h2{margin-top:10px}
 .f4-desk.with-side .f3s-side{margin-top:0}
 .f3s-side footer{display:none}
+
+/* ARCHIVE UNSEALED: stark white on black, a thin red cut, a trace of blood */
+.file1-bars .fb-label{top:44%;color:#f4efe8;font-weight:500;letter-spacing:.5em;text-shadow:none}
+.file1-bars .fb-label b{display:inline-block;font:inherit;font-weight:500;position:relative;text-shadow:-2px 0 rgba(200,18,12,.85),2px 0 rgba(255,255,255,.18),0 0 18px rgba(190,10,6,.45);animation:fbGlitch 2.4s steps(1) infinite}
+@keyframes fbGlitch{0%,100%{transform:none;opacity:1}9%{transform:translateX(-4px) skewX(-8deg)}10%{transform:translateX(3px)}11%{transform:none}47%{opacity:.35}48%{opacity:1}74%{transform:translateY(1px) scaleY(1.06)}75%{transform:none}}
+.file1-bars .fb-label u{display:block;width:min(34vw,420px);height:1px;margin:14px auto 0;background:linear-gradient(90deg,transparent,#c0170e 25%,#ff3a2a 50%,#c0170e 75%,transparent);box-shadow:0 0 10px rgba(220,20,12,.7);transform-origin:center;animation:fbCut 1.2s cubic-bezier(.5,0,.2,1) both}
+@keyframes fbCut{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
+.file1-bars .fb-label svg{position:absolute;left:50%;top:-28px;width:min(52vw,640px);height:auto;transform:translateX(-50%);overflow:visible;pointer-events:none}
+.file1-bars .fb-drip{transform-box:fill-box;transform-origin:50% 0;animation:fbDrip 2.4s ease-in .5s both}
+.file1-bars .fb-d2{animation-delay:.9s}.file1-bars .fb-d3{animation-delay:1.3s}
+@keyframes fbDrip{from{transform:scaleY(0);opacity:0}15%{opacity:1}to{transform:scaleY(1);opacity:.9}}
