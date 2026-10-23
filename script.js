@@ -2118,11 +2118,12 @@
   };
   const F3S_SCREENS={
     opening:{kind:'transmission',kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'ARCHIVE FRAGMENT 005',title:'WHAT REMAINS',text:F3_OPENING,next:'p1-cover'},
-    'p1-cover':{kind:'cover',chapter:0,begin:[545,676,373,62],next:'p1-q1'},
+    'p1-cover':{kind:'cover',chapter:0,begin:[545,676,373,62],next:'p1-read'},
+    'p1-read':{kind:'live',puzzle:0,build:screen=>p1BuildRead(screen)},
     'p1-q1':{kind:'choice',puzzle:0,opt:[[434,390,656,55],[434,456,656,56],[434,521,656,56]],radio:[470,13],submit:[597,608,329,51],answer:0,options:F3_QUESTIONS[0].options,hint:F3_QUESTIONS[0].hint,explain:F3_QUESTIONS[0].explain,next:'p1-q2'},
     'p1-q2':{kind:'choice',puzzle:0,opt:[[382,387,716,55],[382,452,716,55],[382,517,716,55],[382,582,716,55]],radio:[421,13],submit:[550,664,385,57],answer:1,options:F3_QUESTIONS[1].options,hint:F3_QUESTIONS[1].hint,explain:F3_QUESTIONS[1].explain,next:'p1-q3'},
     'p1-q3':{kind:'choice',puzzle:0,opt:[[382,409,708,55],[382,472,708,55],[382,536,708,54],[382,598,708,54]],radio:[418,13],submit:[547,680,375,54],answer:1,options:['Yes, it’s a verified record.','No, it’s not reliable enough.','Only some of the matches can be trusted.','Not enough information to say.'],hint:'Who verified the allocation sheet? Look for original approvals or signatures, and for bank confirmations behind each match.',explain:'The allocation sheet (PA-07) is an unverified copy. Its invoice matches are suggestions, not independently established facts: there are no original approvals or signatures and no supporting bank confirmations.',next:'p1-q4'},
-    'p1-q4':{kind:'written',puzzle:0,text:[380,582,770,106],submit:[583,708,371,52],grade:t=>validateFinalDeduction(t),hint:'Name the three underlying transfers and their invoices, explain T-31-R and NQ-104-R, describe PA-07 as unverified, and say what the records cannot prove.',model:F3S_MODELS['p1-q4'],next:'p1-end'},
+    'p1-q4':{kind:'written',puzzle:0,text:[380,582,770,106],submit:[583,708,371,52],grade:t=>p1Deduction(t),hint:'Name the three underlying transfers and their invoices, explain T-31-R and NQ-104-R, describe PA-07 as unverified, and say what the records cannot prove.',model:F3S_MODELS['p1-q4'],next:'p1-end'},
     'p1-end':{kind:'message',cont:[996,825,426,71],next:'p2-cover'},
     'p2-cover':{kind:'cover',chapter:1,begin:[482,637,373,64],review:[[[36,140,300,92],0]],next:'p2-q1'},
     'p2-q1':{kind:'written',puzzle:1,docs:'p2',docBtn:[636,814,400,44],text:[450,543,755,140],submit:[618,704,418,63],grade:t=>evaluateP2(t,0),hint:P2_QUESTIONS[0].hint,model:P2_QUESTIONS[0].explain,next:'p2-q2'},
@@ -2185,6 +2186,7 @@
   function f3sGo(id,{resume=false}={}){
     const def=F3S_SCREENS[id];if(!def)return;
     ensureSound();
+    $('#f3sP1Docs').hidden=!/^p1-q/.test(id);
     if(id===f3s.reviewFrom)f3s.reviewFrom=null;
     f3s.screen=id;saveF3S();
     $('#f3sList').hidden=!Number.isInteger(def.puzzle);$('#f3sList').dataset.target=['p1-cover','p2-cover','p3-cover','p4-cover'][def.puzzle]||'';
@@ -2483,6 +2485,44 @@
     const c=audioContext,t0=c.currentTime;
     const tone=(f,d,type='sine',v=.08,f2=0,delay=0)=>{const o=c.createOscillator(),g=c.createGain(),t=t0+delay;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(Math.min(v*7,.9),t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);};
     ({click:()=>tone(620,.05,'square',.02),good:()=>{tone(523,.6,'sine',.06);tone(784,.7,'sine',.05,0,.12);},bad:()=>tone(120,.4,'sawtooth',.05,70),stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);},paper:()=>{const n=c.sampleRate*.45|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1700;g.gain.value=.4;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);}})[kind]?.();
+  }
+  // ---------------------------------------------------------------------------------------------
+  // File 003, puzzle 1: the five documents are read first, then stay one click away during the questions.
+  const P1_DOCS=[['DOCUMENT 1','Statement of Account'],['DOCUMENT 2','Invoice Register'],['DOCUMENT 3','Bank Export'],['DOCUMENT 4','Payment Allocation Sheet'],['DOCUMENT 5','Internal Memo']];
+  function p1Viewer(host,start,onOpen){
+    host.innerHTML=`<div class="p1v-tabs">${P1_DOCS.map(([a,b],i)=>`<button type="button" class="p1v-tab" data-i="${i}"><small>${a}</small>${b}</button>`).join('')}</div><div class="p1v-frame"><img alt=""></div>`;
+    const img=host.querySelector('img'),tabs=[...host.querySelectorAll('.p1v-tab')];
+    const show=i=>{img.src=`assets/file-003/docs/p1-doc-${i+1}.jpg`;img.alt=P1_DOCS[i][1];tabs.forEach((t,n)=>{t.classList.toggle('on',n===i);if(n===i)t.classList.add('seen');});if(onOpen)onOpen(i);};
+    tabs.forEach((t,i)=>t.addEventListener('click',()=>{sfx('click');show(i);}));
+    show(start);
+  }
+  function p1BuildRead(screen){
+    screen.classList.add('f4-screen');
+    const {docs,task}=f4Desk(screen,{file:'FILE 003 · PUZZLE 01',step:'READ THE RECORDS',title:'PROJECT NORTH QUAY',lead:'Five documents from the expansion account. Open each one and read it carefully. You can reopen them during the questions.'});
+    docs.classList.add('p1v-docs');
+    task.innerHTML=`<p class="f4-step">DOCUMENTS OPENED <b class="p1v-count">0 / 5</b></p><p class="f4-q">Not every entry represents a separate event.</p><p class="f4-sub">Open all five documents to begin the questions.</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit" disabled>BEGIN THE QUESTIONS →</button></div>`;
+    const btn=task.querySelector('.f4-submit'),count=task.querySelector('.p1v-count'),seen=new Set();
+    p1Viewer(docs,0,i=>{seen.add(i);count.textContent=`${seen.size} / 5`;btn.disabled=seen.size<5;});
+    btn.addEventListener('click',()=>f3sGo('p1-q1'));
+  }
+  function p1OpenDocs(){
+    if(!$('#f3sChapter').hidden)return;
+    f3sModal({tone:'p1docs',title:'EVIDENCE FILES',body:'<div class="p1v-modal"></div>',actions:[['BACK TO THE QUESTION',f3sCloseModal]]});
+    p1Viewer(document.querySelector('#f3sModal .p1v-modal'),0);
+  }
+  $('#f3sP1Docs').addEventListener('click',p1OpenDocs);
+  // Puzzle 1's final question asks for the paid invoices, the unconfirmed one, and the evidence — and grades exactly that.
+  function p1Deduction(text){
+    const t=String(text||'').toLowerCase();
+    const paid=[/nq\s*[-–]?104(?!\s*[-–]?r)/,/nq\s*[-–]?118/,/nq\s*[-–]?123/,/t\s*[-–]?17/,/t\s*[-–]?22/,/t\s*[-–]?31(?!\s*[-–]?r)/].filter(re=>re.test(t)).length;
+    const unconfirmed=/nq\s*[-–]?104\s*[-–]?r/.test(t)&&/(unconfirm|not.{0,25}(paid|payment|confirm)|no.{0,25}(payment|confirm)|revis|replac|duplicate)/.test(t);
+    const replay=/t\s*[-–]?31\s*[-–]?r/.test(t)&&/(replay|duplicate|repeat|not.{0,20}(separate|additional|new))/.test(t);
+    const support=/(bank export|bank statement|statement of account|memo|register|allocation|pa-07|approval|signature|unverified|discrepan|2[.]4)/.test(t);
+    const missing=[];
+    if(paid<3)missing.push('Name which invoices were paid, using the references: T-17 / NQ-104, T-22 / NQ-118, T-31 / NQ-123.');
+    if(!unconfirmed)missing.push('Say which invoice did not receive a confirmed payment (NQ-104-R) and why.');
+    if(!(replay||support))missing.push('Point to evidence in the documents, such as the replay row T-31-R or the unverified allocation sheet.');
+    return {accepted:!missing.length,missing};
   }
   const P4_STORY={kicker:'FILE 003 · PUZZLE 04',eyebrow:'LAKE ASH · OCTOBER 14',title:'THE LAST NIGHT AT LAKE ASH',button:'EXAMINE THE EVIDENCE',text:`Until now, you have read what the records could not prove.\n\nThe police have since reopened the lake evidence.\n\nA boat. A toll receipt. A laboratory note. And the last message Thomas Reed ever sent.\n\nSeven documents. One night.\n\nDecide what they mean.`};
   const P5_STORY={kicker:'FILE 003 · PUZZLE 05',eyebrow:'OCTOBER 16 · INTERVIEW ROOM 2',title:'THE CONFRONTATION',button:'BEGIN THE INTERVIEW',text:`Peter Shaw agreed to be interviewed.\n\nHe came alone. He declined a lawyer.\n\nThe recording starts now.\n\nHe will answer four questions.\n\nFor each answer, find the document that says otherwise.`};

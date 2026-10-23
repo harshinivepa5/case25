@@ -2263,3 +2263,15 @@ body:has(#secretLevelScene.active) #devFile02Button{display:none}
 #devFile03Button:hover{background:#2b1c0d;color:#ffe0a0}
 body.wall-cinematic #devFile03Button{opacity:0;pointer-events:none;transition:opacity .4s}
 body:has(#secretLevelScene.active) #devFile03Button{display:none}
+
+/* Puzzle 1: document reader and the always-available documents button */
+.f3s-p1docs{position:absolute;z-index:80;right:20px;top:20px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:11px var(--mono);letter-spacing:.12em;cursor:pointer}
+.f3s-p1docs:hover{background:#2b1c0d;color:#ffe0a0}.f3s-p1docs[hidden]{display:none}
+.f4-docs.p1v-docs{display:block}
+.p1v-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.p1v-tab{padding:8px 12px;border:1px solid rgba(201,154,85,.4);background:rgba(233,212,170,.06);color:#d9c6a3;font:12px var(--mono);letter-spacing:.04em;text-align:left;cursor:pointer}
+.p1v-tab small{display:block;color:#c99a55;font-size:10px;letter-spacing:.16em}
+.p1v-tab.seen:not(.on){border-color:rgba(201,154,85,.75)}.p1v-tab.on{background:rgba(230,170,80,.18);border-color:#e6b866;color:#fff1d0}
+.p1v-frame img{display:block;width:100%;height:auto;max-height:calc(100vh - 300px);object-fit:contain;border:1px solid rgba(201,154,85,.35);box-shadow:0 14px 34px rgba(0,0,0,.6);background:#0a0705}
+.f3s-modal.tone-p1docs{--tone:#8f7a5a}.f3s-modal.tone-p1docs .f3s-modal-card{width:min(1180px,100%)}
+.f3s-modal.tone-p1docs .p1v-frame img{max-height:calc(100vh - 260px)}
