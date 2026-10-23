@@ -2787,3 +2787,4 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .ar-photo i{display:block;margin-top:4px;font:italic 11px var(--serif);color:#4a3a28}
 .ar-go{position:absolute;right:clamp(16px,5vw,60px);bottom:clamp(60px,10vh,100px);animation:f3ContinueIn 1s ease both}
 @media(max-width:700px){.ar-paper-body{grid-template-columns:1fr}}
+#devFile03Button,#devPuzzle4Button{display:none!important}
