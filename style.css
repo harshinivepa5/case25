@@ -2411,3 +2411,7 @@ body.wall-cinematic #buildTag{opacity:0}
 .cine-lines p.gone{display:none}
 .cine-lines p{font-size:clamp(15px,1.25vw,18px)}
 @media(max-width:760px){.cine-text{top:auto;bottom:8vh;height:66vh;padding:18px 18px 14px}}
+
+/* after File 02: the wall waits with both files closed until CONTINUE reveals File 03 */
+.home.await-file-three:not(.wall-three-intro) #continueFileThree{display:inline-block!important;animation:f3ContinueIn 1.2s 1.2s ease both}
+@keyframes f3ContinueIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}

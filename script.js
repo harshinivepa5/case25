@@ -129,6 +129,7 @@
     // Files open one at a time: File 03's card stays off the wall until File 02 is finished.
     // (file03WallSeen === false means File 02 was just finished and the File 03 reveal has not played yet.)
     $('#homeScene').classList.toggle('file-three-locked', !secondComplete || progress.file03WallSeen === false);
+    $('#homeScene').classList.toggle('await-file-three', secondComplete && progress.file03WallSeen === false);
     // The spotlight follows the file the player should open next; finished files fall back into the dark.
     const thirdDone = !!progress.file03PuzzleComplete, thirdOpen = secondComplete && progress.file03WallSeen !== false;
     const fourthOpen = thirdDone && progress.file04WallSeen !== false, fourthDone = !!progress.file04Complete;
@@ -1344,8 +1345,8 @@
     progress.fileTwoComplete = true;
     if (progress.file03WallSeen !== true) progress.file03WallSeen = false;
     persistProgress();
+    // land on the wall with File 01 and File 02 both closed; File 03 appears only when the player presses CONTINUE
     showHomeBoard();
-    if (progress.file03WallSeen === false) playFile03Reveal();
   }
 
   // Evidence 001. The text is the page's own copy: every text node is split into a typed part and a hidden part,
@@ -1547,7 +1548,8 @@
   }
 
   $('#continueFileThree')?.addEventListener('click', () => {
-    startFile03CinematicReveal();
+    $('#homeScene').classList.remove('await-file-three');
+    playFile03Reveal();
   });
 
   $('#f3InvestigateBtn')?.addEventListener('click', () => {
@@ -2659,12 +2661,12 @@
   }
   function p1BuildRead(screen){
     screen.classList.add('f4-screen');
-    const {docs,task}=f4Desk(screen,{file:'FILE 003 · PUZZLE 01',step:'READ THE RECORDS',title:'PROJECT NORTH QUAY',lead:'Five documents from the expansion account. Open each one and read it carefully. You can reopen them during the questions.'});
+    const {docs,task}=f4Desk(screen,{file:'FILE 003 · PUZZLE 01',step:'READ THE RECORDS',title:'PROJECT NORTH QUAY',lead:'Five documents from the expansion account. Open them here or use the physical copies. You can reopen them during the questions.'});
     docs.classList.add('p1v-docs');
-    task.innerHTML=`<p class="f4-step">DOCUMENTS OPENED <b class="p1v-count">0 / 5</b></p><p class="f4-q">Not every entry represents a separate event.</p><p class="f4-sub">Open all five documents to begin the questions.</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit" disabled>BEGIN THE QUESTIONS →</button></div>`;
+    task.innerHTML=`<p class="f4-step">DOCUMENTS OPENED <b class="p1v-count">0 / 5</b></p><p class="f4-q">Not every entry represents a separate event.</p><p class="f4-sub">Read them here or on the physical copies. Begin when you are ready.</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit">BEGIN THE QUESTIONS →</button></div>`;
     const btn=task.querySelector('.f4-submit'),count=task.querySelector('.p1v-count'),seen=new Set();
-    p1Viewer(docs,0,i=>{seen.add(i);count.textContent=`${seen.size} / 5`;btn.disabled=seen.size<5;});
-    btn.addEventListener('click',()=>{if(seen.size<5)return;f3s.live=f3s.live||{};f3s.live.p1read=true;saveF3S();f3sGo('p1-q1');});
+    p1Viewer(docs,0,i=>{seen.add(i);count.textContent=`${seen.size} / 5`;});
+    btn.addEventListener('click',()=>{f3s.live=f3s.live||{};f3s.live.p1read=true;saveF3S();f3sGo('p1-q1');});
   }
   function p1OpenDocs(){
     if(!$('#f3sChapter').hidden)return;
