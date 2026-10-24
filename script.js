@@ -3247,13 +3247,13 @@ Do not look away from it.
 — M`};
   const P5_STORY={kicker:'FILE 003 · PUZZLE 05',eyebrow:'OCTOBER 16 · INTERVIEW ROOM 2',title:'THE FINAL TRANSMISSION',button:'BEGIN THE INTERVIEW',hand:true,text:`Peter Shaw agreed to be interviewed.\nHe came alone. He declined a lawyer.\n\nThe tape is running.\n\nFour questions.\nFour answers, each one certain.\n\n!Every answer has a paper that says otherwise.`};
   const P4_DOCS=[
-    {tag:'BOAT HIRE SLIP',date:'Tue 14 Oct · 17:40',title:'Lake Ash Boat Hire — east dock',body:'Hirer: P. Shaw (signed)\nBoat: No. 6, rowing skiff with outboard\nPaid: card ending 4417 — The Lantern company account\nID: not checked (self-service kiosk)\nDue back: 21:00\nStatus: NOT RETURNED'},
-    {tag:'TOLL RECEIPT',date:'14 Oct · 21:00 · verified gate clock',title:'Lake Ash Road — toll gate',body:'Vehicle: car, towards the lake\nPaid: card ending 4417\nCardholder: P. Shaw, The Lantern'},
-    {tag:'POLICE ROUTE NOTE',date:'16 Oct',title:'Drive time, The Lantern to the toll gate',body:'Measured at normal speed: 41 minutes.\nThe Lantern exit camera: a vehicle enters the frame at displayed 20:16:11 and leaves the exit at 20:19:04.\nThe camera clock has not been independently checked.'},
-    {tag:'LABORATORY NOTE',date:'15 Oct',title:'Blood on the boat gunwale',body:'Blood type A positive — consistent with Thomas Reed’s medical file.\nSample degraded. DNA inconclusive.\nLake Ash at the east dock: 38 m deep, cold. Remains rarely surface.'},
-    {tag:'BUY–SELL AGREEMENT',date:'Signed 2019',title:'The Lantern — partners’ agreement',body:'If either partner dies, the surviving partner acquires 100% of the business.\nEstimated value: ₹5 crore.'},
-    {tag:'MESSAGE LOG',date:'14 Oct · 19:58',title:'Thomas Reed → Peter Shaw',body:'“Tomorrow I tell the board about the 2.40 crore. Don’t make this harder than it is.”\nStatus: delivered, read 19:59.'},
-    {tag:'TRAVEL RECORD',date:'14 Oct',title:'Elena Ward — flight record',body:'Boarded 19:15. Departure 19:40.\nOutbound international flight.\nReturn: not booked.'}
+    {kind:'receipt',head:'LAKE ASH BOAT HIRE',sub:'EAST DOCK · SELF-SERVICE KIOSK 02',tag:'BOAT HIRE SLIP',date:'Tue 14 Oct · 17:40',title:'Lake Ash Boat Hire — east dock',body:'Hirer: P. Shaw (signed)\nBoat: No. 6, rowing skiff with outboard\nPaid: card ending 4417 — The Lantern company account\nID: not checked (self-service kiosk)\nDue back: 21:00\nStatus: NOT RETURNED'},
+    {kind:'receipt',head:'LAKE ASH ROAD',sub:'TOLL GATE 1 · NORTHBOUND',tag:'TOLL RECEIPT',date:'14 Oct · 21:00 · verified gate clock',title:'Lake Ash Road — toll gate',body:'Vehicle: car, towards the lake\nPaid: card ending 4417\nCardholder: P. Shaw, The Lantern'},
+    {kind:'memo',tag:'POLICE ROUTE NOTE',date:'16 Oct',title:'Drive time, The Lantern to the toll gate',body:'Measured at normal speed: 41 minutes.\nThe Lantern exit camera: a vehicle enters the frame at displayed 20:16:11 and leaves the exit at 20:19:04.\nThe camera clock has not been independently checked.'},
+    {kind:'lab',tag:'LABORATORY NOTE',date:'15 Oct',title:'Blood on the boat gunwale',body:'Blood type A positive — consistent with Thomas Reed’s medical file.\nSample degraded. DNA inconclusive.\nLake Ash at the east dock: 38 m deep, cold. Remains rarely surface.'},
+    {kind:'legal',tag:'BUY–SELL AGREEMENT',date:'Signed 2019',title:'The Lantern — partners’ agreement',body:'If either partner dies, the surviving partner acquires 100% of the business.\nEstimated value: ₹5 crore.'},
+    {kind:'chat',tag:'MESSAGE LOG',date:'14 Oct · 19:58',title:'Thomas Reed → Peter Shaw',body:'“Tomorrow I tell the board about the 2.40 crore. Don’t make this harder than it is.”\nStatus: delivered, read 19:59.'},
+    {kind:'flight',tag:'TRAVEL RECORD',date:'14 Oct',title:'Elena Ward — flight record',body:'Boarded 19:15. Departure 19:40.\nOutbound international flight.\nReturn: not booked.'}
   ];
   const P4_QS=[
     {q:'What does the hire slip establish?',options:['Peter was seen rowing the boat that night.','A boat was hired in Peter’s name, on his company card, hours before Thomas disappeared — and it was never returned.','Thomas hired the boat for himself.','The hire was routine and means nothing.'],answer:1,hint:'Read the hirer, the card and the time. The slip shows whose name the boat was hired under — not who was in it.',explain:'The slip puts Peter’s name and company card on a boat hired at 17:40, before Thomas left The Lantern, and the boat never came back. It does not prove who was aboard, but it is the first link in the chain.'},
@@ -3412,7 +3412,20 @@ Do not look away from it.
   function f4BuildStory(screen,id){
     cineStory(screen,F4_STORY[id],{s1:'concert',s2:'fire',s4:'lake',final:'signal'}[id],()=>{const next=f4Next(id);if(next)f4Go(next);else f4Finish();});
   }
-  const f4Doc=(d,extra='')=>`<article class="f4-doc" ${extra}><small>${f3sEsc(d.tag)}</small><time>${f3sEsc(d.date)}</time><h4>${f3sEsc(d.title)}</h4><p>${f3sEsc(d.body)}</p>${d.note?`<p class="f4-hand">${f3sEsc(d.note)}</p>`:''}</article>`;
+  // Evidence documents. Each kind of record looks like the real thing: a thermal kiosk slip, a police memo, a lab report,
+  // a signed agreement, a phone chat, a flight record. Anything else is a typed case card with a clip and a stamp.
+  const f4Rows=body=>body.split('\n').map(l=>{const m=l.match(/^([^:]{2,22}):\s*(.+)$/);return m?`<div class="dr"><span>${f3sEsc(m[1])}</span><b>${f3sEsc(m[2])}</b></div>`:`<div class="dl">${f3sEsc(l)}</div>`;}).join('');
+  const f4Doc=(d,extra='')=>{
+    const e=f3sEsc,note=d.note?`<p class="f4-hand">${e(d.note)}</p>`:'',lines=d.body.split('\n');
+    if(d.kind==='receipt')return `<article class="f4-doc dk-receipt" ${extra}><header><b>${e(d.head)}</b><small>${e(d.sub)}</small></header><div class="dr"><span>DATE / TIME</span><b>${e(d.date)}</b></div><hr>${f4Rows(d.body)}<hr><footer>${e(d.tag)} · KEEP THIS SLIP</footer></article>`;
+    if(d.kind==='memo')return `<article class="f4-doc dk-memo" ${extra}><header><b>LAKE ASH POLICE</b><small>CID · CASE LA-1014 · INTERNAL NOTE</small><time>${e(d.date)}</time></header><h4>RE: ${e(d.title)}</h4><p>${e(d.body)}</p><i class="dk-stamp">FILED</i></article>`;
+    if(d.kind==='lab')return `<article class="f4-doc dk-lab" ${extra}><header><i>FSL</i><div><b>STATE FORENSIC LABORATORY</b><small>BIOLOGY &amp; SEROLOGY · REPORT ${e(d.date)}</small></div></header><h4>${e(d.title)}</h4>${lines.map(l=>`<p>${e(l)}</p>`).join('')}<footer>ANALYST: DR. S. IYER</footer></article>`;
+    if(d.kind==='legal')return `<article class="f4-doc dk-legal" ${extra}><h4>${e(d.tag)}</h4><small>${e(d.title)} · ${e(d.date)}</small>${lines.map((l,i)=>`<p class="cl"><b>${i?'Schedule A.':'Clause 7.'}</b> ${e(l)}</p>`).join('')}<div class="sigs"><span><em>Thomas Reed</em>T. REED</span><span><em>P. Shaw</em>P. SHAW</span></div><i class="dk-stamp">NOTARISED</i></article>`;
+    if(d.kind==='chat'){const [who,to]=d.title.split(/\s*→\s*/),q=lines[0].replace(/^“|”$/g,''),st=lines.slice(1).join(' ');
+      return `<article class="f4-doc dk-chat" ${extra}><header>← ${e(to||who)}</header><div class="chat"><small>${e(d.date.split('·')[0].trim())}</small><p>${e(q)}<span>${e(st.replace(/^Status:\s*/,''))}</span></p></div><footer>${e(d.tag)} · FROM ${e((who||'').toUpperCase())}’S PHONE</footer></article>`;}
+    if(d.kind==='flight')return `<article class="f4-doc dk-flight" ${extra}><header><b>✈ PASSENGER RECORD</b><span>${e(d.date)}</span></header><h4>${e(d.title.replace(/\s*—.*$/,'').toUpperCase())}</h4>${f4Rows(lines.map(l=>l.replace(/^Boarded /,'Boarded: ').replace(/\. Departure /,'\nDeparture: ').replace(/^Return: /,'Return: ')).join('\n'))}<i class="dk-stamp">VERIFIED</i></article>`;
+    return `<article class="f4-doc dk-card" ${extra}><i class="dk-clip"></i><small>${e(d.tag)}</small><time>${e(d.date)}</time><h4>${e(d.title)}</h4><p>${e(d.body)}</p>${note}</article>`;
+  };
   function f4Desk(screen,{step,title,lead,file='FILE 004 · THE LANTERN FIRE'}){
     screen.classList.add('f4-desk-screen');
     screen.innerHTML=`<div class="f4-desk-bg"></div><div class="f4-desk"><header class="f4-head"><small>${f3sEsc(file)} · ${f3sEsc(step)}</small><h2>${f3sEsc(title)}</h2><p>${f3sEsc(lead)}</p></header><div class="f4-docs"></div><section class="f4-task" aria-live="polite"></section></div>`;
