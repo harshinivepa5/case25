@@ -1062,7 +1062,7 @@
     </svg>
     <div class="ar-wash r"></div><div class="ar-wash b"></div><div class="ar-rain"></div><div class="ar-flash"></div>
     <div class="ar-cap"><small></small><b></b></div>
-    <div class="ar-paper"><header><span>THE LAKE ASH COURIER</span><span>THURSDAY 16 OCTOBER</span></header><h1></h1><div class="ar-paper-body"><div class="ar-photo"><svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#2b2b2b"/><rect x="40" y="40" width="150" height="150" fill="#3c3c3c"/><rect x="90" y="110" width="40" height="80" fill="#9a9a9a"/><g fill="#111" transform="translate(240 230) scale(.55)">${[-70,0,72].map(x=>`<g transform="translate(${x} 0)"><circle cx="0" cy="-190" r="17"/><path d="M-26 -168 Q0 -178 26 -168 L32 -80 L-32 -80Z"/><path d="M-28 -82 L-24 0 L-8 0 L0 -60 L8 0 L24 0 L28 -82Z"/></g>`).join('')}</g></svg><i>Peter Shaw is led from The Lantern in the early hours.</i></div><p>Peter Shaw, co-owner of The Lantern, was charged last night after boat-hire and card records placed him at the lake on the night Thomas Reed vanished.</p><p>Police say the evidence is “clear and documented”. Mr Shaw denies the charge.</p></div></div>
+    <div class="ar-paper"><header><span>THE LAKE ASH COURIER</span><span>FRIDAY 17 OCTOBER</span></header><h1></h1><div class="ar-paper-body"><div class="ar-photo"><svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#2b2b2b"/><rect x="40" y="40" width="150" height="150" fill="#3c3c3c"/><rect x="90" y="110" width="40" height="80" fill="#9a9a9a"/><g fill="#111" transform="translate(240 230) scale(.55)">${[-70,0,72].map(x=>`<g transform="translate(${x} 0)"><circle cx="0" cy="-190" r="17"/><path d="M-26 -168 Q0 -178 26 -168 L32 -80 L-32 -80Z"/><path d="M-28 -82 L-24 0 L-8 0 L0 -60 L8 0 L24 0 L28 -82Z"/></g>`).join('')}</g></svg><i>Peter Shaw is led from The Lantern late on Thursday night.</i></div><p>Peter Shaw, co-owner of The Lantern, was charged last night after boat-hire and card records placed him at the lake on the night Thomas Reed vanished.</p><p>Police say the evidence is “clear and documented”. Mr Shaw denies the charge.</p></div></div>
     <button type="button" class="f4-btn ar-go" hidden>CONTINUE →</button></div>`;
     const st=screen.querySelector('.ar-stage'),group=st.querySelector('.ar-group'),cap=st.querySelector('.ar-cap'),flash=st.querySelector('.ar-flash'),paper=st.querySelector('.ar-paper'),go=st.querySelector('.ar-go');
     const T=(ms,fn)=>laterWait(()=>{if(screen.isConnected)fn();},reducedMotion?0:ms);
@@ -1080,7 +1080,7 @@
     sirenSfx(9500);
     group.animate([{transform:'translate(560px,682px) scale(.82)',opacity:0},{opacity:1,offset:.08},{transform:'translate(1080px,700px) scale(1.08)'}],{duration:6200,delay:1600,easing:'linear',fill:'both'});
     st.querySelectorAll('.ar-bob').forEach((n,i)=>n.animate([{transform:'translateY(0)'},{transform:'translateY(-5px)'},{transform:'translateY(0)'}],{duration:620,iterations:Infinity,delay:i*90}));
-    T(900,()=>{cap.querySelector('small').classList.add('on');type(cap.querySelector('small'),'16 OCTOBER · 05:52 · OUTSIDE THE LANTERN',40);});
+    T(900,()=>{cap.querySelector('small').classList.add('on');type(cap.querySelector('small'),'16 OCTOBER · 22:40 · OUTSIDE THE LANTERN',40);});
     T(3200,()=>{type(cap.querySelector('b'),'Peter Shaw is taken into custody.',55);});
     [2400,3100,3350,4700,5600,5800,6900].forEach(ms=>T(ms,()=>flashOnce(.35+Math.random()*.4)));
     T(4300,()=>sfx('key'));
@@ -3327,7 +3327,7 @@ Do not look away from it.
     });
     paint();
   }
-  const P5_EV={SL:'Boat hire slip — Peter’s name and card, 17:40',TL:'Toll receipt — card 4417, 21:00',CL:'Police call log — 06:12, the morning after',AG:'Buy–sell agreement — the survivor gets 100%',MS:'Message log — Thomas to Peter, 19:58',TR:'Travel record — Elena Ward, 19:15 flight',LB:'Laboratory note — blood on the boat',RN:'Route note — the 41-minute drive'};
+  const P5_EV={SL:'Boat hire slip — Peter’s name and card, 17:40',TL:'Toll receipt — card 4417, 21:00',CL:'Police call log — 06:12 next morning, Peter: “check the east dock”',AG:'Buy–sell agreement — the survivor gets 100%',MS:'Message log — Thomas to Peter, 19:58',TR:'Travel record — Elena Ward, 19:15 flight',LB:'Laboratory note — blood on the boat',RN:'Route note — the 41-minute drive'};
   const P5_ROUNDS=[
     {ask:'When were you last at Lake Ash?',say:'I haven’t been to Lake Ash since the summer.',opts:['TR','SL','LB','RN'],answer:1,hint:'Which document puts Peter’s name at the lake on the night of the 14th?',explain:'A boat was hired at Lake Ash at 17:40 on the 14th, in his name, on his card.',label:'BOAT HIRE SLIP',react:'Anyone can write a name on a slip.'},
     {ask:'Where were you after Thomas left?',say:'I stayed in the office after he left at ten past eight. I never left The Lantern.',opts:['AG','LB','TL','TR'],answer:2,hint:'Which document shows his card moving away from The Lantern that night?',explain:'His card was used at the Lake Ash toll gate at 21:00 — a 41-minute drive from the car that left The Lantern at 20:19.',label:'TOLL RECEIPT',react:'…That card was in my wallet. It was always in my wallet.'},
