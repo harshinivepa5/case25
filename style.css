@@ -2931,3 +2931,13 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 .cliff.sent .cliff-meta{color:#d9c39a}
 .cliff-go{margin-top:-34px}
 #devCliffButton,#devPuzzle4Button,#devFile03Button{display:none!important}
+/* Puzzle 1: corrected question count and four progress dots over the painted ones */
+.f3s-qcount,.f3s-qdots{position:absolute;left:calc(var(--x)*var(--u)*1px);top:calc(var(--y)*var(--u)*1px);width:calc(var(--w)*var(--u)*1px);height:calc(var(--h)*var(--u)*1px);z-index:3;pointer-events:none;background:#0c0a08;box-shadow:0 0 calc(var(--u)*6px) calc(var(--u)*5px) #0c0a08}
+.f3s-qcount{display:flex;align-items:center;color:#ece2cf;font:calc(var(--u)*17.5px) 'Courier Prime','Courier New',var(--mono);letter-spacing:.03em;white-space:nowrap}
+.f3s-qdots{display:flex;align-items:center;justify-content:flex-end;gap:calc(var(--u)*7px)}
+.f3s-qdots i{position:relative;width:calc(var(--u)*17px);height:calc(var(--u)*17px);border-radius:50%;border:calc(var(--u)*1.6px) solid #a8977a;box-sizing:border-box}
+.f3s-qdots i.on{background:#e3a44c;border-color:#e3a44c;box-shadow:0 0 calc(var(--u)*6px) rgba(227,164,76,.6)}
+.f3s-qdots i.done{background:#e6dccb;border-color:#e6dccb}
+.f3s-qdots i.done:after{content:'';position:absolute;left:28%;top:18%;width:28%;height:46%;border:solid #1a140e;border-width:0 calc(var(--u)*2px) calc(var(--u)*2px) 0;transform:rotate(40deg)}
+/* live build: no testing controls */
+#f3sSkip,#backButton{display:none!important}
