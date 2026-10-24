@@ -2643,26 +2643,35 @@
     }
   }
   // A case sidebar on the live puzzle pages, like the painted ones: the five puzzles, the current one marked, and the step.
+  // Puzzle 4 has four questions. Puzzle 5 has six: the four interview rounds, the conclusion and Who is M.
+  const F3S_STEPS={4:{steps:['THE BOAT','THE ROAD','THE BLOOD','BUILD THE CASE'],names:['THE HIRE SLIP','THE ROAD TO THE LAKE','THE BLOOD ON THE BOAT','BUILD THE CASE']},
+    5:{steps:['ROUND 1','ROUND 2','ROUND 3','ROUND 4','THE CONCLUSION','WHO IS M?'],names:['THE INTERVIEW · ROUND 1','THE INTERVIEW · ROUND 2','THE INTERVIEW · ROUND 3','THE INTERVIEW · ROUND 4','THE CONCLUSION','WHO IS M?']}};
+  const f3sQIndex=(P,q)=>P===5?({1:1,2:5,3:6})[q]:q;
   function f3sSide(screen,id){
     const m=id.match(/^p([45])-q(\d)$/),desk=screen.querySelector('.f4-desk');if(!m||!desk)return;
-    const P=Number(m[1]),q=Number(m[2]),steps=P===4?['THE BOAT','THE ROAD','THE BLOOD','BUILD THE CASE']:['THE INTERVIEW','THE CONCLUSION','WHO IS M?'];
+    const P=Number(m[1]),{steps}=F3S_STEPS[P];
     desk.classList.add('with-side');
     // header in the same layout as puzzles 1 to 3: a paper tag with the puzzle's name, the question count with its dots,
     // and the question's own title
-    const names=P===4?['THE HIRE SLIP','THE ROAD TO THE LAKE','THE BLOOD ON THE BOAT','BUILD THE CASE']:['THE INTERVIEW','THE CONCLUSION','WHO IS M?'];
     const head=desk.querySelector('.f4-head');
     if(head){
       const lead=head.querySelector('p')?.textContent||'';
       head.className='f4-head qh';
-      head.innerHTML=`<div class="qh-tag"><span>${f3sEsc(F3S_CHAPTERS[P-1][1])}</span></div>
-        <div class="qh-count">QUESTION 0${q} / 0${steps.length}<span>${steps.map((_,i)=>`<i class="${i<q-1?'done':i===q-1?'on':''}"></i>`).join('')}</span></div>
-        <h2>${f3sEsc(names[q-1])}</h2><p>${f3sEsc(lead)}</p>`;
+      head.innerHTML=`<div class="qh-tag"><span>${f3sEsc(F3S_CHAPTERS[P-1][1])}</span></div><div class="qh-count"></div><h2></h2><p>${f3sEsc(lead)}</p>`;
     }
     const side=document.createElement('aside');side.className='f3s-side';
     side.innerHTML=`<header><b>CASE 25</b><small>THE LAST TRANSMISSION</small></header>`+
-      F3S_CHAPTERS.slice(0,5).map(([k,t],i)=>`<div class="${i+1<P?'done':i+1===P?'on':''}"><small>${k.replace('PUZZLE 0','PUZZLE ')}</small>${f3sEsc(t)}</div>`).join('')+
-      `<footer><small>${P===4?'QUESTION':'STEP'} 0${q} / 0${steps.length}</small><b>${steps[q-1]}</b><span>${steps.map((_,i)=>`<i class="${i<q-1?'done':i===q-1?'on':''}"></i>`).join('')}</span></footer>`;
+      F3S_CHAPTERS.slice(0,5).map(([k,t],i)=>`<div class="${i+1<P?'done':i+1===P?'on':''}"><small>${k.replace('PUZZLE 0','PUZZLE ')}</small>${f3sEsc(t)}</div>`).join('')+`<footer></footer>`;
     desk.prepend(side);
+    f3sSetQ(screen,P,f3sQIndex(P,Number(m[2])));
+  }
+  // the question count, dots and title follow the question actually on screen (the interview moves through four)
+  function f3sSetQ(screen,P,q){
+    const {steps,names}=F3S_STEPS[P],dots=steps.map((_,i)=>`<i class="${i<q-1?'done':i===q-1?'on':''}"></i>`).join(''),pad=n=>String(n).padStart(2,'0');
+    const c=screen.querySelector('.qh-count'),h=screen.querySelector('.f4-head.qh h2'),f=screen.querySelector('.f3s-side footer');
+    if(c)c.innerHTML=`QUESTION ${pad(q)} / ${pad(steps.length)}<span>${dots}</span>`;
+    if(h)h.textContent=names[q-1];
+    if(f)f.innerHTML=`<small>QUESTION ${pad(q)} / ${pad(steps.length)}</small><b>${steps[q-1]}</b><span>${dots}</span>`;
   }
   function f3sMount(id,{fromChapter=false}={}){
     const def=F3S_SCREENS[id],stage=$('#f3Stage'),old=[...stage.querySelectorAll('.f3s-screen')];
@@ -2847,21 +2856,31 @@ function f3sFindLines(img,boxes){
   // M's closing letter develops on the paper like a photograph, paragraph by paragraph. The lines about Peter and
   // THE RECORD IS COMPLETE flare warm as they come up, and M signs by hand at the end. A click shows it all at once.
   function f3sTypeLetter(screen,box){
-    const paras=F3S_CLOSING.split('\n\n');
-    const nodes=paras.map(t=>{const p=document.createElement('p');p.className='f3s-lp';
-      if(t.startsWith('[['))p.innerHTML=`<span class="f3s-letter-mark">${f3sEsc(t.slice(2,-2))}</span>`;else p.textContent=t;box.append(p);return p;});
+    // M's closing letter is written in line by line: each line inks in from left to right, a beat after the last.
+    // The lines about Peter and THE RECORD IS COMPLETE come up blood-dark, then settle; M signs by hand at the end.
+    // CONTINUE waits until the letter is finished; a click shows it all at once.
+    const paras=F3S_CLOSING.split('\n\n'),lines=[];
+    paras.forEach(t=>{const p=document.createElement('p');p.className='f3s-lp';
+      if(t.startsWith('[[')){p.innerHTML=`<span class="f3s-letter-mark">${f3sEsc(t.slice(2,-2))}</span>`;lines.push({el:p.firstChild,key:true,len:t.length});}
+      else{const key=/Peter Shaw/.test(t);t.split('\n').forEach((l,i)=>{if(i)p.append(document.createElement('br'));const sp=document.createElement('span');sp.className='f3s-ll';sp.textContent=l;p.append(sp);lines.push({el:sp,key,len:l.length});});}
+      box.append(p);});
     const sign=document.createElement('div');sign.className='f3s-letter-sign';sign.textContent='— M';box.append(sign);
+    const go=screen.querySelector('.f3s-go');
     screen.classList.add('typing');
-    const anims=[];
-    const finish=()=>{anims.forEach(a=>a.finish());nodes.forEach(p=>p.style.opacity=1);sign.classList.add('shown','written');screen.classList.remove('typing');};
+    const anims=[];let done=false;
+    const finish=()=>{if(done)return;done=true;anims.forEach(a=>a.finish());lines.forEach(l=>l.el.style.opacity=1);sign.classList.add('shown','written');screen.classList.remove('typing');if(go){go.style.opacity='';go.style.pointerEvents='';}};
     if(reducedMotion){finish();return;}
-    nodes.forEach(p=>p.style.opacity=0);
-    let t=3400;
-    nodes.forEach((p,i)=>{const key=/Peter Shaw|\[\[/.test(paras[i]);
-      anims.push(p.animate(key?[{opacity:0,filter:'blur(7px)',color:'#5a0f08'},{opacity:.9,filter:'blur(1.5px)',color:'#5a0f08',offset:.45},{opacity:1,filter:'blur(0)',color:'#2a1f15'}]
-        :[{opacity:0,filter:'blur(6px)'},{opacity:.85,filter:'blur(1.2px)',offset:.5},{opacity:1,filter:'blur(0)'}],{duration:key?2600:1700,delay:t,easing:'ease-out',fill:'forwards'}));
-      t+=key?1700:900;});
-    laterWait(()=>{if(!screen.classList.contains('typing'))return;sign.classList.add('shown','written');laterWait(()=>screen.classList.remove('typing'),1500);},t+300);
+    if(go){go.style.opacity=0;go.style.pointerEvents='none';go.style.transition='opacity 1.2s ease';}
+    lines.forEach(l=>{l.el.style.display='inline-block';l.el.style.opacity=0;});
+    let t=3200;
+    lines.forEach((l,i)=>{
+      const dur=Math.min(2200,500+l.len*28);
+      anims.push(l.el.animate(l.key?[{opacity:1,clipPath:'inset(0 100% 0 0)',color:'#6b1209',filter:'blur(1px)'},{opacity:1,clipPath:'inset(0 0 0 0)',color:'#6b1209',filter:'blur(0)',offset:.6},{opacity:1,clipPath:'inset(0 0 0 0)',color:'#2a1f15'}]
+        :[{opacity:1,clipPath:'inset(0 100% 0 0)',filter:'blur(1.5px)'},{opacity:1,clipPath:'inset(0 0 0 0)',filter:'blur(0)'}],{duration:l.key?dur+1400:dur,delay:t,easing:'ease-out',fill:'forwards'}));
+      laterWait(()=>{if(!done&&i%2===0)sfx('ink');},t);
+      t+=dur+(lines[i+1]&&lines[i+1].el.parentNode!==l.el.parentNode?650:180);
+    });
+    laterWait(()=>{if(done)return;sign.classList.add('shown','written');laterWait(()=>{done=true;screen.classList.remove('typing');if(go){go.style.opacity=1;go.style.pointerEvents='';}},1600);},t+300);
     screen.addEventListener('click',e=>{if(screen.classList.contains('typing')&&!e.target.closest('.f3s-skip'))finish();});
   }
   // The thank-you card before the physical gift: written live over the blank card, quietly, one line at a time.
@@ -3350,7 +3369,7 @@ Do not look away from it.
     const line=(cls,who,text,type)=>{const p=document.createElement('p');p.className=cls;p.innerHTML=`<b>${who}</b><span></span>`;log.append(p);const s=p.querySelector('span');if(type)p5Type(s,text,type===true?null:type);else s.textContent=text;p.scrollIntoView({block:'nearest',behavior:reducedMotion?'auto':'smooth'});return s;};
     const end=()=>{tape.classList.add('off');tape.querySelector('.p5-rec b').textContent='STOPPED';task.classList.remove('settled');task.innerHTML=`<p class="f4-step">INTERVIEW ENDED</p><p class="f4-q">Peter Shaw has asked for a lawyer.</p><p class="f4-sub">Four answers, four documents. Now decide what it all means.</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit">MY CONCLUSION →</button></div>`;task.querySelector('.f4-submit').addEventListener('click',()=>f3sGo('p5-q2'));};
     const round=i=>{
-      const r=P5_ROUNDS[i];
+      const r=P5_ROUNDS[i];f3sSetQ(screen,5,i+1);
       line('q','INTERVIEWER',r.ask);
       line('a','PETER SHAW','“'+r.say+'”',()=>{
         task.classList.remove('settled');

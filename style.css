@@ -2941,5 +2941,5 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 .f3s-qdots i.done:after{content:'';position:absolute;left:28%;top:18%;width:28%;height:46%;border:solid #1a140e;border-width:0 calc(var(--u)*2px) calc(var(--u)*2px) 0;transform:rotate(40deg)}
 /* live build: no testing controls */
 #f3sSkip,#backButton{display:none!important}
-/* temporary: SKIP only on Puzzle 3 screens */
-#f3Stage:has(.f3s-screen[data-screen^="p3-"]:not(.leave)) #f3sSkip{display:block!important}
+/* for now: File 003 is the last file; no CONTINUE on the wall, no SKIP */
+#continueFileFour,.cliff-replay,#f3sSkip{display:none!important}
