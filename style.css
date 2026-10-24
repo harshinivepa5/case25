@@ -3115,3 +3115,4 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 #devCliffButton{display:none!important}
 .cc-hand{transform:translate(232px,352px) rotate(14deg)}
 .cc-chair.laugh .cc-hand{transform:translate(232px,348px) rotate(10deg)}
+#f3Stage:not([data-mode="f4"]):not([data-mode="f5"]) #f3sSkip{display:block!important}
