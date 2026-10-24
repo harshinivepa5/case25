@@ -59,7 +59,7 @@
   let progress = readProgress();
   const persistProgress = () => localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
   // ?cliff re-arms the Day 1 cliffhanger without touching any other progress
-  if(new URLSearchParams(location.search).has('cliff')){progress.cliffSeen=false;progress.cliffReplayed=false;progress.file04WallSeen=false;persistProgress();const u=new URL(location.href);u.searchParams.delete('cliff');history.replaceState(null,'',u);}
+  if(new URLSearchParams(location.search).has('cliff')){progress.cliffSeen=false;progress.cliffReplayed=false;progress.file04WallSeen=false;progress.file03PuzzleComplete=true;persistProgress();try{sessionStorage.setItem('case25PlayCliff','1');}catch{}const u=new URL(location.href);u.searchParams.delete('cliff');history.replaceState(null,'',u);}
   let timers = [], clueIndex = 0, audioContext = null, audioNodes = [];
   let soundBus = null; // must exist before the first showHomeBoard() -> stopSound() on page load
   let musicWanted = true;
@@ -171,6 +171,9 @@
     $('#messageDossier').setAttribute('aria-hidden','true');
     paintProgress(); show(home);
     // Place the wall overlays (File 002/03 marks, string) now; the board image may have loaded before its listener.
+    // ?cliff: once he is on the wall, the cliffhanger plays by itself
+    let wantCliff=false;try{wantCliff=sessionStorage.getItem('case25PlayCliff')==='1';}catch{}
+    if(wantCliff){try{sessionStorage.removeItem('case25PlayCliff');}catch{}setTimeout(()=>{if($('#homeScene').classList.contains('active')&&$('#cliffhanger').hidden)playCliffhanger();},1800);}
     requestAnimationFrame(()=>{wallGeometry();placeClipping();if(progress.arrestNew&&progress.file03PuzzleComplete)dropClipping();});
   }
   function roundXp(n=roundNumber){const state=n===roundNumber?round:readRound(n);return state.questions.reduce((sum,q)=>sum+(q.complete?Number(q.xpAwarded)||0:0),0);}
