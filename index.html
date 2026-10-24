@@ -10,7 +10,7 @@
   
   
   <link rel="stylesheet" href="assets/fonts/fonts.css" />
-  <link rel="stylesheet" href="style.css?v=cliffbtn" />
+  <link rel="stylesheet" href="style.css?v=live1" />
 </head>
 <body>
   <main id="experience" aria-live="polite">
@@ -200,6 +200,13 @@
         <span class="file04-art-cta">INVESTIGATE →</span>
       </button>
       <button class="cliff-replay" id="cliffReplay" type="button" aria-label="Replay the last transmission">↺ REPLAY TRANSMISSION</button>
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="inkSketch" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values=".33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 1 0" result="g"/>
+        <feComponentTransfer in="g" result="flat"><feFuncR type="discrete" tableValues=".42 .72 .9 .97"/><feFuncG type="discrete" tableValues=".36 .66 .86 .95"/><feFuncB type="discrete" tableValues=".3 .58 .78 .9"/></feComponentTransfer>
+        <feConvolveMatrix in="g" order="3" kernelMatrix="-1 -1 -1 -1 8 -1 -1 -1 -1" divisor="1" preserveAlpha="true" result="edge"/>
+        <feComponentTransfer in="edge" result="lines"><feFuncR type="linear" slope="-12" intercept="1.05"/><feFuncG type="linear" slope="-12" intercept="1.05"/><feFuncB type="linear" slope="-12" intercept="1.05"/></feComponentTransfer>
+        <feComponentTransfer in="lines" result="ink"><feFuncR type="discrete" tableValues=".12 1 1 1"/><feFuncG type="discrete" tableValues=".1 1 1 1"/><feFuncB type="discrete" tableValues=".08 1 1 1"/></feComponentTransfer>
+        <feBlend in="ink" in2="flat" mode="multiply"/></filter></svg>
       <div class="cliff" id="cliffhanger" hidden aria-live="polite">
         <div class="cliff-static"></div>
         <div class="cliff-wrap">
@@ -212,6 +219,7 @@
             <div class="cliff-next" aria-hidden="true"><div class="nx-photo"><img src="assets/file-006/subject.jpg" alt="" onerror="this.remove()"><svg viewBox="0 0 120 140"><g fill="none" stroke="#2b2620" stroke-width="2.2" stroke-linecap="round"><path d="M38 58c0-20 10-34 22-34s22 14 22 34-10 32-22 32-22-12-22-32z"/><path d="M40 50c4-16 14-22 20-22 8 0 18 6 21 22"/><path d="M50 60h6M64 60h6"/><path d="M60 64v10M55 80c3 2 7 2 10 0"/><path d="M24 138c4-26 18-38 36-40 18 2 32 14 36 40"/></g><g stroke="#2b2620" stroke-width=".6" opacity=".5"><path d="M30 100l60 0M28 110l64 0M26 120l68 0M25 130l70 0"/></g></svg></div><div class="nx-text"><small>FILE 006 · NEXT SUBJECT</small><b class="nx-name"></b><i>STATUS: UNDER OBSERVATION</i></div><span class="nx-stamp">OPEN</span></div>
             </aside>
           </div>
+          <p class="cliff-meta" aria-live="polite"></p>
           <button class="cliff-go" type="button" hidden>CONTINUE →</button>
         </div>
       </div>
@@ -685,6 +693,6 @@
       </div>
     </section>
   </main>
-  <script src="script.js?v=shaik"></script>
+  <script src="script.js?v=live1"></script>
 </body>
 </html>

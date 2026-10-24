@@ -2917,3 +2917,17 @@ body:has(#cliffhanger:not([hidden])) #fullscreenButton,body:has(#cliffhanger:not
 #devCliffButton{position:fixed;z-index:999;left:20px;bottom:108px;padding:10px 14px;border:1px solid #c4281c;background:#100d09e8;color:#f0b9a8;font:10px var(--mono);letter-spacing:.14em;cursor:pointer}
 #devCliffButton:hover{background:#2b0f0b}
 body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) #devCliffButton,body.wall-cinematic #devCliffButton{display:none}
+/* the subject's portrait: an ink-and-wash cartoon sketch, not a photo */
+.nx-photo img{filter:url(#inkSketch) sepia(.25) contrast(1.05)!important;mix-blend-mode:normal!important}
+.nx-photo{background:#f3ead6}
+.nx-photo:after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(60,40,20,.06) 0 2px,transparent 2px 5px);pointer-events:none}
+/* the reveal that it was scheduled */
+.cliff.reveal .cliff-letter,.cliff.reveal .cliff-side{opacity:.28;filter:blur(1.5px);transition:opacity 1.2s ease,filter 1.2s ease}
+.cliff .cliff-letter,.cliff .cliff-side{transition:opacity 1.4s ease,filter 1.4s ease}
+.cliff.reveal header{transform:scale(1.04);transform-origin:left;transition:transform 1.2s ease}
+.cliff header{transition:transform 1.4s ease}
+.cliff.sent .cliff-dot{animation:none;background:#4a4a4a;box-shadow:none}
+.cliff-meta{min-height:1.4em;margin:18px 0 0;font:10.5px/1.6 var(--mono);letter-spacing:.18em;color:#b8a27c;border-top:1px solid rgba(201,154,85,.25);padding-top:10px}
+.cliff.sent .cliff-meta{color:#d9c39a}
+.cliff-go{margin-top:-34px}
+#devCliffButton,#devPuzzle4Button,#devFile03Button{display:none!important}

@@ -1100,6 +1100,7 @@
     const box=$('#cliffhanger'),letter=box.querySelector('.cliff-letter'),go=box.querySelector('.cliff-go'),sealed=box.querySelector('.cliff-sealed'),subj=box.querySelector('.cliff-subject'),next=box.querySelector('.cliff-next'),kick=box.querySelector('.cliff-kicker');
     if(!$('#homeScene').classList.contains('active'))return;
     const run=++cliffRun;
+    kick.textContent='INCOMING TRANSMISSION · SOURCE: M · 23:47';box.querySelector('.cliff-meta').textContent='';box.classList.remove('reveal','sent');
     box.querySelectorAll('.cliff-fx').forEach(n=>n.remove());
     box.insertAdjacentHTML('beforeend','<div class="cliff-fx cliff-black"></div><div class="cliff-fx cliff-red"></div><div class="cliff-fx cliff-flash"></div><div class="cliff-fx cliff-iris"></div>');
     letter.innerHTML=CLIFF_LINES.filter(t=>t[0]!=='@').map(t=>`<p class="${t[0]==='!'?'red':t==='— M'?'sign':''}">${t.replace(/^!/,'').split('\n').map(l=>`<span class="ln">${f3sEsc(l)}</span>`).join('<br>')}</p>`).join('');
@@ -1133,10 +1134,16 @@
       T(t,()=>{p.classList.add('on');decodeLines(p);if(isRed){sfx('sting');jolt(8);red.animate([{opacity:0},{opacity:.55,offset:.12},{opacity:0}],{duration:1300});}});
       t+=isRed?2400:Math.min(3200,1100+line.length*26);
     });
-    T(t+300,()=>{go.hidden=false;go.focus({preventScroll:true});});
+    // the last turn of the screw: the header glitches and rewrites itself. This was never live. It was queued on
+    // 3 October and released the moment he closed File 003.
+    const META='QUEUED 03 OCT · 23:47   ·   RELEASE CONDITION: FILE 003 CLOSED   ·   STATUS: DELIVERED ON SCHEDULE';
+    T(t+600,()=>{box.classList.add('reveal','glitch');sfx('dread');setTimeout(()=>box.classList.remove('glitch'),260);
+      kick.textContent='SCHEDULED TRANSMISSION · WRITTEN 03 OCT · RELEASED 23:47';f4Decode(kick,1600);});
+    T(t+2600,()=>{const m=box.querySelector('.cliff-meta');let k=0;const ty=()=>{if(run!==cliffRun)return;m.textContent=META.slice(0,++k);if(k<META.length)setTimeout(ty,34);else{box.classList.add('sent');sfx('stamp');}};ty();});
+    T(t+7400,()=>{box.classList.remove('reveal');go.hidden=false;go.focus({preventScroll:true});});
     // a faint glitch now and then while it plays
     const glitch=()=>{if(run!==cliffRun||box.hidden)return;box.classList.add('glitch');setTimeout(()=>box.classList.remove('glitch'),180);setTimeout(glitch,4000+Math.random()*5000);};setTimeout(glitch,5000);
-    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(go.hidden){cliffRun++;black.getAnimations().forEach(a=>a.finish());box.classList.add('live');kick.style.visibility='';ps.forEach(p=>{p.classList.add('on');p.querySelectorAll('.ln').forEach(l=>l.style.visibility='');});sealed.classList.add('on','cracked');subj.classList.add('on');box.classList.add('threaded');box.classList.remove('focus');next.querySelector('.nx-name').textContent=SUBJECT_NAME;next.classList.add('on','stamped');go.hidden=false;}};
+    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(go.hidden){cliffRun++;black.getAnimations().forEach(a=>a.finish());box.classList.add('live');kick.style.visibility='';ps.forEach(p=>{p.classList.add('on');p.querySelectorAll('.ln').forEach(l=>l.style.visibility='');});kick.textContent='SCHEDULED TRANSMISSION · WRITTEN 03 OCT · RELEASED 23:47';box.querySelector('.cliff-meta').textContent='QUEUED 03 OCT · 23:47   ·   RELEASE CONDITION: FILE 003 CLOSED   ·   STATUS: DELIVERED ON SCHEDULE';box.classList.remove('reveal');box.classList.add('sent');sealed.classList.add('on','cracked');subj.classList.add('on');box.classList.add('threaded');box.classList.remove('focus');next.querySelector('.nx-name').textContent=SUBJECT_NAME;next.classList.add('on','stamped');go.hidden=false;}};
   }
   $('#cliffhanger .cliff-go').addEventListener('click',()=>{
     const box=$('#cliffhanger');cliffRun++;progress.cliffSeen=true;persistProgress();paintProgress();
