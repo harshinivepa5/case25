@@ -3,132 +3,44 @@
 <title>Puzzle 4 Documents</title>
 <link rel="stylesheet" href="../assets/fonts/fonts.css">
 <style>
-@page{size:A4;margin:12mm}
+:root{--mono:'DM Mono',monospace;--type:'Special Elite',serif}
+@page{size:A4;margin:14mm}
 *{box-sizing:border-box}
 html,body{margin:0;background:#3a3631;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-body{font-family:'DM Mono',monospace;color:#1d1812}
-.bar{position:sticky;top:0;z-index:5;padding:12px 18px;background:#14110d;color:#e8d6ae;font:12px 'DM Mono';letter-spacing:.12em;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.bar{position:sticky;top:0;z-index:5;padding:12px 18px;background:#14110d;color:#e8d6ae;font:12px var(--mono);letter-spacing:.12em;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .bar button{padding:8px 14px;border:1px solid #c99a55;background:none;color:#f2dcae;font:inherit;cursor:pointer}
-.page{width:186mm;min-height:270mm;margin:14px auto;display:grid;place-items:center;page-break-after:always;break-after:page}
-.paper{position:relative;background:linear-gradient(165deg,#f1e7cf,#e3d3ae 70%,#d8c497);box-shadow:0 10px 30px rgba(0,0,0,.45);color:#1d1812}
-.paper:after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 20% 10%,transparent 60%,rgba(120,80,30,.12)),radial-gradient(ellipse at 90% 95%,rgba(110,70,20,.15),transparent 40%)}
-.stamp{position:absolute;border:3px solid #a3201a;color:#a3201a;font:700 18px 'Special Elite';letter-spacing:.14em;padding:4px 10px;transform:rotate(-10deg);opacity:.85}
-.tiny{font-size:9px;letter-spacing:.14em;color:#6b5a42}
-/* 1 boat hire: thermal kiosk receipt */
-.thermal{width:80mm;padding:16px 14px 26px;background:#f6f3ea;font:12px/1.55 'DM Mono';clip-path:polygon(0 0,100% 0,100% 98%,95% 100%,90% 98%,85% 100%,80% 98%,75% 100%,70% 98%,65% 100%,60% 98%,55% 100%,50% 98%,45% 100%,40% 98%,35% 100%,30% 98%,25% 100%,20% 98%,15% 100%,10% 98%,5% 100%,0 98%)}
-.thermal h2{margin:0;text-align:center;font:700 15px 'DM Mono';letter-spacing:.1em}
-.thermal .c{text-align:center}.thermal hr{border:0;border-top:1px dashed #555;margin:10px 0}
-.thermal .row{display:flex;justify-content:space-between;gap:10px}.thermal .big{font:700 14px 'DM Mono'}
-/* 3 police note */
-.memo{width:165mm;padding:22mm 18mm 20mm;font:13px/1.7 'Special Elite'}
-.memo header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1d1812;padding-bottom:10px;margin-bottom:16px}
-.memo header b{font:700 16px 'Libre Baskerville';letter-spacing:.04em}
-.memo table{width:100%;border-collapse:collapse;margin:10px 0 16px;font:12px 'DM Mono'}
-.memo td{border:1px solid #6b5a42;padding:6px 8px}
-/* 4 lab */
-.lab{width:160mm;padding:18mm 16mm;font:13px/1.65 'Libre Baskerville'}
-.lab .head{display:flex;gap:14px;align-items:center;border-bottom:3px double #1d1812;padding-bottom:10px;margin-bottom:14px}
-.lab .logo{width:44px;height:44px;border-radius:50%;border:2px solid #1d1812;display:grid;place-items:center;font:700 13px 'DM Mono'}
-.lab dl{display:grid;grid-template-columns:44mm 1fr;gap:6px 10px;margin:14px 0;font:12px 'DM Mono'}
-.lab dt{color:#6b5a42}.lab dd{margin:0}
-/* 5 agreement */
-.legal{width:160mm;padding:22mm 20mm;font:13.5px/1.8 'Libre Baskerville'}
-.legal h1{text-align:center;font:700 19px 'Libre Baskerville';letter-spacing:.06em;margin:0 0 4px}
-.legal .clause{margin:18px 0;padding-left:14px;border-left:3px solid #a3201a}
-.legal .sig{display:flex;justify-content:space-between;margin-top:34px}
-.legal .sig>div{width:44%;border-top:1px solid #1d1812;padding-top:6px;font:11px 'DM Mono'}
-.legal .hand{font:italic 24px 'Libre Baskerville';color:#1d2a52;margin-bottom:-6px}
-/* 6 message log */
-.phone{width:98mm;padding:14px;background:#111;border-radius:26px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-.screen{background:#ece5dd;border-radius:16px;overflow:hidden;font:13px/1.45 'DM Mono';color:#111}
-.screen .top{background:#1f2c34;color:#e9edef;padding:10px 14px;font:12px 'DM Mono'}
-.screen .chat{padding:16px 12px 22px;min-height:120mm;display:flex;flex-direction:column;justify-content:flex-end;gap:8px}
-.bubble{align-self:flex-end;max-width:85%;background:#d9fdd3;padding:9px 11px;border-radius:10px 10px 2px 10px;box-shadow:0 1px 1px rgba(0,0,0,.15)}
-.bubble small{display:block;text-align:right;color:#667781;font-size:10px;margin-top:4px}
-.export{margin-top:10px;color:#9a9a9a;font:9px 'DM Mono';text-align:center;letter-spacing:.1em}
-/* 7 travel */
-.manifest{width:170mm;padding:16mm;font:12px/1.6 'DM Mono'}
-.manifest header{display:flex;justify-content:space-between;align-items:center;background:#1c2a44;color:#e9e3d3;margin:-16mm -16mm 14px;padding:12px 16mm;font:700 13px 'DM Mono';letter-spacing:.14em}
-.manifest table{width:100%;border-collapse:collapse}
-.manifest th,.manifest td{text-align:left;padding:7px 6px;border-bottom:1px solid #b8a98a}
-.manifest th{font-size:10px;letter-spacing:.12em;color:#6b5a42}
-.hl{background:rgba(255,220,90,.55)}
-.note{margin:20px auto 30px;width:186mm;color:#e8d6ae;font:12px/1.6 'DM Mono'}
-@media print{.bar,.note{display:none}body{background:none}.page{margin:0;min-height:auto;height:270mm}.paper{box-shadow:none;outline:1px solid #cdbb90}.phone{box-shadow:none}}
+.note{margin:18px auto;width:182mm;color:#e8d6ae;font:12px/1.6 var(--mono)}
+.page{width:182mm;min-height:120mm;margin:18px auto;display:grid;place-items:center;break-after:page;page-break-after:always}
+/* the same paper card as the game's evidence documents, drawn at print size */
+.f4-doc{position:relative;width:150mm;padding:9mm 10mm 10mm;border-radius:2px;background:linear-gradient(160deg,#e6d3ad,#d6bd8c 70%,#c9ad78);color:#2a1d12;box-shadow:0 10px 26px rgba(0,0,0,.55),inset 0 0 40px rgba(120,80,30,.35);transform:rotate(var(--r,0deg))}
+.f4-doc small{display:block;color:#8a2a20;font:15px var(--mono);letter-spacing:.16em}
+.f4-doc time{display:block;margin-top:4px;color:#5a4128;font:16px var(--mono)}
+.f4-doc h4{margin:12px 0 10px;font:22px var(--type);letter-spacing:.03em}
+.f4-doc p{margin:0;white-space:pre-line;font:17px/1.6 var(--mono)}
+@media print{.bar,.note{display:none}body{background:none}.page{margin:0 auto;min-height:0;height:255mm}.f4-doc{box-shadow:inset 0 0 40px rgba(120,80,30,.35)}}
 </style></head><body>
-<div class="bar">CASE 25 · FILE 003 · PUZZLE 04 · 7 DOCUMENTS · ONE PER PAGE <button onclick="print()">PRINT / SAVE AS PDF</button></div>
-<p class="note">Print on A4 (or save as PDF). In the print dialog, turn ON “Background graphics”. Cut each document out along its edge. Tip: crumple and flatten the paper lightly, or rub the edges with a damp tea bag, to age it.</p>
-
-<!-- 1 -->
-<section class="page"><div class="paper thermal">
-<h2>LAKE ASH BOAT HIRE</h2><div class="c tiny">EAST DOCK · SELF-SERVICE KIOSK 02</div><hr>
-<div class="row"><span>DATE</span><span>TUE 14 OCT</span></div><div class="row"><span>TIME</span><span>17:40</span></div>
-<div class="row"><span>BOAT</span><span>No. 6</span></div><div class="c tiny">ROWING SKIFF WITH OUTBOARD</div><hr>
-<div class="row"><span>HIRER</span><span>P. SHAW</span></div><div class="row"><span>SIGNED</span><span><i style="font:italic 15px 'Libre Baskerville'">P. Shaw</i></span></div>
-<div class="row"><span>ID CHECK</span><span>NOT CHECKED</span></div><hr>
-<div class="row"><span>PAID</span><span>CARD **** 4417</span></div><div class="c tiny">THE LANTERN LTD · COMPANY ACCOUNT</div><hr>
-<div class="row"><span>DUE BACK</span><span>21:00</span></div>
-<div class="row big"><span>STATUS</span><span>NOT RETURNED</span></div><hr>
-<div class="c tiny">KEEP THIS SLIP · LATE RETURNS CHARGED HOURLY</div>
-</div></section>
-
-<!-- 2 -->
-<section class="page"><div class="paper thermal">
-<h2>LAKE ASH ROAD</h2><div class="c tiny">TOLL GATE 1 · NORTHBOUND (TO LAKE)</div><hr>
-<div class="row"><span>DATE</span><span>14 OCT</span></div><div class="row big"><span>TIME</span><span>21:00:00</span></div>
-<div class="c tiny">GATE CLOCK VERIFIED · NETWORK TIME</div><hr>
-<div class="row"><span>VEHICLE</span><span>CAR</span></div><div class="row"><span>DIRECTION</span><span>TOWARDS LAKE</span></div><hr>
-<div class="row"><span>PAID</span><span>CARD **** 4417</span></div><div class="row"><span>CARDHOLDER</span><span>P. SHAW</span></div><div class="c tiny">THE LANTERN LTD</div><hr>
-<div class="c tiny">THANK YOU · DRIVE SAFELY</div>
-</div></section>
-
-<!-- 3 -->
-<section class="page"><div class="paper memo">
-<header><div><b>LAKE ASH POLICE</b><div class="tiny">CID · CASE FILE LA-1014 · INTERNAL NOTE</div></div><div class="tiny" style="text-align:right">DATE: 16 OCT<br>REF: ROUTE / DRIVE TIME</div></header>
-<p><b>Subject:</b> Drive time, The Lantern to Lake Ash Road toll gate</p>
-<table><tr><td>Route measured</td><td>The Lantern (rear exit) → Lake Ash Road toll gate</td></tr><tr><td>Normal speed</td><td><b>41 minutes</b></td></tr></table>
-<p><b>The Lantern exit camera:</b></p>
-<table><tr><td>Vehicle enters frame</td><td>displayed <b>20:16:11</b></td></tr><tr><td>Vehicle leaves exit</td><td>displayed <b>20:19:04</b></td></tr></table>
-<p>Note: the camera clock has <u>not</u> been independently checked.</p>
-<p style="margin-top:30px">— D/Sgt. R. Malhotra</p>
-<div class="stamp" style="right:16mm;bottom:22mm">FILED</div>
-</div></section>
-
-<!-- 4 -->
-<section class="page"><div class="paper lab">
-<div class="head"><div class="logo">FSL</div><div><b>STATE FORENSIC SCIENCE LABORATORY</b><div class="tiny">BIOLOGY &amp; SEROLOGY DIVISION · REPORT FSL/B/2291</div></div></div>
-<p><b>Item:</b> Swab from boat gunwale, Boat No. 6 (Lake Ash, east dock)<br><b>Received:</b> 15 Oct</p>
-<dl><dt>BLOOD GROUP</dt><dd><b>A positive</b>, consistent with the medical file of Thomas Reed</dd><dt>CONDITION</dt><dd>Sample degraded</dd><dt>DNA</dt><dd>Inconclusive</dd></dl>
-<p><b>Site note:</b> Lake Ash at the east dock is 38 m deep and cold. Remains rarely surface.</p>
-<p style="margin-top:26px" class="tiny">ANALYST: DR. S. IYER · VERIFIED: DR. K. RAO</p>
-</div></section>
-
-<!-- 5 -->
-<section class="page"><div class="paper legal">
-<h1>BUY–SELL AGREEMENT</h1><p style="text-align:center" class="tiny">THE LANTERN LTD · PARTNERS’ AGREEMENT · SIGNED 2019</p>
-<p>This agreement is made between <b>Thomas Reed</b> and <b>Peter Shaw</b>, equal partners in The Lantern Ltd.</p>
-<div class="clause"><b>Clause 7.</b> If either partner dies, the surviving partner acquires <b>100%</b> of the business.</div>
-<div class="clause"><b>Schedule A.</b> Estimated value of the business: <b>₹5 crore</b>.</div>
-<div class="sig"><div><div class="hand">Thomas Reed</div>THOMAS REED · PARTNER</div><div><div class="hand">P. Shaw</div>PETER SHAW · PARTNER</div></div>
-<div class="stamp" style="right:18mm;bottom:14mm;font-size:13px">NOTARISED 2019</div>
-</div></section>
-
-<!-- 6 -->
-<section class="page"><div>
-<div class="phone"><div class="screen"><div class="top">← &nbsp;Peter Shaw</div><div class="chat">
-<div class="tiny" style="text-align:center;color:#667781">TUESDAY 14 OCT</div>
-<div class="bubble">Tomorrow I tell the board about the 2.40 crore. Don’t make this harder than it is.<small>19:58 ✓✓ read 19:59</small></div>
-</div></div></div>
-<div class="export">MESSAGE LOG · EXTRACTED FROM THOMAS REED’S PHONE BACKUP · 14 OCT</div>
-</div></section>
-
-<!-- 7 -->
-<section class="page"><div class="paper manifest">
-<header><span>AIRPORT PASSENGER RECORD</span><span>14 OCT</span></header>
-<p class="tiny">EXTRACT PROVIDED TO POLICE · CASE LA-1014</p>
-<table><tr><th>PASSENGER</th><th>FLIGHT</th><th>BOARDED</th><th>DEPARTED</th><th>RETURN</th></tr>
-<tr class="hl"><td><b>WARD / ELENA</b></td><td>International, outbound</td><td>19:15</td><td>19:40</td><td>NOT BOOKED</td></tr></table>
-<p style="margin-top:22px">Passenger boarded and the aircraft departed on time. No return journey on file.</p>
-<div class="stamp" style="right:16mm;bottom:16mm;font-size:14px">VERIFIED</div>
-</div></section>
+<div class="bar">CASE 25 · FILE 003 · PUZZLE 04 · THE UNRESOLVED THREAD · 7 DOCUMENTS <button onclick="print()">PRINT / SAVE AS PDF</button></div>
+<p class="note">The same evidence cards as on screen, one per page. Print on A4 with “Background graphics” turned ON, then cut each card out.</p>
+<section class="page"><article class="f4-doc" style="--r:-.6deg"><small>BOAT HIRE SLIP</small><time>Tue 14 Oct · 17:40</time><h4>Lake Ash Boat Hire — east dock</h4><p>Hirer: P. Shaw (signed)
+Boat: No. 6, rowing skiff with outboard
+Paid: card ending 4417 — The Lantern company account
+ID: not checked (self-service kiosk)
+Due back: 21:00
+Status: NOT RETURNED</p></article></section>
+<section class="page"><article class="f4-doc" style="--r:.8deg"><small>TOLL RECEIPT</small><time>14 Oct · 21:00 · verified gate clock</time><h4>Lake Ash Road — toll gate</h4><p>Vehicle: car, towards the lake
+Paid: card ending 4417
+Cardholder: P. Shaw, The Lantern</p></article></section>
+<section class="page"><article class="f4-doc" style="--r:-.9deg"><small>POLICE ROUTE NOTE</small><time>16 Oct</time><h4>Drive time, The Lantern to the toll gate</h4><p>Measured at normal speed: 41 minutes.
+The Lantern exit camera: a vehicle enters the frame at displayed 20:16:11 and leaves the exit at 20:19:04.
+The camera clock has not been independently checked.</p></article></section>
+<section class="page"><article class="f4-doc" style="--r:.5deg"><small>LABORATORY NOTE</small><time>15 Oct</time><h4>Blood on the boat gunwale</h4><p>Blood type A positive — consistent with Thomas Reed’s medical file.
+Sample degraded. DNA inconclusive.
+Lake Ash at the east dock: 38 m deep, cold. Remains rarely surface.</p></article></section>
+<section class="page"><article class="f4-doc" style="--r:-.4deg"><small>BUY–SELL AGREEMENT</small><time>Signed 2019</time><h4>The Lantern — partners’ agreement</h4><p>If either partner dies, the surviving partner acquires 100% of the business.
+Estimated value: ₹5 crore.</p></article></section>
+<section class="page"><article class="f4-doc" style="--r:.9deg"><small>MESSAGE LOG</small><time>14 Oct · 19:58</time><h4>Thomas Reed → Peter Shaw</h4><p>“Tomorrow I tell the board about the 2.40 crore. Don’t make this harder than it is.”
+Status: delivered, read 19:59.</p></article></section>
+<section class="page"><article class="f4-doc" style="--r:-.7deg"><small>TRAVEL RECORD</small><time>14 Oct</time><h4>Elena Ward — flight record</h4><p>Boarded 19:15. Departure 19:40.
+Outbound international flight.
+Return: not booked.</p></article></section>
 </body></html>
