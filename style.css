@@ -2846,3 +2846,4 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .f4-doc.dk-card{background:linear-gradient(160deg,#e9d8b4,#d6bd8c 70%,#c7a970);background-image:radial-gradient(circle at 82% 78%,rgba(110,70,20,.18) 0 18px,transparent 19px 24px,rgba(110,70,20,.1) 25px,transparent 27px),linear-gradient(160deg,#e9d8b4,#d6bd8c 70%,#c7a970)}
 .dk-legal .sigs{margin-top:30px}
 .f4-doc.dk-flight{padding-bottom:46px}
+.arrest-clipping{display:none!important}
