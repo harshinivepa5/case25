@@ -2515,11 +2515,19 @@
   // Review: replay a finished puzzle from its first question, with a way back to where the player was.
   const F3S_PUZZLE_START=['p1-q1','p2-q1','p3-q1','p4-q1'];
   function f3sReview(n){if(f3sBusy)return;if(!f3s.reviewFrom)f3s.reviewFrom=f3s.screen;f3sGo(F3S_PUZZLE_START[n]);}
+  // A HINT button on every question: the player can ask for a nudge before getting anything wrong
+  const F3S_EXTRA_HINTS={
+    'p3-q2':'Use the corrected access time (19:45:31) first, then Peter’s estimate (≈20:10), then the camera (20:16:11). The two search records from the next morning go last. Label each by how trustworthy its clock is: Corrected, Estimated, Unverified, Search record.',
+    'p4-q4':'A case needs three things: means (how he could do it), opportunity (that he was there) and motive (why). Find one document for each: the boat, the road, and what Peter gains.'};
+  let f3sHintText='';
+  function f3sSetHint(t){f3sHintText=t||'';const b=$('#f3sHint');if(b)b.hidden=!f3sHintText;}
+  $('#f3sHint').addEventListener('click',()=>{if(!f3sHintText||f3sBusy)return;f3sModal({tone:'hint',title:'A NOTE FROM THE FILE',body:`<p>${f3sEsc(f3sHintText)}</p>`,actions:[['BACK TO THE QUESTION',f3sCloseModal]]});});
   function f3sGo(id,{resume=false}={}){
     if(/^p1-q\d$/.test(id)&&!(f3s.live&&f3s.live.p1read))id='p1-read';
     const def=F3S_SCREENS[id];if(!def)return;
     ensureSound();
     $('#f3sP1Docs').hidden=!/^p1-q/.test(id);
+    f3sSetHint(def.hint||F3S_EXTRA_HINTS[id]||'');
     if(id==='p1-read')$('#f3sList').hidden=true;
     if(id===f3s.reviewFrom)f3s.reviewFrom=null;
     f3s.screen=id;saveF3S();
@@ -3454,6 +3462,7 @@ Do not look away from it.
     f4Go(f4.screen,{resume:true});
   }
   function f4Go(id,{resume=false}={}){
+    f3sSetHint('');
     f4.screen=id;saveF4();
     const chapter=id==='p1'?F4_CH1:id==='p2'?F4_CH2:id==='p3'?F4_CH3:null;
     if(chapter!==null&&!resume)f3sChapterCard(chapter,()=>f4Mount(id,true));else f4Mount(id,false);
@@ -3531,6 +3540,7 @@ Do not look away from it.
     box.querySelectorAll('.f4-actions').forEach(n=>n.animate([{opacity:0},{opacity:1}],{duration:600,delay:d+1400,fill:'backwards'}));
   }
   function f4Ask(task,key,q,done,store=f4,save=saveF4){
+    f3sSetHint(q.hint);
     task.innerHTML=`<p class="f4-q">${f3sEsc(q.q)}</p><div class="f4-options" role="radiogroup">${q.options.map((o,i)=>`<button type="button" class="f4-opt" role="radio" aria-checked="false" data-i="${i}"><i>${'ABCD'[i]}</i><span>${f3sEsc(o)}</span></button>`).join('')}</div><div class="f4-actions"><button type="button" class="f4-btn f4-submit">SUBMIT →</button></div>`;
     let pick=null;const opts=[...task.querySelectorAll('.f4-opt')];
     opts.forEach(b=>b.addEventListener('click',()=>{if(task.classList.contains('settled'))return;pick=Number(b.dataset.i);opts.forEach(o=>{o.classList.toggle('picked',o===b);o.setAttribute('aria-checked',String(o===b));});}));
@@ -3686,6 +3696,7 @@ Do not look away from it.
     f5Go(f5.screen,{resume:true});
   }
   function f5Go(id,{resume=false}={}){
+    f3sSetHint('');
     f5.screen=id;saveF5();
     const n=['p1','p2','p3'].indexOf(id);
     if(n>=0&&!resume)f3sChapterCard(F5_CH[n],()=>f5Mount(id,true));else f5Mount(id,false);
