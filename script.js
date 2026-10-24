@@ -1091,7 +1091,7 @@
   // a small REPLAY button plays it again.
   const CLIFF_LINES=['Detective,','Peter Shaw will sleep in a cell tonight.\nYou put him there.','Before you opened the first file, I sealed an envelope.\nRead it now.','@sealed','Every page was placed so you would arrive exactly where you are tonight.','So tell me: did you solve this case,\nor did you follow the path I laid down?','Lake Ash was not the first night Peter Shaw lied.\nNine years ago, there was an incident at The Lantern.\nSomeone did not go home that night.\nThe report called it an accident.','!It was not.','@subject','I was in that room.\nI watched the lights flicker twice.','You asked who M was watching.\nYou never asked why M chose you.','!See you at the end.','— M','@next'];
   // The player's own name on the last card. Change it here; put his photo at assets/file-006/subject.jpg for the sketch.
-  const SUBJECT_NAME='SHAIK';
+  const SUBJECT_NAME='MR. SHAIK';
   let cliffRun=0;
   // ---- cliffhanger sound: its own score (low drone, a clock, a broken music box with echo) and M's voice ----
   let cliffAudio=null;
@@ -1297,7 +1297,7 @@
       requestAnimationFrame(()=>nx.classList.add('on'));
       [0,900,1800,2700].forEach(d=>setTimeout(()=>{if(alive())sfx('heart');},d+600));
       await wait(1600);const nm=nx.querySelector('.nx-name');for(let k=1;k<=SUBJECT_NAME.length;k++){if(!alive())return;nm.textContent=SUBJECT_NAME.slice(0,k);await wait(120);}
-      await cliffSpeak(SUBJECT_NAME[0]+SUBJECT_NAME.slice(1).toLowerCase()+'.',.45,.65);
+      await cliffSpeak('Mister Shaik.',.45,.65);
       nx.classList.add('stamped');sfx('stamp');jolt(8);await wait(500);
       await laugh('Ha. ha. ha. ha.',6);if(!alive())return;
       await wait(800);nx.animate([{opacity:1},{opacity:0,filter:'blur(8px)'}],{duration:900,fill:'forwards'});await wait(700);st.classList.remove('dim','focus');
