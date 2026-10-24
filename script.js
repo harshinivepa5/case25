@@ -1102,24 +1102,59 @@
     const nodes=[],timers=[],t0=c.currentTime;
     const noise=(sec)=>{const b=c.createBuffer(2,c.sampleRate*sec|0,c.sampleRate);for(let ch=0;ch<2;ch++){const d=b.getChannelData(ch);let l=0;for(let i=0;i<d.length;i++){const w=Math.random()*2-1;l=(l+.02*w)/1.02;d[i]=w*.6+l*2;}}return b;};
     // rain: a steady wash with a softer, closer layer
-    const rb=noise(4);[[900,.5,.42],[2600,.6,.3],[6200,.8,.16]].forEach(([f,q,v])=>{const s=c.createBufferSource(),bp=c.createBiquadFilter(),g=c.createGain();s.buffer=rb;s.loop=true;bp.type='bandpass';bp.frequency.value=f;bp.Q.value=q;g.gain.value=v;s.connect(bp);bp.connect(g);g.connect(out);s.start();nodes.push(s);});
+    const bed=c.createGain();bed.gain.value=.0001;bed.connect(out);
+    const rain=c.createGain();rain.connect(out);
+    const rb=noise(4);[[900,.5,.42],[2600,.6,.3],[6200,.8,.16]].forEach(([f,q,v])=>{const s=c.createBufferSource(),bp=c.createBiquadFilter(),g=c.createGain();s.buffer=rb;s.loop=true;bp.type='bandpass';bp.frequency.value=f;bp.Q.value=q;g.gain.value=v;s.connect(bp);bp.connect(g);g.connect(rain);s.start();nodes.push(s);});
     // a few drops on the glass
-    timers.push(setInterval(()=>{const t=c.currentTime,o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(1800+Math.random()*2400,t);o.frequency.exponentialRampToValueAtTime(600,t+.05);g.gain.setValueAtTime(.012,t);g.gain.exponentialRampToValueAtTime(.0001,t+.06);o.connect(g);g.connect(out);o.start(t);o.stop(t+.08);},140));
+    timers.push(setInterval(()=>{const t=c.currentTime,o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(1800+Math.random()*2400,t);o.frequency.exponentialRampToValueAtTime(600,t+.05);g.gain.setValueAtTime(.012,t);g.gain.exponentialRampToValueAtTime(.0001,t+.06);o.connect(g);g.connect(rain);o.start(t);o.stop(t+.08);},140));
     // low drone and a dark string cluster that breathes
-    const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=480;lp.Q.value=2;lp.connect(out);
+    const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=480;lp.Q.value=2;lp.connect(bed);
     const swell=c.createGain();swell.gain.value=.5;swell.connect(lp);
     [[36.7,'sine',.22],[73.4,'sawtooth',.05],[77.8,'sawtooth',.045],[110,'sawtooth',.03],[116.5,'sawtooth',.028],[155.6,'triangle',.02]].forEach(([f,t,v],i)=>{const o=c.createOscillator(),g=c.createGain();o.type=t;o.frequency.value=f;o.detune.value=(i%2?7:-7);g.gain.value=v;o.connect(g);g.connect(swell);o.start();nodes.push(o);});
     const lfo=c.createOscillator(),lg=c.createGain();lfo.frequency.value=.06;lg.gain.value=.4;lfo.connect(lg);lg.connect(swell.gain);lfo.start();nodes.push(lfo);
     const lfo2=c.createOscillator(),lg2=c.createGain();lfo2.frequency.value=.045;lg2.gain.value=260;lfo2.connect(lg2);lg2.connect(lp.frequency);lfo2.start();nodes.push(lfo2);
     // a slow low pulse, like a distant heart
-    timers.push(setInterval(()=>{const t=c.currentTime;[0,.28].forEach((d,k)=>{const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(58,t+d);o.frequency.exponentialRampToValueAtTime(34,t+d+.3);g.gain.setValueAtTime(.0001,t+d);g.gain.exponentialRampToValueAtTime(k?.18:.28,t+d+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d+.45);o.connect(g);g.connect(out);o.start(t+d);o.stop(t+d+.5);});},1900));
+    timers.push(setInterval(()=>{const t=c.currentTime;[0,.28].forEach((d,k)=>{const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(58,t+d);o.frequency.exponentialRampToValueAtTime(34,t+d+.3);g.gain.setValueAtTime(.0001,t+d);g.gain.exponentialRampToValueAtTime(k?.18:.28,t+d+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d+.45);o.connect(g);g.connect(bed);o.start(t+d);o.stop(t+d+.5);});},1900));
     // a glass tone now and then, high and wrong
-    const glass=()=>{const t=c.currentTime,f=[1244.5,1318.5,1661.2,1760][Math.random()*4|0];[f,f*1.0072].forEach(fr=>{const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=fr;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.018,t+1.6);g.gain.exponentialRampToValueAtTime(.0001,t+5.5);o.connect(g);g.connect(out);o.start(t);o.stop(t+5.6);});};
+    const glass=()=>{const t=c.currentTime,f=[1244.5,1318.5,1661.2,1760][Math.random()*4|0];[f,f*1.0072].forEach(fr=>{const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=fr;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.018,t+1.6);g.gain.exponentialRampToValueAtTime(.0001,t+5.5);o.connect(g);g.connect(bed);o.start(t);o.stop(t+5.6);});};
     timers.push(setInterval(glass,9000));setTimeout(glass,3000);
     // thunder far away
-    const thunder=()=>{const t=c.currentTime,s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=rb;f.type='lowpass';f.frequency.value=220;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(2.2,t+.25);g.gain.exponentialRampToValueAtTime(.6,t+1.2);g.gain.exponentialRampToValueAtTime(.0001,t+4.5);s.connect(f);f.connect(g);g.connect(out);s.start(t,Math.random()*2);s.stop(t+4.6);const lb=document.querySelector('#cliffhanger .cc-stage');if(lb&&!lb.classList.contains('bolt')){lb.classList.add('bolt');setTimeout(()=>lb.classList.remove('bolt'),900);}};
+    const thunder=()=>{const t=c.currentTime,s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=rb;f.type='lowpass';f.frequency.value=220;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(2.2,t+.25);g.gain.exponentialRampToValueAtTime(.6,t+1.2);g.gain.exponentialRampToValueAtTime(.0001,t+4.5);if(!cliffAudio||cliffAudio.phase!=='rain')return;s.connect(f);f.connect(g);g.connect(rain);s.start(t,Math.random()*2);s.stop(t+4.6);const lb=document.querySelector('#cliffhanger .cc-stage');if(lb&&!lb.classList.contains('bolt')){lb.classList.add('bolt');setTimeout(()=>lb.classList.remove('bolt'),900);}};
     timers.push(setInterval(thunder,11000));setTimeout(thunder,1500);
-    cliffAudio={out,nodes,timers,prevMusic};
+    setTimeout(()=>{if(cliffAudio)cliffAudio.thunderNow=thunder;},0);
+    cliffAudio={out,nodes,timers,prevMusic,rain,bed,phase:'rain',drive:null};
+  }
+  // The score moves with the scene: rain and thunder while the chair faces the window; the mysterious bed when he
+  // turns and speaks; rain again when he turns away; the driving thriller cue over the full transmission.
+  function cliffPhase(ph){
+    const a=cliffAudio,c=audioContext;if(!a||!c||a.phase===ph)return;const t=c.currentTime;a.phase=ph;
+    a.rain.gain.cancelScheduledValues(t);a.bed.gain.cancelScheduledValues(t);
+    a.rain.gain.setTargetAtTime(ph==='rain'?1:.0001,t,ph==='rain'?1.4:1.8);
+    a.bed.gain.setTargetAtTime(ph==='mystery'?1:ph==='final'?.35:.0001,t,1.6);
+    if(ph==='rain'){const th=()=>{if(cliffAudio===a&&a.phase==='rain')a.thunderNow&&a.thunderNow();};setTimeout(th,1800);}
+    if(ph==='final')cliffDrive();else if(a.drive){a.drive.gain.setTargetAtTime(.0001,t,1);const d=a.drive;a.drive=null;clearInterval(d.timer);}
+  }
+  function cliffDrive(){
+    const a=cliffAudio,c=audioContext;if(!a||!c||a.drive)return;const t=c.currentTime;
+    const mix=c.createGain();mix.gain.value=1;mix.connect(a.out);a.drive=mix;
+    const at=t+.2,boom=c.createOscillator(),bg=c.createGain();boom.type='sine';boom.frequency.setValueAtTime(70,at);boom.frequency.exponentialRampToValueAtTime(28,at+1.8);bg.gain.setValueAtTime(.0001,at);bg.gain.exponentialRampToValueAtTime(1.1,at+.02);bg.gain.exponentialRampToValueAtTime(.0001,at+2.2);boom.connect(bg);bg.connect(mix);boom.start(at);boom.stop(at+2.3);
+    const blp=c.createBiquadFilter();blp.type='lowpass';blp.frequency.setValueAtTime(200,at);blp.frequency.exponentialRampToValueAtTime(1400,at+.6);blp.frequency.exponentialRampToValueAtTime(300,at+4);blp.connect(mix);
+    [73.4,87.3,110,146.8].forEach(f=>[0,8].forEach(dt=>{const o=c.createOscillator(),g=c.createGain();o.type='sawtooth';o.frequency.value=f;o.detune.value=dt;g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(.09,at+.15);g.gain.exponentialRampToValueAtTime(.0001,at+4.5);o.connect(g);g.connect(blp);o.start(at);o.stop(at+4.6);}));
+    const olp=c.createBiquadFilter();olp.type='lowpass';olp.frequency.value=900;olp.connect(mix);
+    const pat=[73.4,73.4,87.3,73.4,77.8,73.4,87.3,98];let k=0;
+    const tick=()=>{if(a.drive!==mix)return;const tt=c.currentTime+.05,f=pat[k%pat.length];k++;
+      const o=c.createOscillator(),g=c.createGain();o.type='sawtooth';o.frequency.value=f;g.gain.setValueAtTime(.0001,tt);g.gain.exponentialRampToValueAtTime(.16,tt+.01);g.gain.exponentialRampToValueAtTime(.0001,tt+.14);o.connect(g);g.connect(olp);o.start(tt);o.stop(tt+.16);
+      if(k%2===0){const n=c.createOscillator(),ng=c.createGain();n.type='square';n.frequency.value=2200;ng.gain.setValueAtTime(.012,tt);ng.gain.exponentialRampToValueAtTime(.0001,tt+.03);n.connect(ng);ng.connect(mix);n.start(tt);n.stop(tt+.04);}
+      if(k%16===1){const s2=c.createOscillator(),sg=c.createGain(),f2=[293.7,311.1,349.2,392][(k/16|0)%4];s2.type='sawtooth';s2.frequency.value=f2;sg.gain.setValueAtTime(.0001,tt);sg.gain.exponentialRampToValueAtTime(.035,tt+1.2);sg.gain.exponentialRampToValueAtTime(.0001,tt+2.5);s2.connect(sg);sg.connect(olp);s2.start(tt);s2.stop(tt+2.6);}
+      if(k%32===0){const b=c.createOscillator(),bb=c.createGain();b.type='sine';b.frequency.setValueAtTime(60,tt);b.frequency.exponentialRampToValueAtTime(30,tt+.8);bb.gain.setValueAtTime(.6,tt);bb.gain.exponentialRampToValueAtTime(.0001,tt+1);b.connect(bb);bb.connect(mix);b.start(tt);b.stop(tt+1.1);}};
+    setTimeout(()=>{if(a.drive===mix){mix.timer=setInterval(tick,160);a.timers.push(mix.timer);}},2000);
+  }
+  // the thud under the closing notice
+  function cliffThud(){
+    ensureSound();const c=audioContext;if(!c)return;const t=c.currentTime;
+    const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(90,t);o.frequency.exponentialRampToValueAtTime(26,t+1.2);g.gain.setValueAtTime(1.6,t);g.gain.exponentialRampToValueAtTime(.0001,t+1.6);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+1.7);
+    const len=c.sampleRate*.3|0,b=c.createBuffer(1,len,c.sampleRate),d=b.getChannelData(0);for(let k=0;k<len;k++)d[k]=(Math.random()*2-1)*Math.pow(1-k/len,4);
+    const n=c.createBufferSource(),f=c.createBiquadFilter(),ng=c.createGain();n.buffer=b;f.type='lowpass';f.frequency.value=400;ng.gain.value=1.4;n.connect(f);f.connect(ng);ng.connect(c.destination);n.start(t);
   }
   function cliffStop(){
     if(!cliffAudio)return;const a=cliffAudio;cliffAudio=null;a.timers.forEach(clearInterval);
@@ -1192,21 +1227,31 @@
   }
   const CLIFF_META='QUEUED 03 OCT · 23:47   ·   RELEASE CONDITION: FILE 003 CLOSED   ·   STATUS: DELIVERED ON SCHEDULE';
   function cliffFinal(box){
-    const letter=box.querySelector('.cliff-letter'),kick=box.querySelector('.cliff-kicker');
+    const letter=box.querySelector('.cliff-letter'),kick=box.querySelector('.cliff-kicker');box.querySelector('.cc-props').innerHTML='';
     try{speechSynthesis.cancel();}catch{}
     letter.innerHTML=CLIFF_LINES.filter(t=>t[0]!=='@').map(t=>`<p class="on ${t[0]==='!'?'red':t==='— M'?'sign':''}">${t.replace(/^!/,'').split('\n').map(l=>`<span class="ln">${f3sEsc(l)}</span>`).join('<br>')}</p>`).join('');
     kick.style.visibility='';kick.textContent='SCHEDULED TRANSMISSION · WRITTEN 03 OCT · RELEASED 23:47';
     box.querySelector('.cliff-meta').textContent=CLIFF_META;
-    box.querySelector('.cliff-sealed').classList.add('on','cracked');box.querySelector('.cliff-subject').classList.add('on');
-    const n=box.querySelector('.cliff-next');n.querySelector('.nx-name').textContent=SUBJECT_NAME;n.classList.add('on','stamped');
+    box.querySelector('.cliff-wrap .cliff-sealed').classList.add('on','cracked');box.querySelector('.cliff-wrap .cliff-subject').classList.add('on');
+    const n=box.querySelector('.cliff-wrap .cliff-next');n.querySelector('.nx-name').textContent=SUBJECT_NAME;n.classList.add('on','stamped');
     box.classList.add('final','live','threaded','sent');box.classList.remove('focus','glitch','reveal');
-    const go=box.querySelector('.cliff-go');go.hidden=false;go.focus({preventScroll:true});
+    const go=box.querySelector('.cliff-go');go.hidden=true;if(go.parentNode!==box)box.append(go);
+    // everything surfaces slowly: the header, each paragraph, the envelope, the photograph, his card, the queue line
+    const seq=[box.querySelector('.cliff-wrap header'),...letter.children,box.querySelector('.cliff-wrap .cliff-sealed'),box.querySelector('.cliff-wrap .cliff-subject'),box.querySelector('.cliff-wrap .cliff-next'),box.querySelector('.cliff-meta')];
+    let t=reducedMotion?0:300;const step=reducedMotion?0:650;
+    seq.forEach(el=>{if(!el)return;el.animate([{opacity:0,transform:'translateY(10px)'},{opacity:1,transform:'none'}],{duration:reducedMotion?1:1100,delay:t,easing:'ease-out',fill:'backwards'});t+=step;});
+    let rp=box.querySelector('.cliff-replay-once');
+    if(!rp){rp=document.createElement('button');rp.type='button';rp.className='cliff-replay-once';rp.textContent='↺ REPLAY';box.append(rp);
+      rp.addEventListener('click',e=>{e.stopPropagation();progress.cliffReplayed=true;persistProgress();rp.hidden=true;box.querySelector('.cliff-notice')?.remove();playCliffhanger();});}
+    rp.hidden=true;
+    setTimeout(()=>{if(!box.classList.contains('final'))return;go.hidden=false;go.focus({preventScroll:true});rp.hidden=!!progress.cliffReplayed;},t+600);
+    return t+600;
   }
   // a small system notice after everything: the message was scheduled three weeks ago
   function cliffNotice(box){
     box.querySelector('.cliff-notice')?.remove();
-    box.insertAdjacentHTML('beforeend',`<div class="cliff-notice" role="status"><b>⚠ SCHEDULED TRANSMISSION</b><p>This message was written <em>3 weeks ago</em> · 03 OCT · 23:47</p><p>Released automatically when FILE 003 was closed.</p><button type="button">DISMISS</button></div>`);
-    const n=box.querySelector('.cliff-notice');sfx('sting');
+    box.insertAdjacentHTML('beforeend',`<div class="cliff-notice" role="status"><small>ARCHIVE SYSTEM · DELIVERY RECEIPT</small><b>THIS WAS NOT SENT TONIGHT.</b><p>Written <em>03 October, 23:47</em>. Three weeks before you opened the first file.</p><p>Held in the archive, unread, until one condition was met:<br><span>FILE 003 · CLOSED BY THE DETECTIVE</span></p><p class="q">Delivered on schedule. Exactly as planned.</p><button type="button">DISMISS</button></div>`);
+    const n=box.querySelector('.cliff-notice');cliffThud();box.querySelector('.cliff-wrap')?.animate([{transform:'none'},{transform:'translate(-6px,4px)'},{transform:'translate(5px,-3px)'},{transform:'none'}],{duration:320});
     n.querySelector('button').addEventListener('click',e=>{e.stopPropagation();n.classList.add('out');setTimeout(()=>n.remove(),500);});
   }
   function playCliffhanger(){
@@ -1244,7 +1289,7 @@
       if(alive())sub.animate([{opacity:1,transform:'translateX(-50%)'},{opacity:0,transform:'translateX(-50%) translateY(14px)'}],{duration:450,fill:'forwards'});
       await wait(380);
     };
-    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(box.classList.contains('final'))return;cliffRun++;try{speechSynthesis.cancel();}catch{}st.getAnimations({subtree:true}).forEach(a=>a.finish());cliffFinal(box);setTimeout(()=>cliffNotice(box),900);};
+    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(box.classList.contains('final'))return;cliffRun++;try{speechSynthesis.cancel();}catch{}st.getAnimations({subtree:true}).forEach(a=>a.finish());cliffPhase('final');const tf=cliffFinal(box);setTimeout(()=>{if(box.classList.contains('final'))cliffNotice(box);},tf+400);};
     (async()=>{
       // 1. the lights die
       black.animate([{opacity:0},{opacity:.8,offset:.12},{opacity:.1,offset:.2},{opacity:.95,offset:.32},{opacity:.4,offset:.4},{opacity:1}],{duration:reducedMotion?1:1700,fill:'forwards'});
@@ -1257,8 +1302,14 @@
       st.classList.add('bolt');cliffThunder();setTimeout(()=>st.classList.remove('bolt'),900);
       await wait(2400);if(!alive())return;
       // 3. the chair turns
-      chair.classList.add('turning');sfx('paper');await wait(3300);if(!alive())return;
+      chair.classList.add('turning');sfx('paper');cliffPhase('mystery');await wait(3300);if(!alive())return;
       chair.classList.add('turned');
+      const drag=()=>{if(!alive()||!chair.classList.contains('turned')||chair.classList.contains('away'))return;
+        ember.animate([{r:5.5,fill:'#ff6a1a',filter:'drop-shadow(0 0 6px #ff7a2a)'},{r:8.5,fill:'#ffd27a',filter:'drop-shadow(0 0 22px #ff8a2a) drop-shadow(0 0 40px #ff5a10)',offset:.55},{r:5.5,fill:'#ff6a1a',filter:'drop-shadow(0 0 6px #ff7a2a)'}],{duration:1800,easing:'ease-in-out'});
+        chair.animate([{filter:'brightness(1)'},{filter:'brightness(1.25)',offset:.55},{filter:'brightness(1)'}],{duration:1800});
+        setTimeout(()=>{if(!alive())return;for(let i=0;i<4;i++){const p=document.createElement('i');p.className='cc-puff';p.style.setProperty('--dx',(-40-Math.random()*90)+'px');p.style.setProperty('--dy',(-90-Math.random()*120)+'px');p.style.animationDelay=(i*.18)+'s';chair.append(p);setTimeout(()=>p.remove(),5200);}},1700);
+        setTimeout(drag,7000+Math.random()*3000);};
+      setTimeout(drag,2600);
       ember.animate([{r:5.5,filter:'none'},{r:9,filter:'drop-shadow(0 0 14px #ff7a2a)',offset:.5},{r:5.5,filter:'none'}],{duration:2400});
       await wait(1400);await laugh();if(!alive())return;
       await wait(400);
@@ -1270,7 +1321,7 @@
       await line('Before you opened the first file, I sealed an envelope.',{pitch:.5,rate:.8,hold:200});
       // 5. the envelope
       if(!alive())return;
-      props.innerHTML=`<div class="cc-env"><div class="cc-env-back"></div><div class="cc-env-card"><svg class="cc-blood" viewBox="0 0 400 250" preserveAspectRatio="none" aria-hidden="true"><g fill="#6a0b06"><path d="M300 0c4 18 2 30-3 44-3 9 2 16 0 30-1 8-8 8-8 0 0-12-6-20-4-34 2-14 1-26 0-40z" opacity=".85"/><path d="M322 0c2 10 1 18-2 26-2 6-6 6-6 0 0-8 1-16 2-26z" opacity=".7"/><circle cx="292" cy="78" r="5" opacity=".8"/><path d="M340 20c18 4 30 16 26 30-4 12-22 10-30 2-10-10-14-30 4-32z" opacity=".45"/><circle cx="372" cy="62" r="3" opacity=".7"/><circle cx="358" cy="80" r="2" opacity=".6"/><circle cx="380" cy="40" r="2.5" opacity=".6"/><path d="M20 200c30-6 60-2 80 10-20 10-60 14-84 4z" opacity=".35"/><g opacity=".3"><ellipse cx="60" cy="214" rx="16" ry="20"/><ellipse cx="60" cy="214" rx="11" ry="14" fill="#8a1a10" opacity=".5"/></g></g></svg><small>SEALED · 3 OCTOBER</small><p>The record will say that Peter Shaw killed Thomas Reed.</p><p>The record will say that Thomas Reed is dead.</p><p>And you will give me a name.</p><p class="r">It will not be mine.</p><i>— M</i></div><div class="cc-env-front"><svg class="cc-blood" viewBox="0 0 400 250" preserveAspectRatio="none" aria-hidden="true"><g fill="#5e0905"><path d="M40 250c10-40 30-60 60-70 20-6 30 10 20 24-10 14-40 20-50 46z" opacity=".55"/><path d="M90 180c2 20-2 40-4 60h-6c0-20 2-40 10-60z" opacity=".6"/><circle cx="330" cy="200" r="22" opacity=".25"/><circle cx="352" cy="226" r="6" opacity=".6"/></g></svg></div><div class="cc-env-flap"></div><i class="cc-seal-drip"></i><b class="cc-seal l"></b><b class="cc-seal r2"></b></div>`;
+      props.innerHTML=`<div class="cc-env"><div class="cc-env-back"></div><div class="cc-env-card"><svg class="cc-blood" viewBox="0 0 400 250" preserveAspectRatio="none" aria-hidden="true"><defs><filter id="bRough" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="9"/></filter><radialGradient id="bPool"><stop offset="0" stop-color="#4a0402"/><stop offset=".7" stop-color="#7a0a05"/><stop offset="1" stop-color="#8c1208" stop-opacity=".6"/></radialGradient></defs><g filter="url(#bRough)"><ellipse cx="338" cy="40" rx="34" ry="24" fill="url(#bPool)" opacity=".92"/><g fill="#6e0805" opacity=".9"><circle cx="284.2" cy="82.1" r="1.1"/><circle cx="353.3" cy="93.2" r="1.2"/><circle cx="413.9" cy="56.6" r="0.7"/><circle cx="330.6" cy="56.2" r="2.8"/><circle cx="371.1" cy="66.2" r="2.5"/><circle cx="279.3" cy="36.4" r="1.6"/><circle cx="340.5" cy="36.1" r="2.3"/><circle cx="335.8" cy="40.4" r="5.3"/><circle cx="336.6" cy="38.8" r="3.4"/><circle cx="332.9" cy="42.4" r="1.3"/><circle cx="336.8" cy="40.2" r="3.4"/><circle cx="334.9" cy="39.8" r="4.8"/><circle cx="342.9" cy="41.0" r="4.4"/><circle cx="341.9" cy="57.0" r="2.7"/><circle cx="312.7" cy="48.7" r="2.3"/><circle cx="337.1" cy="40.1" r="4.6"/><circle cx="337.9" cy="40.5" r="2.6"/><circle cx="353.8" cy="10.2" r="1.8"/><circle cx="330.6" cy="40.8" r="3.4"/><circle cx="337.4" cy="40.7" r="1.2"/><circle cx="376.7" cy="60.4" r="2.6"/><circle cx="338.2" cy="34.0" r="1.3"/><circle cx="354.8" cy="35.6" r="1.3"/><circle cx="302.4" cy="26.4" r="2.0"/><circle cx="325.9" cy="43.0" r="2.7"/><circle cx="293.6" cy="49.8" r="1.6"/><circle cx="287.2" cy="92.6" r="0.6"/><circle cx="338.7" cy="23.2" r="3.6"/><circle cx="329.0" cy="13.6" r="2.4"/><circle cx="338.0" cy="40.1" r="4.3"/><circle cx="337.9" cy="42.0" r="4.5"/><circle cx="337.7" cy="39.8" r="3.2"/><circle cx="372.9" cy="86.2" r="0.9"/><circle cx="374.0" cy="28.5" r="0.8"/><circle cx="270.4" cy="75.0" r="0.8"/><circle cx="347.7" cy="51.3" r="1.7"/><circle cx="368.7" cy="56.3" r="2.6"/><circle cx="344.8" cy="65.7" r="3.2"/><circle cx="341.9" cy="37.5" r="1.0"/><circle cx="350.1" cy="34.0" r="1.3"/><circle cx="341.0" cy="32.3" r="3.8"/><circle cx="333.7" cy="31.1" r="2.6"/><circle cx="323.3" cy="86.7" r="1.0"/><circle cx="328.1" cy="92.6" r="0.9"/><circle cx="310.8" cy="49.2" r="0.6"/><circle cx="325.9" cy="81.2" r="2.5"/></g><path d="M286 0c3 16 1 30-2 44-2 10 2 20 0 34-1 7-9 7-9-1 0-14-4-22-3-38 1-14 2-26 4-39z" fill="#5c0603"/><circle cx="279" cy="80" r="5.5" fill="#5c0603"/><path d="M306 0c2 9 1 17-1 25-1 5-6 5-6-1 0-7 1-15 3-24z" fill="#650704"/><circle cx="302" cy="30" r="3.4" fill="#650704"/><path d="M8 250c18-30 50-52 96-60 30-4 44 6 38 16-8 12-50 10-80 22-22 8-36 16-54 22z" fill="#5a0a05" opacity=".38"/><path d="M360 150c-30 10-70 40-96 70" stroke="#6a0905" stroke-width="7" stroke-linecap="round" opacity=".35" fill="none"/></g><g fill="none" stroke="#6a0905" stroke-width="1.6" opacity=".55" transform="rotate(-18 64 214)"><ellipse cx="64" cy="214" rx="4.0" ry="5.0"/><ellipse cx="64" cy="214" rx="7.2" ry="9.0"/><ellipse cx="64" cy="214" rx="10.4" ry="13.0"/><ellipse cx="64" cy="214" rx="13.6" ry="17.0"/><ellipse cx="64" cy="214" rx="16.8" ry="21.0"/><ellipse cx="64" cy="214" rx="20.0" ry="25.0"/></g><circle cx="150" cy="232" r="26" fill="none" stroke="#5a2a10" stroke-width="5" opacity=".18"/></svg><small>SEALED · 3 OCTOBER</small><p>The record will say that Peter Shaw killed Thomas Reed.</p><p>The record will say that Thomas Reed is dead.</p><p>And you will give me a name.</p><p class="r">It will not be mine.</p><i>— M</i></div><div class="cc-env-front"><svg class="cc-blood" viewBox="0 0 400 250" preserveAspectRatio="none" aria-hidden="true"><g filter="url(#bRough)"><path d="M30 250c8-44 34-66 72-76 26-6 34 12 22 26-12 14-44 22-56 50z" fill="#5e0905" opacity=".7"/><path d="M96 178c3 22-1 44-4 66h-7c0-22 2-44 11-66z" fill="#4e0603" opacity=".8"/><g fill="#6e0805" opacity=".85"><circle cx="318.3" cy="214.4" r="0.8"/><circle cx="316.4" cy="200.8" r="2.2"/><circle cx="326.7" cy="208.4" r="3.7"/><circle cx="332.3" cy="189.2" r="0.8"/><circle cx="331.6" cy="200.4" r="1.1"/><circle cx="308.6" cy="190.2" r="0.9"/><circle cx="356.6" cy="179.5" r="1.9"/><circle cx="338.7" cy="194.6" r="3.6"/><circle cx="389.4" cy="192.7" r="0.6"/><circle cx="370.2" cy="155.9" r="0.6"/><circle cx="363.4" cy="169.7" r="0.6"/><circle cx="318.0" cy="165.2" r="1.7"/><circle cx="392.3" cy="218.9" r="0.6"/><circle cx="385.3" cy="226.0" r="0.8"/><circle cx="336.9" cy="211.4" r="2.5"/><circle cx="323.1" cy="248.2" r="1.0"/><circle cx="319.4" cy="207.4" r="1.0"/><circle cx="340.6" cy="199.2" r="3.8"/><circle cx="304.9" cy="194.9" r="1.0"/><circle cx="328.3" cy="200.0" r="2.3"/><circle cx="283.1" cy="167.7" r="0.7"/><circle cx="349.9" cy="234.7" r="0.8"/><circle cx="337.4" cy="216.2" r="1.8"/><circle cx="330.9" cy="200.0" r="4.0"/><circle cx="327.1" cy="200.6" r="1.5"/><circle cx="333.7" cy="198.1" r="2.2"/><circle cx="351.5" cy="204.3" r="2.5"/><circle cx="328.9" cy="190.1" r="2.0"/><circle cx="355.8" cy="159.5" r="0.9"/><circle cx="389.5" cy="217.2" r="0.7"/><circle cx="329.5" cy="200.1" r="0.7"/><circle cx="350.0" cy="213.8" r="1.3"/><circle cx="330.9" cy="197.5" r="3.1"/><circle cx="343.5" cy="201.5" r="3.6"/></g><ellipse cx="330" cy="200" rx="20" ry="14" fill="#5c0603" opacity=".8"/><path d="M200 120c-10 30-6 60 2 90" stroke="#5c0603" stroke-width="5" stroke-linecap="round" opacity=".55" fill="none"/></g></svg></div><div class="cc-env-flap"></div><i class="cc-seal-drip"></i><b class="cc-seal l"></b><b class="cc-seal r2"></b></div>`;
       const env=props.querySelector('.cc-env'),card=env.querySelector('.cc-env-card'),cps=[...card.querySelectorAll('p')];
       st.classList.add('dim');
       env.animate([{transform:'translate(-50%,-160%) rotate(-24deg) scale(1.3)',opacity:0},{opacity:1,offset:.3},{transform:'translate(-50%,-50%) rotate(-4deg) scale(1)',opacity:1}],{duration:900,easing:'cubic-bezier(.5,0,.75,1.2)',fill:'forwards'});
@@ -1292,7 +1343,7 @@
       // 7. the incident
       await line('Lake Ash was not the first night Peter Shaw lied.',{pitch:.5,rate:.8});
       if(!alive())return;
-      props.innerHTML='';const ph=box.querySelector('.cliff-subject').cloneNode(true);ph.className='cliff-subject burnt cc-photo on burning';props.append(ph);setTimeout(()=>ph.classList.remove('burning'),3300);
+      props.innerHTML='';const ph=box.querySelector('.cliff-wrap .cliff-subject').cloneNode(true);ph.className='cliff-subject burnt cc-photo on burning';props.append(ph);setTimeout(()=>ph.classList.remove('burning'),3300);
       flash.animate([{opacity:0},{opacity:1,offset:.06},{opacity:0}],{duration:1000});sfx('key');st.classList.add('dim');
       for(let e=0;e<18;e++){const em=document.createElement('i');em.className='cliff-ember';em.style.left=(10+Math.random()*80)+'%';em.style.animationDelay=(Math.random()*1.6)+'s';ph.append(em);}
       await line('Nine years ago, there was an incident at The Lantern.',{pitch:.45,rate:.78});
@@ -1307,7 +1358,7 @@
       await line('You asked who M was watching.',{pitch:.5,rate:.78,hold:200});
       await line('You never asked, why M chose you.',{pitch:.4,rate:.7,hold:300});
       if(!alive())return;
-      props.innerHTML='';const nx=box.querySelector('.cliff-next').cloneNode(true);nx.className='cliff-next cc-next';nx.querySelector('.nx-name').textContent='';props.append(nx);
+      props.innerHTML='';const nx=box.querySelector('.cliff-wrap .cliff-next').cloneNode(true);nx.className='cliff-next cc-next';nx.querySelector('.nx-name').textContent='';props.append(nx);
       st.classList.add('dim','focus');flash.animate([{opacity:0},{opacity:.8,offset:.08},{opacity:0}],{duration:700});sfx('key');
       requestAnimationFrame(()=>nx.classList.add('on'));
       [0,900,1800,2700].forEach(d=>setTimeout(()=>{if(alive())sfx('heart');},d+600));
@@ -1319,15 +1370,15 @@
       // 9. goodbye
       chair.classList.add('lean');
       await line('See you at the end, Detective.',{pitch:.4,rate:.7,red:true,hold:200});
-      chair.classList.add('away');cliffChuckle();ember.animate([{opacity:1},{opacity:0}],{duration:3000,fill:'forwards'});
+      chair.classList.add('away');cliffChuckle();cliffPhase('rain');ember.animate([{opacity:1},{opacity:0}],{duration:3000,fill:'forwards'});
       await wait(3200);if(!alive())return;
       // 10. it was scheduled: the header rewrites itself in silence
       st.classList.add('glitch');setTimeout(()=>st.classList.remove('glitch'),400);sfx('dread');
       ck.textContent='SCHEDULED TRANSMISSION · WRITTEN 03 OCT · RELEASED 23:47';f4Decode(ck,1600);await wait(2600);if(!alive())return;
       // 11. the whole transmission, to read again
       st.animate([{opacity:1},{opacity:0}],{duration:1400,fill:'forwards'});await wait(1200);if(!alive())return;
-      cliffFinal(box);
-      await wait(1800);if(alive())cliffNotice(box);
+      cliffPhase('final');const tf=cliffFinal(box);
+      await wait(tf+400);if(alive())cliffNotice(box);
     })();
   }
   $('#cliffhanger .cliff-go').addEventListener('click',()=>{

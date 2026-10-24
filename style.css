@@ -3094,3 +3094,21 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 .cliff .cliff-go{position:fixed;right:28px;bottom:24px;margin:0;z-index:15}
 .cc-chair.laugh .cc-smoke i{animation-duration:2.2s}
 .cc-chair.laugh .cc-front{animation:ccLaugh .32s ease-in-out infinite}
+/* replay, once */
+.cliff-replay-once{position:fixed;right:200px;bottom:24px;z-index:15;padding:13px 18px;border:1px solid rgba(201,154,85,.5);background:rgba(14,10,6,.7);color:#c9b28a;font:11px var(--mono);letter-spacing:.2em;cursor:pointer}
+.cliff-replay-once[hidden]{display:none}
+.cliff-replay-once:hover{color:#f2dcae;border-color:#c99a55}
+/* only one replay: no replay button on the wall */
+.home .cliff-replay{display:none!important}
+.cc-puff{position:absolute;left:51%;top:51%;width:26px;height:20px;border-radius:50%;background:rgba(205,205,215,.32);filter:blur(7px);pointer-events:none;animation:ccPuff 4.8s ease-out forwards;opacity:0}
+@keyframes ccPuff{0%{opacity:0;transform:translate(0,0) scale(.4)}12%{opacity:.9}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(5)}}
+.cliff-notice small{display:block;margin-bottom:8px;color:#8f7d60;font:9.5px var(--mono);letter-spacing:.24em}
+.cliff-notice b{font-size:14px}
+.cliff-notice p span{display:inline-block;margin-top:4px;color:#f0c79a;letter-spacing:.14em}
+.cliff-notice p.q{margin-top:8px;color:#e0412f;font-style:italic;letter-spacing:.1em}
+.cliff-notice{width:min(420px,88vw);margin-left:calc(min(420px,88vw)/-2);margin-top:-120px}
+.cc-env-card .cc-blood{mix-blend-mode:multiply;opacity:1}
+.cc-env-card{box-shadow:0 10px 30px rgba(0,0,0,.6),inset 0 0 60px rgba(110,20,8,.28)!important}
+.cc-env.out .cc-env-card{animation:ccCardThrob 3.2s ease-in-out 1.4s infinite}
+@keyframes ccCardThrob{50%{box-shadow:0 10px 30px rgba(0,0,0,.6),0 0 60px rgba(160,20,10,.45),inset 0 0 60px rgba(110,20,8,.35)}}
+.cliff.final .cliff-wrap{animation:none!important;transform:none!important}
