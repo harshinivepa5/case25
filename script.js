@@ -1098,19 +1098,27 @@
   function cliffScore(){
     cliffStop();ensureSound();const c=audioContext;if(!c)return;
     const prevMusic=musicWanted;setMusic(false);
-    const out=c.createGain();out.gain.setValueAtTime(.0001,c.currentTime);out.gain.exponentialRampToValueAtTime(.9,c.currentTime+4);out.connect(c.destination);
-    const nodes=[],timers=[];
-    const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=320;lp.connect(out);
-    [[55,'sine',.07],[55.6,'sine',.06],[82.4,'triangle',.025],[41.2,'sine',.05]].forEach(([f,t,v])=>{const o=c.createOscillator(),g=c.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(lp);o.start();nodes.push(o);});
-    const lfo=c.createOscillator(),lg=c.createGain();lfo.frequency.value=.07;lg.gain.value=140;lfo.connect(lg);lg.connect(lp.frequency);lfo.start();nodes.push(lfo);
-    // echo for the music box
-    const dl=c.createDelay(2),fb=c.createGain(),wet=c.createGain();dl.delayTime.value=.42;fb.gain.value=.42;wet.gain.value=.5;dl.connect(fb);fb.connect(dl);dl.connect(wet);wet.connect(out);
-    const box=(f,v=.05)=>{const t=c.currentTime,o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=f;o.detune.value=(Math.random()-.5)*30;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+2.2);o.connect(g);g.connect(out);g.connect(dl);o.start(t);o.stop(t+2.3);};
-    const tune=[880,1046.5,987.8,830.6,659.3,0,880,1244.5,1046.5,0,659.3,622.3];let k=0;
-    timers.push(setInterval(()=>{const f=tune[k++%tune.length];if(f)box(f,.035+Math.random()*.02);},1300));
-    // the clock
-    const buf=c.createBuffer(1,c.sampleRate*.03|0,c.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,6);
-    let tk=0;timers.push(setInterval(()=>{const n=c.createBufferSource(),h=c.createBiquadFilter(),g=c.createGain();n.buffer=buf;h.type='bandpass';h.frequency.value=tk++%2?2600:3400;g.gain.value=.22;n.connect(h);h.connect(g);g.connect(out);n.start();},1000));
+    const out=c.createGain();out.gain.setValueAtTime(.0001,c.currentTime);out.gain.exponentialRampToValueAtTime(1,c.currentTime+5);out.connect(c.destination);
+    const nodes=[],timers=[],t0=c.currentTime;
+    const noise=(sec)=>{const b=c.createBuffer(2,c.sampleRate*sec|0,c.sampleRate);for(let ch=0;ch<2;ch++){const d=b.getChannelData(ch);let l=0;for(let i=0;i<d.length;i++){const w=Math.random()*2-1;l=(l+.02*w)/1.02;d[i]=w*.6+l*2;}}return b;};
+    // rain: a steady wash with a softer, closer layer
+    const rb=noise(4);[[900,.5,.42],[2600,.6,.3],[6200,.8,.16]].forEach(([f,q,v])=>{const s=c.createBufferSource(),bp=c.createBiquadFilter(),g=c.createGain();s.buffer=rb;s.loop=true;bp.type='bandpass';bp.frequency.value=f;bp.Q.value=q;g.gain.value=v;s.connect(bp);bp.connect(g);g.connect(out);s.start();nodes.push(s);});
+    // a few drops on the glass
+    timers.push(setInterval(()=>{const t=c.currentTime,o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(1800+Math.random()*2400,t);o.frequency.exponentialRampToValueAtTime(600,t+.05);g.gain.setValueAtTime(.012,t);g.gain.exponentialRampToValueAtTime(.0001,t+.06);o.connect(g);g.connect(out);o.start(t);o.stop(t+.08);},140));
+    // low drone and a dark string cluster that breathes
+    const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=480;lp.Q.value=2;lp.connect(out);
+    const swell=c.createGain();swell.gain.value=.5;swell.connect(lp);
+    [[36.7,'sine',.22],[73.4,'sawtooth',.05],[77.8,'sawtooth',.045],[110,'sawtooth',.03],[116.5,'sawtooth',.028],[155.6,'triangle',.02]].forEach(([f,t,v],i)=>{const o=c.createOscillator(),g=c.createGain();o.type=t;o.frequency.value=f;o.detune.value=(i%2?7:-7);g.gain.value=v;o.connect(g);g.connect(swell);o.start();nodes.push(o);});
+    const lfo=c.createOscillator(),lg=c.createGain();lfo.frequency.value=.06;lg.gain.value=.4;lfo.connect(lg);lg.connect(swell.gain);lfo.start();nodes.push(lfo);
+    const lfo2=c.createOscillator(),lg2=c.createGain();lfo2.frequency.value=.045;lg2.gain.value=260;lfo2.connect(lg2);lg2.connect(lp.frequency);lfo2.start();nodes.push(lfo2);
+    // a slow low pulse, like a distant heart
+    timers.push(setInterval(()=>{const t=c.currentTime;[0,.28].forEach((d,k)=>{const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(58,t+d);o.frequency.exponentialRampToValueAtTime(34,t+d+.3);g.gain.setValueAtTime(.0001,t+d);g.gain.exponentialRampToValueAtTime(k?.18:.28,t+d+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d+.45);o.connect(g);g.connect(out);o.start(t+d);o.stop(t+d+.5);});},1900));
+    // a glass tone now and then, high and wrong
+    const glass=()=>{const t=c.currentTime,f=[1244.5,1318.5,1661.2,1760][Math.random()*4|0];[f,f*1.0072].forEach(fr=>{const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=fr;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.018,t+1.6);g.gain.exponentialRampToValueAtTime(.0001,t+5.5);o.connect(g);g.connect(out);o.start(t);o.stop(t+5.6);});};
+    timers.push(setInterval(glass,9000));setTimeout(glass,3000);
+    // thunder far away
+    const thunder=()=>{const t=c.currentTime,s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=rb;f.type='lowpass';f.frequency.value=220;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(2.2,t+.25);g.gain.exponentialRampToValueAtTime(.6,t+1.2);g.gain.exponentialRampToValueAtTime(.0001,t+4.5);s.connect(f);f.connect(g);g.connect(out);s.start(t,Math.random()*2);s.stop(t+4.6);const lb=document.querySelector('#cliffhanger .cc-stage');if(lb&&!lb.classList.contains('bolt')){lb.classList.add('bolt');setTimeout(()=>lb.classList.remove('bolt'),900);}};
+    timers.push(setInterval(thunder,11000));setTimeout(thunder,1500);
     cliffAudio={out,nodes,timers,prevMusic};
   }
   function cliffStop(){
@@ -1179,7 +1187,7 @@
   }
   function cliffThunder(){
     ensureSound();const c=audioContext;if(!c)return;const len=c.sampleRate*2.6|0,b=c.createBuffer(1,len,c.sampleRate),d=b.getChannelData(0);
-    for(let k=0;k<len;k++)d[k]=(Math.random()*2-1)*Math.pow(1-k/len,2.2);const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=b;f.type='lowpass';f.frequency.value=180;g.gain.value=1.2;s.connect(f);f.connect(g);g.connect(c.destination);s.start();
+    for(let k=0;k<len;k++)d[k]=(Math.random()*2-1)*Math.pow(1-k/len,2.2);const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=b;f.type='lowpass';f.frequency.value=180;g.gain.value=2.4;s.connect(f);f.connect(g);g.connect(c.destination);s.start();
   }
   const CLIFF_META='QUEUED 03 OCT · 23:47   ·   RELEASE CONDITION: FILE 003 CLOSED   ·   STATUS: DELIVERED ON SCHEDULE';
   function cliffFinal(box){
@@ -1192,6 +1200,13 @@
     const n=box.querySelector('.cliff-next');n.querySelector('.nx-name').textContent=SUBJECT_NAME;n.classList.add('on','stamped');
     box.classList.add('final','live','threaded','sent');box.classList.remove('focus','glitch','reveal');
     const go=box.querySelector('.cliff-go');go.hidden=false;go.focus({preventScroll:true});
+  }
+  // a small system notice after everything: the message was scheduled three weeks ago
+  function cliffNotice(box){
+    box.querySelector('.cliff-notice')?.remove();
+    box.insertAdjacentHTML('beforeend',`<div class="cliff-notice" role="status"><b>⚠ SCHEDULED TRANSMISSION</b><p>This message was written <em>3 weeks ago</em> · 03 OCT · 23:47</p><p>Released automatically when FILE 003 was closed.</p><button type="button">DISMISS</button></div>`);
+    const n=box.querySelector('.cliff-notice');sfx('sting');
+    n.querySelector('button').addEventListener('click',e=>{e.stopPropagation();n.classList.add('out');setTimeout(()=>n.remove(),500);});
   }
   function playCliffhanger(){
     const box=$('#cliffhanger');
@@ -1228,7 +1243,7 @@
       if(alive())sub.animate([{opacity:1,transform:'translateX(-50%)'},{opacity:0,transform:'translateX(-50%) translateY(14px)'}],{duration:450,fill:'forwards'});
       await wait(380);
     };
-    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(box.classList.contains('final'))return;cliffRun++;try{speechSynthesis.cancel();}catch{}st.getAnimations({subtree:true}).forEach(a=>a.finish());cliffFinal(box);};
+    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(box.classList.contains('final'))return;cliffRun++;try{speechSynthesis.cancel();}catch{}st.getAnimations({subtree:true}).forEach(a=>a.finish());cliffFinal(box);setTimeout(()=>cliffNotice(box),900);};
     (async()=>{
       // 1. the lights die
       black.animate([{opacity:0},{opacity:.8,offset:.12},{opacity:.1,offset:.2},{opacity:.95,offset:.32},{opacity:.4,offset:.4},{opacity:1}],{duration:reducedMotion?1:1700,fill:'forwards'});
@@ -1262,8 +1277,7 @@
       await line('Go on. Read it now.',{pitch:.55,rate:.75,hold:300});
       env.classList.add('crack');sfx('stamp');jolt(6);await wait(900);
       env.classList.add('open');await wait(1100);env.classList.add('out');sfx('paper');await wait(1300);if(!alive())return;
-      stamp.textContent='21 DAYS AGO';stamp.className='cc-stamp on';pop(stamp,'scale(3) rotate(-30deg)');sfx('stamp');jolt(10);
-      await wait(1500);stamp.animate([{opacity:1},{opacity:.0}],{duration:600,fill:'forwards'});
+      await wait(400);
       for(const [i,t] of ['The record will say that Peter Shaw killed Thomas Reed.','The record will say that Thomas Reed is dead.','And you will give me a name.','It will not be mine.'].entries()){
         if(!alive())return;cps[i].classList.add('on');await cliffSpeak(t,i===3?.35:.45,i===3?.68:.8);await wait(200);}
       await laugh('Ha. ha. ha. ha.',6);if(!alive())return;
@@ -1303,20 +1317,16 @@
       await wait(800);nx.animate([{opacity:1},{opacity:0,filter:'blur(8px)'}],{duration:900,fill:'forwards'});await wait(700);st.classList.remove('dim','focus');
       // 9. goodbye
       chair.classList.add('lean');
-      await line('See you at the end, Detective.',{pitch:.4,rate:.7,red:true,hold:300});
-      chair.classList.add('laugh');cliffChuckle(5);await cliffSpeak('Hm. hm. hm.',.35,.8);chair.classList.remove('laugh');
-      ember.animate([{opacity:1},{opacity:0}],{duration:2600,fill:'forwards'});chair.classList.add('away');await wait(2600);if(!alive())return;
-      // 10. it was scheduled
+      await line('See you at the end, Detective.',{pitch:.4,rate:.7,red:true,hold:200});
+      chair.classList.add('away');cliffChuckle(6);ember.animate([{opacity:1},{opacity:0}],{duration:3000,fill:'forwards'});
+      await cliffSpeak('Hm. hm. hm. hm.',.32,.78);await wait(1600);if(!alive())return;
+      // 10. it was scheduled: the header rewrites itself in silence
       st.classList.add('glitch');setTimeout(()=>st.classList.remove('glitch'),400);sfx('dread');
-      ck.textContent='SCHEDULED TRANSMISSION · WRITTEN 03 OCT · RELEASED 23:47';f4Decode(ck,1600);
-      await line('Oh. And Detective.',{pitch:.6,rate:.78,hold:100});
-      stamp.textContent='WRITTEN 3 WEEKS AGO';stamp.className='cc-stamp on wide';stamp.style.opacity='';pop(stamp,'scale(3)');sfx('stamp');jolt(12);
-      await line('This message was written three weeks ago.',{pitch:.45,rate:.74,hold:200});
-      await laugh('Ha. ha. ha. ha.',7);if(!alive())return;
-      await wait(900);
+      ck.textContent='SCHEDULED TRANSMISSION · WRITTEN 03 OCT · RELEASED 23:47';f4Decode(ck,1600);await wait(2600);if(!alive())return;
       // 11. the whole transmission, to read again
       st.animate([{opacity:1},{opacity:0}],{duration:1400,fill:'forwards'});await wait(1200);if(!alive())return;
       cliffFinal(box);
+      await wait(1800);if(alive())cliffNotice(box);
     })();
   }
   $('#cliffhanger .cliff-go').addEventListener('click',()=>{
