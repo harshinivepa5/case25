@@ -2914,3 +2914,6 @@ body:has(#cliffhanger:not([hidden])) #fullscreenButton,body:has(#cliffhanger:not
 .cliff.threaded .cliff-thread{transform:scaleY(1)}
 .cliff-side>*:not(.cliff-thread){position:relative;z-index:1}
 .cliff.focus .cliff-next{z-index:6}
+#devCliffButton{position:fixed;z-index:999;left:20px;bottom:108px;padding:10px 14px;border:1px solid #c4281c;background:#100d09e8;color:#f0b9a8;font:10px var(--mono);letter-spacing:.14em;cursor:pointer}
+#devCliffButton:hover{background:#2b0f0b}
+body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) #devCliffButton,body.wall-cinematic #devCliffButton{display:none}

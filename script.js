@@ -1143,6 +1143,8 @@
     box.classList.add('out');sfx('ink');setTimeout(()=>{box.hidden=true;box.classList.remove('in','out');},reducedMotion?0:1400);
   });
   $('#cliffReplay').addEventListener('click',()=>playCliffhanger());
+  // testing aid: play the cliffhanger from anywhere
+  $('#devCliffButton')?.addEventListener('click',()=>{if(!$('#homeScene').classList.contains('active'))showHomeBoard();setTimeout(playCliffhanger,600);});
   function dropClipping(){
     const clip=$('#arrestClipping'),hd=clip.querySelector('h5'),text='LANTERN CO-OWNER CHARGED IN LAKE ASH DISAPPEARANCE';
     progress.arrestNew=false;persistProgress();
