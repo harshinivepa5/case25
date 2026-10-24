@@ -58,6 +58,8 @@
   };
   let progress = readProgress();
   const persistProgress = () => localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+  // ?cliff re-arms the Day 1 cliffhanger without touching any other progress
+  if(new URLSearchParams(location.search).has('cliff')){progress.cliffSeen=false;progress.cliffReplayed=false;progress.file04WallSeen=false;persistProgress();const u=new URL(location.href);u.searchParams.delete('cliff');history.replaceState(null,'',u);}
   let timers = [], clueIndex = 0, audioContext = null, audioNodes = [];
   let soundBus = null; // must exist before the first showHomeBoard() -> stopSound() on page load
   let musicWanted = true;
