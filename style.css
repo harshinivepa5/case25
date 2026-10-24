@@ -2860,3 +2860,17 @@ body.wall-cinematic #devPuzzle4Button,body:has(#f3Stage.visible) #devPuzzle4Butt
 .cliff-letter p.red{font-size:clamp(18px,1.6vw,24px)}
 .cliff-letter p.sign{font-size:clamp(24px,2vw,32px)}
 body:has(#cliffhanger:not([hidden])) #fullscreenButton,body:has(#cliffhanger:not([hidden])) #devPuzzle4Button{opacity:0!important;pointer-events:none!important}
+/* cliffhanger: the last card is him */
+.cliff-next{position:relative;display:flex;align-items:center;gap:18px;width:min(460px,90%);margin:18px 0 0 auto;padding:12px 16px;background:linear-gradient(165deg,#e9dcbf,#cdb685);color:#1f1810;box-shadow:0 18px 40px rgba(0,0,0,.75);transform:rotate(-2deg) translateY(30px);opacity:0;transition:opacity 1.2s ease,transform 1.3s cubic-bezier(.2,.8,.2,1)}
+.cliff-next.on{opacity:1;transform:rotate(-2deg)}
+.nx-photo{position:relative;flex:none;width:86px;height:100px;background:#efe8d8;border:5px solid #f6f1e6;box-shadow:0 2px 6px rgba(0,0,0,.4);overflow:hidden}
+.nx-photo svg{width:100%;height:100%}
+.nx-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.6) brightness(1.15);mix-blend-mode:multiply}
+.nx-photo img+svg{display:none}
+.cliff-next.on .nx-photo{animation:cliffDevelop 3s ease-out}
+.nx-text small{display:block;color:#8e1d14;font:700 10px var(--mono);letter-spacing:.2em}
+.nx-text b{display:block;min-height:1.2em;margin:6px 0 4px;font:700 clamp(18px,1.7vw,26px) var(--type);letter-spacing:.06em;color:#120c07}
+.nx-text i{display:block;font:normal 9.5px var(--mono);letter-spacing:.16em;color:#5a4128}
+.nx-stamp{position:absolute;right:14px;bottom:10px;padding:2px 10px;border:3px solid #a3201a;color:#a3201a;font:700 16px var(--type);letter-spacing:.2em;transform:rotate(-12deg) scale(2.2);opacity:0;transition:opacity .15s,transform .25s cubic-bezier(.3,0,.2,1)}
+.cliff-next.stamped .nx-stamp{opacity:.85;transform:rotate(-12deg) scale(1)}
+.cliff-side .cliff-next{width:100%;margin:6px 0 0}

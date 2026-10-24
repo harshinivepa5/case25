@@ -1089,24 +1089,27 @@
   }
   // The Day 1 cliffhanger: M's transmission pops up over the wall after File 003. It leaves nothing behind on the wall;
   // a small REPLAY button plays it again.
-  const CLIFF_LINES=['Detective,','Peter Shaw will sleep in a cell tonight.\nYou put him there.','Before you opened the first file, I sealed an envelope.\nRead it now.','@sealed','Every page was placed so you would arrive exactly where you are tonight.','So tell me: did you solve this case,\nor did you follow the path I laid down?','Lake Ash was not the first night Peter Shaw lied.\nNine years ago, there was an incident at The Lantern.\nSomeone did not go home that night.\nThe report called it an accident.','!It was not.','@subject','I was in that room.\nI watched the lights flicker twice.','You asked who M was watching.\nYou never asked why M chose you.','!See you at the end.','— M'];
+  const CLIFF_LINES=['Detective,','Peter Shaw will sleep in a cell tonight.\nYou put him there.','Before you opened the first file, I sealed an envelope.\nRead it now.','@sealed','Every page was placed so you would arrive exactly where you are tonight.','So tell me: did you solve this case,\nor did you follow the path I laid down?','Lake Ash was not the first night Peter Shaw lied.\nNine years ago, there was an incident at The Lantern.\nSomeone did not go home that night.\nThe report called it an accident.','!It was not.','@subject','I was in that room.\nI watched the lights flicker twice.','You asked who M was watching.\nYou never asked why M chose you.','!See you at the end.','— M','@next'];
+  // The player's own name on the last card. Change it here; put his photo at assets/file-006/subject.jpg for the sketch.
+  const SUBJECT_NAME='THE DETECTIVE';
   let cliffRun=0;
   function playCliffhanger(){
     const box=$('#cliffhanger'),letter=box.querySelector('.cliff-letter'),go=box.querySelector('.cliff-go'),sealed=box.querySelector('.cliff-sealed'),subj=box.querySelector('.cliff-subject');
     if(!$('#homeScene').classList.contains('active'))return;
     const run=++cliffRun;
     letter.innerHTML=CLIFF_LINES.filter(t=>t[0]!=='@').map(t=>`<p class="${t[0]==='!'?'red':t==='— M'?'sign':''}">${f3sEsc(t.replace(/^!/,'')).replace(/\n/g,'<br>')}</p>`).join('');
-    const ps=[...letter.children];ps.forEach(p=>p.classList.remove('on'));sealed.classList.remove('on');subj.classList.remove('on');go.hidden=true;
+    const ps=[...letter.children];ps.forEach(p=>p.classList.remove('on'));sealed.classList.remove('on');subj.classList.remove('on');box.querySelector('.cliff-next').classList.remove('on','stamped');go.hidden=true;
     box.hidden=false;box.classList.remove('out');void box.offsetWidth;box.classList.add('in');sfx('dread');
     const T=(ms,fn)=>setTimeout(()=>{if(run===cliffRun&&!box.hidden)fn();},reducedMotion?0:ms);
     let t=1800,i=0;
     CLIFF_LINES.forEach(line=>{
       if(line==='@sealed'){T(t,()=>{sealed.classList.add('on');sfx('paper');});t+=4200;return;}
       if(line==='@subject'){T(t,()=>{subj.classList.add('on');sfx('stamp');});t+=2600;return;}
+      if(line==='@next'){t+=1200;T(t,()=>{const n=box.querySelector('.cliff-next');n.classList.add('on');sfx('dread');const nm=n.querySelector('.nx-name');nm.textContent='';let k=0;const ty=()=>{nm.textContent=SUBJECT_NAME.slice(0,++k);if(k<SUBJECT_NAME.length)setTimeout(ty,90);else setTimeout(()=>{n.classList.add('stamped');sfx('stamp');},500);};setTimeout(ty,1400);});t+=4200;return;}
       const p=ps[i++],red=line[0]==='!';T(t,()=>{p.classList.add('on');if(red)sfx('sting');});t+=red?2200:Math.min(2600,900+line.length*22);
     });
     T(t+400,()=>{go.hidden=false;go.focus({preventScroll:true});});
-    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(go.hidden){cliffRun++;ps.forEach(p=>p.classList.add('on'));sealed.classList.add('on');subj.classList.add('on');go.hidden=false;}};
+    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(go.hidden){cliffRun++;ps.forEach(p=>p.classList.add('on'));sealed.classList.add('on');subj.classList.add('on');const n=box.querySelector('.cliff-next');n.querySelector('.nx-name').textContent=SUBJECT_NAME;n.classList.add('on','stamped');go.hidden=false;}};
   }
   $('#cliffhanger .cliff-go').addEventListener('click',()=>{
     const box=$('#cliffhanger');cliffRun++;progress.cliffSeen=true;persistProgress();paintProgress();
