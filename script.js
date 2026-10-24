@@ -1089,7 +1089,7 @@
   }
   // The Day 1 cliffhanger: M's transmission pops up over the wall after File 003. It leaves nothing behind on the wall;
   // a small REPLAY button plays it again.
-  const CLIFF_LINES=['Detective,','You found the man I wanted you to find.','Before you opened the first file, I sealed an envelope.\nRead it now.','@sealed','Every page was placed so you would arrive exactly where you are tonight.','So tell me: did you solve this case,\nor did you follow the path I laid down?','You asked who M was watching.\nYou never asked why M chose you.','@subject','!See you at the end.','— M'];
+  const CLIFF_LINES=['Detective,','Peter Shaw will sleep in a cell tonight.\nYou put him there.','Before you opened the first file, I sealed an envelope.\nRead it now.','@sealed','Every page was placed so you would arrive exactly where you are tonight.','So tell me: did you solve this case,\nor did you follow the path I laid down?','Lake Ash was not the first night Peter Shaw lied.\nNine years ago, there was an incident at The Lantern.\nSomeone did not go home that night.\nThe report called it an accident.','!It was not.','@subject','I was in that room.\nI watched the lights flicker twice.','You asked who M was watching.\nYou never asked why M chose you.','!See you at the end.','— M'];
   let cliffRun=0;
   function playCliffhanger(){
     const box=$('#cliffhanger'),letter=box.querySelector('.cliff-letter'),go=box.querySelector('.cliff-go'),sealed=box.querySelector('.cliff-sealed'),subj=box.querySelector('.cliff-subject');
