@@ -10,7 +10,7 @@
   
   
   <link rel="stylesheet" href="assets/fonts/fonts.css" />
-  <link rel="stylesheet" href="style.css?v=cliffgo" />
+  <link rel="stylesheet" href="style.css?v=cliffscene2" />
 </head>
 <body>
   <main id="experience" aria-live="polite">
@@ -207,7 +207,7 @@
         <feConvolveMatrix in="g" order="3" kernelMatrix="-1 -1 -1 -1 8 -1 -1 -1 -1" divisor="1" preserveAlpha="true" result="edge"/>
         <feComponentTransfer in="edge" result="lines"><feFuncR type="linear" slope="-12" intercept="1.05"/><feFuncG type="linear" slope="-12" intercept="1.05"/><feFuncB type="linear" slope="-12" intercept="1.05"/></feComponentTransfer>
         <feComponentTransfer in="lines" result="ink"><feFuncR type="discrete" tableValues=".12 1 1 1"/><feFuncG type="discrete" tableValues=".1 1 1 1"/><feFuncB type="discrete" tableValues=".08 1 1 1"/></feComponentTransfer>
-        <feBlend in="ink" in2="flat" mode="multiply"/></filter></svg>
+        <feMerge><feMergeNode in="flat"/></feMerge></filter></svg>
       <div class="cliff" id="cliffhanger" hidden aria-live="polite">
         <div class="cliff-static"></div>
         <div class="cliff-wrap">
@@ -694,6 +694,6 @@
       </div>
     </section>
   </main>
-  <script src="script.js?v=hint1"></script>
+  <script src="script.js?v=cliffscene2"></script>
 </body>
 </html>
