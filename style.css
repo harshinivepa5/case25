@@ -2941,11 +2941,9 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 .f3s-qdots i.done:after{content:'';position:absolute;left:28%;top:18%;width:28%;height:46%;border:solid #1a140e;border-width:0 calc(var(--u)*2px) calc(var(--u)*2px) 0;transform:rotate(40deg)}
 /* live build: no testing controls */
 #f3sSkip,#backButton{display:none!important}
-/* for now: File 003 is the last file; no CONTINUE on the wall, no SKIP */
-#continueFileFour,.cliff-replay,#f3sSkip{display:none!important}
-html body #homeScene.home #continueFileFour#continueFileFour{display:none!important}
 .f3s-hintbtn{position:absolute;z-index:80;right:20px;top:64px;padding:9px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:11px var(--mono);letter-spacing:.14em;cursor:pointer;animation:f3ContinueIn .8s ease both}
 .f3s-hintbtn:hover{background:#2b1c0d;color:#ffe0a0}
 .f3s-hintbtn[hidden]{display:none}
 #f3Stage:has(#f3sP1Docs[hidden]) .f3s-hintbtn{top:20px}
 #f3Stage:has(#f3sChapter:not([hidden])) .f3s-hintbtn,#f3Stage:has(.cine:not(.f4-screen) ) .f3s-hintbtn{visibility:hidden}
+#f3sSkip{display:none!important}
