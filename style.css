@@ -2976,3 +2976,83 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 .cs-lightning{position:absolute;inset:0;background:rgba(200,215,255,.5);opacity:0}
 .cliff.focus .cliff-scene{z-index:6}
 .cliff.focus .cs-rain,.cliff.focus .cs-lamp,.cliff.focus .cs-walker{opacity:0!important}
+/* ================= cliffhanger: directed scene ================= */
+.cc-stage{position:absolute;inset:0;z-index:3;overflow:hidden;opacity:0;pointer-events:none;background:#020203;transition:opacity 2s ease}
+.cc-stage.on{opacity:1}
+.cliff.final .cc-stage{display:none}
+.cliff.cine:not(.final) .cliff-wrap{visibility:hidden}
+.cc-room{position:absolute;inset:0;transform-origin:50% 62%}
+.cc-window{position:absolute;left:50%;top:6%;width:min(560px,46vw);height:64%;transform:translateX(-50%);background:linear-gradient(180deg,#152031,#0a1019 60%,#06090e);border:10px solid #0c0907;box-shadow:0 0 120px 30px rgba(70,100,150,.18),inset 0 0 60px rgba(0,0,0,.7);overflow:hidden}
+.cc-rain{position:absolute;inset:-30%;background:repeating-linear-gradient(100deg,transparent 0 9px,rgba(180,200,235,.22) 9px 10px);animation:arRain .5s linear infinite}
+.cc-bars{position:absolute;inset:0;background:linear-gradient(90deg,transparent 49%,#0c0907 49% 51%,transparent 51%),linear-gradient(0deg,transparent 54%,#0c0907 54% 56%,transparent 56%)}
+.cc-bolt{position:absolute;inset:0;background:#dbe6ff;opacity:0}
+.cc-stage.bolt .cc-bolt{animation:ccBolt .9s ease-out}
+.cc-stage.bolt .cc-room{animation:ccRoomBolt .9s ease-out}
+@keyframes ccBolt{0%{opacity:0}5%{opacity:.95}12%{opacity:.1}20%{opacity:.7}100%{opacity:0}}
+@keyframes ccRoomBolt{5%{filter:brightness(1.8)}20%{filter:brightness(1.4)}100%{filter:none}}
+.cc-desk{position:absolute;left:0;right:0;bottom:0;height:16%;background:linear-gradient(180deg,#1a110b,#070504);box-shadow:0 -10px 40px rgba(0,0,0,.8)}
+.cc-chair{position:absolute;left:50%;bottom:10%;height:66%;aspect-ratio:400/500;transform:translateX(-50%);perspective:1400px}
+.cc-turn{position:absolute;inset:0;transform-style:preserve-3d}
+.cc-turn svg{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden}
+.cc-front{transform:rotateY(180deg)}
+.cc-chair.turning .cc-turn{transition:transform 3.2s cubic-bezier(.6,0,.3,1);transform:rotateY(180deg)}
+.cc-chair.turned .cc-turn{transform:rotateY(180deg)}
+.cc-chair.away .cc-turn{transition:transform 2.6s cubic-bezier(.6,0,.3,1);transform:rotateY(360deg)}
+.cc-chair.laugh .cc-front{animation:ccLaugh .19s ease-in-out infinite}
+@keyframes ccLaugh{0%,100%{transform:rotateY(180deg) translateY(0)}50%{transform:rotateY(180deg) translateY(-1.2%)}}
+.cc-chair.lean{transition:transform 2s ease}
+.cc-chair.lean .cc-turn{filter:brightness(.6)}
+.cc-eye{opacity:0}
+.cc-chair.turned .cc-eye{animation:ccEye 5s ease-in-out 1s infinite}
+@keyframes ccEye{0%,100%{opacity:.15}40%,60%{opacity:.9}}
+.cc-grin{opacity:0;transition:opacity .4s}
+.cc-chair.laugh .cc-grin{opacity:.85}
+.cc-ember{filter:drop-shadow(0 0 6px #ff7a2a)}
+.cc-chair:not(.turned) .cc-cigar{opacity:0}
+.cc-smoke{position:absolute;left:62%;top:30%;width:10%;height:30%}
+.cc-chair:not(.turned) .cc-smoke{left:70%;top:6%}
+.cc-smoke i{position:absolute;bottom:0;left:30%;width:30px;height:30px;border-radius:50%;background:rgba(190,190,200,.16);filter:blur(10px);animation:ccSmoke 6s ease-out infinite}
+.cc-smoke i:nth-child(2){animation-delay:1.2s}.cc-smoke i:nth-child(3){animation-delay:2.4s}.cc-smoke i:nth-child(4){animation-delay:3.6s}.cc-smoke i:nth-child(5){animation-delay:4.8s}
+@keyframes ccSmoke{0%{opacity:0;transform:translate(0,0) scale(.5)}20%{opacity:1}100%{opacity:0;transform:translate(40px,-260px) scale(3.4)}}
+.cc-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,transparent 30%,rgba(0,0,0,.85) 100%);pointer-events:none}
+.cc-stage.dim .cc-room{filter:brightness(.35) blur(2px);transition:filter 1s ease}
+.cc-room{transition:filter 1s ease}
+.cc-stage.focus .cc-room{filter:brightness(.15) blur(4px)}
+.cc-stage.glitch{filter:drop-shadow(4px 0 0 rgba(255,0,40,.7)) drop-shadow(-4px 0 0 rgba(0,200,255,.6));transform:translateX(6px) skewX(-3deg)}
+.cc-kicker{position:absolute;left:50%;top:3.5%;transform:translateX(-50%);opacity:0;color:#c99a55;font:11px var(--mono);letter-spacing:.3em;white-space:nowrap;text-shadow:0 0 8px #000}
+.cc-sub{position:absolute;left:50%;bottom:7%;width:min(980px,88vw);transform:translateX(-50%);text-align:center;font:italic clamp(22px,2.4vw,36px)/1.35 var(--serif);color:#f2e7cf;text-shadow:0 2px 18px #000,0 0 30px #000;z-index:4}
+.cc-sub span{opacity:.12;filter:blur(3px);transition:opacity .35s ease,filter .35s ease}
+.cc-sub span.on{opacity:1;filter:none}
+.cc-sub.red{color:#e0412f;font-weight:700;font-size:clamp(30px,3.4vw,52px);text-shadow:0 0 24px rgba(200,30,20,.6),0 2px 14px #000}
+.cc-props{position:absolute;inset:0;z-index:3}
+/* the envelope */
+.cc-env{position:absolute;left:50%;top:46%;width:min(520px,62vw);aspect-ratio:1.6;transform:translate(-50%,-50%);opacity:0}
+.cc-env-back,.cc-env-front{position:absolute;inset:0;background:linear-gradient(160deg,#cdb07a,#a8874f);box-shadow:0 30px 80px rgba(0,0,0,.85)}
+.cc-env-front{clip-path:polygon(0 0,50% 52%,100% 0,100% 100%,0 100%);background:linear-gradient(160deg,#d8bd86,#b2905a);z-index:3}
+.cc-env-flap{position:absolute;left:0;right:0;top:0;height:56%;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(180deg,#c4a46c,#a5834c);transform-origin:top;z-index:4;transition:transform 1s cubic-bezier(.5,0,.3,1),z-index 0s .5s}
+.cc-env.open .cc-env-flap{transform:rotateX(180deg);z-index:1}
+.cc-seal{position:absolute;left:50%;top:50%;width:66px;height:66px;margin:-33px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#d0412f,#6e100a 70%);box-shadow:0 4px 10px rgba(0,0,0,.6),0 0 30px rgba(200,40,20,.6);z-index:5;transition:transform .9s cubic-bezier(.5,0,.75,0),opacity .9s}
+.cc-seal.l{clip-path:polygon(0 0,52% 0,44% 40%,56% 64%,46% 100%,0 100%)}
+.cc-seal.r2{clip-path:polygon(52% 0,100% 0,100% 100%,46% 100%,56% 64%,44% 40%)}
+.cc-env.crack .cc-seal.l{transform:translate(-160px,120px) rotate(-60deg);opacity:0}
+.cc-env.crack .cc-seal.r2{transform:translate(170px,140px) rotate(70deg);opacity:0}
+.cc-env-card{position:absolute;left:6%;right:6%;top:8%;bottom:8%;padding:22px 26px;background:linear-gradient(165deg,#f0e3c3,#d9c18e);color:#24190e;z-index:2;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:transform 1.3s cubic-bezier(.3,0,.2,1)}
+.cc-env.out .cc-env-card{transform:translateY(-58%) scale(1.25);z-index:6}
+.cc-env-card small{display:block;color:#8e1d14;font:700 12px var(--mono);letter-spacing:.2em;margin-bottom:8px}
+.cc-env-card p{margin:0 0 6px;font:italic 16px/1.45 var(--serif);opacity:.08;filter:blur(2px);transition:opacity .6s ease,filter .6s ease}
+.cc-env-card p.on{opacity:1;filter:none}
+.cc-env-card p.r.on{color:#9a1a10;font-weight:700}
+.cc-env-card i{position:absolute;right:20px;bottom:12px;font:italic 22px var(--serif)}
+.cc-stamp{position:absolute;left:50%;top:40%;z-index:7;transform:translate(-50%,-50%);opacity:0;pointer-events:none}
+.cc-stamp.on{padding:.1em .45em;border:6px solid #c4281c;border-radius:8px;color:#d0301f;font:700 clamp(40px,6vw,92px) var(--type);letter-spacing:.12em;white-space:nowrap;background:rgba(10,4,3,.35);text-shadow:0 0 24px rgba(200,30,20,.5);rotate:-8deg}
+.cc-stamp.on.wide{font-size:clamp(30px,4.2vw,64px)}
+/* the photograph and the card in the scene */
+.cc-props .cc-photo{position:absolute;left:50%;top:44%;width:min(380px,44vw);transform:translate(-50%,-50%) rotate(-3deg);opacity:1}
+.cc-props .cc-next{position:absolute;left:50%;top:44%;width:min(560px,80vw);margin:0;transform:translate(-50%,-50%) rotate(-2deg) scale(.9);opacity:0;z-index:5}
+.cc-props .cc-next.on{opacity:1;transform:translate(-50%,-50%) rotate(-2deg) scale(1.2)}
+.cc-props .cc-next .nx-photo{width:110px;height:128px}
+@media(max-width:800px){.cc-sub{bottom:4%}}
+.cc-props .cc-photo.burning{animation:cliffBurn 3.2s ease-out 1}
+.cc-env:not(.crack) .cc-seal{animation:ccSealGlow 1.4s ease-in-out infinite}
+@keyframes ccSealGlow{50%{box-shadow:0 4px 10px rgba(0,0,0,.6),0 0 50px rgba(230,50,25,.9)}}
+.cc-eye{r:2}

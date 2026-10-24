@@ -1144,66 +1144,183 @@
   // The cliffhanger, as a scene: the wall's lights die, the signal is acquired, M's lines glitch into place one by one,
   // the wax seal cracks, a flashbulb burns the 2016 photograph into view, a red thread runs down to the last card, and
   // the dark closes in on the player's own face to a heartbeat. A click shows it all at once.
-  function playCliffhanger(){
-    const box=$('#cliffhanger'),letter=box.querySelector('.cliff-letter'),go=box.querySelector('.cliff-go'),sealed=box.querySelector('.cliff-sealed'),subj=box.querySelector('.cliff-subject'),next=box.querySelector('.cliff-next'),kick=box.querySelector('.cliff-kicker');
-    if(!$('#homeScene').classList.contains('active'))return;
-    const run=++cliffRun;
-    kick.textContent='INCOMING TRANSMISSION · SOURCE: M · 23:47';box.querySelector('.cliff-meta').textContent='';box.classList.remove('reveal','sent');
-    box.querySelectorAll('.cliff-fx').forEach(n=>n.remove());
-    cliffScore();try{speechSynthesis.cancel();speechSynthesis.getVoices();}catch{}
-    box.querySelector('.cliff-scene')?.remove();
-    const fig=(cls)=>`<svg class="${cls}" viewBox="0 0 120 300" aria-hidden="true"><path d="M36 26h48l-4-9Q60 6 40 17z"/><rect x="32" y="25" width="56" height="5" rx="2"/><ellipse cx="60" cy="40" rx="14" ry="15"/><path d="M34 62Q60 50 86 62L96 140 100 210Q60 220 20 210L24 140Z"/><path d="M40 208L36 296H56L60 214ZM62 214L66 296H86L82 208Z"/></svg>`;
-    box.insertAdjacentHTML('afterbegin',`<div class="cliff-scene" aria-hidden="true"><div class="cs-rain"></div>
-      <div class="cs-window"><i class="cs-glass"></i>${fig('cs-watcher')}<b class="cs-ember"></b><i class="cs-bars"></i></div>
-      <div class="cs-lamp"><i></i></div><div class="cs-sweep"></div>${fig('cs-walker')}${fig('cs-walker cs-walker2')}<div class="cs-lightning"></div></div>`);
-    const scene=box.querySelector('.cliff-scene');
-    box.insertAdjacentHTML('beforeend','<div class="cliff-fx cliff-black"></div><div class="cliff-fx cliff-red"></div><div class="cliff-fx cliff-flash"></div><div class="cliff-fx cliff-iris"></div>');
-    letter.innerHTML=CLIFF_LINES.filter(t=>t[0]!=='@').map(t=>`<p class="${t[0]==='!'?'red':t==='— M'?'sign':''}">${t.replace(/^!/,'').split('\n').map(l=>`<span class="ln">${f3sEsc(l)}</span>`).join('<br>')}</p>`).join('');
-    const ps=[...letter.children];
-    ps.forEach(p=>p.classList.remove('on'));[sealed,subj].forEach(n=>n.classList.remove('on','cracked','burning'));next.classList.remove('on','stamped');box.classList.remove('focus','threaded');go.hidden=true;
-    box.hidden=false;box.classList.remove('out','in','live');void box.offsetWidth;box.classList.add('in');
-    const black=box.querySelector('.cliff-black'),red=box.querySelector('.cliff-red'),flash=box.querySelector('.cliff-flash'),iris=box.querySelector('.cliff-iris');
-    const T=(ms,fn)=>setTimeout(()=>{if(run===cliffRun&&!box.hidden)fn();},reducedMotion?0:ms);
-    const jolt=(px=6)=>box.querySelector('.cliff-wrap').animate([{transform:'none'},{transform:`translate(${-px}px,${px/2}px)`},{transform:`translate(${px*.7}px,${-px/3}px)`},{transform:'none'}],{duration:300});
-    const decodeLines=(p)=>p.querySelectorAll('.ln').forEach((l,k)=>{l.style.visibility='hidden';setTimeout(()=>{l.style.visibility='';f4Decode(l,Math.min(1300,250+l.textContent.length*18));},k*420);});
-    // 1. the wall's lights stutter and die, then the signal comes in
-    black.animate([{opacity:0},{opacity:.8,offset:.12},{opacity:.1,offset:.2},{opacity:.95,offset:.32},{opacity:.4,offset:.4},{opacity:1}],{duration:reducedMotion?1:1700,fill:'forwards'});
-    sfx('dread');
-    T(2600,()=>scene.classList.add('sweep'));T(14000,()=>scene.classList.add('walk1'));T(34000,()=>scene.classList.add('walk2'));
-    T(1900,()=>{box.classList.add('live');scene.classList.add('on');kick.style.visibility='';f4Decode(kick,900);sfx('ink');});
-    kick.style.visibility='hidden';
-    let t=3000,i=0;
-    CLIFF_LINES.forEach(line=>{
-      if(line==='@sealed'){T(t,()=>{sealed.classList.add('on');sfx('paper');});T(t+1400,()=>cliffSay('@sealed'));T(t+1300,()=>{sealed.classList.add('cracked');sfx('stamp');jolt(4);});t+=5200;return;}
-      if(line==='@subject'){T(t,()=>{flash.animate([{opacity:0},{opacity:1,offset:.06},{opacity:0}],{duration:900});sfx('key');subj.classList.add('on','burning');
-        for(let e=0;e<16;e++){const em=document.createElement('i');em.className='cliff-ember';em.style.left=(10+Math.random()*80)+'%';em.style.animationDelay=(Math.random()*1.6)+'s';em.style.animationDuration=(2.4+Math.random()*2)+'s';subj.append(em);setTimeout(()=>em.remove(),6000);}
-        T(t+3200,()=>subj.classList.remove('burning'));});t+=3400;return;}
-      if(line==='@next'){t+=600;
-        T(t,()=>{box.classList.add('threaded');sfx('ink');});
-        T(t+2600,()=>cliffSay('@next'));
-        T(t+1100,()=>{next.classList.add('on');flash.animate([{opacity:0},{opacity:.7,offset:.08},{opacity:0}],{duration:700});sfx('key');
-          const nm=next.querySelector('.nx-name');nm.textContent='';let k=0;const ty=()=>{if(run!==cliffRun)return;nm.textContent=SUBJECT_NAME.slice(0,++k);if(k<SUBJECT_NAME.length)setTimeout(ty,110);else setTimeout(()=>{next.classList.add('stamped');sfx('stamp');jolt(5);},600);};setTimeout(ty,1500);});
-        // the dark closes in on his card, and a heartbeat
-        T(t+1800,()=>{const r=next.getBoundingClientRect(),b=box.getBoundingClientRect();iris.style.cssText=`left:${r.left-b.left-18}px;top:${r.top-b.top-18}px;width:${r.width+36}px;height:${r.height+36}px`;box.classList.add('focus');scene.classList.add('close');[0,900,1800,2700].forEach(d=>setTimeout(()=>{if(run===cliffRun)sfx('heart');},d));});
-        T(t+6200,()=>{box.classList.remove('focus');scene.classList.add('gone');});
-        t+=6800;return;}
-      const p=ps[i++],isRed=line[0]==='!';
-      T(t,()=>{p.classList.add('on');decodeLines(p);cliffSay(line);if(line==='!It was not.'){scene.classList.add('watched');scene.querySelector('.cs-lightning').animate([{opacity:0},{opacity:.9,offset:.05},{opacity:0,offset:.15},{opacity:.6,offset:.22},{opacity:0}],{duration:1400});}if(isRed){sfx('sting');jolt(8);red.animate([{opacity:0},{opacity:.55,offset:.12},{opacity:0}],{duration:1300});}});
-      t+=isRed?2400:Math.min(3200,1100+line.length*26);
+  // ===== The cliffhanger, directed =====
+  // A dark office in the rain. A high-backed chair faces the window; cigar smoke rises from it. The camera pushes in,
+  // the chair turns, and M is there: hat, shadowed face, a cigar ember. He laughs. Then he talks, and every line on screen
+  // waits for his voice (subtitles reveal word by word as he speaks). The sealed envelope drops onto the desk, the wax
+  // cracks, the card rises out and "21 DAYS AGO" slams over it. The burnt 2016 photograph, the incident, the red thread
+  // to Shaik's own card, a heartbeat. He leans back into the dark. Last, the header rewrites itself: it was scheduled.
+  // A click anywhere skips straight to the full transmission.
+  function cliffSpeak(text,pitch=.45,rate=.78,onWord){
+    // speaks a line and resolves when the voice finishes; if the browser has no voice (or it never starts),
+    // the words are revealed on a timer instead so the scene never stalls
+    return new Promise(res=>{
+      const words=text.split(' '),est=Math.max(800,words.length*400/rate);let done=false,started=false;
+      const fin=()=>{if(!done){done=true;onWord&&onWord(text.length);res();}};
+      const timed=()=>{let i=0;const step=est/words.length;const tick=()=>{if(done)return;i++;onWord&&onWord(words.slice(0,i).join(' ').length);if(i<words.length)setTimeout(tick,step);else setTimeout(fin,250);};tick();};
+      try{
+        if(soundMuted||!('speechSynthesis' in window)||!speechSynthesis.getVoices().length)throw 0;
+        if(!cliffVoicePick){const vs=speechSynthesis.getVoices();cliffVoicePick=['Daniel','Arthur','Google UK English Male','Fred','Alex','Aaron','Rishi'].map(n=>vs.find(v=>v.name.includes(n))).find(Boolean)||vs.find(v=>/^en/i.test(v.lang))||null;}
+        const u=new SpeechSynthesisUtterance(text);if(cliffVoicePick)u.voice=cliffVoicePick;u.pitch=pitch;u.rate=rate;u.volume=1;
+        u.onstart=()=>{started=true;};
+        u.onboundary=e=>{if(onWord&&e.name!=='sentence')onWord(e.charIndex);};
+        u.onend=()=>setTimeout(fin,150);u.onerror=()=>{if(!started)timed();else setTimeout(fin,200);};
+        speechSynthesis.speak(u);
+        setTimeout(()=>{if(!started&&!done){try{speechSynthesis.cancel();}catch{}timed();}},1500);
+        setTimeout(fin,est*2.5+2500);
+      }catch{timed();}
     });
-    // the last turn of the screw: the header glitches and rewrites itself. This was never live. It was queued on
-    // 3 October and released the moment he closed File 003.
-    const META='QUEUED 03 OCT · 23:47   ·   RELEASE CONDITION: FILE 003 CLOSED   ·   STATUS: DELIVERED ON SCHEDULE';
-    T(t+600,()=>{box.classList.add('reveal','glitch');sfx('dread');setTimeout(()=>box.classList.remove('glitch'),260);
-      kick.textContent='SCHEDULED TRANSMISSION · WRITTEN 03 OCT · RELEASED 23:47';f4Decode(kick,1600);cliffSay('@meta');});
-    T(t+2600,()=>{const m=box.querySelector('.cliff-meta');let k=0;const ty=()=>{if(run!==cliffRun)return;m.textContent=META.slice(0,++k);if(k<META.length)setTimeout(ty,34);else{box.classList.add('sent');sfx('stamp');}};ty();});
-    T(t+7400,()=>{box.classList.remove('reveal');go.hidden=false;go.focus({preventScroll:true});});
-    // a faint glitch now and then while it plays
-    const glitch=()=>{if(run!==cliffRun||box.hidden)return;box.classList.add('glitch');setTimeout(()=>box.classList.remove('glitch'),180);setTimeout(glitch,4000+Math.random()*5000);};setTimeout(glitch,5000);
-    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(go.hidden){cliffRun++;try{speechSynthesis.cancel();}catch{}black.getAnimations().forEach(a=>a.finish());box.classList.add('live');kick.style.visibility='';ps.forEach(p=>{p.classList.add('on');p.querySelectorAll('.ln').forEach(l=>l.style.visibility='');});kick.textContent='SCHEDULED TRANSMISSION · WRITTEN 03 OCT · RELEASED 23:47';box.querySelector('.cliff-meta').textContent='QUEUED 03 OCT · 23:47   ·   RELEASE CONDITION: FILE 003 CLOSED   ·   STATUS: DELIVERED ON SCHEDULE';box.classList.remove('reveal');box.classList.add('sent');sealed.classList.add('on','cracked');subj.classList.add('on');box.classList.add('threaded');box.classList.remove('focus');next.querySelector('.nx-name').textContent=SUBJECT_NAME;next.classList.add('on','stamped');go.hidden=false;}};
+  }
+  // a quiet, breathy chuckle under the spoken laugh
+  function cliffChuckle(n=5){
+    ensureSound();const c=audioContext;if(!c)return;
+    for(let i=0;i<n;i++){const t=c.currentTime+i*.19,len=c.sampleRate*.14|0,b=c.createBuffer(1,len,c.sampleRate),d=b.getChannelData(0);for(let k=0;k<len;k++)d[k]=(Math.random()*2-1)*Math.sin(Math.PI*k/len);
+      const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=b;f.type='bandpass';f.frequency.value=420-i*30;f.Q.value=4;g.gain.value=.5*(1-i/n*.5);s.connect(f);f.connect(g);g.connect(c.destination);s.start(t);}
+  }
+  function cliffThunder(){
+    ensureSound();const c=audioContext;if(!c)return;const len=c.sampleRate*2.6|0,b=c.createBuffer(1,len,c.sampleRate),d=b.getChannelData(0);
+    for(let k=0;k<len;k++)d[k]=(Math.random()*2-1)*Math.pow(1-k/len,2.2);const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=b;f.type='lowpass';f.frequency.value=180;g.gain.value=1.2;s.connect(f);f.connect(g);g.connect(c.destination);s.start();
+  }
+  const CLIFF_META='QUEUED 03 OCT · 23:47   ·   RELEASE CONDITION: FILE 003 CLOSED   ·   STATUS: DELIVERED ON SCHEDULE';
+  function cliffFinal(box){
+    const letter=box.querySelector('.cliff-letter'),kick=box.querySelector('.cliff-kicker');
+    try{speechSynthesis.cancel();}catch{}
+    letter.innerHTML=CLIFF_LINES.filter(t=>t[0]!=='@').map(t=>`<p class="on ${t[0]==='!'?'red':t==='— M'?'sign':''}">${t.replace(/^!/,'').split('\n').map(l=>`<span class="ln">${f3sEsc(l)}</span>`).join('<br>')}</p>`).join('');
+    kick.style.visibility='';kick.textContent='SCHEDULED TRANSMISSION · WRITTEN 03 OCT · RELEASED 23:47';
+    box.querySelector('.cliff-meta').textContent=CLIFF_META;
+    box.querySelector('.cliff-sealed').classList.add('on','cracked');box.querySelector('.cliff-subject').classList.add('on');
+    const n=box.querySelector('.cliff-next');n.querySelector('.nx-name').textContent=SUBJECT_NAME;n.classList.add('on','stamped');
+    box.classList.add('final','live','threaded','sent');box.classList.remove('focus','glitch','reveal');
+    const go=box.querySelector('.cliff-go');go.hidden=false;go.focus({preventScroll:true});
+  }
+  function playCliffhanger(){
+    const box=$('#cliffhanger');
+    if(!$('#homeScene').classList.contains('active'))return;
+    const run=++cliffRun,alive=()=>run===cliffRun&&!box.hidden;
+    const st=box.querySelector('.cc-stage'),room=st.querySelector('.cc-room'),sub=st.querySelector('.cc-sub'),props=st.querySelector('.cc-props'),stamp=st.querySelector('.cc-stamp'),ck=st.querySelector('.cc-kicker');
+    const chair=st.querySelector('.cc-chair'),back=st.querySelector('.cc-back'),front=st.querySelector('.cc-front'),ember=st.querySelector('.cc-ember');
+    // reset
+    try{speechSynthesis.cancel();speechSynthesis.getVoices();}catch{}
+    box.querySelectorAll('.cliff-fx').forEach(n=>n.remove());box.querySelector('.cliff-scene')?.remove();
+    box.className='cliff';box.hidden=false;void box.offsetWidth;box.classList.add('in','cine');
+    st.getAnimations({subtree:true}).forEach(a=>a.cancel());
+    sub.innerHTML='';props.innerHTML='';stamp.textContent='';stamp.className='cc-stamp';ck.textContent='';
+    st.className='cc-stage';chair.className='cc-chair';
+    box.querySelector('.cliff-go').hidden=true;box.querySelector('.cliff-meta').textContent='';
+    box.insertAdjacentHTML('beforeend','<div class="cliff-fx cliff-black"></div><div class="cliff-fx cliff-red"></div><div class="cliff-fx cliff-flash"></div>');
+    const black=box.querySelector('.cliff-black'),red=box.querySelector('.cliff-red'),flash=box.querySelector('.cliff-flash');
+    cliffScore();
+    const wait=ms=>new Promise(r=>setTimeout(r,reducedMotion?0:ms));
+    const jolt=(px=8)=>st.animate([{transform:'none'},{transform:`translate(${-px}px,${px/2}px)`},{transform:`translate(${px*.7}px,${-px/3}px)`},{transform:'none'}],{duration:320});
+    const pop=(el,from='scale(2.4)')=>el.animate([{opacity:0,transform:from,filter:'blur(8px)'},{opacity:1,transform:'scale(.96)',filter:'blur(0)',offset:.7},{opacity:1,transform:'scale(1)'}],{duration:420,easing:'cubic-bezier(.3,0,.2,1)',fill:'forwards'});
+    const laugh=async(text='Ha. ha. ha. ha.',n=6)=>{chair.classList.add('laugh');cliffChuckle(n);await cliffSpeak(text,.3,.8);chair.classList.remove('laugh');};
+    // say a line with subtitles that follow the voice word by word
+    const line=async(text,{pitch=.45,rate=.78,red:isRed=false,hold=500}={})=>{
+      if(!alive())return;
+      sub.className='cc-sub'+(isRed?' red':'');
+      const words=text.split(' ');sub.innerHTML=words.map(w=>`<span>${f3sEsc(w)}</span>`).join(' ');
+      const spans=[...sub.children],ends=[];let acc=0;words.forEach(w=>{acc+=w.length+1;ends.push(acc);});
+      sub.animate([{opacity:0},{opacity:1}],{duration:300,fill:'forwards'});
+      if(isRed){jolt(10);red.animate([{opacity:0},{opacity:.6,offset:.1},{opacity:0}],{duration:1400});sfx('sting');}
+      await cliffSpeak(text,pitch,rate,ci=>spans.forEach((s,i)=>{if(ends[i]-1<=ci+1||ci>=text.length)s.classList.add('on');}));
+      spans.forEach(s=>s.classList.add('on'));
+      await wait(hold);
+      if(alive())sub.animate([{opacity:1,filter:'blur(0)'},{opacity:0,filter:'blur(6px)'}],{duration:450,fill:'forwards'});
+      await wait(380);
+    };
+    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(box.classList.contains('final'))return;cliffRun++;try{speechSynthesis.cancel();}catch{}st.getAnimations({subtree:true}).forEach(a=>a.finish());cliffFinal(box);};
+    (async()=>{
+      // 1. the lights die
+      black.animate([{opacity:0},{opacity:.8,offset:.12},{opacity:.1,offset:.2},{opacity:.95,offset:.32},{opacity:.4,offset:.4},{opacity:1}],{duration:reducedMotion?1:1700,fill:'forwards'});
+      sfx('dread');await wait(2000);if(!alive())return;
+      // 2. the room: rain, a chair facing the window, smoke rising
+      st.classList.add('on');black.animate([{opacity:1},{opacity:0}],{duration:2200,fill:'forwards'});
+      room.animate([{transform:'scale(1.0)'},{transform:'scale(1.22) translateY(4%)'}],{duration:16000,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
+      ck.textContent='INCOMING TRANSMISSION · SOURCE: M · 23:47';ck.style.opacity=1;f4Decode(ck,1400);sfx('ink');
+      await wait(3600);if(!alive())return;
+      st.classList.add('bolt');cliffThunder();setTimeout(()=>st.classList.remove('bolt'),900);
+      await wait(2400);if(!alive())return;
+      // 3. the chair turns
+      chair.classList.add('turning');sfx('paper');await wait(3300);if(!alive())return;
+      chair.classList.add('turned');
+      ember.animate([{r:5.5,filter:'none'},{r:9,filter:'drop-shadow(0 0 14px #ff7a2a)',offset:.5},{r:5.5,filter:'none'}],{duration:2400});
+      await wait(1400);await laugh('Heh. heh. heh. heh.',7);if(!alive())return;
+      await wait(400);
+      // 4. he speaks
+      await line('Detective.',{pitch:.45,rate:.68,hold:700});
+      await line('Peter Shaw will sleep in a cell tonight.',{pitch:.5,rate:.8});
+      chair.classList.add('laugh');cliffChuckle(4);await cliffSpeak('Heh. Heh.',.35,.85);chair.classList.remove('laugh');
+      await line('You put him there.',{pitch:.6,rate:.72,hold:900});
+      await line('Before you opened the first file, I sealed an envelope.',{pitch:.5,rate:.8,hold:200});
+      // 5. the envelope
+      if(!alive())return;
+      props.innerHTML=`<div class="cc-env"><div class="cc-env-back"></div><div class="cc-env-card"><small>SEALED · 3 OCTOBER</small><p>The record will say that Peter Shaw killed Thomas Reed.</p><p>The record will say that Thomas Reed is dead.</p><p>And you will give me a name.</p><p class="r">It will not be mine.</p><i>— M</i></div><div class="cc-env-front"></div><div class="cc-env-flap"></div><b class="cc-seal l"></b><b class="cc-seal r2"></b></div>`;
+      const env=props.querySelector('.cc-env'),card=env.querySelector('.cc-env-card'),cps=[...card.querySelectorAll('p')];
+      st.classList.add('dim');
+      env.animate([{transform:'translate(-50%,-160%) rotate(-24deg) scale(1.3)',opacity:0},{opacity:1,offset:.3},{transform:'translate(-50%,-50%) rotate(-4deg) scale(1)',opacity:1}],{duration:900,easing:'cubic-bezier(.5,0,.75,1.2)',fill:'forwards'});
+      await wait(880);sfx('stamp');jolt(12);
+      await line('Go on. Read it now.',{pitch:.55,rate:.75,hold:300});
+      env.classList.add('crack');sfx('stamp');jolt(6);await wait(900);
+      env.classList.add('open');await wait(1100);env.classList.add('out');sfx('paper');await wait(1300);if(!alive())return;
+      stamp.textContent='21 DAYS AGO';stamp.className='cc-stamp on';pop(stamp,'scale(3) rotate(-30deg)');sfx('stamp');jolt(10);
+      await wait(1500);stamp.animate([{opacity:1},{opacity:.0}],{duration:600,fill:'forwards'});
+      for(const [i,t] of ['The record will say that Peter Shaw killed Thomas Reed.','The record will say that Thomas Reed is dead.','And you will give me a name.','It will not be mine.'].entries()){
+        if(!alive())return;cps[i].classList.add('on');await cliffSpeak(t,i===3?.35:.45,i===3?.68:.8);await wait(200);}
+      await laugh('Ha. ha. ha. ha.',6);if(!alive())return;
+      env.animate([{opacity:1,transform:'translate(-50%,-50%) rotate(-4deg) scale(1)'},{opacity:0,transform:'translate(-50%,-40%) rotate(4deg) scale(.7)',filter:'blur(6px)'}],{duration:900,fill:'forwards'});
+      await wait(700);st.classList.remove('dim');
+      // 6. the trap
+      await line('Every page was placed, so you would arrive, exactly where you are tonight.',{pitch:.5,rate:.78});
+      await line('So tell me. Did you solve this case?',{pitch:.6,rate:.78,hold:200});
+      await line('Or did you follow the path I laid down?',{pitch:.45,rate:.74,hold:200});
+      chair.classList.add('laugh');cliffChuckle(5);await cliffSpeak('Hm. hm. hm.',.35,.8);chair.classList.remove('laugh');
+      // 7. the incident
+      await line('Lake Ash was not the first night Peter Shaw lied.',{pitch:.5,rate:.8});
+      if(!alive())return;
+      props.innerHTML='';const ph=box.querySelector('.cliff-subject').cloneNode(true);ph.className='cliff-subject burnt cc-photo on burning';props.append(ph);setTimeout(()=>ph.classList.remove('burning'),3300);
+      flash.animate([{opacity:0},{opacity:1,offset:.06},{opacity:0}],{duration:1000});sfx('key');st.classList.add('dim');
+      for(let e=0;e<18;e++){const em=document.createElement('i');em.className='cliff-ember';em.style.left=(10+Math.random()*80)+'%';em.style.animationDelay=(Math.random()*1.6)+'s';ph.append(em);}
+      await line('Nine years ago, there was an incident at The Lantern.',{pitch:.45,rate:.78});
+      await line('Someone did not go home that night.',{pitch:.4,rate:.74});
+      await line('The report called it an accident.',{pitch:.55,rate:.78,hold:200});
+      st.classList.add('bolt');cliffThunder();setTimeout(()=>st.classList.remove('bolt'),900);
+      await line('It was not.',{pitch:.3,rate:.6,red:true,hold:900});
+      await line('I was in that room.',{pitch:.4,rate:.72,hold:200});
+      await line('I watched the lights flicker. Twice.',{pitch:.45,rate:.72,hold:500});
+      ph.animate([{opacity:1},{opacity:0,filter:'blur(8px)'}],{duration:800,fill:'forwards'});await wait(600);st.classList.remove('dim');
+      // 8. you
+      await line('You asked who M was watching.',{pitch:.5,rate:.78,hold:200});
+      await line('You never asked, why M chose you.',{pitch:.4,rate:.7,hold:300});
+      if(!alive())return;
+      props.innerHTML='';const nx=box.querySelector('.cliff-next').cloneNode(true);nx.className='cliff-next cc-next';nx.querySelector('.nx-name').textContent='';props.append(nx);
+      st.classList.add('dim','focus');flash.animate([{opacity:0},{opacity:.8,offset:.08},{opacity:0}],{duration:700});sfx('key');
+      requestAnimationFrame(()=>nx.classList.add('on'));
+      [0,900,1800,2700].forEach(d=>setTimeout(()=>{if(alive())sfx('heart');},d+600));
+      await wait(1600);const nm=nx.querySelector('.nx-name');for(let k=1;k<=SUBJECT_NAME.length;k++){if(!alive())return;nm.textContent=SUBJECT_NAME.slice(0,k);await wait(120);}
+      await cliffSpeak(SUBJECT_NAME[0]+SUBJECT_NAME.slice(1).toLowerCase()+'.',.45,.65);
+      nx.classList.add('stamped');sfx('stamp');jolt(8);await wait(500);
+      await laugh('Ha. ha. ha. ha.',6);if(!alive())return;
+      await wait(800);nx.animate([{opacity:1},{opacity:0,filter:'blur(8px)'}],{duration:900,fill:'forwards'});await wait(700);st.classList.remove('dim','focus');
+      // 9. goodbye
+      chair.classList.add('lean');
+      await line('See you at the end, Detective.',{pitch:.4,rate:.7,red:true,hold:300});
+      chair.classList.add('laugh');cliffChuckle(5);await cliffSpeak('Hm. hm. hm.',.35,.8);chair.classList.remove('laugh');
+      ember.animate([{opacity:1},{opacity:0}],{duration:2600,fill:'forwards'});chair.classList.add('away');await wait(2600);if(!alive())return;
+      // 10. it was scheduled
+      st.classList.add('glitch');setTimeout(()=>st.classList.remove('glitch'),400);sfx('dread');
+      ck.textContent='SCHEDULED TRANSMISSION · WRITTEN 03 OCT · RELEASED 23:47';f4Decode(ck,1600);
+      await line('Oh. And Detective.',{pitch:.6,rate:.78,hold:100});
+      stamp.textContent='WRITTEN 3 WEEKS AGO';stamp.className='cc-stamp on wide';stamp.style.opacity='';pop(stamp,'scale(3)');sfx('stamp');jolt(12);
+      await line('This message was written three weeks ago.',{pitch:.45,rate:.74,hold:200});
+      await laugh('Ha. ha. ha. ha.',7);if(!alive())return;
+      await wait(900);
+      // 11. the whole transmission, to read again
+      st.animate([{opacity:1},{opacity:0}],{duration:1400,fill:'forwards'});await wait(1200);if(!alive())return;
+      cliffFinal(box);
+    })();
   }
   $('#cliffhanger .cliff-go').addEventListener('click',()=>{
-    cliffStop();const box=$('#cliffhanger');cliffRun++;progress.cliffSeen=true;persistProgress();paintProgress();
+    cliffStop();const box=$('#cliffhanger');cliffRun++;try{speechSynthesis.cancel();}catch{}progress.cliffSeen=true;persistProgress();paintProgress();
     box.classList.add('out');sfx('ink');setTimeout(()=>{box.hidden=true;box.classList.remove('in','out');},reducedMotion?0:1400);
   });
   $('#cliffReplay').addEventListener('click',()=>playCliffhanger());
