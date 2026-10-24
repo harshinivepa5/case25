@@ -1225,7 +1225,7 @@
       await cliffSpeak(text,pitch,rate,ci=>spans.forEach((s,i)=>{if(ends[i]-1<=ci+1||ci>=text.length)s.classList.add('on');}));
       spans.forEach(s=>s.classList.add('on'));
       await wait(hold);
-      if(alive())sub.animate([{opacity:1,filter:'blur(0)'},{opacity:0,filter:'blur(6px)'}],{duration:450,fill:'forwards'});
+      if(alive())sub.animate([{opacity:1,transform:'translateX(-50%)'},{opacity:0,transform:'translateX(-50%) translateY(14px)'}],{duration:450,fill:'forwards'});
       await wait(380);
     };
     box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(box.classList.contains('final'))return;cliffRun++;try{speechSynthesis.cancel();}catch{}st.getAnimations({subtree:true}).forEach(a=>a.finish());cliffFinal(box);};
@@ -1254,7 +1254,7 @@
       await line('Before you opened the first file, I sealed an envelope.',{pitch:.5,rate:.8,hold:200});
       // 5. the envelope
       if(!alive())return;
-      props.innerHTML=`<div class="cc-env"><div class="cc-env-back"></div><div class="cc-env-card"><small>SEALED · 3 OCTOBER</small><p>The record will say that Peter Shaw killed Thomas Reed.</p><p>The record will say that Thomas Reed is dead.</p><p>And you will give me a name.</p><p class="r">It will not be mine.</p><i>— M</i></div><div class="cc-env-front"></div><div class="cc-env-flap"></div><b class="cc-seal l"></b><b class="cc-seal r2"></b></div>`;
+      props.innerHTML=`<div class="cc-env"><div class="cc-env-back"></div><div class="cc-env-card"><svg class="cc-blood" viewBox="0 0 400 250" preserveAspectRatio="none" aria-hidden="true"><g fill="#6a0b06"><path d="M300 0c4 18 2 30-3 44-3 9 2 16 0 30-1 8-8 8-8 0 0-12-6-20-4-34 2-14 1-26 0-40z" opacity=".85"/><path d="M322 0c2 10 1 18-2 26-2 6-6 6-6 0 0-8 1-16 2-26z" opacity=".7"/><circle cx="292" cy="78" r="5" opacity=".8"/><path d="M340 20c18 4 30 16 26 30-4 12-22 10-30 2-10-10-14-30 4-32z" opacity=".45"/><circle cx="372" cy="62" r="3" opacity=".7"/><circle cx="358" cy="80" r="2" opacity=".6"/><circle cx="380" cy="40" r="2.5" opacity=".6"/><path d="M20 200c30-6 60-2 80 10-20 10-60 14-84 4z" opacity=".35"/><g opacity=".3"><ellipse cx="60" cy="214" rx="16" ry="20"/><ellipse cx="60" cy="214" rx="11" ry="14" fill="#8a1a10" opacity=".5"/></g></g></svg><small>SEALED · 3 OCTOBER</small><p>The record will say that Peter Shaw killed Thomas Reed.</p><p>The record will say that Thomas Reed is dead.</p><p>And you will give me a name.</p><p class="r">It will not be mine.</p><i>— M</i></div><div class="cc-env-front"><svg class="cc-blood" viewBox="0 0 400 250" preserveAspectRatio="none" aria-hidden="true"><g fill="#5e0905"><path d="M40 250c10-40 30-60 60-70 20-6 30 10 20 24-10 14-40 20-50 46z" opacity=".55"/><path d="M90 180c2 20-2 40-4 60h-6c0-20 2-40 10-60z" opacity=".6"/><circle cx="330" cy="200" r="22" opacity=".25"/><circle cx="352" cy="226" r="6" opacity=".6"/></g></svg></div><div class="cc-env-flap"></div><i class="cc-seal-drip"></i><b class="cc-seal l"></b><b class="cc-seal r2"></b></div>`;
       const env=props.querySelector('.cc-env'),card=env.querySelector('.cc-env-card'),cps=[...card.querySelectorAll('p')];
       st.classList.add('dim');
       env.animate([{transform:'translate(-50%,-160%) rotate(-24deg) scale(1.3)',opacity:0},{opacity:1,offset:.3},{transform:'translate(-50%,-50%) rotate(-4deg) scale(1)',opacity:1}],{duration:900,easing:'cubic-bezier(.5,0,.75,1.2)',fill:'forwards'});

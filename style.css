@@ -3056,3 +3056,23 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 .cc-env:not(.crack) .cc-seal{animation:ccSealGlow 1.4s ease-in-out infinite}
 @keyframes ccSealGlow{50%{box-shadow:0 4px 10px rgba(0,0,0,.6),0 0 50px rgba(230,50,25,.9)}}
 .cc-eye{r:2}
+/* subtitles: unspoken words are hidden, spoken words land; nothing is blurred */
+.cc-sub span{display:inline-block;opacity:0;filter:none;transform:translateY(.25em);transition:opacity .22s ease,transform .22s ease,color .6s ease}
+.cc-sub span.on{opacity:1;transform:none;animation:ccWord .7s ease-out}
+@keyframes ccWord{0%{color:#fff;text-shadow:0 0 18px rgba(255,220,180,.9)}100%{}}
+.cc-sub.red span.on{animation:ccWordRed .7s ease-out}
+@keyframes ccWordRed{0%{color:#ff7a5a;text-shadow:0 0 30px rgba(255,40,20,1)}100%{}}
+/* the envelope card: lines are written in, not blurred */
+.cc-env-card p{opacity:0!important;filter:none!important;clip-path:inset(0 100% 0 0)}
+.cc-env-card p.on{opacity:1!important;animation:ccWrite 1.4s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes ccWrite{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.cc-env-card p.r.on{color:#8a0d06;font-weight:700;text-shadow:0 0 1px #5a0705}
+/* blood */
+.cc-blood{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;mix-blend-mode:multiply}
+.cc-env-card{background:radial-gradient(ellipse at 80% 15%,rgba(120,20,10,.18),transparent 45%),radial-gradient(ellipse at 10% 90%,rgba(90,50,20,.25),transparent 50%),linear-gradient(165deg,#ead9b4,#cdb17a)!important}
+.cc-env-card>*:not(.cc-blood){position:relative}
+.cc-seal{background:radial-gradient(circle at 40% 35%,#c4281c,#5a0705 70%)!important}
+.cc-seal-drip{position:absolute;left:50%;top:50%;width:6px;height:0;margin:24px 0 0 -3px;border-radius:0 0 4px 4px;background:linear-gradient(#8a0f08,#4a0503);z-index:5;animation:handDrip 3s ease-in .6s forwards}
+.cc-env.crack .cc-seal-drip{opacity:0;transition:opacity .4s}
+.cc-env-card>i{position:absolute!important;right:20px;bottom:12px}
+.cc-env.out .cc-env-card{transform:translateY(-46%) scale(1.22)}
