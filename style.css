@@ -2930,7 +2930,7 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 .cliff-meta{min-height:1.4em;margin:18px 0 0;font:10.5px/1.6 var(--mono);letter-spacing:.18em;color:#b8a27c;border-top:1px solid rgba(201,154,85,.25);padding-top:10px}
 .cliff.sent .cliff-meta{color:#d9c39a}
 .cliff-go{margin-top:-34px}
-#devCliffButton,#devPuzzle4Button,#devFile03Button{display:none!important}
+#devPuzzle4Button,#devFile03Button{display:none!important}
 /* Puzzle 1: corrected question count and four progress dots over the painted ones */
 .f3s-qcount,.f3s-qdots{position:absolute;left:calc(var(--x)*var(--u)*1px);top:calc(var(--y)*var(--u)*1px);width:calc(var(--w)*var(--u)*1px);height:calc(var(--h)*var(--u)*1px);z-index:3;pointer-events:none;background:#0c0a08;box-shadow:0 0 calc(var(--u)*6px) calc(var(--u)*5px) #0c0a08}
 .f3s-qcount{display:flex;align-items:center;color:#ece2cf;font:calc(var(--u)*17.5px) 'Courier Prime','Courier New',var(--mono);letter-spacing:.03em;white-space:nowrap}
