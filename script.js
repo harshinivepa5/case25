@@ -1093,23 +1093,50 @@
   // The player's own name on the last card. Change it here; put his photo at assets/file-006/subject.jpg for the sketch.
   const SUBJECT_NAME='THE DETECTIVE';
   let cliffRun=0;
+  // The cliffhanger, as a scene: the wall's lights die, the signal is acquired, M's lines glitch into place one by one,
+  // the wax seal cracks, a flashbulb burns the 2016 photograph into view, a red thread runs down to the last card, and
+  // the dark closes in on the player's own face to a heartbeat. A click shows it all at once.
   function playCliffhanger(){
-    const box=$('#cliffhanger'),letter=box.querySelector('.cliff-letter'),go=box.querySelector('.cliff-go'),sealed=box.querySelector('.cliff-sealed'),subj=box.querySelector('.cliff-subject');
+    const box=$('#cliffhanger'),letter=box.querySelector('.cliff-letter'),go=box.querySelector('.cliff-go'),sealed=box.querySelector('.cliff-sealed'),subj=box.querySelector('.cliff-subject'),next=box.querySelector('.cliff-next'),kick=box.querySelector('.cliff-kicker');
     if(!$('#homeScene').classList.contains('active'))return;
     const run=++cliffRun;
-    letter.innerHTML=CLIFF_LINES.filter(t=>t[0]!=='@').map(t=>`<p class="${t[0]==='!'?'red':t==='— M'?'sign':''}">${f3sEsc(t.replace(/^!/,'')).replace(/\n/g,'<br>')}</p>`).join('');
-    const ps=[...letter.children];ps.forEach(p=>p.classList.remove('on'));sealed.classList.remove('on');subj.classList.remove('on');box.querySelector('.cliff-next').classList.remove('on','stamped');go.hidden=true;
-    box.hidden=false;box.classList.remove('out');void box.offsetWidth;box.classList.add('in');sfx('dread');
+    box.querySelectorAll('.cliff-fx').forEach(n=>n.remove());
+    box.insertAdjacentHTML('beforeend','<div class="cliff-fx cliff-black"></div><div class="cliff-fx cliff-red"></div><div class="cliff-fx cliff-flash"></div><div class="cliff-fx cliff-iris"></div>');
+    letter.innerHTML=CLIFF_LINES.filter(t=>t[0]!=='@').map(t=>`<p class="${t[0]==='!'?'red':t==='— M'?'sign':''}">${t.replace(/^!/,'').split('\n').map(l=>`<span class="ln">${f3sEsc(l)}</span>`).join('<br>')}</p>`).join('');
+    const ps=[...letter.children];
+    ps.forEach(p=>p.classList.remove('on'));[sealed,subj].forEach(n=>n.classList.remove('on','cracked','burning'));next.classList.remove('on','stamped');box.classList.remove('focus','threaded');go.hidden=true;
+    box.hidden=false;box.classList.remove('out','in','live');void box.offsetWidth;box.classList.add('in');
+    const black=box.querySelector('.cliff-black'),red=box.querySelector('.cliff-red'),flash=box.querySelector('.cliff-flash'),iris=box.querySelector('.cliff-iris');
     const T=(ms,fn)=>setTimeout(()=>{if(run===cliffRun&&!box.hidden)fn();},reducedMotion?0:ms);
-    let t=1800,i=0;
+    const jolt=(px=6)=>box.querySelector('.cliff-wrap').animate([{transform:'none'},{transform:`translate(${-px}px,${px/2}px)`},{transform:`translate(${px*.7}px,${-px/3}px)`},{transform:'none'}],{duration:300});
+    const decodeLines=(p)=>p.querySelectorAll('.ln').forEach((l,k)=>{l.style.visibility='hidden';setTimeout(()=>{l.style.visibility='';f4Decode(l,Math.min(1300,250+l.textContent.length*18));},k*420);});
+    // 1. the wall's lights stutter and die, then the signal comes in
+    black.animate([{opacity:0},{opacity:.8,offset:.12},{opacity:.1,offset:.2},{opacity:.95,offset:.32},{opacity:.4,offset:.4},{opacity:1}],{duration:reducedMotion?1:1700,fill:'forwards'});
+    sfx('dread');
+    T(1900,()=>{box.classList.add('live');kick.style.visibility='';f4Decode(kick,900);sfx('ink');});
+    kick.style.visibility='hidden';
+    let t=3000,i=0;
     CLIFF_LINES.forEach(line=>{
-      if(line==='@sealed'){T(t,()=>{sealed.classList.add('on');sfx('paper');});t+=4200;return;}
-      if(line==='@subject'){T(t,()=>{subj.classList.add('on');sfx('stamp');});t+=2600;return;}
-      if(line==='@next'){t+=1200;T(t,()=>{const n=box.querySelector('.cliff-next');n.classList.add('on');sfx('dread');const nm=n.querySelector('.nx-name');nm.textContent='';let k=0;const ty=()=>{nm.textContent=SUBJECT_NAME.slice(0,++k);if(k<SUBJECT_NAME.length)setTimeout(ty,90);else setTimeout(()=>{n.classList.add('stamped');sfx('stamp');},500);};setTimeout(ty,1400);});t+=4200;return;}
-      const p=ps[i++],red=line[0]==='!';T(t,()=>{p.classList.add('on');if(red)sfx('sting');});t+=red?2200:Math.min(2600,900+line.length*22);
+      if(line==='@sealed'){T(t,()=>{sealed.classList.add('on');sfx('paper');});T(t+1300,()=>{sealed.classList.add('cracked');sfx('stamp');jolt(4);});t+=5200;return;}
+      if(line==='@subject'){T(t,()=>{flash.animate([{opacity:0},{opacity:1,offset:.06},{opacity:0}],{duration:900});sfx('key');subj.classList.add('on','burning');
+        for(let e=0;e<16;e++){const em=document.createElement('i');em.className='cliff-ember';em.style.left=(10+Math.random()*80)+'%';em.style.animationDelay=(Math.random()*1.6)+'s';em.style.animationDuration=(2.4+Math.random()*2)+'s';subj.append(em);setTimeout(()=>em.remove(),6000);}
+        T(t+3200,()=>subj.classList.remove('burning'));});t+=3400;return;}
+      if(line==='@next'){t+=600;
+        T(t,()=>{box.classList.add('threaded');sfx('ink');});
+        T(t+1100,()=>{next.classList.add('on');flash.animate([{opacity:0},{opacity:.7,offset:.08},{opacity:0}],{duration:700});sfx('key');
+          const nm=next.querySelector('.nx-name');nm.textContent='';let k=0;const ty=()=>{if(run!==cliffRun)return;nm.textContent=SUBJECT_NAME.slice(0,++k);if(k<SUBJECT_NAME.length)setTimeout(ty,110);else setTimeout(()=>{next.classList.add('stamped');sfx('stamp');jolt(5);},600);};setTimeout(ty,1500);});
+        // the dark closes in on his card, and a heartbeat
+        T(t+1800,()=>{const r=next.getBoundingClientRect(),b=box.getBoundingClientRect();iris.style.cssText=`left:${r.left-b.left-18}px;top:${r.top-b.top-18}px;width:${r.width+36}px;height:${r.height+36}px`;box.classList.add('focus');[0,900,1800,2700].forEach(d=>setTimeout(()=>{if(run===cliffRun)sfx('heart');},d));});
+        T(t+6200,()=>box.classList.remove('focus'));
+        t+=6800;return;}
+      const p=ps[i++],isRed=line[0]==='!';
+      T(t,()=>{p.classList.add('on');decodeLines(p);if(isRed){sfx('sting');jolt(8);red.animate([{opacity:0},{opacity:.55,offset:.12},{opacity:0}],{duration:1300});}});
+      t+=isRed?2400:Math.min(3200,1100+line.length*26);
     });
-    T(t+400,()=>{go.hidden=false;go.focus({preventScroll:true});});
-    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(go.hidden){cliffRun++;ps.forEach(p=>p.classList.add('on'));sealed.classList.add('on');subj.classList.add('on');const n=box.querySelector('.cliff-next');n.querySelector('.nx-name').textContent=SUBJECT_NAME;n.classList.add('on','stamped');go.hidden=false;}};
+    T(t+300,()=>{go.hidden=false;go.focus({preventScroll:true});});
+    // a faint glitch now and then while it plays
+    const glitch=()=>{if(run!==cliffRun||box.hidden)return;box.classList.add('glitch');setTimeout(()=>box.classList.remove('glitch'),180);setTimeout(glitch,4000+Math.random()*5000);};setTimeout(glitch,5000);
+    box.onclick=e=>{if(e.target.closest('.cliff-go'))return;if(go.hidden){cliffRun++;black.getAnimations().forEach(a=>a.finish());box.classList.add('live');kick.style.visibility='';ps.forEach(p=>{p.classList.add('on');p.querySelectorAll('.ln').forEach(l=>l.style.visibility='');});sealed.classList.add('on','cracked');subj.classList.add('on');box.classList.add('threaded');box.classList.remove('focus');next.querySelector('.nx-name').textContent=SUBJECT_NAME;next.classList.add('on','stamped');go.hidden=false;}};
   }
   $('#cliffhanger .cliff-go').addEventListener('click',()=>{
     const box=$('#cliffhanger');cliffRun++;progress.cliffSeen=true;persistProgress();paintProgress();
@@ -3190,7 +3217,7 @@ function f3sFindLines(img,boxes){
     const tone=(f,d,type='sine',v=.08,f2=0,delay=0)=>{const o=c.createOscillator(),g=c.createGain(),t=t0+delay;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(Math.min(v*7,.9),t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);};
     const swell=(f,d,v,delay=0)=>{const o=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter(),t=t0+delay;o.type='triangle';o.frequency.value=f;lp.type='lowpass';lp.frequency.value=900;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.35);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(lp);lp.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);};
     const knock=(v,delay=0)=>{const n=c.sampleRate*.18|0,b=c.createBuffer(1,n,c.sampleRate),dd=b.getChannelData(0);for(let i=0;i<n;i++)dd[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='lowpass';f.frequency.value=320;g.gain.value=v;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0+delay);};
-    ({right:()=>{knock(.9);swell(146.83,1.8,.07,.05);swell(220,1.8,.05,.12);swell(293.66,2,.035,.2);},wrong:()=>{knock(.8);knock(.5,.16);swell(92.5,.9,.05,.02);},ink:()=>{knock(.35);swell(61.7,2.6,.08,.1);},dread:()=>{[[55,.09],[58.27,.06],[82.41,.05],[116.54,.03],[123.47,.025]].forEach(([f,v],i)=>{const o=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter(),t=t0+i*.6;o.type=i<2?'sawtooth':'triangle';o.frequency.value=f;o.detune.setValueAtTime(-30,t);o.detune.linearRampToValueAtTime(18,t+7);lp.type='lowpass';lp.frequency.setValueAtTime(180,t);lp.frequency.linearRampToValueAtTime(900,t+6);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+4.5);g.gain.exponentialRampToValueAtTime(.0001,t+9);o.connect(lp);lp.connect(g);g.connect(c.destination);o.start(t);o.stop(t+9.2);});knock(.7,4.2);swell(41.2,3,.12,4.2);},key:()=>{const n=c.sampleRate*.03|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1100;f.Q.value=.8;g.gain.value=.3;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);},stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);},paper:()=>{const n=c.sampleRate*.45|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1700;g.gain.value=.4;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);}})[kind]?.();
+    ({heart:()=>{knock(1.1);knock(.75,.22);},right:()=>{knock(.9);swell(146.83,1.8,.07,.05);swell(220,1.8,.05,.12);swell(293.66,2,.035,.2);},wrong:()=>{knock(.8);knock(.5,.16);swell(92.5,.9,.05,.02);},ink:()=>{knock(.35);swell(61.7,2.6,.08,.1);},dread:()=>{[[55,.09],[58.27,.06],[82.41,.05],[116.54,.03],[123.47,.025]].forEach(([f,v],i)=>{const o=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter(),t=t0+i*.6;o.type=i<2?'sawtooth':'triangle';o.frequency.value=f;o.detune.setValueAtTime(-30,t);o.detune.linearRampToValueAtTime(18,t+7);lp.type='lowpass';lp.frequency.setValueAtTime(180,t);lp.frequency.linearRampToValueAtTime(900,t+6);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+4.5);g.gain.exponentialRampToValueAtTime(.0001,t+9);o.connect(lp);lp.connect(g);g.connect(c.destination);o.start(t);o.stop(t+9.2);});knock(.7,4.2);swell(41.2,3,.12,4.2);},key:()=>{const n=c.sampleRate*.03|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1100;f.Q.value=.8;g.gain.value=.3;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);},stamp:()=>{tone(95,.3,'sine',.3,40);tone(240,.07,'square',.04,90);},sting:()=>{tone(58,1.8,'sine',.16,44);tone(311,1.2,'triangle',.02,0,.1);},paper:()=>{const n=c.sampleRate*.45|0,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n);const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=1700;g.gain.value=.4;src.connect(f);f.connect(g);g.connect(c.destination);src.start(t0);}})[kind]?.();
   }
   // ---------------------------------------------------------------------------------------------
   // File 003, puzzle 1: the five documents are read first, then stay one click away during the questions.
