@@ -1091,7 +1091,7 @@
   // a small REPLAY button plays it again.
   const CLIFF_LINES=['Detective,','Peter Shaw will sleep in a cell tonight.\nYou put him there.','Before you opened the first file, I sealed an envelope.\nRead it now.','@sealed','Every page was placed so you would arrive exactly where you are tonight.','So tell me: did you solve this case,\nor did you follow the path I laid down?','Lake Ash was not the first night Peter Shaw lied.\nNine years ago, there was an incident at The Lantern.\nSomeone did not go home that night.\nThe report called it an accident.','!It was not.','@subject','I was in that room.\nI watched the lights flicker twice.','You asked who M was watching.\nYou never asked why M chose you.','!See you at the end.','— M','@next'];
   // The player's own name on the last card. Change it here; put his photo at assets/file-006/subject.jpg for the sketch.
-  const SUBJECT_NAME='THE DETECTIVE';
+  const SUBJECT_NAME='SHAIK';
   let cliffRun=0;
   // The cliffhanger, as a scene: the wall's lights die, the signal is acquired, M's lines glitch into place one by one,
   // the wax seal cracks, a flashbulb burns the 2016 photograph into view, a red thread runs down to the last card, and
