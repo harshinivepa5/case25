@@ -1259,7 +1259,7 @@
     if(!$('#homeScene').classList.contains('active'))return;
     const run=++cliffRun,alive=()=>run===cliffRun&&!box.hidden;
     const st=box.querySelector('.cc-stage'),room=st.querySelector('.cc-room'),sub=st.querySelector('.cc-sub'),props=st.querySelector('.cc-props'),stamp=st.querySelector('.cc-stamp'),ck=st.querySelector('.cc-kicker');
-    const chair=st.querySelector('.cc-chair'),back=st.querySelector('.cc-back'),front=st.querySelector('.cc-front'),ember=st.querySelector('.cc-ember');
+    const chair=st.querySelector('.cc-chair'),hand=st.querySelector('.cc-hand'),back=st.querySelector('.cc-back'),front=st.querySelector('.cc-front'),ember=st.querySelector('.cc-ember');
     // reset
     try{speechSynthesis.cancel();speechSynthesis.getVoices();}catch{}
     box.querySelectorAll('.cliff-fx').forEach(n=>n.remove());box.querySelector('.cliff-scene')?.remove();
@@ -1305,9 +1305,10 @@
       chair.classList.add('turning');sfx('paper');cliffPhase('mystery');await wait(3300);if(!alive())return;
       chair.classList.add('turned');
       const drag=()=>{if(!alive()||!chair.classList.contains('turned')||chair.classList.contains('away'))return;
-        ember.animate([{r:5.5,fill:'#ff6a1a',filter:'drop-shadow(0 0 6px #ff7a2a)'},{r:8.5,fill:'#ffd27a',filter:'drop-shadow(0 0 22px #ff8a2a) drop-shadow(0 0 40px #ff5a10)',offset:.55},{r:5.5,fill:'#ff6a1a',filter:'drop-shadow(0 0 6px #ff7a2a)'}],{duration:1800,easing:'ease-in-out'});
+        ember.animate([{r:5.5,fill:'#ff6a1a',filter:'drop-shadow(0 0 6px #ff7a2a)',offset:0},{r:5.5,fill:'#ff6a1a',offset:.3},{r:8.5,fill:'#ffd27a',filter:'drop-shadow(0 0 22px #ff8a2a) drop-shadow(0 0 40px #ff5a10)',offset:.55},{r:5.5,fill:'#ff6a1a',filter:'drop-shadow(0 0 6px #ff7a2a)'}],{duration:2600,easing:'ease-in-out'});
         chair.animate([{filter:'brightness(1)'},{filter:'brightness(1.25)',offset:.55},{filter:'brightness(1)'}],{duration:1800});
-        setTimeout(()=>{if(!alive())return;for(let i=0;i<4;i++){const p=document.createElement('i');p.className='cc-puff';p.style.setProperty('--dx',(-40-Math.random()*90)+'px');p.style.setProperty('--dy',(-90-Math.random()*120)+'px');p.style.animationDelay=(i*.18)+'s';chair.append(p);setTimeout(()=>p.remove(),5200);}},1700);
+        hand.animate([{transform:'translate(232px,352px) rotate(14deg)'},{transform:'translate(196px,258px) rotate(-6deg)',offset:.3},{transform:'translate(196px,258px) rotate(-6deg)',offset:.7},{transform:'translate(232px,352px) rotate(14deg)'}],{duration:2600,easing:'cubic-bezier(.45,0,.3,1)'});
+        setTimeout(()=>{if(!alive())return;for(let i=0;i<4;i++){const p=document.createElement('i');p.className='cc-puff';p.style.setProperty('--dx',(-40-Math.random()*90)+'px');p.style.setProperty('--dy',(-90-Math.random()*120)+'px');p.style.animationDelay=(i*.18)+'s';chair.append(p);setTimeout(()=>p.remove(),5200);}},2200);
         setTimeout(drag,7000+Math.random()*3000);};
       setTimeout(drag,2600);
       ember.animate([{r:5.5,filter:'none'},{r:9,filter:'drop-shadow(0 0 14px #ff7a2a)',offset:.5},{r:5.5,filter:'none'}],{duration:2400});

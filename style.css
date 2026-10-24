@@ -3113,3 +3113,5 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 @keyframes ccCardThrob{50%{box-shadow:0 10px 30px rgba(0,0,0,.6),0 0 60px rgba(160,20,10,.45),inset 0 0 60px rgba(110,20,8,.35)}}
 .cliff.final .cliff-wrap{animation:none!important;transform:none!important}
 #devCliffButton{display:none!important}
+.cc-hand{transform:translate(232px,352px) rotate(14deg)}
+.cc-chair.laugh .cc-hand{transform:translate(232px,348px) rotate(10deg)}
