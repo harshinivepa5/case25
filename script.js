@@ -3237,7 +3237,7 @@ function f3sFindLines(img,boxes){
   function p1Viewer(host,start,onOpen){
     host.innerHTML=`<div class="p1v-tabs">${P1_DOCS.map(([a,b],i)=>`<button type="button" class="p1v-tab" data-i="${i}"><small>${a}</small>${b}</button>`).join('')}</div><div class="p1v-frame"><img alt=""></div>`;
     const img=host.querySelector('img'),tabs=[...host.querySelectorAll('.p1v-tab')];
-    const show=i=>{img.src=`assets/file-003/docs/p1-doc-${i+1}.jpg`;img.alt=P1_DOCS[i][1];tabs.forEach((t,n)=>{t.classList.toggle('on',n===i);if(n===i)t.classList.add('seen');});if(onOpen)onOpen(i);};
+    const show=i=>{img.src=`assets/file-003/docs/p1-doc-${i+1}.jpg?v=2`;img.alt=P1_DOCS[i][1];tabs.forEach((t,n)=>{t.classList.toggle('on',n===i);if(n===i)t.classList.add('seen');});if(onOpen)onOpen(i);};
     tabs.forEach((t,i)=>t.addEventListener('click',()=>{sfx('click');show(i);}));
     show(start);
   }
