@@ -1180,10 +1180,11 @@
     });
   }
   // a quiet, breathy chuckle under the spoken laugh
-  function cliffChuckle(n=5){
+  function cliffChuckle(){
     ensureSound();const c=audioContext;if(!c)return;
-    for(let i=0;i<n;i++){const t=c.currentTime+i*.19,len=c.sampleRate*.14|0,b=c.createBuffer(1,len,c.sampleRate),d=b.getChannelData(0);for(let k=0;k<len;k++)d[k]=(Math.random()*2-1)*Math.sin(Math.PI*k/len);
-      const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=b;f.type='bandpass';f.frequency.value=420-i*30;f.Q.value=4;g.gain.value=.5*(1-i/n*.5);s.connect(f);f.connect(g);g.connect(c.destination);s.start(t);}
+    [0,.32,.62].forEach((d,i)=>{const t=c.currentTime+d,len=c.sampleRate*.5|0,b=c.createBuffer(1,len,c.sampleRate),dd=b.getChannelData(0);
+      for(let k=0;k<len;k++)dd[k]=(Math.random()*2-1)*Math.pow(Math.sin(Math.PI*k/len),2);
+      const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=b;f.type='lowpass';f.frequency.value=700-i*120;g.gain.value=.22-i*.05;s.connect(f);f.connect(g);g.connect(c.destination);s.start(t);});
   }
   function cliffThunder(){
     ensureSound();const c=audioContext;if(!c)return;const len=c.sampleRate*2.6|0,b=c.createBuffer(1,len,c.sampleRate),d=b.getChannelData(0);
@@ -1228,7 +1229,7 @@
     const wait=ms=>new Promise(r=>setTimeout(r,reducedMotion?0:ms));
     const jolt=(px=8)=>st.animate([{transform:'none'},{transform:`translate(${-px}px,${px/2}px)`},{transform:`translate(${px*.7}px,${-px/3}px)`},{transform:'none'}],{duration:320});
     const pop=(el,from='scale(2.4)')=>el.animate([{opacity:0,transform:from,filter:'blur(8px)'},{opacity:1,transform:'scale(.96)',filter:'blur(0)',offset:.7},{opacity:1,transform:'scale(1)'}],{duration:420,easing:'cubic-bezier(.3,0,.2,1)',fill:'forwards'});
-    const laugh=async(text='Ha. ha. ha. ha.',n=6)=>{chair.classList.add('laugh');cliffChuckle(n);await cliffSpeak(text,.3,.8);chair.classList.remove('laugh');};
+    const laugh=async()=>{chair.classList.add('laugh');cliffChuckle();await wait(1900);chair.classList.remove('laugh');};
     // say a line with subtitles that follow the voice word by word
     const line=async(text,{pitch=.45,rate=.78,red:isRed=false,hold=500}={})=>{
       if(!alive())return;
@@ -1259,12 +1260,12 @@
       chair.classList.add('turning');sfx('paper');await wait(3300);if(!alive())return;
       chair.classList.add('turned');
       ember.animate([{r:5.5,filter:'none'},{r:9,filter:'drop-shadow(0 0 14px #ff7a2a)',offset:.5},{r:5.5,filter:'none'}],{duration:2400});
-      await wait(1400);await laugh('Heh. heh. heh. heh.',7);if(!alive())return;
+      await wait(1400);await laugh();if(!alive())return;
       await wait(400);
       // 4. he speaks
       await line('Detective.',{pitch:.45,rate:.68,hold:700});
       await line('Peter Shaw will sleep in a cell tonight.',{pitch:.5,rate:.8});
-      chair.classList.add('laugh');cliffChuckle(4);await cliffSpeak('Heh. Heh.',.35,.85);chair.classList.remove('laugh');
+      await laugh();
       await line('You put him there.',{pitch:.6,rate:.72,hold:900});
       await line('Before you opened the first file, I sealed an envelope.',{pitch:.5,rate:.8,hold:200});
       // 5. the envelope
@@ -1280,14 +1281,14 @@
       await wait(400);
       for(const [i,t] of ['The record will say that Peter Shaw killed Thomas Reed.','The record will say that Thomas Reed is dead.','And you will give me a name.','It will not be mine.'].entries()){
         if(!alive())return;cps[i].classList.add('on');await cliffSpeak(t,i===3?.35:.45,i===3?.68:.8);await wait(200);}
-      await laugh('Ha. ha. ha. ha.',6);if(!alive())return;
+      await laugh();if(!alive())return;
       env.animate([{opacity:1,transform:'translate(-50%,-50%) rotate(-4deg) scale(1)'},{opacity:0,transform:'translate(-50%,-40%) rotate(4deg) scale(.7)',filter:'blur(6px)'}],{duration:900,fill:'forwards'});
       await wait(700);st.classList.remove('dim');
       // 6. the trap
       await line('Every page was placed, so you would arrive, exactly where you are tonight.',{pitch:.5,rate:.78});
       await line('So tell me. Did you solve this case?',{pitch:.6,rate:.78,hold:200});
       await line('Or did you follow the path I laid down?',{pitch:.45,rate:.74,hold:200});
-      chair.classList.add('laugh');cliffChuckle(5);await cliffSpeak('Hm. hm. hm.',.35,.8);chair.classList.remove('laugh');
+      await laugh();
       // 7. the incident
       await line('Lake Ash was not the first night Peter Shaw lied.',{pitch:.5,rate:.8});
       if(!alive())return;
@@ -1313,13 +1314,13 @@
       await wait(1600);const nm=nx.querySelector('.nx-name');for(let k=1;k<=SUBJECT_NAME.length;k++){if(!alive())return;nm.textContent=SUBJECT_NAME.slice(0,k);await wait(120);}
       await cliffSpeak('Mister Shaik.',.45,.65);
       nx.classList.add('stamped');sfx('stamp');jolt(8);await wait(500);
-      await laugh('Ha. ha. ha. ha.',6);if(!alive())return;
+      await laugh();if(!alive())return;
       await wait(800);nx.animate([{opacity:1},{opacity:0,filter:'blur(8px)'}],{duration:900,fill:'forwards'});await wait(700);st.classList.remove('dim','focus');
       // 9. goodbye
       chair.classList.add('lean');
       await line('See you at the end, Detective.',{pitch:.4,rate:.7,red:true,hold:200});
-      chair.classList.add('away');cliffChuckle(6);ember.animate([{opacity:1},{opacity:0}],{duration:3000,fill:'forwards'});
-      await cliffSpeak('Hm. hm. hm. hm.',.32,.78);await wait(1600);if(!alive())return;
+      chair.classList.add('away');cliffChuckle();ember.animate([{opacity:1},{opacity:0}],{duration:3000,fill:'forwards'});
+      await wait(3200);if(!alive())return;
       // 10. it was scheduled: the header rewrites itself in silence
       st.classList.add('glitch');setTimeout(()=>st.classList.remove('glitch'),400);sfx('dread');
       ck.textContent='SCHEDULED TRANSMISSION · WRITTEN 03 OCT · RELEASED 23:47';f4Decode(ck,1600);await wait(2600);if(!alive())return;

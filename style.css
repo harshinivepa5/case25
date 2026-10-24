@@ -3092,3 +3092,5 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 @keyframes cliffNoticeIn2{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
 .cliff:has(.cliff-notice:not(.out)) .cliff-wrap{filter:brightness(.35);transition:filter .5s}
 .cliff .cliff-go{position:fixed;right:28px;bottom:24px;margin:0;z-index:15}
+.cc-chair.laugh .cc-smoke i{animation-duration:2.2s}
+.cc-chair.laugh .cc-front{animation:ccLaugh .32s ease-in-out infinite}
