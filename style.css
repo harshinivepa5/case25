@@ -3112,3 +3112,4 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 .cc-env.out .cc-env-card{animation:ccCardThrob 3.2s ease-in-out 1.4s infinite}
 @keyframes ccCardThrob{50%{box-shadow:0 10px 30px rgba(0,0,0,.6),0 0 60px rgba(160,20,10,.45),inset 0 0 60px rgba(110,20,8,.35)}}
 .cliff.final .cliff-wrap{animation:none!important;transform:none!important}
+#devCliffButton{display:none!important}
