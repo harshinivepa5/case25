@@ -2943,3 +2943,4 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 #f3sSkip,#backButton{display:none!important}
 /* for now: File 003 is the last file; no CONTINUE on the wall, no SKIP */
 #continueFileFour,.cliff-replay,#f3sSkip{display:none!important}
+html body #homeScene.home #continueFileFour#continueFileFour{display:none!important}
