@@ -3753,12 +3753,14 @@ function f3sFindLines(img,boxes){
       if(d.after&&!screen.dataset.afterDone){screen.dataset.afterDone='1';d.after(screen,()=>{go.hidden=false;go.focus({preventScroll:true});});return;}
       go.hidden=false;go.focus({preventScroll:true});};
     const next=()=>{if(finished||!screen.isConnected)return;if(n>=lines.length){laterWait(finish,500);return;}
+      if(d.hand&&!reducedMotion){const i=n;const said=paras[i].replace(/^!/gm,'').replace(/\n/g,' ').replace(/— M/,'').trim();show(i);n++;
+        (said?cliffSpeak(said,.45,.8):Promise.resolve()).then(()=>{if(!finished&&screen.isConnected)laterWait(next,600);});return;}
       if(d.tell&&!reducedMotion){const i=n;show(i);n++;
         const parts=[...lines[i].querySelectorAll('.tl')].map(x=>x.textContent.trim()).filter(Boolean);
         (async()=>{for(const part of parts){if(finished||!screen.isConnected)return;if(d.cue)d.cue(screen,part);await narrate(part);}if(!finished&&screen.isConnected)laterWait(next,500);})();return;}
       show(n);const len=d.hand?lines[n].textContent.length*1.5+lines[n].querySelectorAll('.hl').length*20:lines[n].textContent.length;n++;laterWait(next,reducedMotion?0:Math.min(5200,1100+len*38));};
     laterWait(next,700+preludeMs);
-    screen.addEventListener('click',e=>{if(!finished&&!e.target.closest('button')){try{if(d.tell)speechSynthesis.cancel();}catch{}screen.classList.remove('prelude');finish();}});
+    screen.addEventListener('click',e=>{if(!finished&&!e.target.closest('button')){try{if(d.tell||d.hand)speechSynthesis.cancel();}catch{}screen.classList.remove('prelude');finish();}});
   }
   // ---------------------------------------------------------------------------------------------
   // File 004 — The Lantern Fire. Runs inside the File 03 stage (#f3Stage, data-mode="f4") and reuses its
