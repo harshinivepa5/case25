@@ -3598,9 +3598,10 @@ function f3sFindLines(img,boxes){
     ['Peter is in a cell for a murder that never happened.',{pitch:.45,rate:.76},'cell'],
     ['He is not innocent. He is just not guilty of this.',{pitch:.42,rate:.74}],
     ['And I am nowhere.',{pitch:.35,rate:.66},'clear'],
-    ['Thank you, Detective.',{pitch:.4,rate:.68,red:true},'away'],
+    ['Thank you, Detective.',{pitch:.4,rate:.68,red:true}],
     ['I couldn’t have put him there without you.',{pitch:.32,rate:.62,red:true}],
-    ['Oh, and Mister Shaik. Don’t get comfortable. You are still under observation.',{pitch:.42,rate:.7}],
+    ['Oh, and Mister Shaik…',{pitch:.45,rate:.72},'away'],
+    ['You are still under observation.',{pitch:.32,rate:.62,red:true}],
     ['One file is still open.',{pitch:.32,rate:.62}]];
   // he raises the cigar to his lips, the ember flares, he lowers it and breathes the smoke out
   function smokeLoop(chair,alive){
