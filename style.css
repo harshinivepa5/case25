@@ -3479,3 +3479,7 @@ body:has(#f3Stage.visible) #devFileSButton,body.wall-cinematic #devFileSButton{d
 .lf-car{animation:lfCarT 4s linear infinite}@keyframes lfCarT{from{transform:translate(-100px,320px)}to{transform:translate(900px,320px)}}
 .lf-notes2 text{animation:lfFloat 2.4s ease-out var(--d) infinite;opacity:0}
 .lf-censor{animation:lfWin 1.4s steps(1) infinite}
+.lf-kick2{animation:lfKick2 2s ease-in-out infinite}@keyframes lfKick2{0%{transform:translate(140px,185px)}50%{transform:translate(260px,110px)}100%{transform:translate(370px,150px)}}
+.lf-shuttle2{animation:lfSh2 1.4s ease-in-out infinite alternate}@keyframes lfSh2{from{transform:translate(110px,140px)}50%{transform:translate(195px,60px)}to{transform:translate(285px,140px)}}
+.lf-dog2{animation:lfDog2 1.4s ease-in-out infinite alternate}@keyframes lfDog2{from{transform:translate(300px,205px)}to{transform:translate(200px,200px)}}
+.lf-dance2{animation:lfDance2 .8s ease-in-out infinite}@keyframes lfDance2{0%,100%{transform:translate(195px,205px) rotate(-8deg)}50%{transform:translate(195px,195px) rotate(8deg)}}

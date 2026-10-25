@@ -4435,11 +4435,7 @@ Do not look away from it.
     ['EARLY EVIDENCE · EXHIBIT 1','Exhibit one. Cartoons. Glued to the TV, every single day.','tv','F','CHAPTER 3 · EARLY EVIDENCE'],
     ['EARLY EVIDENCE · EXHIBIT 2','Exhibit two. Chocolates kept going missing from the fridge. The suspect never confessed.','choco','F'],
     ['CLASS 2 · CASE FILE 001','And exhibit three. In second class, he kissed a girl on the cheek. In second class! The subject was fast from the very beginning.','peck','F'],
-    ['A FRIEND’S HOUSE','Then one day, at a friend’s house, he spotted a football in the corner.','ball','W','CHAPTER 4 · THE THINGS HE LOVES'],
-    ['FOOTBALL','He dragged everyone outside. And that was it. Football, forever.','football','F'],
-    ['BADMINTON','Then badminton. He did not like to lose. He still does not like to lose.','badminton','F'],
-    ['THE DOGS','And dogs. Every dog. His one weakness, officially on record.','dog','W'],
-    ['THE DANCE FLOOR','Put on a song, and the subject takes over the floor.','dance','F'],
+    ['KNOWN WEAKNESSES','A football spotted at a friend’s house turned into football forever. Badminton, where he never once liked losing. Dogs, every single one. And any dance floor, anywhere.','loves','F','CHAPTER 4 · KNOWN WEAKNESSES'],
     ['AGE 11 TO 15','Pocket money went straight into games.','games','F','CHAPTER 5 · GROWING UP'],
     ['THE CUBE','A Rubik’s cube he refused to put down until it was solved.','rubik','W'],
     ['THE STYLE ERA','The subject grew taller. The hair grew taller.','style','F'],
@@ -4484,6 +4480,12 @@ Do not look away from it.
     if(kind==='guess')return `<div class="lf-guess"><img src="assets/file-s/crush.jpg" alt="" onerror="this.parentNode.classList.add('noimg');this.remove()"><div class="lf-guess-fb">${chat([['l',90,'i have a crush on someone'],['r',140,'wait'],['r',184,'am i your crush? 👀']])}</div></div>`;
     if(kind==='date')return W+`<rect width="800" height="450" fill="#f7e3d0"/><rect x="0" y="0" width="800" height="90" fill="#5a2a5e"/><text x="400" y="58" text-anchor="middle" font-size="34" fill="#fff" font-family="Libre Baskerville,serif" font-style="italic">Cream Stone</text><rect x="200" y="300" width="400" height="20" fill="#8a6a4a"/><rect x="230" y="320" width="10" height="100" fill="#6a4a2a"/><rect x="560" y="320" width="10" height="100" fill="#6a4a2a"/>${kidFig(250,420,2.4,'lf-run')}${kidFig(560,420,2.4,'lf-run2',true)}<g class="lf-cone"><path d="M380 300 L400 250 L420 300Z" fill="#d9a35a"/><circle cx="400" cy="244" r="18" fill="#f3b6c8"/><circle cx="392" cy="232" r="12" fill="#f8e7c0"/></g><g class="lf-hearts" fill="#e0607a">${[330,420,480].map((x,i)=>`<path style="--d:${i*.7}s" d="M${x} 200 c-6-8-18-4-18 6 0 8 18 18 18 18s18-10 18-18c0-10-12-14-18-6z"/>`).join('')}</g><text class="lf-smack" x="560" y="200" font-size="24" fill="#a3201a" font-family="Special Elite,serif">haha</text></svg>`;
     if(kind==='open')return W+`<rect width="800" height="450" fill="#0c0906"/><ellipse cx="400" cy="230" rx="300" ry="190" fill="rgba(255,210,150,.12)"/><g class="lf-slam"><rect x="250" y="110" width="300" height="220" fill="#c9a874"/><path d="M250 110 h110 l14 -18 h176 v18Z" fill="#b8955e"/><text x="400" y="190" text-anchor="middle" font-size="22" fill="#2a1d12" font-family="Special Elite,serif">CASE 25</text><text x="400" y="230" text-anchor="middle" font-size="16" fill="#2a1d12" font-family="DM Mono,monospace">SUBJECT: UNKNOWN</text><g transform="rotate(-10 400 280)"><rect x="300" y="258" width="200" height="40" fill="none" stroke="#a3201a" stroke-width="5"/><text x="400" y="286" text-anchor="middle" font-size="22" fill="#a3201a" font-family="Special Elite,serif">CLASSIFIED</text></g></g></svg>`;
+    if(kind==='loves'){const cell=(x,y,inner,label)=>`<g transform="translate(${x} ${y})"><rect width="390" height="215" rx="6" fill="#00000022"/>${inner}<text x="12" y="204" font-size="15" fill="#fff" font-family="DM Mono,monospace" letter-spacing="2">${label}</text></g>`;
+      return W+`<rect width="800" height="450" fill="#111"/>
+      ${cell(5,5,`<rect width="390" height="215" fill="#7fbf6a"/><rect width="390" height="90" fill="#a8d8f0"/>${kidFig(120,190,1.3,'lf-run')}${kidFig(250,195,1.2,'lf-run2')}<g class="lf-kick2"><circle r="9" fill="#fff" stroke="#222" stroke-width="2"/></g>`,'FOOTBALL')}
+      ${cell(405,5,`<rect width="390" height="215" fill="#203550"/><rect y="160" width="390" height="55" fill="#3a6a4a"/><rect x="193" y="100" width="4" height="100" fill="#ddd"/>${kidFig(100,205,1.4,'lf-swing')}${kidFig(290,205,1.4,'lf-swing2')}<g class="lf-shuttle2"><circle r="5" fill="#fff"/></g>`,'BADMINTON')}
+      ${cell(5,230,`<rect width="390" height="215" fill="#cfe6c4"/><rect y="160" width="390" height="55" fill="#8bbf6a"/>${kidFig(130,205,1.5)}<g class="lf-dog2"><ellipse cx="0" cy="-18" rx="28" ry="16" fill="#c98a4a"/><circle cx="26" cy="-34" r="12" fill="#c98a4a"/><circle cx="30" cy="-36" r="2" fill="#222"/><path class="lf-tail" d="M-26 -24 q-18 -12 -14 -24" stroke="#c98a4a" stroke-width="5" fill="none"/></g>`,'DOGS')}
+      ${cell(405,230,`<rect width="390" height="215" fill="#0d0a14"/>${['#f5a','#5cf','#fd5'].map((c,i)=>`<path class="lf-beam" style="--d:${i*.4}s" d="M${80+i*120} 0 L${50+i*120} 215 L${110+i*120} 215Z" fill="${c}" opacity=".25"/>`).join('')}<g class="lf-dance2">${kidFig(0,0,1.6)}</g>`,'THE DANCE FLOOR')}</svg>`;}
     if(kind==='dog')return W+`<rect width="800" height="450" fill="#cfe6c4"/><rect y="340" width="800" height="110" fill="#8bbf6a"/>${kidFig(300,420,2.4)}<g class="lf-dog"><ellipse cx="0" cy="-30" rx="46" ry="26" fill="#c98a4a"/><circle cx="44" cy="-56" r="20" fill="#c98a4a"/><path d="M50 -74 l14 -10 l-4 18z" fill="#8a5a2a"/><circle cx="50" cy="-60" r="3" fill="#222"/><path d="M-40 -40 q-30 -20 -24 -40" stroke="#c98a4a" stroke-width="8" fill="none" class="lf-tail"/><rect x="-30" y="-10" width="8" height="24" fill="#c98a4a"/><rect x="24" y="-10" width="8" height="24" fill="#c98a4a"/></g><g class="lf-hearts" fill="#e0607a"><path style="--d:0s" d="M380 200 c-6-8-18-4-18 6 0 8 18 18 18 18s18-10 18-18c0-10-12-14-18-6z"/></g></svg>`;
     if(kind==='kart')return W+`<rect width="800" height="450" fill="#2a2a32"/><path d="M0 300 Q400 200 800 300 V450 H0Z" fill="#3c3c44"/><g fill="none" stroke="#e8e0c8" stroke-dasharray="20 18" stroke-width="4"><path d="M0 360 Q400 260 800 360"/></g>${[0,1].map(k=>`<g class="lf-kart" style="--d:${k*.6}s"><rect x="-50" y="-30" width="100" height="34" rx="10" fill="${k?'#e0405a':'#3aa0e0'}"/><circle cx="-30" cy="6" r="12" fill="#111"/><circle cx="30" cy="6" r="12" fill="#111"/><circle cx="0" cy="-42" r="14" fill="${k?'#f3e3c7':'#e8c9a5'}"/><rect x="-16" y="-58" width="32" height="12" rx="6" fill="#222"/></g>`).join('')}<rect x="680" y="200" width="10" height="110" fill="#ddd"/><path d="M690 200 h60 v40 h-60z" fill="url(#chk)"/><defs><pattern id="chk" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#111"/><rect x="10" y="10" width="10" height="10" fill="#111"/><rect x="10" width="10" height="10" fill="#fff"/><rect y="10" width="10" height="10" fill="#fff"/></pattern></defs></svg>`;
     if(kind==='shop')return W+`<rect width="800" height="450" fill="#f2e3d6"/><rect x="60" y="60" width="300" height="240" fill="#fff" stroke="#c9a874" stroke-width="6"/><text x="210" y="110" text-anchor="middle" font-size="26" fill="#a3201a" font-family="Special Elite,serif">SALE</text>${kidFig(480,420,2.4)}${kidFig(600,420,2.4,'',true)}<g class="lf-bags">${['#e0405a','#3aa0e0','#e6c25a','#5f9'].map((c,i)=>`<rect style="--d:${i*.3}s" x="${430+i*48}" y="${330-(i%2)*10}" width="36" height="44" rx="4" fill="${c}"/>`).join('')}</g></svg>`;
@@ -4506,13 +4508,26 @@ Do not look away from it.
   }
   const LIFE_CAP={family:'the whole family',games:'11 to 15',rubik:'solved it',style:'the style era',dance2:'us',pondy:'Pondy',trip:'on the water',shop:'mirror evidence',kiss:'',present:'',laugh:'subject, smiling'};
   const LIFE_TR=['zoom','whip','flash','blur','page','ink'];
+  // from the chapter where they meet: the two songs, the second fading in as the first ends
+  function lifeSongs(){
+    try{fsScoreStop();setMusic(false);}catch{}
+    const a=new Audio('assets/file-s/song1.mp3'),b=new Audio('assets/file-s/song2.mp3');a.volume=0;b.volume=0;
+    const fade=(el,to,ms)=>{const from=el.volume,t0=performance.now();const k=()=>{const e=Math.min(1,(performance.now()-t0)/ms);el.volume=from+(to-from)*e;if(e<1)requestAnimationFrame(k);else if(to===0)el.pause();};k();};
+    let swapped=false;const swap=()=>{if(swapped)return;swapped=true;b.play().catch(()=>{});fade(b,.9,2500);fade(a,0,2500);};
+    a.addEventListener('timeupdate',()=>{if(a.duration&&a.currentTime>a.duration-2.6)swap();});a.addEventListener('ended',swap);a.addEventListener('error',swap);
+    a.play().then(()=>fade(a,.9,1800)).catch(swap);
+    b.addEventListener('ended',()=>{b.currentTime=0;b.play().catch(()=>{});});
+    return()=>{fade(a,0,1200);fade(b,0,1200);setTimeout(()=>{a.pause();b.pause();},1300);};
+  }
   function lifeStory(screen,done){
+    let stopSongs=null;
     const host=document.createElement('div');host.className='lf';host.innerHTML=`<div class="lf-stage"></div><div class="lf-chap"><small></small><b></b></div><div class="lf-cap"><small></small><p></p></div><div class="lf-flash"></div><button type="button" class="f4-btn lf-skip">SKIP TO THE FILE →</button>`;screen.append(host);
     const stage=host.querySelector('.lf-stage'),sm=host.querySelector('.lf-cap small'),pp=host.querySelector('.lf-cap p'),chap=host.querySelector('.lf-chap'),flash=host.querySelector('.lf-flash');let stop=false;
     const wait=ms=>new Promise(r=>setTimeout(r,ms));
-    host.querySelector('.lf-skip').addEventListener('click',()=>{stop=true;try{speechSynthesis.cancel();}catch{}host.remove();done();});
+    host.querySelector('.lf-skip').addEventListener('click',()=>{stop=true;try{speechSynthesis.cancel();}catch{}stopSongs&&stopSongs();host.remove();done();});
     (async()=>{await wait(400);let i=0;
       for(const [tag,text,kind,tone,chapter] of LIFE){if(stop||!screen.isConnected)return;
+        if(kind==='college'&&!stopSongs)stopSongs=lifeSongs();
         if(chapter){// chapter card on its own screen
           stage.classList.add('lf-out');await wait(500);stage.innerHTML='';stage.classList.remove('lf-out');
           const [k,t]=chapter.split(' · ');chap.querySelector('small').textContent=k;chap.querySelector('b').textContent=t||'';chap.classList.remove('on');void chap.offsetWidth;chap.classList.add('on');sfx('ink');
@@ -4527,7 +4542,7 @@ Do not look away from it.
         if(kind==='closed'||kind==='open')setTimeout(()=>sfx('stamp'),kind==='open'?500:1200);
         pp.textContent=text;pp.classList.remove('on');void pp.offsetWidth;pp.classList.add('on');
         await narrate(text,T[tone]||T.W);if(kind==='name')await narrate(LIFE_NAME.toLowerCase(),T.W);await wait(900);}
-      if(!stop){host.classList.add('out');setTimeout(()=>{host.remove();done();},1000);}})();
+      if(!stop){stopSongs&&stopSongs();host.classList.add('out');setTimeout(()=>{host.remove();done();},1000);}})();
   }
   function fileSBuild(screen){
     if(!screen.dataset.lifeDone&&!reducedMotion){screen.dataset.lifeDone='1';screen.classList.add('fs');lifeStory(screen,()=>{screen.innerHTML='';fileSBuild(screen);});return;}
