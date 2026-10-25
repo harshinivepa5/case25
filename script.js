@@ -3599,7 +3599,9 @@ function f3sFindLines(img,boxes){
     ['He is not innocent. He is just not guilty of this.',{pitch:.42,rate:.74}],
     ['And I am nowhere.',{pitch:.35,rate:.66},'clear'],
     ['Thank you, Detective.',{pitch:.4,rate:.68,red:true},'away'],
-    ['I couldn’t have put him there without you.',{pitch:.32,rate:.62,red:true}]];
+    ['I couldn’t have put him there without you.',{pitch:.32,rate:.62,red:true}],
+    ['Oh, and Mister Shaik. Don’t get comfortable. You are still under observation.',{pitch:.42,rate:.7}],
+    ['One file is still open.',{pitch:.32,rate:.62}]];
   // he raises the cigar to his lips, the ember flares, he lowers it and breathes the smoke out
   function smokeLoop(chair,alive){
     const ember=chair.querySelector('.cc-ember'),hand=chair.querySelector('.cc-hand');
@@ -4369,7 +4371,7 @@ Do not look away from it.
   }
   function f5BuildWhy(screen){
     screen.classList.add('f5-why');
-    screen.innerHTML=`<div class="f5-why-dark"></div><article class="f5-parchment gj"><small>CASE 25 · FILE 005 · CLOSED</small><h2>GOOD JOB, DETECTIVE.</h2><div class="f4-actions"><button type="button" class="f4-btn f4-submit">CONTINUE →</button></div></article>`;
+    screen.innerHTML=`<div class="f5-why-dark"></div><article class="f5-parchment gj"><small>CASE 25 · FILE 005 · CLOSED</small><h2>HAPPY 25TH BIRTHDAY, SAM.</h2><p class="gj-sub">Ready for your gift?</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit">CONTINUE →</button></div></article>`;
     screen.querySelector('.f4-submit').addEventListener('click',()=>f5Continue('why'));
   }
   // FILE S: the last file on the wall, opened with CONTINUE after File 005. Why Case 25.
@@ -4405,8 +4407,15 @@ Do not look away from it.
   // Fill FILE_S with photos (assets/file-s/1.jpg …), captions, witness statements and the final message.
   const FILE_S={
     exhibits:[['assets/file-s/1.jpg','EXHIBIT A','On the water. The subject was not rowing.'],['assets/file-s/2.jpg','EXHIBIT B','Sunset. Both suspects present.'],['assets/file-s/3.jpg','EXHIBIT C','Mirror evidence. Phone confiscated.'],['assets/file-s/4.jpg','EXHIBIT D','Red roses. Subject could not stop smiling.'],['assets/file-s/5.jpg','EXHIBIT E','Known alias: the devil. Unconfirmed.'],['assets/file-s/6.jpg','EXHIBIT F','Subject, dressed to impress.']],
-    witnesses:[['WITNESS 1','(statement)'],['WITNESS 2','(statement)']],
-    message:['(Your final message goes here.)','Why we made all of this.']};
+    witnesses:[],
+    message:['Happy 25th birthday, Sam. ❤️',
+      'I honestly don’t know how everything I planned would turn out, but I really wanted to do something different for you, something you’d enjoy and hopefully remember, even if it’s just a little.',
+      'We’ve had our share of good days, bad days, stupid fights, silly moments, endless laughs, and everything in between. We’ve seen so many different sides of each other, and somehow, even the stupidest little things have become memories I’ll always smile about. I hope today becomes one of those memories for you, too.',
+      'I hope 25 brings you closer to everything you’ve been dreaming of. I hope you try new things, find things that make you genuinely happy, achieve the things you’ve been working towards, and keep being the wonderfully ridiculous person you are. Please become a little less annoying, though. I have my limits. 😂',
+      'And maybe, if life allows, I get to be around for more of it — to celebrate your wins, annoy you on ordinary days, laugh at things nobody else would find funny, fight over the most unnecessary things, and make a thousand more stupid little memories with you.',
+      'I really hope I get to celebrate more birthdays with you. Hopefully, by your 26th, you’ll have improved your behaviour a little. But knowing you, I’m not getting my hopes up. 😂❤️',
+      'Happy birthday, Sam. I’m really glad I got to make this little memory for you. You deserve so many beautiful things, and I hope 25 brings you plenty of them.'],
+    gifts:[['0 – 5','You loved chocolates.','So, chocolates.','🍫'],['5 – 10','You played cards with everyone.','So, cards.','🃏'],['10 – 15','You loved going out, and puzzles.','So, a wallet for the outings, and a Rubik’s cube.','🧩'],['15 – 20','Then came the trends, and the clothes.','So, shirts.','👕'],['25','And one more, for the years ahead.','A guitar. As you grow, you’ll learn.','🎸']]};
   function obsSummary(){
     const L=obsLog(),first=t=>L.find(e=>e.ev===t),fmt=t=>{const d=new Date(t);return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' · '+hhmm(t);};
     const dur=(a,b)=>{const x=first(a),y=L.filter(e=>e.ev===b).pop();if(!x||!y||y.t<x.t)return null;const m=Math.round((y.t-x.t)/60000);return m>=60?`${Math.floor(m/60)} h ${m%60} m`:`${m} m`;};
@@ -4554,8 +4563,8 @@ Do not look away from it.
       <section class="fs-part fs-log"><h3>OBSERVATION LOG</h3><div class="fs-rows"></div></section>
       <section class="fs-part fs-verdict"><h3>ASSESSMENT</h3><p>${f3sEsc(verdict)}</p></section>
       <section class="fs-part fs-ex"><h3>EXHIBITS</h3><div class="fs-photos">${FILE_S.exhibits.map(([src,tag,cap],i)=>`<figure style="--r:${[-4,3,-2,5][i%4]}deg"><div class="fs-ph"><img src="${src}" alt="" onerror="this.remove()"></div><figcaption><b>${f3sEsc(tag)}</b> ${f3sEsc(cap)}</figcaption></figure>`).join('')}</div></section>
-      <section class="fs-part fs-wit"><h3>WITNESS STATEMENTS</h3>${FILE_S.witnesses.map(([w,t])=>`<blockquote><small>${f3sEsc(w)}</small>${f3sEsc(t)}</blockquote>`).join('')}</section>
-      <section class="fs-part fs-msg"><h3>THE REAL REASON</h3>${FILE_S.message.map(t=>`<p>${f3sEsc(t)}</p>`).join('')}</section>
+      <section class="fs-part fs-msg"><h3>FROM ME</h3>${FILE_S.message.map(t=>`<p>${f3sEsc(t)}</p>`).join('')}<i class="fs-sign">— me</i></section>
+      <section class="fs-part fs-gifts"><h3>EVIDENCE, GIFT-WRAPPED</h3>${FILE_S.gifts.map(([age,a,b,ico])=>`<div class="fs-gift"><span class="fs-age">${age}</span><i>${ico}</i><p>${f3sEsc(a)}<b>${f3sEsc(b)}</b></p></div>`).join('')}</section>
       <section class="fs-part fs-video"><video src="assets/file-s/final.mp4" controls playsinline preload="metadata" onerror="this.parentNode.remove()"></video></section>
       <section class="fs-part fs-end"><b>CASE 25 · CLOSED</b><h2>Happy 25th, Detective.</h2><p>Your final piece of evidence is right behind you.</p><button type="button" class="f4-btn f4-submit">END TRANSMISSION →</button></section></div>`;
     const rows=screen.querySelector('.fs-rows'),parts=[...screen.querySelectorAll('.fs-part')];
@@ -4565,7 +4574,12 @@ Do not look away from it.
     show(parts[1],2600);
     O.rows.forEach(([k,v],i)=>setTimeout(()=>{if(!screen.isConnected)return;rows.insertAdjacentHTML('beforeend',`<div><span>${f3sEsc(k)}</span><b></b></div>`);const b=rows.lastElementChild.querySelector('b');let n=0;const ty=()=>{b.textContent=v.slice(0,++n);if(n<v.length)setTimeout(ty,28);};ty();sfx('key');},t+400+i*1300));
     t+=O.rows.length*1300+600;
-    show(parts[2],1200);show(parts[3],3600);show(parts[4],4200);show(parts[5],4200);const vid=screen.querySelector('.fs-video');if(vid){show(vid,4600);setTimeout(()=>{const v=vid.querySelector('video');if(v&&screen.isConnected){try{fsScoreStop();setMusic(false);}catch{}v.play().catch(()=>{});}},t+300);}show(screen.querySelector('.fs-end'),6000);
+    show(parts[2],1200);show(parts[3],3600);
+    const msg=screen.querySelector('.fs-msg'),mps=[...msg.querySelectorAll('p,.fs-sign')];mps.forEach(p=>p.style.opacity=0);
+    show(msg,4600);mps.forEach((p,i)=>{const at=t+600+i*4200;setTimeout(()=>{if(!screen.isConnected)return;p.style.opacity='';p.classList.add('in');p.scrollIntoView({behavior:'smooth',block:'center'});},at);});t+=600+mps.length*4200;
+    const gf=screen.querySelector('.fs-gifts'),gs=[...gf.querySelectorAll('.fs-gift')];gs.forEach(g=>g.style.opacity=0);
+    show(gf,2000);gs.forEach((g,i)=>setTimeout(()=>{if(!screen.isConnected)return;g.style.opacity='';g.classList.add('in');g.scrollIntoView({behavior:'smooth',block:'center'});sfx('paper');},t+800+i*3600));t+=800+gs.length*3600;
+    const vid=screen.querySelector('.fs-video');if(vid){show(vid,1600);setTimeout(()=>{const v=vid.querySelector('video');if(v&&screen.isConnected){try{fsScoreStop();setMusic(false);}catch{}v.play().catch(()=>{});}},t+300);}show(screen.querySelector('.fs-end'),7000);
     screen.querySelector('.f4-submit').addEventListener('click',()=>{progress.fileSSeen=true;persistProgress();closeF3Stage();paintProgress();});
   }
   function f5Finish(){

@@ -3483,3 +3483,14 @@ body:has(#f3Stage.visible) #devFileSButton,body.wall-cinematic #devFileSButton{d
 .lf-shuttle2{animation:lfSh2 1.4s ease-in-out infinite alternate}@keyframes lfSh2{from{transform:translate(110px,140px)}50%{transform:translate(195px,60px)}to{transform:translate(285px,140px)}}
 .lf-dog2{animation:lfDog2 1.4s ease-in-out infinite alternate}@keyframes lfDog2{from{transform:translate(300px,205px)}to{transform:translate(200px,200px)}}
 .lf-dance2{animation:lfDance2 .8s ease-in-out infinite}@keyframes lfDance2{0%,100%{transform:translate(195px,205px) rotate(-8deg)}50%{transform:translate(195px,195px) rotate(8deg)}}
+.fs-msg p{opacity:1;transition:opacity 1.6s ease}
+.fs-msg p.in{animation:twIn 1.6s ease both}
+.fs-msg p:first-of-type{font-size:clamp(24px,2.4vw,34px);color:#f6ecd8}
+.fs-sign{display:block;text-align:right;font:italic 26px var(--serif);color:#e9dcc2}
+.fs-gift{display:grid;grid-template-columns:90px 60px 1fr;align-items:center;gap:16px;padding:16px 0;border-bottom:1px dashed rgba(201,154,85,.25)}
+.fs-gift.in{animation:s4In 1s ease both}
+.fs-age{color:#c99a55;font:14px var(--mono);letter-spacing:.14em}
+.fs-gift i{font-style:normal;font-size:38px;text-align:center}
+.fs-gift p{margin:0;font:italic 19px/1.5 var(--serif);color:#e9dcc2}
+.fs-gift p b{display:block;font-style:normal;font-weight:600;color:#f6ecd8}
+.f5-parchment.gj .gj-sub{margin:14px 0 4px;font:italic clamp(20px,2vw,28px) var(--serif);color:#5a2a1a;animation:twIn 1.4s ease 1.2s both}
