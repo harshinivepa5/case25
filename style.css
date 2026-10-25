@@ -3412,3 +3412,21 @@ html body #f3Stage[data-mode="fs"] #f3sSkip{display:none!important}
 .s5-recs.together .s5-rec{transform:rotate(0) scale(1.04);box-shadow:0 0 30px rgba(196,40,28,.45),0 14px 34px rgba(0,0,0,.7);outline:2px solid #b9271d}
 .s5-walker{animation:s5Walk 9s linear forwards}
 @keyframes s5Walk{from{transform:translate(120px,220px) scale(1.2);opacity:1}to{transform:translate(330px,205px) scale(.55);opacity:0}}
+.s2-stage{border:6px solid #0e0c0a;box-shadow:0 20px 50px #000;overflow:hidden;background:#0b0705}
+.s2-stage svg{width:100%;height:100%;display:block}
+.s2-stage small{position:absolute;left:10px;bottom:8px;font:10px var(--mono);letter-spacing:.22em;color:#c9b28a}
+.s2-smoke circle,.s2-fire{opacity:0}
+.s2-stage.flick .s2-spot{animation:ccFlick .5s steps(1) 4}
+.s2-stage.smoke .s2-smoke circle{animation:s2Smoke 3s ease-out var(--d) infinite}
+@keyframes s2Smoke{0%{opacity:0;transform:translate(0,0) scale(.5)}20%{opacity:.8}100%{opacity:0;transform:translate(-60px,-120px) scale(3)}}
+.s2-stage.fire .s2-fire{opacity:1;transform-box:fill-box;transform-origin:50% 100%;animation:s2Fire .3s ease-in-out infinite alternate}
+@keyframes s2Fire{to{transform:scaleY(1.2) skewX(4deg)}}
+.s2-stage.fire svg{animation:s2Glow 1s ease-in-out infinite alternate}@keyframes s2Glow{to{filter:brightness(1.3) sepia(.4)}}
+.s2-stage.cleared .s2-crowd{transition:transform 2.5s ease-in,opacity 2.5s;transform:translateX(-420px);opacity:0}
+.s2-stage.gone .s2-spot{opacity:.15}
+.s2-mem{display:grid;place-items:center;align-content:center;gap:6px;background:radial-gradient(ellipse at 50% 30%,rgba(255,220,170,.18),transparent 60%),#070505;border:6px solid #0e0c0a}
+.s2-mem svg{width:24%}
+.s2-mem span{color:#9c8a6c;font:11px var(--mono);letter-spacing:.3em}
+.s2-mem b{font:28px var(--type);color:#f2e7cf}.s2-mem i{color:#c99a55;font:13px var(--mono);letter-spacing:.2em}
+.s2-rep{transform:rotate(-2deg)}
+.s2-q{color:#8e1d14}
