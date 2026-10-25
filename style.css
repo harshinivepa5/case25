@@ -3131,3 +3131,7 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 .cc-scene.singing~.cc-notes{display:block}
 #devFile04Button{position:fixed;z-index:999;left:20px;bottom:64px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.14em;cursor:pointer}
 body:has(#f3Stage.visible) #devFile04Button,body.wall-cinematic #devFile04Button,body:has(#cliffhanger:not([hidden])) #devFile04Button{display:none}
+.cc-cap{position:absolute;left:50%;bottom:16%;z-index:4;width:min(900px,86vw);transform:translateX(-50%);text-align:center;font:italic clamp(24px,2.6vw,40px)/1.3 var(--serif);color:#f6e6c6;text-shadow:0 2px 20px #000,0 0 30px rgba(0,0,0,.9);opacity:0;pointer-events:none}
+.cc-cap.show{animation:ccCap 3.4s ease forwards}
+.cc-cap.gone{display:none}
+@keyframes ccCap{0%{opacity:0;transform:translateX(-50%) translateY(14px);letter-spacing:.06em}18%{opacity:1;transform:translateX(-50%);letter-spacing:.01em}82%{opacity:1}100%{opacity:0}}

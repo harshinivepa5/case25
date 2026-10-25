@@ -3411,7 +3411,7 @@ function f3sFindLines(img,boxes){
   // File 004 opening: The Lantern on a good night. The neon sign buzzes on, the stage lights click on one by one and sweep
   // through the haze, a singer stands in the follow spot and the crowd sways. The story then turns the room against itself.
   function cineConcertPrelude(screen){
-    const SONG=29000,D=5600+SONG,layer=screen.querySelector('.cine-layer');screen.classList.add('prelude');
+    const INTRO=13500,SONG=29000,D=5600+INTRO+SONG,layer=screen.querySelector('.cine-layer');screen.classList.add('prelude');
     const COL=['#ffb347','#ff5d7d','#5f8dff','#ffd27a','#ff7a3d','#9a6bff','#ffc56b'];
     const LX=[150,380,610,840,1070,1300,1500];
     const beams=LX.map((x,i)=>`<g class="cc-light" style="--i:${i};--sd:${(-i*1.3).toFixed(1)}s"><path class="cc-beam" d="M${x} 92 L${x-170} 860 L${x+170} 860 Z" fill="url(#ccB${i})" style="transform-origin:${x}px 92px"/><rect x="${x-16}" y="70" width="32" height="24" rx="4" fill="#0c0a09"/><circle class="cc-lamp" cx="${x}" cy="92" r="9" fill="#1a1512"/></g>`).join('');
@@ -3445,7 +3445,12 @@ function f3sFindLines(img,boxes){
     sc.querySelector('.cc-crowd').animate([{opacity:0,transform:'translateY(40px)'},{opacity:0,offset:.55},{opacity:1,transform:'none'}],{duration:5600,easing:'ease-out',fill:'both'});
     // the song: the singer steps up to the mic, the crowd raises lights, the room sways. The track is the file at
     // assets/file-004/song.mp3 (from 0:00 unless SONG_START is set); without it a soft piano-and-hum melody plays instead.
-    const songStart=5600,stopSong=[],SONG_START=0; // seconds into the track where the singing begins
+    // before the song, the narrator introduces the room, one line at a time over the lights
+    const CAP=[[600,'Before the money. Before Lake Ash.'],[4200,'There was The Lantern.'],[7600,'A small room with a big sound. Live music, every single night.'],[11400,'And tonight, the room was full.']];
+    const cap=document.createElement('div');cap.className='cc-cap';sc.after(cap);
+    CAP.forEach(([at,t])=>laterWait(()=>{if(!screen.isConnected||reducedMotion)return;cap.textContent=t;cap.classList.remove('show');void cap.offsetWidth;cap.classList.add('show');narrate(t);},5600+at));
+    laterWait(()=>cap.classList.add('gone'),5600+INTRO);
+    const songStart=5600+INTRO,stopSong=[],SONG_START=0; // seconds into the track where the singing begins
     laterWait(()=>{if(!screen.isConnected||reducedMotion)return;
       sc.classList.add('singing');
       const notes=document.createElement('div');notes.className='cc-notes';sc.after(notes);
@@ -3460,7 +3465,7 @@ function f3sFindLines(img,boxes){
     },songStart);
     const endSong=()=>{stopSong.splice(0).forEach(f=>{try{f();}catch{}});try{if(f4Audio)f4Audio.out.gain.setTargetAtTime(.9,audioContext.currentTime,1.2);}catch{}sfx('dread');};
     laterWait(endSong,reducedMotion?0:songStart+SONG-1200);
-    screen.addEventListener('click',()=>{if(screen.classList.contains('prelude'))endSong();},{once:true});
+    screen.addEventListener('click',()=>{if(screen.classList.contains('prelude')){endSong();cap.remove();try{speechSynthesis.cancel();}catch{}}},{once:true});
     laterWait(()=>screen.classList.remove('prelude'),reducedMotion?0:D);
     return D;
   }
@@ -3769,7 +3774,7 @@ Do not look away from it.
         if(/kept running/.test(t)){sc.classList.add('flicker');sfx('dread');laterWait(()=>sc.classList.remove('flicker'),2600);}
         if(/Someone warned/.test(t)){const l=sc.querySelectorAll('.cc-light.on')[3];if(l){l.classList.add('pop');sfx('sting');}}
         if(/Whether anyone/.test(t))sc.classList.add('hush');},
-      text:`Before the money. Before Lake Ash.\nThere was The Lantern.\n\nTwo friends. One stage.\nThomas Reed and Peter Shaw built it from nothing: a small room with a big sound, live music every night, and a crowd that always came back.\n\nFor a while, it was everything they wanted.\n\nBut success is expensive.\nCosts rose. Repairs waited.\nWiring that needed attention was kept running a little longer…\nand then a little longer again.\n\n!Someone warned them. It was written down.\n\nWhether anyone listened is another matter.\n\nEvery place has a story it tells the public.\nThis is the story its records left behind.`},
+      text:`Two friends. One stage.\nThomas Reed and Peter Shaw built it from nothing: a small room with a big sound, live music every night, and a crowd that always came back.\n\nFor a while, it was everything they wanted.\n\nBut success is expensive.\nCosts rose. Repairs waited.\nWiring that needed attention was kept running a little longer…\nand then a little longer again.\n\n!Someone warned them. It was written down.\n\nWhether anyone listened is another matter.\n\nEvery place has a story it tells the public.\nThis is the story its records left behind.`},
     s2:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'THE OFFICIAL VERSION',title:'THE NIGHT OF 21 SEPTEMBER.',button:'CROSS-EXAMINE THE REPORT',tell:true,text:`You found the warnings, Detective.\nNow here is what followed.\n\n21 September. A full room. The second set.\nThe stage lights flickered twice.\nThen the smoke came from behind the panel.\n\nThe room was cleared in four minutes.\n!One person did not make it out.\n\nA musician died on the stage that Thomas and Peter built.\n\nThe investigators called it an accident. Faulty equipment.\nNo one was charged. The file was closed.\n\nBut nothing in the records confirms the wiring was ever inspected.\nAnd someone made sure the record said it was.`},
     s4:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'NINE YEARS LATER',title:'THE FIRE WAS ONLY THE BEGINNING.',button:'CONTINUE',tell:true,text:`Your findings are on record.\n\nThe Lantern reopened eight months after the fire.\nNew wiring. The same two names over the door.\nNobody ever saw the edit Peter made.\n\nBut Peter remembered it.\nAnd for nine years he kept a second file:\nthe April memo with Thomas’s signature, the deferred repairs, every page that could put the fire on Thomas alone.\n\nIn case anyone ever asked.\n\nThen Thomas went to the water at Lake Ash.\nPeter’s name on the boat. Peter’s card on the road.\n\n!Tonight Peter Shaw is in a cell.\n\nThe case against him has never looked stronger.`},
     final:{kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'FILE 004 · CLOSED',title:'ONE FILE REMAINS.',button:'RETURN TO THE CASE',hand:true,text:`Detective.\n\nYou found the warning.\nYou found the edit.\nYou found the man who made it.\n\nHe kept a file on his oldest friend for nine years.\nHe was waiting for the day he would need it.\n\nI told you once that every place has a story it tells the public.\n!Some people do too.\n\nTonight the last file opens.\nRead it the way you read today:\nnot for what it says, but for who could have written it.\n\n— M`}
