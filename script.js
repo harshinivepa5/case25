@@ -4402,7 +4402,7 @@ Do not look away from it.
   // FILE S · the subject's own file, built from the observation log, then the exhibits, statements and the message.
   // Fill FILE_S with photos (assets/file-s/1.jpg …), captions, witness statements and the final message.
   const FILE_S={
-    exhibits:[['assets/file-s/1.jpg','EXHIBIT A','(caption)'],['assets/file-s/2.jpg','EXHIBIT B','(caption)'],['assets/file-s/3.jpg','EXHIBIT C','(caption)'],['assets/file-s/4.jpg','EXHIBIT D','(caption)']],
+    exhibits:[['assets/file-s/1.jpg','EXHIBIT A','On the water. The subject was not rowing.'],['assets/file-s/2.jpg','EXHIBIT B','Sunset. Both suspects present.'],['assets/file-s/3.jpg','EXHIBIT C','Mirror evidence. Phone confiscated.'],['assets/file-s/4.jpg','EXHIBIT D','Red roses. Subject could not stop smiling.'],['assets/file-s/5.jpg','EXHIBIT E','Known alias: the devil. Unconfirmed.'],['assets/file-s/6.jpg','EXHIBIT F','Subject, dressed to impress.']],
     witnesses:[['WITNESS 1','(statement)'],['WITNESS 2','(statement)']],
     message:['(Your final message goes here.)','Why we made all of this.']};
   function obsSummary(){

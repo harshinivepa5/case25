@@ -3444,3 +3444,6 @@ html body #f3Stage[data-mode="fs"] #f3sSkip{display:none!important}
 @keyframes epSwing{from{transform:rotate(-7deg)}to{transform:rotate(5deg)}}
 #devFile04Button{display:none!important}
 .ep-tag{width:52%!important;left:24%!important;white-space:nowrap}
+.lf-photo{object-fit:contain!important;background:#0a0807}
+.fs-photos{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.fs-ph{aspect-ratio:3/4!important}
