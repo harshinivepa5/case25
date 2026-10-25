@@ -3548,3 +3548,30 @@ body:has(#f3Stage.visible) #devFileSButton,body.wall-cinematic #devFileSButton{d
 .film-words span.on{opacity:1;transform:none}
 .film-shade{background:linear-gradient(0deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.35) 30%,rgba(0,0,0,0) 55%)}
 .film-reel .film-slide .film-bg{opacity:1}
+/* animated props for scenes without a photo */
+.film-prop{position:absolute;z-index:1;transform:translate(-50%,-50%) scale(0);font-style:normal;line-height:1;filter:drop-shadow(0 18px 30px rgba(0,0,0,.6));animation:fpIn .8s cubic-bezier(.2,1.5,.4,1) both,fpFloat 3.6s ease-in-out infinite alternate}
+@keyframes fpIn{from{transform:translate(-50%,-50%) scale(0) rotate(-20deg);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+@keyframes fpFloat{from{margin-top:0}to{margin-top:-14px}}
+.film-prop.glow{filter:drop-shadow(0 0 30px rgba(255,220,160,.9))}
+.film-prop.tv{animation:fpIn .8s cubic-bezier(.2,1.5,.4,1) both,fpTv 1.2s steps(1) infinite}
+@keyframes fpTv{50%{filter:drop-shadow(0 0 24px #5cf) brightness(1.2)}}
+.film-prop.spin{animation:fpIn .8s cubic-bezier(.2,1.5,.4,1) both,fpSpin 4s linear infinite}
+@keyframes fpSpin{to{rotate:360deg}}
+.film-prop.pop{animation:fpIn .5s cubic-bezier(.2,2,.4,1) both,fpPulse 1s ease-in-out infinite alternate}
+@keyframes fpPulse{to{scale:1.15}}
+.film-prop.float{animation:fpIn .8s ease both,fpUp 2.6s ease-out infinite}
+@keyframes fpUp{from{margin-top:0;opacity:1}to{margin-top:-120px;opacity:0}}
+.film-prop.left{animation:fpLeft 1.6s cubic-bezier(.2,.8,.2,1) both}@keyframes fpLeft{from{transform:translate(-200%,-50%);opacity:0}to{transform:translate(-50%,-50%);opacity:1}}
+.film-prop.right{animation:fpRight 1.6s cubic-bezier(.2,.8,.2,1) both}@keyframes fpRight{from{transform:translate(100%,-50%);opacity:0}to{transform:translate(-50%,-50%);opacity:1}}
+.film-prop.w{animation:none;opacity:.12;transform:translate(-50%,-50%) scale(.7);filter:grayscale(1);transition:all .6s cubic-bezier(.2,1.5,.4,1)}
+.film-prop.w.on{opacity:1;transform:translate(-50%,-50%) scale(1);filter:drop-shadow(0 0 30px rgba(255,230,160,.6))}
+.film-prop.w.on.kick{animation:fpKick 1s ease-in-out infinite alternate}@keyframes fpKick{to{margin-left:30px;rotate:180deg}}
+.film-prop.w.on.swing{animation:fpSwing .6s ease-in-out infinite alternate}@keyframes fpSwing{from{rotate:-20deg}to{rotate:20deg}}
+.film-prop.w.on.wag{animation:fpFloat .4s ease-in-out infinite alternate}
+.film-prop.w.on.dance{animation:fpSwing .5s ease-in-out infinite alternate}
+.film-phone{position:absolute;left:50%;top:6%;z-index:1;width:min(300px,60vw);height:58%;transform:translateX(-50%);padding:16px 12px;border:8px solid #111;border-radius:30px;background:#0b141a;box-shadow:0 0 60px rgba(90,150,255,.35);overflow:hidden}
+.film-phone div{display:flex;flex-direction:column;gap:8px}
+.film-phone p{margin:0;max-width:78%;padding:8px 12px;border-radius:14px;font:14px var(--mono);color:#e9edef;opacity:0;animation:fpMsg .5s ease forwards}
+.film-phone p.l{align-self:flex-start;background:#202c33}.film-phone p.r{align-self:flex-end;background:#005c4b}
+@keyframes fpMsg{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.film-phone{top:13%;height:48%}

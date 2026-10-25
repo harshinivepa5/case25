@@ -4554,16 +4554,16 @@ Do not look away from it.
   // His story, as a short film: full-screen photos with a slow drift, soft dissolves between scenes,
   // a running year in the corner, and one or two lines of narration per scene.
   const FILM=[
-    {yr:'2001',k:'31 OCTOBER 2001 · VIJAYAWADA',t:'On a quiet night in Vijayawada,|a boy was born.',bg:'night',tone:'S'},
+    {yr:'2001',k:'31 OCTOBER 2001 · VIJAYAWADA',t:'On a quiet night in Vijayawada,|a boy was born.',bg:'night',tone:'S',props:[['🌙',78,14,9,.2],['🏠',50,30,16,1],['👶',50,34,7,2.6,'glow'],['✨',38,22,4,3.2],['✨',62,18,4,3.6]]},
     {yr:'2001',k:'THE FAMILY',t:'And a whole family|that could not stop smiling.',img:'family',tone:'W'},
     {yr:'2001',k:'NAME ON RECORD',name:true,t:'They called him',tone:'W'},
-    {yr:'2006',k:'THE EARLY YEARS',t:'Cartoons. Chocolates.|And in second class, a kiss on a girl’s cheek.',sub:'Fast, from the very beginning.',bg:'warm',tone:'F'},
-    {yr:'2010',k:'KNOWN WEAKNESSES',words:['Football.','Badminton.','Dogs.','Any dance floor.'],t:'Football. Badminton. Dogs. Any dance floor.',bg:'green',tone:'F'},
+    {yr:'2006',k:'THE EARLY YEARS',t:'Cartoons. Chocolates.|And in second class, a kiss on a girl’s cheek.',sub:'Fast, from the very beginning.',bg:'warm',tone:'F',props:[['📺',22,20,13,.4,'tv'],['🍫',50,14,11,1.6,'spin'],['🎒',78,22,11,3],['💋',62,32,8,4.6,'pop'],['❤️',38,30,6,5.2,'float']]},
+    {yr:'2010',k:'KNOWN WEAKNESSES',words:['Football.','Badminton.','Dogs.','Any dance floor.'],t:'Football. Badminton. Dogs. Any dance floor.',bg:'green',tone:'F',wprops:[['⚽',20,24,14,'kick'],['🏸',40,16,14,'swing'],['🐶',62,24,14,'wag'],['🕺',82,18,14,'dance']]},
     {yr:'2014',k:'GROWING UP',t:'Pocket money went into games.|And a Rubik’s cube he would not put down.',img:'games',img2:'rubik',tone:'W'},
     {yr:'2018',k:'THE STYLE ERA',t:'Then came the trends,|the clothes, and the mirror.',img:'style',tone:'F'},
     {yr:'2020',k:'',t:'The attitude came free.',img:'5',tone:'F'},
-    {yr:'2022',k:'17 SEPTEMBER 2022',t:'A college competition.|Two strangers in a crowded room.',bg:'rose',tone:'S',songs:true},
-    {yr:'2022',k:'2:14 AM',t:'Late nights. Long texts.|Then she said she had a crush on someone.',bg:'phone',tone:'W'},
+    {yr:'2022',k:'17 SEPTEMBER 2022',t:'A college competition.|Two strangers in a crowded room.',bg:'rose',tone:'S',songs:true,props:[['🏆',50,14,10,.6],['🙋‍♂️',36,28,12,1.8,'left'],['🙋‍♀️',64,28,12,2.4,'right'],['💫',50,24,8,4,'pop']]},
+    {yr:'2022',k:'2:14 AM',t:'Late nights. Long texts.|Then she said she had a crush on someone.',bg:'phone',tone:'W',phone:['hey 🙂','hii','you up?','always lol','can i tell you something','i have a crush on someone…']},
     {yr:'2022',k:'AND HE REPLIED',t:'',img:'crush',contain:true,tone:'F',say:'And he replied with this.'},
     {yr:'2023',k:'US',reel:['dance2','trip','pondy','shop','laugh','kiss'],words:['Concerts.','Go-karting.','Shopping.','Cooking at home.','Trips.','Dancing.','Singing, badly.','Laughing, a lot.'],t:'They said yes to everything.',tone:'F'},
     {yr:'2025',k:'',t:'Twenty-five years.|One story.|Still being written.',img:'present',tone:'S'},
@@ -4588,6 +4588,9 @@ Do not look away from it.
         const lines=(sc.words&&!sc.reel?'':(sc.t||'')).split('|').filter(Boolean);
         el.innerHTML=`${sc.reel?`<div class="film-reel">${sc.reel.map((r,i)=>`<div class="film-slide"><div class="film-bgblur" style="background-image:url('assets/file-s/${r}.jpg')"></div><div class="film-bg contain" style="background-image:url('assets/file-s/${r}.jpg')"></div></div>`).join('')}</div>`:bgOf(sc)}
           ${sc.img2?`<figure class="film-inset"><img src="assets/file-s/${sc.img2}.jpg" alt=""></figure>`:''}
+          ${(sc.props||[]).map(([e,x,y,sz,d,a])=>`<i class="film-prop ${a||''}" style="left:${x}%;top:${y}%;font-size:${sz}vw;animation-delay:${d}s,${d+.8}s">${e}</i>`).join('')}
+          ${(sc.wprops||[]).map(([e,x,y,sz,a],i)=>`<i class="film-prop w ${a||''}" data-w="${i}" style="left:${x}%;top:${y}%;font-size:${sz}vw">${e}</i>`).join('')}
+          ${sc.phone?`<div class="film-phone"><div>${sc.phone.map((m,i)=>`<p class="${i%2?'r':'l'}" style="animation-delay:${1+i*1.1}s">${f3sEsc(m)}</p>`).join('')}</div></div>`:''}
           <div class="film-shade"></div>
           <div class="film-cap">${sc.k?`<small>${sc.k}</small>`:''}${lines.map(l=>`<p>${f3sEsc(l)}</p>`).join('')}${sc.name?`<h1 class="film-name"></h1>`:''}${sc.words?`<div class="film-words">${sc.words.map(w=>`<span>${w}</span>`).join('')}</div>`:''}${sc.sub?`<em>${sc.sub}</em>`:''}</div>`;
         stage.append(el);const old=[...stage.children].slice(0,-1);
@@ -4596,7 +4599,7 @@ Do not look away from it.
         if(sc.reel){const bgs=[...el.querySelectorAll('.film-reel .film-slide')];let r=0;const tick=()=>{if(!el.isConnected||stop)return;bgs.forEach((b,i)=>b.classList.toggle('on',i===r%bgs.length));r++;setTimeout(tick,2200);};tick();}
         const tone=FILM_TONE[sc.tone]||FILM_TONE.W;
         if(sc.name){await wait(1400);await narrate('They called him',tone);const h=el.querySelector('.film-name');for(let k=1;k<=LIFE_NAME.length;k++){if(stop)return;h.textContent=LIFE_NAME.slice(0,k);await wait(85);}await narrate(LIFE_NAME.toLowerCase(),tone);await wait(1400);continue;}
-        if(sc.words){const ws=[...el.querySelectorAll('.film-words span')];await wait(900);if(sc.reel)await narrate(sc.t,tone);for(const w of ws){if(stop)return;ws.forEach(x=>x.classList.remove('on'));w.classList.add('on');await narrate(w.textContent.replace(/,.*$/,''),tone);await wait(250);}await wait(1200);continue;}
+        if(sc.words){const ws=[...el.querySelectorAll('.film-words span')];await wait(900);if(sc.reel)await narrate(sc.t,tone);for(const [wi,w] of ws.entries()){if(stop)return;ws.forEach(x=>x.classList.remove('on'));w.classList.add('on');el.querySelector(`.film-prop.w[data-w="${wi}"]`)?.classList.add('on');sfx('key');await narrate(w.textContent.replace(/,.*$/,''),tone);await wait(250);}await wait(1200);continue;}
         await wait(900);await narrate(sc.say||lines.join(' ')+(sc.sub?' '+sc.sub:''),tone);await wait(sc.contain?3500:1600);}
       if(stop)return;await wait(800);stopSongs&&stopSongs();host.classList.add('done');setTimeout(()=>{host.remove();done();},1400);})();
   }
