@@ -2800,7 +2800,7 @@
     setMusic(a.prev);
   }
   function closeF3Stage(){
-    f4ScoreStop();
+    f4ScoreStop();fsScoreStop();
     const stage=$('#f3Stage');stage.classList.remove('visible');f3sCloseModal();
     $('#backButton').disabled=!sceneHistory.length;
     setTimeout(()=>{stage.hidden=true;stage.querySelectorAll('.f3s-screen').forEach(s=>s.remove());},600);
@@ -4371,7 +4371,28 @@ Do not look away from it.
     screen.querySelector('.f4-submit').addEventListener('click',()=>f5Continue('why'));
   }
   // FILE S: the last file on the wall, opened with CONTINUE after File 005. Why Case 25.
+  // FILE S has its own gentle score: a soft major-key piano and a warm pad, nothing dark
+  let fsAudio=null;
+  function fsScoreStart(){
+    fsScoreStop();ensureSound();const c=audioContext;if(!c)return;
+    const prev=musicWanted;setMusic(false);try{f4ScoreStop();cliffStop();}catch{}
+    const out=c.createGain();out.gain.setValueAtTime(.0001,c.currentTime);out.gain.exponentialRampToValueAtTime(.7,c.currentTime+3);out.connect(c.destination);
+    const ir=c.createBuffer(2,c.sampleRate*2.6,c.sampleRate);for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);}
+    const verb=c.createConvolver(),wet=c.createGain();verb.buffer=ir;wet.gain.value=.45;verb.connect(wet);wet.connect(out);
+    const bus=c.createGain();bus.connect(out);bus.connect(verb);
+    const N=n=>440*Math.pow(2,(n-69)/12);
+    const key=(f,t,v=.05,len=2.6)=>{[1,2].forEach((h,i)=>{const o=c.createOscillator(),g=c.createGain();o.type=i?'sine':'triangle';o.frequency.value=f*h;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v/h,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+len);o.connect(g);g.connect(bus);o.start(t);o.stop(t+len+.1);});};
+    const pad=(notes,t,len)=>notes.forEach(n=>{const o=c.createOscillator(),lp=c.createBiquadFilter(),g=c.createGain();o.type='sawtooth';o.frequency.value=N(n);lp.type='lowpass';lp.frequency.value=700;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.012,t+1.2);g.gain.exponentialRampToValueAtTime(.0001,t+len);o.connect(lp);lp.connect(g);g.connect(bus);o.start(t);o.stop(t+len+.1);});
+    // C – G – Am – F, slow and warm
+    const prog=[[48,[60,64,67,72]],[43,[59,62,67,71]],[45,[60,64,69,72]],[41,[60,65,69,72]]];
+    const beat=.6;let bar=0,next=c.currentTime+.8;
+    const sched=()=>{while(next<c.currentTime+2.5){const [b,ch]=prog[bar%4];key(N(b),next,.05,3.6);pad(ch,next,beat*8);
+        [0,1,2,3,2,1,0,1].forEach((k,i)=>key(N(ch[k]+12),next+i*beat,.028,1.6));next+=beat*8;bar++;}};
+    sched();const tm=setInterval(sched,500);fsAudio={out,tm,prev};
+  }
+  function fsScoreStop(){if(!fsAudio)return;const a=fsAudio;fsAudio=null;clearInterval(a.tm);try{a.out.gain.setTargetAtTime(.0001,audioContext.currentTime,.6);}catch{}setMusic(a.prev);}
   function openFileS(){
+    setTimeout(fsScoreStart,200);
     clearTimers();const stage=$('#f3Stage');stage.dataset.mode='fs';stage.hidden=false;$('#f3sList').hidden=true;$('#f3sReturn').hidden=true;
     requestAnimationFrame(()=>stage.classList.add('visible'));
     stage.querySelectorAll('.f3s-screen').forEach(s2=>s2.remove());
@@ -4495,7 +4516,7 @@ Do not look away from it.
     show(parts[1],2600);
     O.rows.forEach(([k,v],i)=>setTimeout(()=>{if(!screen.isConnected)return;rows.insertAdjacentHTML('beforeend',`<div><span>${f3sEsc(k)}</span><b></b></div>`);const b=rows.lastElementChild.querySelector('b');let n=0;const ty=()=>{b.textContent=v.slice(0,++n);if(n<v.length)setTimeout(ty,28);};ty();sfx('key');},t+400+i*1300));
     t+=O.rows.length*1300+600;
-    show(parts[2],1200);show(parts[3],3600);show(parts[4],4200);show(parts[5],4200);const vid=screen.querySelector('.fs-video');if(vid){show(vid,4600);setTimeout(()=>{const v=vid.querySelector('video');if(v&&screen.isConnected){try{if(f4Audio)f4ScoreStop();setMusic(false);}catch{}v.play().catch(()=>{});}},t+300);}show(screen.querySelector('.fs-end'),6000);
+    show(parts[2],1200);show(parts[3],3600);show(parts[4],4200);show(parts[5],4200);const vid=screen.querySelector('.fs-video');if(vid){show(vid,4600);setTimeout(()=>{const v=vid.querySelector('video');if(v&&screen.isConnected){try{fsScoreStop();setMusic(false);}catch{}v.play().catch(()=>{});}},t+300);}show(screen.querySelector('.fs-end'),6000);
     screen.querySelector('.f4-submit').addEventListener('click',()=>{progress.fileSSeen=true;persistProgress();closeF3Stage();paintProgress();});
   }
   function f5Finish(){
