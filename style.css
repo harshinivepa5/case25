@@ -3589,3 +3589,5 @@ body:has(#f3Stage.visible) #devFileSButton,body.wall-cinematic #devFileSButton{d
 .fs-reward .f4-btn{margin-top:20px}
 .fs-confetti{position:absolute;inset:-20vh 0 0 0;pointer-events:none;overflow:hidden}
 .fs-confetti i{position:absolute;top:-20px;width:9px;height:15px;background:var(--c);animation:gjFall 3.6s linear var(--d) infinite}
+/* for now: FILE S is opened later, not from the wall */
+html body #homeScene #continueFileS{display:none!important}
