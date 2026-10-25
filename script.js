@@ -4588,8 +4588,8 @@ Do not look away from it.
         const lines=(sc.words&&!sc.reel?'':(sc.t||'')).split('|').filter(Boolean);
         el.innerHTML=`${sc.reel?`<div class="film-reel">${sc.reel.map((r,i)=>`<div class="film-slide"><div class="film-bgblur" style="background-image:url('assets/file-s/${r}.jpg')"></div><div class="film-bg contain" style="background-image:url('assets/file-s/${r}.jpg')"></div></div>`).join('')}</div>`:bgOf(sc)}
           ${sc.img2?`<figure class="film-inset"><img src="assets/file-s/${sc.img2}.jpg" alt=""></figure>`:''}
-          ${(sc.props||[]).map(([e,x,y,sz,d,a])=>`<i class="film-prop ${a||''}" style="left:${x}%;top:${y}%;font-size:${sz}vw;animation-delay:${d}s,${d+.8}s">${e}</i>`).join('')}
-          ${(sc.wprops||[]).map(([e,x,y,sz,a],i)=>`<i class="film-prop w ${a||''}" data-w="${i}" style="left:${x}%;top:${y}%;font-size:${sz}vw">${e}</i>`).join('')}
+          ${(sc.props||[]).map(([e,x,y,sz,d,a])=>`<i class="film-prop ${a||''}" style="left:${x}%;top:${y+16}%;font-size:${sz}vw;animation-delay:${d}s,${d+.8}s">${e}</i>`).join('')}
+          ${(sc.wprops||[]).map(([e,x,y,sz,a],i)=>`<i class="film-prop w ${a||''}" data-w="${i}" style="left:${x}%;top:${y+16}%;font-size:${sz}vw">${e}</i>`).join('')}
           ${sc.phone?`<div class="film-phone"><div>${sc.phone.map((m,i)=>`<p class="${i%2?'r':'l'}" style="animation-delay:${1+i*1.1}s">${f3sEsc(m)}</p>`).join('')}</div></div>`:''}
           <div class="film-shade"></div>
           <div class="film-cap">${sc.k?`<small>${sc.k}</small>`:''}${lines.map(l=>`<p>${f3sEsc(l)}</p>`).join('')}${sc.name?`<h1 class="film-name"></h1>`:''}${sc.words?`<div class="film-words">${sc.words.map(w=>`<span>${w}</span>`).join('')}</div>`:''}${sc.sub?`<em>${sc.sub}</em>`:''}</div>`;
