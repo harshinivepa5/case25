@@ -57,6 +57,10 @@
     catch { return { chapterOneComplete:false, chapterOneStarted:false, fileTwoComplete:false, file02Complete:false, caseAccepted:false, file02TransitionSeen:false, unlockedChapter:1, noticeDismissed:false }; }
   };
   let progress = readProgress();
+  // The observation log: what the detective did and when. FILE S reads it back to him.
+  const OBS_KEY='case25ObsLogV1';
+  function obs(ev,extra){try{const l=JSON.parse(localStorage.getItem(OBS_KEY)||'[]');l.push({t:Date.now(),ev,...(extra||{})});localStorage.setItem(OBS_KEY,JSON.stringify(l.slice(-600)));}catch{}}
+  const obsLog=()=>{try{return JSON.parse(localStorage.getItem(OBS_KEY)||'[]');}catch{return [];}};
   const persistProgress = () => localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
   // ?cliff re-arms the Day 1 cliffhanger without touching any other progress
   if(new URLSearchParams(location.search).has('cliff')){progress.cliffSeen=false;progress.cliffReplayed=false;progress.file04WallSeen=false;progress.file03PuzzleComplete=true;persistProgress();try{sessionStorage.setItem('case25PlayCliff','1');}catch{}const u=new URL(location.href);u.searchParams.delete('cliff');history.replaceState(null,'',u);}
@@ -694,6 +698,7 @@
   function showP2Document(index){const doc=P2_DOCS[index];$('#p2DocByline').textContent=doc.byline;$('#p2DocTitle').textContent=doc.title;const body=$('#p2DocBody');body.replaceChildren(...doc.body.map(line=>{const p=document.createElement('p');p.textContent=line;return p;}));file03.p2.returnStage=file03.p2.stage;setF3Panel('p2Document');}
   function openFile03(){
     if(Number(progress.unlockedChapter)<3)return;
+    obs('open3');
     openF3Stage();return;
     clearTimers();
     const home=$('#homeScene'),flow=$('#fileThreeFlow');home.classList.add('file-three-open');flow.classList.add('visible');flow.setAttribute('aria-hidden','false');
@@ -954,6 +959,7 @@
   });
   syncCodeState();
   function submitCode() {
+    obs('login');
     if($('#archiveScene').classList.contains('decrypting')||$('#archiveScene').classList.contains('unsealed'))return;
     const code=digits.map(d=>d.value).join('');
     if(!/^\d{4}$/.test(code)){digits.find(d=>!d.value)?.focus();return;}
@@ -1261,6 +1267,7 @@
     n.querySelector('button').addEventListener('click',e=>{e.stopPropagation();n.classList.add('out');setTimeout(()=>n.remove(),500);});
   }
   function playCliffhanger(){
+    obs('cliff');
     const box=$('#cliffhanger');
     if(!$('#homeScene').classList.contains('active'))return;
     const run=++cliffRun,alive=()=>run===cliffRun&&!box.hidden;
@@ -2806,7 +2813,7 @@
     'p4-q4':'A case needs three things: means (how he could do it), opportunity (that he was there) and motive (why). Find one document for each: the boat, the road, and what Peter gains.'};
   let f3sHintText='';
   function f3sSetHint(t){f3sHintText=t||'';const b=$('#f3sHint');if(b)b.hidden=!f3sHintText;}
-  $('#f3sHint').addEventListener('click',()=>{if(!f3sHintText||f3sBusy)return;f3sModal({tone:'hint',title:'A NOTE FROM THE FILE',body:`<p>${f3sEsc(f3sHintText)}</p>`,actions:[['BACK TO THE QUESTION',f3sCloseModal]]});});
+  $('#f3sHint').addEventListener('click',()=>{if(!f3sHintText||f3sBusy)return;obs('hint',{f:$('#f3Stage').dataset.mode||'f3'});f3sModal({tone:'hint',title:'A NOTE FROM THE FILE',body:`<p>${f3sEsc(f3sHintText)}</p>`,actions:[['BACK TO THE QUESTION',f3sCloseModal]]});});
   function f3sGo(id,{resume=false}={}){
     if(/^p1-q\d$/.test(id)&&!(f3s.live&&f3s.live.p1read))id='p1-read';
     const def=F3S_SCREENS[id];if(!def)return;
@@ -3009,6 +3016,7 @@
     screen.addEventListener('click',e=>{if(button.hidden&&!e.target.closest('button'))finish();});
   }
   function f3sFinish(){
+    obs('done3');
     progress.unlockedChapter=Math.max(3,Number(progress.unlockedChapter)||1);progress.file03Revealed=true;progress.file03PuzzleComplete=true;persistProgress();
     // The older File 03 state is what page load checks for completion, so keep it in step.
     file03.p3.complete=true;saveFile03();
@@ -3246,6 +3254,7 @@ function f3sFindLines(img,boxes){
       f3sModal({tone:'good',title:def.doneTitle||(def.kind==='written'?'WHAT THE FILE SHOWS':['EVIDENCE VERIFIED','DEDUCTION ACCEPTED','RECORD CONFIRMED'][tries%3]),body:`<p>${f3sEsc(explain)}</p>`,actions:[['CONTINUE →',()=>{f3sCloseModal();f3sGo(def.next);}]]});
       return;
     }
+    obs('wrong',{f:'f3'});
     if(def.kind==='choice'){const b=f3q('.f3s-opt',screen)[f3s.picks[id]];b.classList.remove('wrong');void b.offsetWidth;b.classList.add('wrong');}
     if(tries<2){
       const list=missing.length?`<ul>${missing.slice(0,3).map(m=>`<li>${f3sEsc(m)}</li>`).join('')}</ul>`:'';
@@ -3888,7 +3897,7 @@ Do not look away from it.
       text:`Two friends. One stage.\nThomas Reed and Peter Shaw built it from nothing: a small room with a big sound, live music every night, and a crowd that always came back.\n\nFor a while, it was everything they wanted.\n\nBut success is expensive.\nCosts rose. Repairs waited.\nWiring that needed attention was kept running a little longer…\nand then a little longer again.\n\n!Someone warned them. It was written down.\n\nWhether anyone listened is another matter.\n\nEvery place has a story it tells the public.\nThis is the story its records left behind.`},
     s2:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'THE OFFICIAL VERSION',title:'THE NIGHT OF 21 SEPTEMBER.',button:'CROSS-EXAMINE THE REPORT',tell:true,text:`You found the warnings, Detective.\nNow here is what followed.\n\n21 September. A full room. The second set.\nThe stage lights flickered twice.\nThen the smoke came from behind the panel.\n\nThe room was cleared in four minutes.\n!One person did not make it out.\n\nA musician died on the stage that Thomas and Peter built.\n\nThe investigators called it an accident. Faulty equipment.\nNo one was charged. The file was closed.\n\nBut nothing in the records confirms the wiring was ever inspected.\nAnd someone made sure the record said it was.`},
     s4:{kicker:'FILE 004 · THE LANTERN FIRE',eyebrow:'NINE YEARS LATER',title:'THE FIRE WAS ONLY THE BEGINNING.',button:'CONTINUE',tell:true,cue:s4Cue,text:`Your findings are on record.\n\nThe Lantern reopened eight months after the fire.\nNew wiring. The same two names over the door.\nNobody ever saw the edit Peter made.\n\nBut Peter remembered it.\nAnd for nine years he kept a second file:\nthe April memo with Thomas’s signature, the deferred repairs, every page that could put the fire on Thomas alone.\n\nIn case anyone ever asked.\n\nThen Thomas went to the water at Lake Ash.\nPeter’s name on the boat. Peter’s card on the road.\n\n!Tonight Peter Shaw is in a cell.\n\nThe case against him has never looked stronger.`},
-    final:{kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'FILE 004 · CLOSED',title:'ONE FILE REMAINS.',button:'RETURN TO THE CASE',hand:true,text:`Detective.\n\nYou found the warning.\nYou found the edit.\nYou found the man who made it.\n\nHe kept a file on his oldest friend for nine years.\nHe was waiting for the day he would need it.\n\nI told you once that every place has a story it tells the public.\n!Some people do too.\n\nTonight the last file opens.\nRead it the way you read today:\nnot for what it says, but for who could have written it.\n\n— M`}
+    final:{kicker:'INCOMING TRANSMISSION · SOURCE: M',eyebrow:'FILE 004 · CLOSED',title:'ONE FILE REMAINS.',button:'RETURN TO THE CASE',hand:true,text:`Detective.\n\nYou found the warning.\nYou found the edit.\nYou found the man who made it.\n\nHe kept a file on his oldest friend for nine years.\nHe was waiting for the day he would need it.\n\nI told you once that every place has a story it tells the public.\n!Some people do too.\n\nTonight the last file opens.\nRead it the way you read today:\nnot for what it says, but for who could have written it.\n\nYou are still under observation, Mr. Shaik.\nDon’t worry. You’re doing well.\n\n— M`}
   };
   const F4_FLOW=['s1','p1','s2','p2','verdict','s4','final'];
   function readF4(){const fresh={screen:'s1',attempts:{},done:{},order:[],check:null,p2:[null,null,null],p2step:0,p3step:0,p3text:'',verdict:'',verdictSaved:false};try{return {...fresh,...JSON.parse(localStorage.getItem(F4_KEY)||'{}')};}catch{return fresh;}}
@@ -3896,6 +3905,7 @@ Do not look away from it.
   const saveF4=()=>{try{localStorage.setItem(F4_KEY,JSON.stringify(f4));}catch{}};
   const f4Next=id=>F4_FLOW[F4_FLOW.indexOf(id)+1];
   function openF4Stage(){
+    obs('open4');
     setTimeout(f4ScoreStart,300);
     clearTimers();
     const stage=$('#f3Stage');stage.dataset.mode='f4';stage.hidden=false;
@@ -3996,7 +4006,7 @@ Do not look away from it.
       if(pick===null){f3sToast('Choose an answer first.');return;}
       const tries=(store.attempts[key]||0)+1;store.attempts[key]=tries;save();
       if(pick===q.answer){settle();f3sModal({tone:'good',title:'EVIDENCE VERIFIED',body:`<p>${f3sEsc(q.explain)}</p>`,actions:[['CONTINUE →',()=>{f3sCloseModal();done();}]]});return;}
-      const b=opts[pick];b.classList.remove('wrong');void b.offsetWidth;b.classList.add('wrong');
+      obs('wrong',{f:$('#f3Stage').dataset.mode||'f3'});const b=opts[pick];b.classList.remove('wrong');void b.offsetWidth;b.classList.add('wrong');
       if(tries<2){f3sModal({tone:'bad',title:'NOT SUPPORTED BY THE RECORDS',body:`<p>${f3sEsc(q.hint)}</p><p class="f3s-left">One more attempt before the file shows you the answer.</p>`,actions:[['TRY AGAIN',f3sCloseModal]]});return;}
       settle();f3sModal({tone:'reveal',title:'THE RECORDS SAY OTHERWISE',body:`<p class="f3s-answer"><b>${'ABCD'[q.answer]}.</b> ${f3sEsc(q.options[q.answer])}</p><p>${f3sEsc(q.explain)}</p>`,actions:[['CONTINUE →',()=>{f3sCloseModal();done();}]]});
     });
@@ -4080,7 +4090,13 @@ Do not look away from it.
       f3sModal({tone:'good',title:'FINDINGS RECORDED',body:`<p>Your assessment is now part of the case file.</p>${seen.length?`<p>You grounded it in ${seen.join(', ')}.</p>`:''}<p class="f3s-left"><b>The file’s own reading:</b> the wiring was flagged in March, maintenance was deferred in April on Thomas’s approval, and Peter warned him again in June. The inspection was never carried out. Two days after a musician died, the record handed to investigators was rewritten under Peter Shaw’s login to say it was, citing a certificate that does not exist.</p>`,actions:[['CONTINUE →',()=>{f3sCloseModal();f4Go(f4Next('verdict'));}]]});
     });
   }
+  function obsFlash(text){
+    const d=document.createElement('div');d.className='obs-flash';d.textContent=text;document.body.append(d);setTimeout(()=>d.remove(),2600);
+  }
+  const hhmm=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');};
   function f4Finish(){
+    setTimeout(()=>obsFlash(`SUBJECT · FILE 004 CLOSED · ${hhmm(Date.now())} · OBSERVATION CONTINUES`),900);
+    obs('done4');
     progress.file04Complete=true;if(progress.file05WallSeen!==true)progress.file05WallSeen=false;persistProgress();
     f4.screen='final';saveF4();closeF3Stage();paintProgress();
     // the wall waits with File 004 closed; CONTINUE reveals File 005 (see #continueFileFive)
@@ -4134,6 +4150,7 @@ Do not look away from it.
   const saveF5=()=>{try{localStorage.setItem(F5_KEY,JSON.stringify(f5));}catch{}};
   const f5Next=id=>F5_FLOW[F5_FLOW.indexOf(id)+1];
   function openF5Stage(){
+    obs('open5');
     clearTimers();
     const stage=$('#f3Stage');stage.dataset.mode='f5';stage.hidden=false;
     $('#f3sList').hidden=true;$('#f3sReturn').hidden=true;$('#backButton').disabled=false;
@@ -4257,7 +4274,13 @@ Do not look away from it.
     T(18200,()=>{stage.querySelector('.ep-tagcap').classList.add('on');});
     T(20600,()=>{stage.insertAdjacentHTML('beforeend',`<div class="ep-final"><small>THOMAS REED</small><p>Alive. He staged his death at Lake Ash with his own stored blood and a copy of Peter’s card, and left a detective to find exactly what he wanted found.</p><p class="r">He is M.</p><button type="button" class="f4-btn">CLOSE THE FILE →</button></div>`);sfx('stamp');
       narrate('Thomas Reed. Alive. He staged his death, and left a detective to find exactly what he wanted found.');
-      stage.querySelector('.ep-final button').addEventListener('click',()=>{try{speechSynthesis.cancel();}catch{}done();});});
+      stage.querySelector('.ep-final button').addEventListener('click',()=>{try{speechSynthesis.cancel();}catch{}
+        stage.innerHTML='<div class="ep-subject"></div>';const box=stage.querySelector('.ep-subject');
+        const card=document.querySelector('#cliffhanger .cliff-wrap .cliff-next').cloneNode(true);card.className='cliff-next ep-card on';card.querySelector('.nx-name').textContent=SUBJECT_NAME;box.append(card);
+        const st=card.querySelector('.nx-text i');st.innerHTML='STATUS: <s>UNDER OBSERVATION</s>';sfx('paper');
+        setTimeout(()=>{st.innerHTML='STATUS: <b>OBSERVATION COMPLETE</b>';sfx('stamp');},2400);
+        setTimeout(()=>{box.insertAdjacentHTML('beforeend','<p class="ep-yours">One file remains. It’s yours.</p><button type="button" class="f4-btn ep-cont">CONTINUE →</button>');narrate('One file remains. It is yours.');
+          box.querySelector('.ep-cont').addEventListener('click',()=>{try{speechSynthesis.cancel();}catch{}done();});},3800);});});
   }
   function f5BuildWhy(screen){
     screen.classList.add('f5-why');
@@ -4272,14 +4295,52 @@ Do not look away from it.
     const screen=document.createElement('section');screen.className='f3s-screen f4-screen f5-screen';screen.dataset.screen='fileS';
     fileSBuild(screen);stage.insertBefore(screen,$('#f3sChapter'));requestAnimationFrame(()=>screen.classList.add('enter'));
   }
+  // FILE S · the subject's own file, built from the observation log, then the exhibits, statements and the message.
+  // Fill FILE_S with photos (assets/file-s/1.jpg …), captions, witness statements and the final message.
+  const FILE_S={
+    exhibits:[['assets/file-s/1.jpg','EXHIBIT A','(caption)'],['assets/file-s/2.jpg','EXHIBIT B','(caption)'],['assets/file-s/3.jpg','EXHIBIT C','(caption)'],['assets/file-s/4.jpg','EXHIBIT D','(caption)']],
+    witnesses:[['WITNESS 1','(statement)'],['WITNESS 2','(statement)']],
+    message:['(Your final message goes here.)','Why we made all of this.']};
+  function obsSummary(){
+    const L=obsLog(),first=t=>L.find(e=>e.ev===t),fmt=t=>{const d=new Date(t);return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' · '+hhmm(t);};
+    const dur=(a,b)=>{const x=first(a),y=L.filter(e=>e.ev===b).pop();if(!x||!y||y.t<x.t)return null;const m=Math.round((y.t-x.t)/60000);return m>=60?`${Math.floor(m/60)} h ${m%60} m`:`${m} m`;};
+    const count=(ev,f)=>L.filter(e=>e.ev===ev&&(!f||e.f===f)).length;
+    const f3=(()=>{try{return JSON.parse(localStorage.getItem('case25File003StageV2')||'{}');}catch{return {};}})();
+    const f3wrong=Math.max(count('wrong','f3'),Object.values(f3.attempts||{}).reduce((a,n)=>a+Math.max(0,(n||0)-1),0));
+    const rows=[];
+    const login=first('login');rows.push(['CASE 25 OPENED',login?fmt(login.t):'Saturday · morning']);
+    rows.push(['FILE 003',[dur('open3','done3'),`${f3wrong} wrong answer${f3wrong===1?'':'s'}`,`${count('hint','f3')||count('hint',undefined)} hint${count('hint','f3')===1?'':'s'}`].filter(Boolean).join(' · ')]);
+    rows.push(['NAMED AS M',((f3.live||{}).mPick||'—')+'  (incorrect)']);
+    const cl=L.filter(e=>e.ev==='cliff');if(cl.length)rows.push(['CLIFFHANGER WATCHED',fmt(cl[0].t)+(cl.length>1?` · played ${cl.length}×`:'')]);
+    const d4=dur('open4','done4');rows.push(['FILE 004',[d4,`${count('wrong','f4')} wrong`].filter(Boolean).join(' · ')||'closed']);
+    const d5=dur('open5','done5');rows.push(['FILE 005',[d5,`${count('wrong','f5')} wrong`].filter(Boolean).join(' · ')||'closed']);
+    rows.push(['STATUS','OBSERVATION COMPLETE']);
+    return {rows,wrong:f3wrong+count('wrong','f4')+count('wrong','f5'),hints:count('hint')};
+  }
   function fileSBuild(screen){
-    screen.classList.add('f5-why');
-    screen.innerHTML=`<div class="f5-why-dark"></div><article class="f5-parchment"><small>CASE 25 · SUPPLEMENTARY ITEM</small><h2>ONE LAST THING, DETECTIVE.</h2><div class="f5-why-copy"><p>Before you go, there is one small thing waiting for you.</p><p>You followed every lead, questioned every assumption, and saw the investigation through to its end.</p><p>But there was one detail you never questioned.</p><p class="f5-big">Why Case 25?</p><p>Because this case was made for someone turning twenty-five.</p><p>Twenty-five years. Countless memories. And a whole lot of stories still waiting to happen.</p><p>The fictional case is closed.</p><p class="f5-big">The real celebration is just beginning.</p></div><button type="button" class="f4-btn f4-submit">END TRANSMISSION →</button></article>`;
-    const lines=[...screen.querySelectorAll('.f5-why-copy p')];lines.forEach((p,i)=>p.style.setProperty('--d',`${.8+i*1.1}s`));
-    screen.querySelector('.f4-submit').style.setProperty('--d',`${.8+lines.length*1.1+.4}s`);
+    screen.classList.add('fs');
+    const O=obsSummary();
+    const verdict=O.wrong===0?'Subject solved everything first time. Suspiciously competent.':O.hints>3?'Subject asked for help more than once, and still refused to trust the obvious answer. Correct instinct.':'Subject distrusted everyone except the actual culprit.';
+    screen.innerHTML=`<div class="fs-bg"></div><div class="fs-wrap">
+      <section class="fs-part fs-head"><small>CASE 25 · RESTRICTED</small><h1>FILE S</h1><h2>SUBJECT: ${f3sEsc(SUBJECT_NAME)}</h2><p>AGE 25 · CASE OPENED: THE DAY HE WAS BORN</p></section>
+      <section class="fs-part fs-log"><h3>OBSERVATION LOG</h3><div class="fs-rows"></div></section>
+      <section class="fs-part fs-verdict"><h3>ASSESSMENT</h3><p>${f3sEsc(verdict)}</p></section>
+      <section class="fs-part fs-ex"><h3>EXHIBITS</h3><div class="fs-photos">${FILE_S.exhibits.map(([src,tag,cap],i)=>`<figure style="--r:${[-4,3,-2,5][i%4]}deg"><div class="fs-ph"><img src="${src}" alt="" onerror="this.remove()"></div><figcaption><b>${f3sEsc(tag)}</b> ${f3sEsc(cap)}</figcaption></figure>`).join('')}</div></section>
+      <section class="fs-part fs-wit"><h3>WITNESS STATEMENTS</h3>${FILE_S.witnesses.map(([w,t])=>`<blockquote><small>${f3sEsc(w)}</small>${f3sEsc(t)}</blockquote>`).join('')}</section>
+      <section class="fs-part fs-msg"><h3>THE REAL REASON</h3>${FILE_S.message.map(t=>`<p>${f3sEsc(t)}</p>`).join('')}</section>
+      <section class="fs-part fs-end"><b>CASE 25 · CLOSED</b><h2>Happy 25th, Detective.</h2><p>Your final piece of evidence is right behind you.</p><button type="button" class="f4-btn f4-submit">END TRANSMISSION →</button></section></div>`;
+    const rows=screen.querySelector('.fs-rows'),parts=[...screen.querySelectorAll('.fs-part')];
+    parts.forEach(p=>p.style.opacity=0);
+    let t=400;const show=(el,ms)=>setTimeout(()=>{if(!screen.isConnected)return;el.style.opacity='';el.classList.add('in');el.scrollIntoView({behavior:'smooth',block:'center'});},t+=ms);
+    show(parts[0],200);sfx('dread');
+    show(parts[1],2600);
+    O.rows.forEach(([k,v],i)=>setTimeout(()=>{if(!screen.isConnected)return;rows.insertAdjacentHTML('beforeend',`<div><span>${f3sEsc(k)}</span><b></b></div>`);const b=rows.lastElementChild.querySelector('b');let n=0;const ty=()=>{b.textContent=v.slice(0,++n);if(n<v.length)setTimeout(ty,28);};ty();sfx('key');},t+400+i*1300));
+    t+=O.rows.length*1300+600;
+    show(parts[2],1200);show(parts[3],3600);show(parts[4],4200);show(parts[5],4200);show(parts[6],4600);
     screen.querySelector('.f4-submit').addEventListener('click',()=>{progress.fileSSeen=true;persistProgress();closeF3Stage();paintProgress();});
   }
   function f5Finish(){
+    obs('done5');
     progress.file05Complete=true;persistProgress();
     f5.screen='why';saveF5();closeF3Stage();paintProgress();
   }
