@@ -3430,3 +3430,17 @@ html body #f3Stage[data-mode="fs"] #f3sSkip{display:none!important}
 .s2-mem b{font:28px var(--type);color:#f2e7cf}.s2-mem i{color:#c99a55;font:13px var(--mono);letter-spacing:.2em}
 .s2-rep{transform:rotate(-2deg)}
 .s2-q{color:#8e1d14}
+.ep-car{animation:epCar 6s linear var(--d) infinite}@keyframes epCar{from{transform:translateX(-400px)}to{transform:translateX(1800px)}}
+.ep-ped{animation:epPed var(--dur) linear var(--d) infinite}
+@keyframes epPed{from{transform:translate(calc(var(--dir)*-900px + 800px),var(--y)) scaleX(var(--dir))}to{transform:translate(calc(var(--dir)*900px + 800px),var(--y)) scaleX(var(--dir))}}
+.ep-bag{border-radius:46% 46% 22% 22%/30% 30% 18% 18%!important;background:radial-gradient(ellipse at 40% 25%,#3a3632,#1a1816 65%)!important}
+.ep-strap{top:-18%!important;width:9%!important;height:42%!important;border-radius:10px!important;background:#121110!important}
+.ep-strap.l{left:28%!important}.ep-strap.r{left:63%!important}
+.ep-zip{position:absolute;left:12%;right:12%;top:20%;height:4px;background:repeating-linear-gradient(90deg,#8a8a8a 0 4px,#333 4px 7px);border-radius:2px}
+.ep-pocket{position:absolute;left:18%;right:18%;top:48%;bottom:10%;border-radius:18px;background:rgba(0,0,0,.25);box-shadow:inset 0 2px 0 rgba(255,255,255,.06)}
+.ep-ring{position:absolute;left:47%;top:44%;width:22px;height:22px;border:4px solid #b9a06a;border-radius:50%;z-index:2}
+.ep-tag{left:28%!important;top:52%!important;width:44%!important;transform-origin:50% -20px;animation:epSwing 2.4s ease-in-out infinite alternate}
+.ep-tag:before{content:'';position:absolute;left:50%;top:-22px;width:3px;height:24px;margin-left:-1.5px;background:#b9a06a}
+@keyframes epSwing{from{transform:rotate(-7deg)}to{transform:rotate(5deg)}}
+#devFile04Button{display:none!important}
+.ep-tag{width:52%!important;left:24%!important;white-space:nowrap}
