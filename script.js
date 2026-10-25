@@ -1206,7 +1206,8 @@
   // cracks, the card rises out and "21 DAYS AGO" slams over it. The burnt 2016 photograph, the incident, the red thread
   // to Shaik's own card, a heartbeat. He leans back into the dark. Last, the header rewrites itself: it was scheduled.
   // A click anywhere skips straight to the full transmission.
-  function cliffSpeak(text,pitch=.45,rate=.78,onWord){
+  async function cliffSpeak(text,pitch=.45,rate=.78,onWord){await voicesReady();return cliffSpeakNow(text,pitch,rate,onWord);}
+  function cliffSpeakNow(text,pitch=.45,rate=.78,onWord){
     // speaks a line and resolves when the voice finishes; if the browser has no voice (or it never starts),
     // the words are revealed on a timer instead so the scene never stalls
     return new Promise(res=>{
@@ -3695,7 +3696,10 @@ function f3sFindLines(img,boxes){
   }
   // The narrator: a calm, clear storyteller's voice for File 004's story screens, different from M's.
   let narratorPick=null;
-  function narrate(text){
+  const voicesReady=()=>new Promise(r=>{try{if(!('speechSynthesis' in window))return r();if(speechSynthesis.getVoices().length)return r();const on=()=>{speechSynthesis.removeEventListener('voiceschanged',on);r();};speechSynthesis.addEventListener('voiceschanged',on);setTimeout(r,2500);}catch{r();}});
+  try{speechSynthesis.getVoices();}catch{}
+  async function narrate(text){await voicesReady();return narrateNow(text);}
+  function narrateNow(text){
     return new Promise(res=>{
       const words=text.split(/\s+/).length,est=Math.max(1200,words*380);let done=false,started=false;const fin=()=>{if(!done){done=true;res();}};
       try{
