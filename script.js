@@ -3278,6 +3278,7 @@ function f3sFindLines(img,boxes){
   $('#f3sReturn').addEventListener('click',()=>{if(f3s.reviewFrom&&$('#f3sChapter').hidden){f3sCloseModal();f3sGo(f3s.reviewFrom,{resume:true});}});
   // Testing shortcut: jump past the current screen without answering.
   $('#f3sSkip').addEventListener('click',()=>{
+    if(f4SkipQ&&f4SkipQ.task.isConnected&&$('#f3sChapter').hidden&&f4SkipQ.go())return;
     if($('#f3Stage').dataset.mode==='f4'){f4Skip();return;}
     if($('#f3Stage').dataset.mode==='f5'){f5Skip();return;}
     if(!$('#f3sChapter').hidden)return;
@@ -3453,9 +3454,9 @@ function f3sFindLines(img,boxes){
     const songStart=5600+INTRO,stopSong=[],SONG_START=0; // seconds into the track where the singing begins
     laterWait(()=>{if(!screen.isConnected||reducedMotion)return;
       sc.classList.add('singing');
-      const notes=document.createElement('div');notes.className='cc-notes';sc.after(notes);
+      const sparkle=document.createElement('div');sparkle.className='cc-sparkle';sc.after(sparkle);const notes=document.createElement('div');notes.className='cc-notes';sc.after(notes);
       const spawn=setInterval(()=>{if(!notes.isConnected)return clearInterval(spawn);const n=document.createElement('i');n.textContent=['♪','♫','♩'][Math.random()*3|0];n.style.left=(62+Math.random()*16)+'%';n.style.animationDuration=(3+Math.random()*2)+'s';notes.append(n);setTimeout(()=>n.remove(),5200);},420);
-      stopSong.push(()=>{clearInterval(spawn);notes.remove();sc.classList.remove('singing');});
+      stopSong.push(()=>{clearInterval(spawn);notes.remove();sparkle.remove();sc.classList.remove('singing');});
       try{if(f4Audio)f4Audio.out.gain.setTargetAtTime(.0001,audioContext.currentTime,.6);}catch{}
       const a=new Audio('assets/file-004/song.mp3');a.volume=0;let real=false;a.currentTime=SONG_START;a.addEventListener('loadedmetadata',()=>{try{a.currentTime=SONG_START;}catch{}},{once:true});
       a.addEventListener('playing',()=>{real=true;});
@@ -3872,12 +3873,14 @@ Do not look away from it.
     box.querySelectorAll('.f4-opt,.f4-verdict-text').forEach((o,i)=>o.animate([{opacity:0,transform:'translateX(40px) rotate(3deg)'},{opacity:1,transform:'none'}],{duration:650,delay:d+700+i*140,easing:'cubic-bezier(.2,.8,.2,1)',fill:'backwards'}));
     box.querySelectorAll('.f4-actions').forEach(n=>n.animate([{opacity:0},{opacity:1}],{duration:600,delay:d+1400,fill:'backwards'}));
   }
+  let f4SkipQ=null;
   function f4Ask(task,key,q,done,store=f4,save=saveF4){
     f3sSetHint(q.hint);
     task.innerHTML=`<p class="f4-q">${f3sEsc(q.q)}</p><div class="f4-options" role="radiogroup">${q.options.map((o,i)=>`<button type="button" class="f4-opt" role="radio" aria-checked="false" data-i="${i}"><i>${'ABCD'[i]}</i><span>${f3sEsc(o)}</span></button>`).join('')}</div><div class="f4-actions"><button type="button" class="f4-btn f4-submit">SUBMIT →</button></div>`;
     let pick=null;const opts=[...task.querySelectorAll('.f4-opt')];
     opts.forEach(b=>b.addEventListener('click',()=>{if(task.classList.contains('settled'))return;pick=Number(b.dataset.i);opts.forEach(o=>{o.classList.toggle('picked',o===b);o.setAttribute('aria-checked',String(o===b));});}));
     const settle=()=>{task.classList.add('settled');opts.forEach((o,i)=>o.classList.toggle('correct',i===q.answer));};
+    f4SkipQ={task,go:()=>{if(task.classList.contains('settled'))return false;settle();f3sCloseModal();done();return true;}};
     task.querySelector('.f4-submit').addEventListener('click',()=>{
       if(f3sBusy)return;
       if(pick===null){f3sToast('Choose an answer first.');return;}

@@ -3135,3 +3135,19 @@ body:has(#f3Stage.visible) #devFile04Button,body.wall-cinematic #devFile04Button
 .cc-cap.show{animation:ccCap 3.4s ease forwards}
 .cc-cap.gone{display:none}
 @keyframes ccCap{0%{opacity:0;transform:translateX(-50%) translateY(14px);letter-spacing:.06em}18%{opacity:1;transform:translateX(-50%);letter-spacing:.01em}82%{opacity:1}100%{opacity:0}}
+#f3Stage[data-mode="f4"] #f3sSkip,#f3Stage[data-mode="f5"] #f3sSkip{display:block!important}
+/* the crowd dances while he sings: bouncing, swaying, and every few people twirl */
+.cc-scene.singing .cc-fan{animation:ccDance .62s ease-in-out var(--d) infinite}
+.cc-scene.singing .cc-fan:nth-child(3n){animation:ccSwayDance 1.24s ease-in-out var(--d) infinite}
+.cc-scene.singing .cc-fan:nth-child(4n+1){animation:ccTwirl 2.4s ease-in-out var(--d) infinite}
+.cc-scene.singing .cc-fan:nth-child(7n+2){animation:ccJump .62s cubic-bezier(.3,0,.4,1) var(--d) infinite}
+@keyframes ccDance{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+@keyframes ccSwayDance{0%,100%{transform:rotate(-8deg) translateY(0)}50%{transform:rotate(8deg) translateY(-10px)}}
+@keyframes ccTwirl{0%{transform:scaleX(1) translateY(0)}25%{transform:scaleX(-1) translateY(-12px)}50%{transform:scaleX(1) translateY(0)}75%{transform:scaleX(-1) translateY(-12px)}100%{transform:scaleX(1) translateY(0)}}
+@keyframes ccJump{0%,100%{transform:translateY(0) scaleY(1)}20%{transform:translateY(4px) scaleY(.92)}55%{transform:translateY(-26px) scaleY(1.04)}}
+/* a mirror ball scatters light over the room while he sings */
+.cc-sparkle{position:absolute;inset:0;pointer-events:none;z-index:2;opacity:0;transition:opacity 1.5s ease;background-image:radial-gradient(circle,rgba(255,240,210,.9) 0 1.5px,transparent 2.5px),radial-gradient(circle,rgba(255,200,150,.7) 0 1.2px,transparent 2px);background-size:90px 70px,130px 110px;background-position:0 0,40px 30px;animation:ccSpark 6s linear infinite}
+.cc-scene.singing~.cc-sparkle{opacity:.28}
+@keyframes ccSpark{to{background-position:900px 140px,-700px 220px}}
+.cc-scene.singing .cc-light.on .cc-beam{animation:ccSweep 2.4s ease-in-out var(--sd) infinite alternate}
+.cc-scene.singing .cc-crowd{transform:translateY(-40px)!important;transition:transform 1.5s ease}
