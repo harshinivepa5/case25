@@ -3443,14 +3443,14 @@ function f3sFindLines(img,boxes){
     sc.querySelector('.cc-crowd').animate([{opacity:0,transform:'translateY(40px)'},{opacity:0,offset:.55},{opacity:1,transform:'none'}],{duration:5600,easing:'ease-out',fill:'both'});
     // the song: the singer steps up to the mic, the crowd raises lights, the room sways. The track is the file at
     // assets/file-004/song.mp3 (from 0:00 unless SONG_START is set); without it a soft piano-and-hum melody plays instead.
-    const songStart=5600,stopSong=[];
+    const songStart=5600,stopSong=[],SONG_START=26; // seconds into the track where the singing begins
     laterWait(()=>{if(!screen.isConnected||reducedMotion)return;
       sc.classList.add('singing');
       const notes=document.createElement('div');notes.className='cc-notes';sc.after(notes);
       const spawn=setInterval(()=>{if(!notes.isConnected)return clearInterval(spawn);const n=document.createElement('i');n.textContent=['♪','♫','♩'][Math.random()*3|0];n.style.left=(62+Math.random()*16)+'%';n.style.animationDuration=(3+Math.random()*2)+'s';notes.append(n);setTimeout(()=>n.remove(),5200);},420);
       stopSong.push(()=>{clearInterval(spawn);notes.remove();sc.classList.remove('singing');});
       try{if(f4Audio)f4Audio.out.gain.setTargetAtTime(.0001,audioContext.currentTime,.6);}catch{}
-      const a=new Audio('assets/file-004/song.mp3');a.volume=0;let real=false;
+      const a=new Audio('assets/file-004/song.mp3');a.volume=0;let real=false;a.currentTime=SONG_START;a.addEventListener('loadedmetadata',()=>{try{a.currentTime=SONG_START;}catch{}},{once:true});
       a.addEventListener('playing',()=>{real=true;});
       a.play().then(()=>{const up=setInterval(()=>{a.volume=Math.min(.9,a.volume+.06);if(a.volume>=.9)clearInterval(up);},120);}).catch(()=>{});
       setTimeout(()=>{if(!real&&screen.isConnected)stopSong.push(f4Hum());},1200);
