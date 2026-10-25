@@ -3320,3 +3320,79 @@ body:has(#f3Stage.visible) #devFile04Button,body.wall-cinematic #devFile04Button
 .fs-end h2{margin:12px 0;font:clamp(36px,5vw,72px) var(--type);color:#f6ecd8}
 .fs-end p{font:italic 20px var(--serif);color:#e9dcc2}
 .fs-end .f4-btn{margin-top:22px}
+/* FILE S · his story */
+.lf{position:absolute;inset:0;z-index:5;background:#060403;display:grid;grid-template-rows:1fr auto;transition:opacity 1s}
+.lf.out{opacity:0}
+.lf-stage{display:grid;place-items:center;padding:4vh 6vw 0}
+.lf-stage.in{animation:s4In 1.2s ease both}
+.lf-svg{width:min(900px,88vw);height:auto;border:8px solid #ece5d6;box-shadow:0 30px 70px #000;filter:sepia(.15)}
+.lf-cap{text-align:center;padding:2vh 6vw 9vh}
+.lf-cap small{color:#c99a55;font:12px var(--mono);letter-spacing:.32em}
+.lf-cap p{margin:10px auto 0;max-width:900px;font:italic clamp(20px,2vw,30px)/1.45 var(--serif);color:#f2e7cf;opacity:0}
+.lf-cap p.on{animation:twIn 1.2s ease forwards}
+.lf-skip{position:absolute;right:28px;bottom:24px;opacity:.6}
+.lf-name{display:grid;place-content:center;text-align:center;min-height:40vh}
+.lf-name small{color:#c99a55;font:12px var(--mono);letter-spacing:.32em}
+.lf-name b{margin-top:16px;font:clamp(36px,5vw,76px) var(--type);color:#f6ecd8;letter-spacing:.08em;min-height:1.2em}
+.lf-win{animation:lfWin 3s steps(1) var(--d) infinite}@keyframes lfWin{50%{opacity:.25}}
+.lf-glow{animation:lfGlow 2.4s ease-in-out infinite}@keyframes lfGlow{50%{filter:brightness(1.3)}}
+.lf-hearts path{transform-box:fill-box;animation:lfFloat 3.2s ease-out var(--d) infinite;opacity:0}@keyframes lfFloat{0%{opacity:0;transform:translateY(40px) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-120px) scale(1.2)}}
+.lf-tv{animation:lfTv 1.4s steps(1) infinite}@keyframes lfTv{0%{fill:#58c}25%{fill:#e85}50%{fill:#5c8}75%{fill:#c5a}}
+.lf-toon{transform-box:fill-box;transform-origin:center;animation:lfBounce .5s ease-in-out infinite alternate}@keyframes lfBounce{to{transform:translateY(-10px)}}
+.lf-boy{animation:lfLean 3.4s ease-in-out infinite}@keyframes lfLean{0%,30%,80%,100%{transform:translate(370px,380px) scale(2.1)}45%,65%{transform:translate(420px,380px) scale(2.1) rotate(8deg)}}
+.lf-heart{transform-box:fill-box;transform-origin:center;opacity:0;animation:lfHeart 3.4s ease-out infinite}@keyframes lfHeart{0%,45%{opacity:0;transform:scale(.3)}55%{opacity:1;transform:scale(1.2)}75%{opacity:1;transform:translateY(-30px) scale(1)}100%{opacity:0;transform:translateY(-60px)}}
+.lf-smack{opacity:0;animation:lfSmack 3.4s steps(1) infinite}@keyframes lfSmack{0%,48%{opacity:0}50%,80%{opacity:1}81%{opacity:0}}
+.lf-ballglow{animation:lfGlow 1.6s ease-in-out infinite;filter:drop-shadow(0 0 12px #fff)}
+.lf-run{animation:lfRun .45s ease-in-out infinite alternate}.lf-run2{animation:lfRun .4s ease-in-out .1s infinite alternate}
+@keyframes lfRun{to{translate:0 -10px}}
+.lf-kick{animation:lfKick 2.6s cubic-bezier(.3,0,.4,1) infinite}@keyframes lfKick{0%{transform:translate(250px,370px)}40%{transform:translate(500px,250px)}70%,100%{transform:translate(735px,215px)}}
+.lf-shuttle{animation:lfShuttle 1.6s ease-in-out infinite alternate}@keyframes lfShuttle{0%{transform:translate(260px,300px) rotate(-30deg)}50%{transform:translate(400px,150px) rotate(0)}100%{transform:translate(560px,300px) rotate(200deg)}}
+.lf-swing{animation:lfRun .8s ease-in-out infinite alternate}.lf-swing2{animation:lfRun .8s ease-in-out .8s infinite alternate}
+.lf-choco{animation:lfChoco 2.4s ease-in-out infinite}@keyframes lfChoco{0%,100%{transform:translate(470px,260px) rotate(-8deg)}50%{transform:translate(470px,240px) rotate(8deg)}}
+.lf-striker{animation:lfStrike 2s ease-in infinite}@keyframes lfStrike{0%,40%{transform:none}70%,100%{transform:translate(-90px,-110px)}}
+.lf-game{animation:lfTv 1s steps(1) infinite}.lf-pix rect{animation:lfBounce .4s ease-in-out infinite alternate}
+.lf-coins circle{animation:lfFloat 2.4s ease-out var(--d) infinite;opacity:0;transform-box:fill-box}
+.lf-cube{animation:lfCube 2.2s ease-in-out infinite}@keyframes lfCube{0%,100%{transform:translate(400px,200px) rotate(0)}50%{transform:translate(400px,190px) rotate(90deg)}}
+.lf-mirror{opacity:.45}
+.lf-beam{animation:lfBeam 1.2s ease-in-out var(--d) infinite alternate;transform-origin:50% 0;transform-box:fill-box}@keyframes lfBeam{to{transform:rotate(12deg)}}
+.lf-dance{animation:lfDance .9s ease-in-out infinite}@keyframes lfDance{0%,100%{transform:translate(400px,400px) scale(2.6) rotate(-8deg)}50%{transform:translate(400px,388px) scale(2.6) rotate(8deg)}}
+.lf-msg{opacity:0;animation:lfMsg .5s ease var(--d) forwards}@keyframes lfMsg{to{opacity:1}}
+#f3Stage[data-mode="fs"] #f3sSkip,#f3Stage[data-mode="fs"] #f3sHint{display:none!important}
+.lf-guess{position:relative;width:min(900px,88vw);aspect-ratio:16/9;display:grid;place-items:center}
+.lf-guess img{max-width:100%;max-height:100%;border:8px solid #ece5d6;box-shadow:0 30px 70px #000}
+.lf-guess:not(.noimg) .lf-guess-fb{display:none}
+.lf-guess-fb .lf-svg{width:100%}
+.lf-cone{animation:lfBounce .6s ease-in-out infinite alternate;transform-box:fill-box}
+.lf-clock{animation:lfWin 2s steps(1) infinite}
+html body #f3Stage[data-mode="fs"] #f3sSkip{display:none!important}
+.lf-frame{position:relative;width:min(900px,88vw)}
+.lf-frame .lf-svg{width:100%}
+.lf-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:8px solid #ece5d6;box-shadow:0 30px 70px #000;animation:s4In 1.2s ease both}
+.lf-wheel{transform-box:fill-box;transform-origin:center;animation:lfWheel .6s linear infinite}@keyframes lfWheel{50%{transform:scaleX(.92)}}
+.lf-wave{animation:lfWave 3s ease-in-out infinite alternate}@keyframes lfWave{to{transform:translateX(-40px)}}
+.lf-flame{animation:lfWin .3s steps(1) infinite}
+.lf-confetti{animation:lfConf 3s linear var(--d) infinite}@keyframes lfConf{from{transform:translate(var(--x),-20px) rotate(0)}to{transform:translate(calc(var(--x) + 40px),470px) rotate(540deg)}}
+.lf-bdaytxt{animation:lfBounce .8s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+.fs-video{display:grid;place-items:center}
+.fs-video video{width:min(900px,100%);border:8px solid #ece5d6;box-shadow:0 30px 70px #000;background:#000}
+/* story text can scroll; CONTINUE sits in the corner above SKIP */
+.cine-lines{overflow-y:auto!important;scrollbar-width:thin;scrollbar-color:rgba(201,154,85,.4) transparent}
+.cine .cine-go{position:fixed!important;right:28px!important;bottom:76px!important;left:auto!important;top:auto!important;margin:0!important;z-index:40}
+#f3Stage[data-mode="fs"][data-mode] #f3sSkip{display:none!important}
+.cine>.cine-go{position:absolute!important;right:28px!important;bottom:76px!important;left:auto!important;top:auto!important;margin:0!important;z-index:40}
+/* the envelope for Mr. Shaik */
+.sk-env{position:absolute;left:50%;top:48%;z-index:30;width:min(460px,80vw);aspect-ratio:1.6;transform:translate(-50%,-50%) rotate(-3deg);animation:skDrop .7s cubic-bezier(.5,0,.75,1.25) both}
+@keyframes skDrop{from{transform:translate(-50%,-180%) rotate(-25deg) scale(1.3);opacity:0}to{transform:translate(-50%,-50%) rotate(-3deg)}}
+.sk-back,.sk-front{position:absolute;inset:0;background:linear-gradient(160deg,#2a1d14,#14100c);border:1px solid #6b4a2a;box-shadow:0 30px 80px #000}
+.sk-front{clip-path:polygon(0 0,50% 52%,100% 0,100% 100%,0 100%);background:linear-gradient(160deg,#33241a,#1a130e);z-index:3;display:grid;place-items:end center;padding-bottom:12%}
+.sk-front span{font:700 clamp(16px,1.8vw,24px) var(--type);letter-spacing:.2em;color:#d9b36b}
+.sk-flap{position:absolute;left:0;right:0;top:0;height:56%;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(180deg,#3a281c,#22180f);transform-origin:top;z-index:4;transition:transform .9s cubic-bezier(.5,0,.3,1),z-index 0s .45s}
+.sk-env.open .sk-flap{transform:rotateX(180deg);z-index:1}
+.sk-seal{position:absolute;left:50%;top:52%;z-index:5;width:54px;height:54px;margin:-27px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 40% 35%,#c4281c,#5a0705 70%);color:#2a0402;font:italic 700 26px var(--serif);box-shadow:0 0 24px rgba(200,40,20,.6);transition:transform .7s cubic-bezier(.5,0,.75,0),opacity .7s}
+.sk-env.crack .sk-seal{transform:translate(0,120px) rotate(60deg) scale(.6);opacity:0}
+.sk-card{position:absolute;left:6%;right:6%;top:8%;bottom:8%;z-index:2;padding:18px 22px;text-align:center;background:radial-gradient(ellipse at 85% 15%,rgba(140,20,10,.25),transparent 40%),linear-gradient(165deg,#f0e3c3,#d6bd8a);color:#24190e;box-shadow:0 12px 30px rgba(0,0,0,.6);transition:transform 1.3s cubic-bezier(.3,0,.2,1)}
+.sk-env.out .sk-card{transform:translateY(-62%) scale(1.3);z-index:6}
+.sk-card small{display:block;color:#8e1d14;font:700 10px var(--mono);letter-spacing:.24em}
+.sk-card b{display:block;margin:6px 0 10px;font:clamp(22px,2.4vw,32px) var(--type);letter-spacing:.1em}
+.sk-card p{margin:0 0 4px;font:italic clamp(14px,1.3vw,18px)/1.5 var(--serif)}
+.sk-card i{display:block;margin-top:6px;font:italic 20px var(--serif)}
