@@ -3633,7 +3633,7 @@ function f3sFindLines(img,boxes){
       photo:()=>{clear();const ph=document.querySelector('#cliffhanger .cliff-wrap .cliff-subject').cloneNode(true);ph.className='cliff-subject burnt conf-photo on burning';setTimeout(()=>{if(alive()){fx.append(ph);sfx('key');}},350);},
       record:()=>card('MAINTENANCE RECORD MR-114','12 Sep — Electrical inspection','<s>SCHEDULED</s> → <b>COMPLETED</b><br>Edited 23 Sep 2016 · 01:12 · user: <b>pshaw</b>','rec'),
       clear:()=>clear(),
-      safe:()=>card('OFFICE SAFE LOG · THE LANTERN','Tue 30 Sep · 23:05','Code entered: <b>T. REED</b><br>Contents: “PROJECT NORTH QUAY / FIRE” · kept by P. Shaw'),
+      safe:()=>card('OFFICE SAFE LOG · THE LANTERN','Sun 28 Sep · 23:05','Code entered: <b>T. REED</b><br>Contents: “PROJECT NORTH QUAY / FIRE” · kept by P. Shaw'),
       files:()=>{clear();setTimeout(()=>{if(!alive())return;add('<div class="s4-files"></div>');[0,1,3].forEach((i,k)=>setTimeout(()=>alive()&&s4AddFile(fx,i),k*700));},350);},
       fileStamp:()=>{const f=fx.querySelector('.s4-files');if(f){f.insertAdjacentHTML('beforeend','<b class="s4-stamp">KEPT BY P. SHAW</b>');sfx('stamp');shake(6);}},
       blood:()=>card('ST. AGNES · BLOOD BANK','Autologous donation · T. Reed · A+','2 units stored 12 Sep<br><b>Withdrawn by patient · 10 Oct · 09:40</b>','blood'),
@@ -4109,7 +4109,7 @@ Do not look away from it.
       if(ok){cards.forEach(c=>c.classList.add('right'));f3sModal({tone:'good',title:'TIMELINE RECONSTRUCTED',body:'<p>March: the wiring is flagged and the inspection is scheduled. April: maintenance is deferred to cut costs. June: Peter warns Thomas again. September: the fire, the witness, the report.</p>',actions:[['CONTINUE →',()=>{f3sCloseModal();toCheck();}]]});return;}
       const wrong=order.map((i,n)=>F4_P1_DOCS[i].order===n+1?null:n+1).filter(Boolean);
       if(tries<2){f3sModal({tone:'bad',title:'THE DATES DON’T LINE UP',body:`<p>Positions ${wrong.join(', ')} are out of place. Read each date carefully — they are not all written the same way.</p><p class="f3s-left">One more attempt before the file shows you the order.</p>`,actions:[['TRY AGAIN',()=>{f3sCloseModal();order=[];paint();sync();}]]});return;}
-      showCorrect();f3sModal({tone:'reveal',title:'THE CORRECT ORDER',body:'<p>1. Maintenance log — 3 March<br>2. Cost-cutting approval — 19 April<br>3. Peter’s email — 2 June<br>4. Witness statement — 22 September<br>5. Incident report — 30 September</p>',actions:[['CONTINUE →',()=>{f3sCloseModal();toCheck();}]]});
+      showCorrect();f3sModal({tone:'reveal',title:'THE CORRECT ORDER',body:'<p>1. Maintenance log — 3 March<br>2. Cost-cutting approval — 19 April<br>3. Peter’s email — 2 June<br>4. Witness statement — 22 September<br>5. Incident report — 28 September</p>',actions:[['CONTINUE →',()=>{f3sCloseModal();toCheck();}]]});
     });
   }
   function f4BuildP2(screen){
@@ -4211,10 +4211,10 @@ Do not look away from it.
   const F5_P3_DOCS=[
     {tag:'APPROVAL MEMO · FILE 004',date:'19 April 2016',title:'Margin note, in Thomas’s hand',body:'“Every place has a story it tells the public. Ours will not be this one. — T.”'},
     {tag:'TRANSMISSION · FILE 004',date:'From M',title:'The opening of the Lantern file',body:'“Every place has a story it tells the public.\nThis is the story its records left behind.”'},
-    {tag:'OFFICE SAFE LOG',date:'The Lantern · Tue 30 Sep',title:'Safe opened outside hours',body:'23:05 · code entered: T. REED\nContents on record: one file, “PROJECT NORTH QUAY / FIRE”, kept by P. Shaw.'},
+    {tag:'OFFICE SAFE LOG',date:'The Lantern · Sun 28 Sep',title:'Safe opened outside hours',body:'23:05 · code entered: T. REED\nContents on record: one file, “PROJECT NORTH QUAY / FIRE”, kept by P. Shaw.'},
     {tag:'PHYSICAL EVIDENCE',date:'If you were given handwritten notes',title:'Compare the hands',body:'Lay M’s handwritten note beside Thomas’s margin note.\nLook at the S. Look at the way the line runs uphill.'}
   ];
-  const F5_P3_Q={q:'Who has been sending the transmissions?',options:['Peter Shaw','Daniel Cross','Elena Ward','Thomas Reed'],answer:3,hint:'Whose words did M use? Whose hand? And who opened Peter’s safe two weeks before Lake Ash?',explain:'M uses Thomas’s own private line, writes in Thomas’s hand, and knew what was in Peter’s safe because Thomas opened it on 30 September. M is Thomas Reed.'};
+  const F5_P3_Q={q:'Who has been sending the transmissions?',options:['Peter Shaw','Daniel Cross','Elena Ward','Thomas Reed'],answer:3,hint:'Whose words did M use? Whose hand? And who opened Peter’s safe two weeks before Lake Ash?',explain:'M uses Thomas’s own private line, writes in Thomas’s hand, and knew what was in Peter’s safe because Thomas opened it on 28 September. M is Thomas Reed.'};
   const F5_STORY={
     s1:{kicker:'CASE 25 · RESTRICTED ARCHIVE',eyebrow:'FILE 005 · FINAL REVIEW',title:'THE LAST TRANSMISSION',button:'OPEN THE LAST FILE',tell:true,cue:s5Cue,text:`Peter Shaw has been in a cell for two nights.\nThe charge is murder.\n\nThe papers say the case is closed.\nThe police say the evidence speaks for itself.\n\nIt does.\nIt says exactly what it was built to say.\n\n!Three records were never read side by side.\n\nA bank slip. A hospital form. A note in the margin of an old memo.\n\nRead them together, Detective.\nThen tell me who walked away from Lake Ash.`},
     s4:{kicker:'INCOMING TRANSMISSION · SOURCE IDENTIFIED',eyebrow:'THOMAS REED · ALIVE',title:'YOU FOUND ME.',button:'CLOSE CASE 25',hand:true,text:`Hello, Detective.\nYes. It’s me.\n!I am M.\n\nNine years ago a musician died on my stage.\nPeter rewrote the record that night, and I let him.\nThat is the part of this I will carry.\n\nThen I opened his safe.\nHe had kept a file on me for nine years.\nThe memo with my signature. The repairs I deferred.\nEverything he needed to bury me with the fire, the day anyone asked.\n\nSo I gave him a different story to be buried in.\n\nMy blood, from a hospital fridge.\nHis card, from a bank counter.\nHis name, typed into a machine no one was watching.\nA jacket, folded the way I fold it.\n\nI did not lie to you once.\nEvery record you read was real.\nI only chose the order you read them in.\n\nPeter is in a cell for a murder that never happened.\nHe is not innocent. He is just not guilty of this.\n\nAnd I am nowhere.\n\n!Thank you, Detective.\n!I couldn’t have put him there without you.\n\n— T.`}
@@ -4281,7 +4281,7 @@ Do not look away from it.
   }
   function f5BuildP3(screen){
     f5Puzzle(screen,'p3',{title:'THE VOICE IN THE ARCHIVE',lead:'M has written to you since the first file. Listen to how M writes.',docs:F5_P3_DOCS,qs:[F5_P3_Q],
-      written:'Thomas found Peter’s file on 30 September and walked away from Lake Ash on 14 October. In your own words: why did he do it this way?',
+      written:'Thomas found Peter’s file on 28 September and walked away from Lake Ash on 14 October. In your own words: why did he do it this way?',
       reading:'<p>Peter had spent nine years building a file to bury Thomas with the fire. Thomas found it, and turned it around.</p><p class="f3s-left">He could not prove what Peter did in 2016 without confessing what he had done himself. So he gave Peter a crime he could be convicted of: a murder, built from Peter’s own name and Peter’s own card. Then he disappeared, and sent a detective to find it.</p>'});
   }
   // The epilogue. The five files are stamped closed, then a question: do you want to know what happened to them?
