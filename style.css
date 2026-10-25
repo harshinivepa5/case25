@@ -3447,3 +3447,5 @@ html body #f3Stage[data-mode="fs"] #f3sSkip{display:none!important}
 .lf-photo{object-fit:contain!important;background:#0a0807}
 .fs-photos{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .fs-ph{aspect-ratio:3/4!important}
+#devFileSButton{position:fixed;z-index:999;left:20px;bottom:64px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.14em;cursor:pointer}
+body:has(#f3Stage.visible) #devFileSButton,body.wall-cinematic #devFileSButton{display:none}

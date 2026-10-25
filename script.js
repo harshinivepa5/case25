@@ -1401,6 +1401,8 @@
     box.classList.add('out');sfx('ink');setTimeout(()=>{box.hidden=true;box.classList.remove('in','out');},reducedMotion?0:1400);
   });
   $('#cliffReplay').addEventListener('click',()=>playCliffhanger());
+  // testing aid: open FILE S from anywhere
+  $('#devFileSButton')?.addEventListener('click',()=>{if(!$('#homeScene').classList.contains('active'))showHomeBoard();setTimeout(openFileS,400);});
   // testing aid: open File 004 from anywhere without touching File 003 progress
   $('#devFile04Button')?.addEventListener('click',()=>{progress.caseAccepted=true;progress.file03PuzzleComplete=true;progress.file04WallSeen=true;progress.cliffSeen=true;persistProgress();if(!$('#homeScene').classList.contains('active'))showHomeBoard();f4.screen='s1';saveF4();setTimeout(openF4Stage,400);});
   // testing aid: play the cliffhanger from anywhere
