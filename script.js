@@ -1392,6 +1392,8 @@
     box.classList.add('out');sfx('ink');setTimeout(()=>{box.hidden=true;box.classList.remove('in','out');},reducedMotion?0:1400);
   });
   $('#cliffReplay').addEventListener('click',()=>playCliffhanger());
+  // testing aid: open File 004 from anywhere without touching File 003 progress
+  $('#devFile04Button')?.addEventListener('click',()=>{progress.caseAccepted=true;progress.file03PuzzleComplete=true;progress.file04WallSeen=true;progress.cliffSeen=true;persistProgress();if(!$('#homeScene').classList.contains('active'))showHomeBoard();f4.screen='s1';saveF4();setTimeout(openF4Stage,400);});
   // testing aid: play the cliffhanger from anywhere
   $('#devCliffButton')?.addEventListener('click',()=>{if(!$('#homeScene').classList.contains('active'))showHomeBoard();setTimeout(playCliffhanger,600);});
   function dropClipping(){
@@ -3409,7 +3411,7 @@ function f3sFindLines(img,boxes){
   // File 004 opening: The Lantern on a good night. The neon sign buzzes on, the stage lights click on one by one and sweep
   // through the haze, a singer stands in the follow spot and the crowd sways. The story then turns the room against itself.
   function cineConcertPrelude(screen){
-    const SONG=20000,D=5600+SONG,layer=screen.querySelector('.cine-layer');screen.classList.add('prelude');
+    const SONG=29000,D=5600+SONG,layer=screen.querySelector('.cine-layer');screen.classList.add('prelude');
     const COL=['#ffb347','#ff5d7d','#5f8dff','#ffd27a','#ff7a3d','#9a6bff','#ffc56b'];
     const LX=[150,380,610,840,1070,1300,1500];
     const beams=LX.map((x,i)=>`<g class="cc-light" style="--i:${i};--sd:${(-i*1.3).toFixed(1)}s"><path class="cc-beam" d="M${x} 92 L${x-170} 860 L${x+170} 860 Z" fill="url(#ccB${i})" style="transform-origin:${x}px 92px"/><rect x="${x-16}" y="70" width="32" height="24" rx="4" fill="#0c0a09"/><circle class="cc-lamp" cx="${x}" cy="92" r="9" fill="#1a1512"/></g>`).join('');
@@ -3443,7 +3445,7 @@ function f3sFindLines(img,boxes){
     sc.querySelector('.cc-crowd').animate([{opacity:0,transform:'translateY(40px)'},{opacity:0,offset:.55},{opacity:1,transform:'none'}],{duration:5600,easing:'ease-out',fill:'both'});
     // the song: the singer steps up to the mic, the crowd raises lights, the room sways. The track is the file at
     // assets/file-004/song.mp3 (from 0:00 unless SONG_START is set); without it a soft piano-and-hum melody plays instead.
-    const songStart=5600,stopSong=[],SONG_START=26; // seconds into the track where the singing begins
+    const songStart=5600,stopSong=[],SONG_START=0; // seconds into the track where the singing begins
     laterWait(()=>{if(!screen.isConnected||reducedMotion)return;
       sc.classList.add('singing');
       const notes=document.createElement('div');notes.className='cc-notes';sc.after(notes);

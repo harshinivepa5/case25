@@ -3129,3 +3129,5 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 .cc-notes i{position:absolute;bottom:42%;font:normal 30px serif;color:#ffd9a0;text-shadow:0 0 12px rgba(255,190,110,.9);animation:ccNote 4s ease-out forwards}
 @keyframes ccNote{0%{opacity:0;transform:translate(0,0) rotate(-10deg)}15%{opacity:1}100%{opacity:0;transform:translate(-60px,-260px) rotate(20deg)}}
 .cc-scene.singing~.cc-notes{display:block}
+#devFile04Button{position:fixed;z-index:999;left:20px;bottom:64px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.14em;cursor:pointer}
+body:has(#f3Stage.visible) #devFile04Button,body.wall-cinematic #devFile04Button,body:has(#cliffhanger:not([hidden])) #devFile04Button{display:none}
