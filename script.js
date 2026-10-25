@@ -2802,7 +2802,7 @@
     setMusic(a.prev);
   }
   function closeF3Stage(){
-    f4ScoreStop();fsScoreStop();
+    f4ScoreStop();fsScoreStop();partyStop();
     const stage=$('#f3Stage');stage.classList.remove('visible');f3sCloseModal();
     $('#backButton').disabled=!sceneHistory.length;
     setTimeout(()=>{stage.hidden=true;stage.querySelectorAll('.f3s-screen').forEach(s=>s.remove());},600);
@@ -4369,9 +4369,32 @@ Do not look away from it.
         setTimeout(()=>{box.insertAdjacentHTML('beforeend','<p class="ep-yours">One file remains. It’s yours.</p><button type="button" class="f4-btn ep-cont">CONTINUE →</button>');narrate('One file remains. It is yours.');
           box.querySelector('.ep-cont').addEventListener('click',()=>{try{speechSynthesis.cancel();}catch{}done();});},3800);});});
   }
+  // a bright, bouncy birthday tune: major-key bass, plucky arpeggios and claps
+  let partyAudio=null;
+  function partyStart(){
+    partyStop();ensureSound();const c=audioContext;if(!c)return;
+    const prev=musicWanted;setMusic(false);try{cliffStop();f4ScoreStop();fsScoreStop();}catch{}
+    const out=c.createGain();out.gain.setValueAtTime(.0001,c.currentTime);out.gain.exponentialRampToValueAtTime(.6,c.currentTime+.8);out.connect(c.destination);
+    const N=n=>440*Math.pow(2,(n-69)/12);
+    const note=(f,t,len,type,v)=>{const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+len);o.connect(g);g.connect(out);o.start(t);o.stop(t+len+.05);};
+    const nb=c.createBuffer(1,c.sampleRate*.2|0,c.sampleRate),d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,4);
+    const clap=t=>{const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=nb;f.type='bandpass';f.frequency.value=1500;g.gain.value=.5;s.connect(f);f.connect(g);g.connect(out);s.start(t);};
+    // Happy-birthday-flavoured progression: C F G C, bouncing
+    const prog=[[48,[60,64,67,72]],[53,[60,65,69,72]],[55,[59,62,67,71]],[48,[60,64,67,76]]];
+    const step=.16;let i=0,next=c.currentTime+.2;
+    const sched=()=>{while(next<c.currentTime+.8){const bar=(i/16|0)%4,[b,ch]=prog[bar],k=i%16;
+        if(k%4===0)note(N(b),next,.3,'triangle',.22);if(k%4===2)note(N(b+12),next,.2,'triangle',.12);
+        note(N(ch[k%4]+12),next,.14,'square',.035);
+        if(k%8===4)clap(next);
+        if(k===0)ch.forEach(n=>note(N(n),next,1.2,'sawtooth',.012));
+        next+=step;i++;}};
+    sched();const tm=setInterval(sched,200);partyAudio={out,tm,prev};
+  }
+  function partyStop(){if(!partyAudio)return;const a=partyAudio;partyAudio=null;clearInterval(a.tm);try{a.out.gain.setTargetAtTime(.0001,audioContext.currentTime,.4);}catch{}setMusic(a.prev);}
   function f5BuildWhy(screen){
+    setTimeout(()=>{if(screen.isConnected)partyStart();},300);
     screen.classList.add('f5-why');
-    screen.innerHTML=`<div class="f5-why-dark"></div><article class="f5-parchment gj"><small>CASE 25 · FILE 005 · CLOSED</small><h2>HAPPY 25TH BIRTHDAY, SAM.</h2><p class="gj-sub">Ready for your gift?</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit">CONTINUE →</button></div></article>`;
+    screen.innerHTML=`<div class="f5-why-dark"></div><div class="gj-confetti">${Array.from({length:60},(_,i)=>`<i style="left:${(i*37)%100}%;--d:${(i%12)*.25}s;--c:${['#f5a','#5cf','#fd5','#a5f','#5f9','#ff7a5a'][i%6]}"></i>`).join('')}</div><article class="f5-parchment gj"><small>CASE 25 · FILE 005 · CLOSED</small><h2>HAPPY 25TH BIRTHDAY, SAM.</h2><p class="gj-sub">Ready for your gift?</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit">CONTINUE →</button></div></article>`;
     screen.querySelector('.f4-submit').addEventListener('click',()=>f5Continue('why'));
   }
   // FILE S: the last file on the wall, opened with CONTINUE after File 005. Why Case 25.
