@@ -137,6 +137,7 @@
     $('#homeScene').classList.toggle('peter-charged', !!progress.file03PuzzleComplete);
     $('#homeScene').classList.toggle('cliff-seen', !!progress.cliffSeen);
     $('#homeScene').classList.toggle('await-file-five', !!progress.file04Complete && progress.file05WallSeen === false);
+    $('#homeScene').classList.toggle('await-file-s', !!progress.file05Complete && !progress.fileSSeen);
     // The spotlight follows the file the player should open next; finished files fall back into the dark.
     const thirdDone = !!progress.file03PuzzleComplete, thirdOpen = secondComplete && progress.file03WallSeen !== false;
     const fourthOpen = thirdDone && progress.file04WallSeen !== false, fourthDone = !!progress.file04Complete;
@@ -1948,6 +1949,7 @@
     }, reducedMotion ? 400 : 4500);
   }
 
+  $('#continueFileS')?.addEventListener('click', () => openFileS());
   $('#continueFileFive')?.addEventListener('click', () => {
     $('#homeScene').classList.remove('await-file-five');
     playFile05Reveal();
@@ -3279,6 +3281,7 @@ function f3sFindLines(img,boxes){
   // Testing shortcut: jump past the current screen without answering.
   $('#f3sSkip').addEventListener('click',()=>{
     if(f4SkipQ&&f4SkipQ.task.isConnected&&$('#f3sChapter').hidden&&f4SkipQ.go())return;
+    if($('#f3Stage').dataset.mode==='fs')return;
     if($('#f3Stage').dataset.mode==='f4'){f4Skip();return;}
     if($('#f3Stage').dataset.mode==='f5'){f5Skip();return;}
     if(!$('#f3sChapter').hidden)return;
@@ -4187,17 +4190,94 @@ Do not look away from it.
       written:'Thomas found Peter’s file on 30 September and walked away from Lake Ash on 14 October. In your own words: why did he do it this way?',
       reading:'<p>Peter had spent nine years building a file to bury Thomas with the fire. Thomas found it, and turned it around.</p><p class="f3s-left">He could not prove what Peter did in 2016 without confessing what he had done himself. So he gave Peter a crime he could be convicted of: a murder, built from Peter’s own name and Peter’s own card. Then he disappeared, and sent a detective to find it.</p>'});
   }
+  // The epilogue. The five files are stamped closed, then a question: do you want to know what happened to them?
+  // Each life is shown in turn and the narrator reads it. Last, a new city: a man with a backpack walks along a bus
+  // road, a child falls, he helps him up, the child thanks him, he walks on. The camera finds the tag on his backpack.
+  const F5_FATES=[
+    ['PETER SHAW','Convicted of a murder that never happened. Cell 3, Lake Ash. He has written to the court forty-one times about a card he never asked for.','cell'],
+    ['PETER SHAW · HIS VERSION','“I falsified that record. I kept that file. I am guilty of the fire. But I never took that boat, and I never touched Thomas. Nobody listens to the man who lied first.”','quoteP'],
+    ['DANIEL CROSS','He finally published the whole story: the fire, the money, the lake. It sold out in a day. Nobody believed the ending.','press'],
+    ['DANIEL CROSS · HIS VERSION','“I always knew someone was feeding me the pages. The handwriting on the envelopes never changed. I just never asked whose hand it was.”','quoteD']];
+  function f5Vignette(kind){
+    if(kind==='cell')return `<div class="s4-cell"><svg viewBox="0 0 400 300"><rect width="400" height="300" fill="#07080a"/><rect y="230" width="400" height="70" fill="#0d0d0f"/><path d="M200 60 L120 300 H330 L240 60Z" fill="rgba(220,230,250,.14)"/><g class="s4-peter" fill="#020203" stroke="rgba(210,225,250,.6)" stroke-width="2"><rect x="150" y="196" width="110" height="18" rx="3"/><circle cx="205" cy="150" r="17"/><path d="M180 168 Q205 160 230 168 L236 210 L174 210Z"/><path d="M178 196 L190 246 H204 L200 210Z M232 196 L220 246 H206 L210 210Z"/><rect x="232" y="186" width="26" height="18" fill="#e9dcc2" stroke="none" opacity=".8"/></g></svg><div class="s4-bars" style="animation:none"></div></div>`;
+    if(kind==='lantern')return `<div class="ep-lantern"><b>THE L<i>A</i>NT<i>E</i>RN</b><small>CLOSED</small></div>`;
+    if(kind==='press')return `<div class="ep-paper"><small>THE RIVERSTONE CHRONICLE</small><h4>THE LANTERN FILES</h4><p>By Daniel Cross</p><span>“The man they buried may never have been in the lake.”</span></div>`;
+    if(kind==='lake')return `<div class="s4-lake"><svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#0a121c"/><path d="M0 120 Q60 96 120 112 T240 104 T400 110 V130 H0Z" fill="#05080d"/><g class="s4-rip" fill="none" stroke="rgba(180,200,230,.25)"><ellipse cx="210" cy="190" rx="60" ry="8"/><ellipse cx="210" cy="190" rx="100" ry="14"/></g><g class="s4-mist"><rect y="150" width="400" height="40" fill="rgba(200,210,225,.1)"/></g></svg></div>`;
+    if(kind==='quoteP')return `<div class="ep-quote"><svg viewBox="0 0 120 140"><circle cx="60" cy="40" r="20" fill="#0c0b0b"/><path d="M28 140 Q30 80 60 70 Q90 80 92 140Z" fill="#141313"/></svg><small>INTERVIEW · CELL 3</small></div>`;
+    if(kind==='quoteD')return `<div class="ep-quote d"><svg viewBox="0 0 120 140"><circle cx="60" cy="40" r="20" fill="#0c0b0b"/><path d="M28 140 Q30 80 60 70 Q90 80 92 140Z" fill="#141313"/><rect x="70" y="92" width="22" height="30" fill="#e8dcc2"/></svg><small>PRESS BADGE · D.C.</small></div>`;
+    return `<div class="ep-case"><b>CASE 25</b><small>CLOSED</small></div>`;
+  }
   function f5BuildClosed(screen){
-    screen.classList.add('f5-closed');
-    screen.innerHTML=`<div class="f4-desk-bg"></div><div class="f5-closed-wrap"><div class="f5-files">${F5_FILES.map(([n,t],i)=>`<article class="f5-file" style="--d:${.5+i*.55}s"><span>${n}</span><b>${t}</b><i class="f5-stamp${i===4?' final':''}">${i===4?'CASE CLOSED':'REVIEWED'}</i></article>`).join('')}</div><section class="f5-determination"><h2>FINAL CASE DETERMINATION</h2><ul>${F5_FINDINGS.map(([who,what])=>`<li><b>${f3sEsc(who)}</b><span>${f3sEsc(what)}</span></li>`).join('')}</ul><p class="f5-line">The truth was never hidden in a single document. It was hidden in the space between them.</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit">CONTINUE →</button></div></section></div>`;
-    screen.querySelector('.f4-submit').addEventListener('click',()=>f5Continue('closed'));
+    screen.classList.add('f5-closed','ep');
+    screen.innerHTML=`<div class="f4-desk-bg"></div><div class="ep-files">${F5_FILES.map(([n,t],i)=>`<article class="f5-file" style="--d:${.4+i*.45}s"><span>${n}</span><b>${t}</b><i class="f5-stamp${i===4?' final':''}">${i===4?'CASE CLOSED':'REVIEWED'}</i></article>`).join('')}</div>
+      <div class="ep-q"><h2>Do you want to know what happened to them?</h2><button type="button" class="f4-btn ep-yes">SHOW ME →</button></div>
+      <div class="ep-stage" hidden></div><button type="button" class="f4-btn ep-next" hidden>NEXT →</button>`;
+    const q=screen.querySelector('.ep-q'),stage=screen.querySelector('.ep-stage'),nextBtn=screen.querySelector('.ep-next');
+    let i=-1,busy=false;
+    const fate=()=>{i++;nextBtn.hidden=true;try{speechSynthesis.cancel();}catch{}
+      if(i>=F5_FATES.length){f5Street(screen,stage,()=>f5Continue('closed'));return;}
+      const [name,text,kind]=F5_FATES[i];
+      stage.innerHTML=`<div class="ep-fate"><div class="ep-vis">${f5Vignette(kind)}</div><div class="ep-txt"><small>WHAT HAPPENED</small><h3>${name}</h3><p></p></div></div>`;
+      const p=stage.querySelector('p');sfx('ink');
+      setTimeout(()=>{p.textContent=text;p.classList.add('on');narrate(name.toLowerCase().replace(/^./,c=>c.toUpperCase())+'. '+text).then(()=>{if(screen.isConnected&&stage.querySelector('p')===p){nextBtn.hidden=false;nextBtn.textContent=i===F5_FATES.length-1?'AND THOMAS? →':'NEXT →';}});},900);
+      setTimeout(()=>{if(stage.querySelector('p')===p&&nextBtn.hidden)nextBtn.hidden=false;},9000);};
+    screen.querySelector('.ep-yes').addEventListener('click',()=>{q.classList.add('out');screen.querySelector('.ep-files').classList.add('out');sfx('dread');setTimeout(()=>{q.remove();stage.hidden=false;fate();},900);});
+    nextBtn.addEventListener('click',fate);
+  }
+  function f5Street(screen,stage,done){
+    const nextBtn=screen.querySelector('.ep-next');nextBtn.hidden=true;try{speechSynthesis.cancel();}catch{}
+    const man=`<g class="ep-man"><g class="ep-bob"><rect class="ep-pack" x="-30" y="-152" width="22" height="54" rx="6" fill="#1b1a1a" stroke="rgba(255,220,170,.35)"/><rect x="-27" y="-120" width="16" height="7" rx="1" fill="#b89a62"/><text x="-19" y="-115" font-size="4.2" text-anchor="middle" fill="#2a1d10" font-family="DM Mono,monospace" letter-spacing=".3">T. REED</text><circle cx="0" cy="-170" r="15" fill="#0c0b0b"/><path d="M-16 -150 Q0 -158 16 -150 L20 -92 L-20 -92Z" fill="#141313"/><g class="ep-leg l"><path d="M-12 -94 L-14 0 L-3 0 L0 -94Z" fill="#0c0b0b"/></g><g class="ep-leg r"><path d="M2 -94 L4 0 L15 0 L12 -94Z" fill="#0c0b0b"/></g><path class="ep-arm" d="M14 -146 L22 -104 L16 -102 L8 -140Z" fill="#141313"/></g></g>`;
+    const kid=`<g class="ep-kid"><g class="ep-kid-b"><circle cx="0" cy="-92" r="11" fill="#2a1a12"/><path d="M-11 -80 Q0 -86 11 -80 L13 -42 L-13 -42Z" fill="#7a2f22"/><path d="M-9 -44 L-10 0 L-2 0 L0 -44Z M1 -44 L3 0 L11 0 L9 -44Z" fill="#1d2a44"/></g></g>`;
+    stage.innerHTML=`<div class="ep-street"><svg class="ep-cam" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="epSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2b880"/><stop offset=".55" stop-color="#c9766a"/><stop offset="1" stop-color="#5a4566"/></linearGradient></defs>
+      <rect width="1600" height="900" fill="url(#epSky)"/><circle cx="1240" cy="300" r="70" fill="#ffe2b0" opacity=".7"/>
+      <g fill="#3a2f45" opacity=".85">${[[0,360,160],[160,300,120],[280,400,180],[460,250,140],[600,340,200],[800,280,150],[950,380,170],[1120,260,160],[1280,330,150],[1430,290,170]].map(([x,y,w])=>`<rect x="${x}" y="${y}" width="${w}" height="${900-y}"/>`).join('')}</g>
+      <g fill="#ffd79a" opacity=".55">${Array.from({length:40},(_,k)=>`<rect x="${(k*97)%1580+10}" y="${420+(k*53)%220}" width="10" height="14"/>`).join('')}</g>
+      <rect y="640" width="1600" height="40" fill="#8a7a74"/><rect y="680" width="1600" height="220" fill="#3b3537"/><g fill="#e8d9b0">${Array.from({length:12},(_,k)=>`<rect x="${k*140}" y="785" width="70" height="8"/>`).join('')}</g>
+      <g class="ep-stop"><rect x="1380" y="520" width="8" height="140" fill="#2a2426"/><rect x="1352" y="500" width="64" height="40" rx="4" fill="#2e6b4a"/><text x="1384" y="526" font-size="18" text-anchor="middle" fill="#fff" font-family="DM Mono,monospace">BUS</text></g>
+      <g class="ep-bus"><rect x="0" y="560" width="420" height="160" rx="16" fill="#d9a441"/><rect x="20" y="585" width="380" height="60" fill="#2b3a4a"/><circle cx="90" cy="730" r="26" fill="#111"/><circle cx="330" cy="730" r="26" fill="#111"/><text x="210" y="700" font-size="20" text-anchor="middle" fill="#3a2a10" font-family="DM Mono,monospace">42 · HARBOUR LINE</text></g>
+      <g transform="translate(0 668)">${man}${kid}</g>
+      <g class="ep-bubble" opacity="0"><rect x="0" y="0" width="190" height="54" rx="14" fill="#fff"/><path d="M30 54 L22 74 L50 54Z" fill="#fff"/><text x="95" y="34" font-size="22" text-anchor="middle" fill="#222" font-family="Libre Baskerville,serif">Thank you!</text></g>
+      </svg><div class="ep-tagcap">a small brass tag, engraved</div></div>`;
+    const svg=stage.querySelector('svg'),M=svg.querySelector('.ep-man'),K=svg.querySelector('.ep-kid'),KB=svg.querySelector('.ep-kid-b'),B=svg.querySelector('.ep-bus'),bub=svg.querySelector('.ep-bubble'),bob=svg.querySelector('.ep-bob'),arm=svg.querySelector('.ep-arm');
+    const T=(ms,fn)=>setTimeout(()=>{if(screen.isConnected)fn();},ms);
+    const walk=(from,to,ms)=>{M.animate([{transform:`translateX(${from}px)`},{transform:`translateX(${to}px)`}],{duration:ms,easing:'linear',fill:'forwards'});svg.classList.add('walking');setTimeout(()=>svg.classList.remove('walking'),ms);};
+    narrate('Somewhere else. A new city.');
+    B.animate([{transform:'translateX(1700px)'},{transform:'translateX(-600px)'}],{duration:4200,easing:'cubic-bezier(.4,0,.6,1)',fill:'forwards'});
+    walk(-120,640,6200);
+    T(3200,()=>K.animate([{transform:'translateX(1500px)'},{transform:'translateX(860px)'}],{duration:1900,easing:'linear',fill:'forwards'}));
+    T(5100,()=>{KB.animate([{transform:'rotate(0)'},{transform:'translate(18px,6px) rotate(78deg)'}],{duration:350,easing:'ease-in',fill:'forwards',transformOrigin:'0px 0px'});sfx('key');});
+    T(6400,()=>{bob.animate([{transform:'none'},{transform:'translateY(30px) scaleY(.82)'}],{duration:600,fill:'forwards'});arm.animate([{transform:'none'},{transform:'rotate(-60deg)'}],{duration:600,fill:'forwards'});});
+    T(7600,()=>{KB.animate([{transform:'translate(18px,6px) rotate(78deg)'},{transform:'none'}],{duration:700,easing:'ease-out',fill:'forwards'});});
+    T(8600,()=>{bub.setAttribute('transform','translate(850 470)');bub.animate([{opacity:0,transform:'translate(850px,480px) scale(.6)'},{opacity:1,transform:'translate(850px,470px) scale(1)'}],{duration:400,fill:'forwards'});});
+    T(9300,()=>{bob.animate([{transform:'translateY(30px) scaleY(.82)'},{transform:'none'}],{duration:600,fill:'forwards'});arm.animate([{transform:'rotate(-60deg)'},{transform:'none'}],{duration:600,fill:'forwards'});});
+    T(10600,()=>{bub.animate([{opacity:1},{opacity:0}],{duration:500,fill:'forwards'});K.animate([{transform:'translateX(860px)'},{transform:'translateX(1700px)'}],{duration:2600,easing:'ease-in',fill:'forwards'});});
+    T(11000,()=>walk(640,960,3600));
+    // the camera finds the tag on his backpack
+    T(14800,()=>{svg.animate([{filter:'none'},{filter:'blur(6px) brightness(.4)'}],{duration:1200,fill:'forwards'});stage.insertAdjacentHTML('beforeend','<div class="ep-close"><div class="ep-bag"><i class="ep-strap"></i><div class="ep-tag"><span>T. REED</span></div></div></div>');sfx('dread');});
+    T(18200,()=>{stage.querySelector('.ep-tagcap').classList.add('on');});
+    T(20600,()=>{stage.insertAdjacentHTML('beforeend',`<div class="ep-final"><small>THOMAS REED</small><p>Alive. He staged his death at Lake Ash with his own stored blood and a copy of Peter’s card, and left a detective to find exactly what he wanted found.</p><p class="r">He is M.</p><button type="button" class="f4-btn">CLOSE THE FILE →</button></div>`);sfx('stamp');
+      narrate('Thomas Reed. Alive. He staged his death, and left a detective to find exactly what he wanted found.');
+      stage.querySelector('.ep-final button').addEventListener('click',()=>{try{speechSynthesis.cancel();}catch{}done();});});
   }
   function f5BuildWhy(screen){
+    screen.classList.add('f5-why');
+    screen.innerHTML=`<div class="f5-why-dark"></div><article class="f5-parchment gj"><small>CASE 25 · FILE 005 · CLOSED</small><h2>GOOD JOB, DETECTIVE.</h2><div class="f4-actions"><button type="button" class="f4-btn f4-submit">CONTINUE →</button></div></article>`;
+    screen.querySelector('.f4-submit').addEventListener('click',()=>f5Continue('why'));
+  }
+  // FILE S: the last file on the wall, opened with CONTINUE after File 005. Why Case 25.
+  function openFileS(){
+    clearTimers();const stage=$('#f3Stage');stage.dataset.mode='fs';stage.hidden=false;$('#f3sList').hidden=true;$('#f3sReturn').hidden=true;
+    requestAnimationFrame(()=>stage.classList.add('visible'));
+    stage.querySelectorAll('.f3s-screen').forEach(s2=>s2.remove());
+    const screen=document.createElement('section');screen.className='f3s-screen f4-screen f5-screen';screen.dataset.screen='fileS';
+    fileSBuild(screen);stage.insertBefore(screen,$('#f3sChapter'));requestAnimationFrame(()=>screen.classList.add('enter'));
+  }
+  function fileSBuild(screen){
     screen.classList.add('f5-why');
     screen.innerHTML=`<div class="f5-why-dark"></div><article class="f5-parchment"><small>CASE 25 · SUPPLEMENTARY ITEM</small><h2>ONE LAST THING, DETECTIVE.</h2><div class="f5-why-copy"><p>Before you go, there is one small thing waiting for you.</p><p>You followed every lead, questioned every assumption, and saw the investigation through to its end.</p><p>But there was one detail you never questioned.</p><p class="f5-big">Why Case 25?</p><p>Because this case was made for someone turning twenty-five.</p><p>Twenty-five years. Countless memories. And a whole lot of stories still waiting to happen.</p><p>The fictional case is closed.</p><p class="f5-big">The real celebration is just beginning.</p></div><button type="button" class="f4-btn f4-submit">END TRANSMISSION →</button></article>`;
     const lines=[...screen.querySelectorAll('.f5-why-copy p')];lines.forEach((p,i)=>p.style.setProperty('--d',`${.8+i*1.1}s`));
     screen.querySelector('.f4-submit').style.setProperty('--d',`${.8+lines.length*1.1+.4}s`);
-    screen.querySelector('.f4-submit').addEventListener('click',()=>f5Continue('why'));
+    screen.querySelector('.f4-submit').addEventListener('click',()=>{progress.fileSSeen=true;persistProgress();closeF3Stage();paintProgress();});
   }
   function f5Finish(){
     progress.file05Complete=true;persistProgress();

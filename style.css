@@ -3223,3 +3223,67 @@ body:has(#f3Stage.visible) #devFile04Button,body.wall-cinematic #devFile04Button
 .conf-text p.red{color:#e0412f;font-weight:700}
 .conf-text i{display:block;margin-top:12px;font:italic 30px var(--serif)}
 .conf-card{inset:auto 4% auto 4%;top:12%}
+/* ===== File 005 epilogue ===== */
+.ep{background:#050403}
+.ep-files{position:absolute;left:0;right:0;top:3%;display:flex;gap:14px;justify-content:center;padding:0 16px;transition:opacity .9s,transform .9s}
+.ep-files .f5-file{flex:1;max-width:260px}
+.ep-files.out{opacity:0;transform:translateY(-40px)}
+.ep-q{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:26px;transition:opacity .9s}
+.ep-q.out{opacity:0}
+.ep-q h2{margin:0;font:italic clamp(26px,3vw,46px) var(--serif);color:#f2e7cf;animation:twIn 1.6s ease 2.6s both}
+.ep-q .ep-yes{justify-self:center;animation:f3ContinueIn 1s ease 4s both}
+.ep-stage{position:absolute;inset:0}
+.ep-fate{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:5vw;padding:0 7vw;animation:s4In 1s ease both}
+.ep-vis{position:relative;aspect-ratio:4/3}
+.ep-vis>*{position:absolute;inset:0}
+.ep-txt small{color:#c99a55;font:11px var(--mono);letter-spacing:.3em}
+.ep-txt h3{margin:10px 0 16px;font:clamp(34px,4vw,60px) var(--type);color:#f6ecd8;animation:twIn 1s ease both}
+.ep-txt p{margin:0;font:italic clamp(18px,1.7vw,26px)/1.55 var(--serif);color:#e9dcc2;opacity:0}
+.ep-txt p.on{animation:twIn 1.4s ease forwards}
+.ep-next{position:absolute;right:28px;bottom:24px;z-index:5;animation:f3ContinueIn .8s ease both}
+.ep-lantern{display:grid;place-content:center;text-align:center;background:#060504;border:6px solid #0e0c0a}
+.ep-lantern b{font:italic 700 clamp(30px,3.6vw,54px) var(--serif);color:#ffcf8a;text-shadow:0 0 14px #ff9a3c;animation:ccBuzz 2.2s steps(1) infinite}
+.ep-lantern b i{font-style:inherit;opacity:.08;text-shadow:none}
+.ep-lantern small{margin-top:10px;color:#8e1d14;font:700 14px var(--mono);letter-spacing:.4em}
+.ep-paper{padding:22px;background:linear-gradient(170deg,#ece1c6,#cdb991);color:#1b140d;transform:rotate(-3deg);box-shadow:0 20px 50px #000}
+.ep-paper small{display:block;border-bottom:2px solid #2a1f14;padding-bottom:6px;font:700 11px var(--mono);letter-spacing:.16em}
+.ep-paper h4{margin:12px 0 4px;font:900 clamp(26px,3vw,42px) var(--serif)}
+.ep-paper p{margin:0 0 12px;font:italic 14px var(--serif)}
+.ep-paper span{font:15px/1.5 var(--serif)}
+.ep-case{display:grid;place-content:center;text-align:center;border:6px solid #3a1210;background:#0b0606}
+.ep-case b{font:clamp(44px,5vw,80px) var(--type);color:#f2e7cf}
+.ep-case small{color:#c4281c;font:700 18px var(--mono);letter-spacing:.5em;animation:twWarn 1.6s steps(1)}
+.ep-street{position:absolute;inset:0;overflow:hidden;animation:s4In 1.4s ease both}
+.ep-street svg{position:absolute;inset:0;width:100%;height:100%}
+.ep-street .walking .ep-bob{animation:epBob .5s ease-in-out infinite}
+.ep-street .walking .ep-leg.l{animation:epLeg .5s ease-in-out infinite}
+.ep-street .walking .ep-leg.r{animation:epLeg .5s ease-in-out infinite reverse}
+.ep-leg{transform-box:fill-box;transform-origin:50% 0}
+@keyframes epBob{50%{transform:translateY(-3px)}}
+@keyframes epLeg{0%,100%{transform:rotate(14deg)}50%{transform:rotate(-14deg)}}
+.ep-kid{animation:none}
+.ep-kid-b,.ep-arm{transform-box:fill-box;transform-origin:50% 100%}
+.ep-arm{transform-origin:50% 0}
+.ep-tagcap{position:absolute;left:50%;bottom:10%;transform:translateX(-50%);opacity:0;color:#fff3dc;font:italic 18px var(--serif);text-shadow:0 2px 12px #000;transition:opacity 1.2s}
+.ep-tagcap.on{opacity:1}
+.ep-final{position:absolute;left:50%;top:50%;width:min(520px,88vw);transform:translate(-50%,-50%);padding:22px 24px;background:rgba(10,6,5,.92);border:1px solid #c4281c;box-shadow:0 0 40px rgba(196,40,28,.4),0 20px 60px #000;color:#efe4cc;animation:cliffNoticeIn2 .6s cubic-bezier(.2,1.3,.4,1) both}
+.ep-final small{color:#e0412f;font:700 12px var(--mono);letter-spacing:.3em}
+.ep-final p{margin:10px 0 0;font:16px/1.6 var(--serif)}
+.ep-final p.r{color:#e0412f;font-weight:700;font-style:italic;font-size:22px}
+.ep-final button{margin-top:16px}
+@media(max-width:800px){.ep-fate{grid-template-columns:1fr;padding:6vh 6vw}.ep-files{display:none}}
+#continueFileS{display:none!important}
+.home.await-file-s:not(.wall-five-intro) #continueFileS{display:inline-block!important;animation:f3ContinueIn 1.2s 1.2s ease both}
+.f5-parchment.gj{text-align:center}
+.f5-parchment.gj h2{font-size:clamp(34px,4vw,60px);animation:s4Stamp .5s cubic-bezier(.3,0,.2,1) .4s both;position:static;transform:none}
+.f5-parchment.gj .f4-actions{justify-content:center;animation:f3ContinueIn 1s ease 1.6s both}
+.ep-quote{display:grid;place-items:center;align-content:center;background:radial-gradient(ellipse at 50% 30%,rgba(255,220,170,.12),transparent 60%),#0a0807;border:6px solid #0e0c0a}
+.ep-quote svg{width:42%}
+.ep-quote small{margin-top:10px;color:#c99a55;font:11px var(--mono);letter-spacing:.24em}
+.ep-close{position:absolute;inset:0;display:grid;place-items:center;z-index:3}
+.ep-bag{position:relative;width:min(420px,70vw);aspect-ratio:1.1;border-radius:28px;background:radial-gradient(ellipse at 40% 30%,#2b2826,#141312 70%);box-shadow:0 30px 80px #000,inset 0 0 40px #000;animation:epZoom 2.4s cubic-bezier(.2,.7,.2,1) both}
+@keyframes epZoom{from{transform:scale(.25);opacity:0;filter:blur(8px)}to{transform:none;opacity:1;filter:none}}
+.ep-strap{position:absolute;left:46%;top:-30%;width:8%;height:60%;background:#100f0e;border-radius:6px}
+.ep-tag{position:absolute;left:24%;top:48%;width:52%;padding:14px 10px;border-radius:6px;background:linear-gradient(160deg,#e1c27f,#a8843f 60%,#c9a35a);box-shadow:0 6px 14px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.4);text-align:center;transform:rotate(-4deg)}
+.ep-tag span{font:700 clamp(20px,2.6vw,34px) var(--serif);letter-spacing:.16em;color:#4a3412;text-shadow:0 1px 0 rgba(255,240,200,.5),0 -1px 0 rgba(0,0,0,.4)}
+.ep-final{z-index:4}
