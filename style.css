@@ -3576,3 +3576,16 @@ body:has(#f3Stage.visible) #devFileSButton,body.wall-cinematic #devFileSButton{d
 @keyframes fpMsg{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .film-phone{top:13%;height:48%}
 #devFileSButton{display:none!important}
+.fs-end{position:relative;padding:8vh 0 10vh}
+.fs-end h2{font:clamp(40px,6vw,92px) var(--type)!important;text-shadow:0 0 40px rgba(255,200,140,.4);animation:fsGlow 2.4s ease-in-out infinite alternate}
+@keyframes fsGlow{to{text-shadow:0 0 70px rgba(255,180,120,.7)}}
+.fs-heart{font-size:46px!important;font-style:normal!important;animation:lfBounce .7s ease-in-out infinite alternate}
+.fs-end p{font:italic clamp(18px,1.8vw,26px)/1.5 var(--serif)!important;color:#efe4cc!important}
+.fs-claim{margin-top:26px;padding:16px 28px!important;font-size:14px!important;letter-spacing:.24em!important;border-color:#f2c27a!important;color:#ffe2a8!important;box-shadow:0 0 30px rgba(255,190,110,.35);animation:fsPulse 1.6s ease-in-out infinite}
+@keyframes fsPulse{50%{box-shadow:0 0 50px rgba(255,190,110,.7);transform:scale(1.04)}}
+.fs-claim.gone{display:none}
+.fs-reward p{margin:10px 0;opacity:1;transition:opacity 1.2s}
+.fs-reward p.big{font:clamp(26px,3vw,42px) var(--type)!important;font-style:normal!important;color:#ffe2a8!important}
+.fs-reward .f4-btn{margin-top:20px}
+.fs-confetti{position:absolute;inset:-20vh 0 0 0;pointer-events:none;overflow:hidden}
+.fs-confetti i{position:absolute;top:-20px;width:9px;height:15px;background:var(--c);animation:gjFall 3.6s linear var(--d) infinite}

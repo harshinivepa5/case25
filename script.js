@@ -4614,7 +4614,7 @@ Do not look away from it.
       <section class="fs-part fs-msg"><h3>FROM ME</h3>${FILE_S.message.map(t=>`<p>${f3sEsc(t)}</p>`).join('')}<i class="fs-sign">— me</i></section>
       <section class="fs-part fs-gifts"><h3>EVIDENCE, GIFT-WRAPPED</h3>${FILE_S.gifts.map(([age,a,b,ico])=>`<div class="fs-gift"><span class="fs-age">${age}</span><i>${ico}</i><p>${f3sEsc(a)}<b>${f3sEsc(b)}</b></p></div>`).join('')}</section>
       <section class="fs-part fs-video"><video src="assets/file-s/final.mp4" controls playsinline preload="metadata" onerror="this.parentNode.remove()"></video></section>
-      <section class="fs-part fs-end"><b>CASE 25 · CLOSED</b><h2>Happy 25th, Detective.</h2><p>Your final piece of evidence is right behind you.</p><button type="button" class="f4-btn f4-submit">END TRANSMISSION →</button></section></div>`;
+      <section class="fs-part fs-end"><div class="fs-confetti">${Array.from({length:70},(_,i)=>`<i style="left:${(i*29)%100}%;--d:${(i%14)*.22}s;--c:${['#f5a','#5cf','#fd5','#a5f','#5f9','#ff7a5a'][i%6]}"></i>`).join('')}</div><b>CASE 25 · CLOSED</b><h2>Happy 25th Birthday, Sam.</h2><p class="fs-heart">❤️</p><p>Twenty-five years of being exactly you.<br>Here’s to every chapter still to come.</p><button type="button" class="f4-btn fs-claim">🎁 CLAIM YOUR REWARD</button><div class="fs-reward" hidden><p>Close your eyes.</p><p>Count to three.</p><p class="big">Your reward is right behind you.</p><button type="button" class="f4-btn f4-submit">THE END ❤️</button></div></section></div>`;
     const rows=screen.querySelector('.fs-rows'),parts=[...screen.querySelectorAll('.fs-part')];
     parts.forEach(p=>p.style.opacity=0);
     let t=400;const show=(el,ms)=>setTimeout(()=>{if(!screen.isConnected)return;el.style.opacity='';el.classList.add('in');el.scrollIntoView({behavior:'smooth',block:'center'});},t+=ms);
@@ -4625,7 +4625,9 @@ Do not look away from it.
     const gf=screen.querySelector('.fs-gifts'),gs=[...gf.querySelectorAll('.fs-gift')];gs.forEach(g=>g.style.opacity=0);
     show(gf,2000);gs.forEach((g,i)=>setTimeout(()=>{if(!screen.isConnected)return;g.style.opacity='';g.classList.add('in');g.scrollIntoView({behavior:'smooth',block:'center'});sfx('paper');},t+800+i*3600));t+=800+gs.length*3600;
     const vid=screen.querySelector('.fs-video');if(vid){show(vid,1600);setTimeout(()=>{const v=vid.querySelector('video');if(v&&screen.isConnected){try{fsScoreStop();partyStop();setMusic(false);}catch{}v.play().catch(()=>{});}},t+300);}show(screen.querySelector('.fs-end'),7000);
-    screen.querySelector('.f4-submit').addEventListener('click',()=>{progress.fileSSeen=true;persistProgress();closeF3Stage();paintProgress();});
+    const claim=screen.querySelector('.fs-claim'),rw=screen.querySelector('.fs-reward');
+    claim.addEventListener('click',()=>{claim.classList.add('gone');partyStart();rw.hidden=false;[...rw.children].forEach((c,i)=>{c.style.opacity=0;setTimeout(()=>{c.style.opacity='';c.classList.add('in');},400+i*1800);});});
+    screen.querySelector('.f4-submit').addEventListener('click',()=>{partyStop();progress.fileSSeen=true;persistProgress();closeF3Stage();paintProgress();});
   }
   function f5Finish(){
     obs('done5');
