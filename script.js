@@ -3601,8 +3601,7 @@ function f3sFindLines(img,boxes){
     ['Thank you, Detective.',{pitch:.4,rate:.68,red:true}],
     ['I couldn’t have put him there without you.',{pitch:.32,rate:.62,red:true}],
     ['Oh, and Mister Shaik…',{pitch:.45,rate:.72},'away'],
-    ['You are still under observation.',{pitch:.32,rate:.62,red:true}],
-    ['One file is still open.',{pitch:.32,rate:.62}]];
+    ['You are still under observation.',{pitch:.32,rate:.62,red:true}]];
   // he raises the cigar to his lips, the ember flares, he lowers it and breathes the smoke out
   function smokeLoop(chair,alive){
     const ember=chair.querySelector('.cc-ember'),hand=chair.querySelector('.cc-hand');
