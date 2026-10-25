@@ -2749,7 +2749,46 @@
     requestAnimationFrame(()=>stage.classList.add('visible'));
     f3sGo(f3s.screen||'opening',{resume:true});
   }
+  // File 004 has its own score: The Lantern after hours. A slow minor piano under a long reverb, a soft upright bass,
+  // brushed hi-hat, vinyl crackle, and underneath it the low roar of a fire that keeps getting closer.
+  let f4Audio=null;
+  function f4ScoreStart(){
+    f4ScoreStop();ensureSound();const c=audioContext;if(!c)return;
+    const prev=musicWanted;setMusic(false);
+    const out=c.createGain();out.gain.setValueAtTime(.0001,c.currentTime);out.gain.exponentialRampToValueAtTime(.9,c.currentTime+4);out.connect(c.destination);
+    const ir=c.createBuffer(2,c.sampleRate*3.2,c.sampleRate);for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);}
+    const verb=c.createConvolver(),wet=c.createGain();verb.buffer=ir;wet.gain.value=.6;verb.connect(wet);wet.connect(out);
+    const bus=c.createGain();bus.gain.value=1;bus.connect(out);bus.connect(verb);
+    const timers=[],nodes=[];
+    const piano=(f,t,v=.07,len=3.2)=>{[1,2,3].forEach((h,i)=>{const o=c.createOscillator(),g=c.createGain();o.type=i?'sine':'triangle';o.frequency.value=f*h;o.detune.value=(Math.random()-.5)*6;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v/(h*h*.8+.2),t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+len/(h*.7+.3));o.connect(g);g.connect(bus);o.start(t);o.stop(t+len+.1);});};
+    const bass=(f,t)=>{const o=c.createOscillator(),lp=c.createBiquadFilter(),g=c.createGain();o.type='triangle';o.frequency.value=f;lp.type='lowpass';lp.frequency.value=320;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.28,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.9);o.connect(lp);lp.connect(g);g.connect(bus);o.start(t);o.stop(t+1);};
+    const nbuf=c.createBuffer(1,c.sampleRate*2,c.sampleRate),nd=nbuf.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
+    const brush=(t,v=.025)=>{const s=c.createBufferSource(),hp=c.createBiquadFilter(),g=c.createGain();s.buffer=nbuf;hp.type='highpass';hp.frequency.value=6500;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.22);s.connect(hp);hp.connect(g);g.connect(bus);s.start(t,Math.random());s.stop(t+.25);};
+    // D minor, slow: Dm9 – Bbmaj7 – Gm7 – A7(b9)
+    const N=n=>440*Math.pow(2,(n-69)/12);
+    const prog=[{ch:[62,65,69,72,64],b:[38,45,38,41]},{ch:[58,62,65,69],b:[34,41,34,38]},{ch:[55,58,62,65],b:[31,38,31,34]},{ch:[57,61,64,67,70],b:[33,40,33,37]}];
+    const beat=60/58;let bar=0,next=c.currentTime+1.2;
+    const sched=()=>{while(next<c.currentTime+2.5){const p=prog[bar%4];
+        p.ch.forEach((n,i)=>piano(N(n),next+i*.035,.05));
+        if(bar%2===1)[0,1,2].forEach(k=>piano(N(p.ch[(k+bar)%p.ch.length]+12),next+beat*(2+k*.5),.03,2.2));
+        p.b.forEach((n,k)=>bass(N(n),next+k*beat));
+        for(let k=0;k<4;k++){brush(next+k*beat,.02);brush(next+k*beat+beat*.66,.012);}
+        next+=beat*4;bar++;}};
+    sched();timers.push(setInterval(sched,500));
+    // vinyl crackle
+    timers.push(setInterval(()=>{const t=c.currentTime,o=c.createBufferSource(),g=c.createGain(),hp=c.createBiquadFilter();o.buffer=nbuf;hp.type='highpass';hp.frequency.value=2500;g.gain.setValueAtTime(.05+Math.random()*.05,t);g.gain.exponentialRampToValueAtTime(.0001,t+.012);o.connect(hp);hp.connect(g);g.connect(out);o.start(t,Math.random());o.stop(t+.02);},90));
+    // the fire underneath
+    const fire=c.createBufferSource(),flp=c.createBiquadFilter(),fg=c.createGain();fire.buffer=nbuf;fire.loop=true;flp.type='lowpass';flp.frequency.value=260;fg.gain.value=.07;fire.connect(flp);flp.connect(fg);fg.connect(out);fire.start();nodes.push(fire);
+    const fl=c.createOscillator(),flg=c.createGain();fl.frequency.value=.11;flg.gain.value=.05;fl.connect(flg);flg.connect(fg.gain);fl.start();nodes.push(fl);
+    f4Audio={out,timers,nodes,prev};
+  }
+  function f4ScoreStop(){
+    if(!f4Audio)return;const a=f4Audio;f4Audio=null;a.timers.forEach(clearInterval);
+    try{a.out.gain.setTargetAtTime(.0001,audioContext.currentTime,.5);setTimeout(()=>a.nodes.forEach(n=>{try{n.stop();}catch{}}),2500);}catch{}
+    setMusic(a.prev);
+  }
   function closeF3Stage(){
+    f4ScoreStop();
     const stage=$('#f3Stage');stage.classList.remove('visible');f3sCloseModal();
     $('#backButton').disabled=!sceneHistory.length;
     setTimeout(()=>{stage.hidden=true;stage.querySelectorAll('.f3s-screen').forEach(s=>s.remove());},600);
@@ -3695,6 +3734,7 @@ Do not look away from it.
   const saveF4=()=>{try{localStorage.setItem(F4_KEY,JSON.stringify(f4));}catch{}};
   const f4Next=id=>F4_FLOW[F4_FLOW.indexOf(id)+1];
   function openF4Stage(){
+    setTimeout(f4ScoreStart,300);
     clearTimers();
     const stage=$('#f3Stage');stage.dataset.mode='f4';stage.hidden=false;
     $('#f3sList').hidden=true;$('#f3sReturn').hidden=true;$('#backButton').disabled=false;
