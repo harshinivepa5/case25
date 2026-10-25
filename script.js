@@ -3437,6 +3437,11 @@ function f3sFindLines(img,boxes){
         <path d="M1150 560 Q1190 520 1236 548 Q1252 572 1226 590 Q1186 600 1150 580Z"/><path d="M1144 520 L1132 470 L1140 468 L1156 516Z"/></g>
       <g class="cc-amp" fill="#0c0807"><rect x="1400" y="540" width="120" height="100" rx="6"/><circle cx="1460" cy="590" r="32" fill="#140e0b"/><rect x="800" y="560" width="96" height="80" rx="6"/></g>
       ${beams}
+      <g class="cc-couple-wrap" transform="translate(0 -70)"><path class="cc-cspot" d="M470 0 L360 790 L640 790 L530 0 Z" fill="url(#ccFollow)"/><ellipse class="cc-cpool" cx="500" cy="790" rx="170" ry="26" fill="url(#ccPool)" filter="url(#ccSoft)"/>
+        <g class="cc-couple" fill="#050303" stroke="rgba(255,225,180,.35)" stroke-width="1.5">
+          <g class="cc-man"><circle cx="460" cy="618" r="17"/><path d="M440 640 Q460 630 480 640 L486 712 L436 712Z"/><path d="M440 712 L436 790 L452 790 L460 724 L468 790 L484 790 L480 712Z"/><path d="M478 646 L512 612 L518 618 L486 656Z"/></g>
+          <g class="cc-woman"><circle cx="530" cy="612" r="15"/><path d="M522 600 Q530 588 544 598 L546 616 Q540 606 524 610Z"/><path d="M516 632 Q530 624 544 632 L548 680 L578 784 L482 784 L512 680Z"/><path d="M520 638 L512 600 L518 596 L528 634Z"/></g>
+        </g></g>
       <g class="cc-crowd" fill="#020101">${crowd}</g>
     </svg>`);
     const sc=layer.querySelector('.cc-scene'),lights=[...sc.querySelectorAll('.cc-light')];

@@ -3151,3 +3151,13 @@ body:has(#f3Stage.visible) #devFile04Button,body.wall-cinematic #devFile04Button
 @keyframes ccSpark{to{background-position:900px 140px,-700px 220px}}
 .cc-scene.singing .cc-light.on .cc-beam{animation:ccSweep 2.4s ease-in-out var(--sd) infinite alternate}
 .cc-scene.singing .cc-crowd{transform:translateY(-40px)!important;transition:transform 1.5s ease}
+/* a couple dances in their own spotlight while he sings */
+.cc-couple-wrap{opacity:0;transition:opacity 1.6s ease}
+.cc-scene.singing .cc-couple-wrap{opacity:1}
+.cc-cspot{opacity:.9;transform-origin:500px 0;animation:ccCspot 4.8s ease-in-out infinite alternate}
+@keyframes ccCspot{from{transform:rotate(-2deg)}to{transform:rotate(2deg)}}
+.cc-couple{transform-box:fill-box;transform-origin:50% 100%;animation:ccCoupleSway 2.4s ease-in-out infinite}
+@keyframes ccCoupleSway{0%,100%{transform:rotate(-3deg) translateX(-6px)}50%{transform:rotate(3deg) translateX(6px)}}
+.cc-woman{transform-box:fill-box;transform-origin:50% 100%;animation:ccSpin 2.4s ease-in-out infinite}
+@keyframes ccSpin{0%,30%{transform:scaleX(1)}40%{transform:scaleX(-1) translateY(-4px)}50%{transform:scaleX(1)}60%{transform:scaleX(-1) translateY(-4px)}70%,100%{transform:scaleX(1)}}
+.cc-man{transform-box:fill-box;transform-origin:50% 100%;animation:ccDance 1.2s ease-in-out infinite}
