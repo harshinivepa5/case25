@@ -3161,3 +3161,44 @@ body:has(#f3Stage.visible) #devFile04Button,body.wall-cinematic #devFile04Button
 .cc-woman{transform-box:fill-box;transform-origin:50% 100%;animation:ccSpin 2.4s ease-in-out infinite}
 @keyframes ccSpin{0%,30%{transform:scaleX(1)}40%{transform:scaleX(-1) translateY(-4px)}50%{transform:scaleX(1)}60%{transform:scaleX(-1) translateY(-4px)}70%,100%{transform:scaleX(1)}}
 .cc-man{transform-box:fill-box;transform-origin:50% 100%;animation:ccDance 1.2s ease-in-out infinite}
+/* File 004 · nine years later: the story beside the words */
+.s4fx{position:absolute;right:3%;top:50%;width:min(36vw,520px);aspect-ratio:4/3;transform:translateY(-50%);z-index:5;pointer-events:none}
+.s4fx>*{position:absolute;inset:0;animation:s4In .8s cubic-bezier(.2,.8,.2,1) both}
+.s4fx>.out{animation:s4Out .8s ease-in forwards}
+@keyframes s4In{from{opacity:0;transform:scale(.92);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes s4Out{to{opacity:0;transform:scale(1.06);filter:blur(8px)}}
+.s4-neon{display:grid;place-content:center;text-align:center}
+.s4-neon b{font:italic 700 clamp(30px,3.6vw,56px) var(--serif);color:#ffcf8a;text-shadow:0 0 12px #ff9a3c,0 0 34px #ff7a1a;animation:ccBuzz 3s steps(1) infinite}
+.s4-neon small{margin-top:10px;font:12px var(--mono);letter-spacing:.3em;color:#c99a55}
+.s4-file{position:absolute;left:calc(8% + var(--i)*12%);top:calc(6% + var(--i)*16%);width:62%;padding:12px 14px;background:linear-gradient(165deg,#ecdcb6,#cfb17a);color:#24190e;box-shadow:0 14px 34px rgba(0,0,0,.7);transform:rotate(calc(-6deg + var(--i)*4deg));animation:s4File .7s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes s4File{from{opacity:0;transform:translate(60%,-30%) rotate(25deg) scale(1.2)}to{opacity:1}}
+.s4-file small{display:block;color:#8e1d14;font:700 10px var(--mono);letter-spacing:.16em}
+.s4-file p{margin:6px 0 4px;font:13px/1.4 var(--type)}
+.s4-file i{font:italic 15px var(--serif);color:#1d2a52}
+.s4-stamp{position:absolute;left:50%;top:50%;z-index:9;padding:.1em .4em;border:5px solid #b3261b;border-radius:6px;color:#c4281c;font:700 clamp(22px,2.6vw,38px) var(--type);letter-spacing:.12em;white-space:nowrap;background:rgba(20,8,5,.35);transform:translate(-50%,-50%) rotate(-12deg);animation:s4Stamp .4s cubic-bezier(.3,0,.2,1) both}
+@keyframes s4Stamp{from{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(2.6)}70%{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(.95)}}
+.s4-stamp.red{background:rgba(60,5,3,.55);color:#ff4a36;border-color:#e0412f}
+.s4-lake{border:6px solid #0e0c0a;box-shadow:0 20px 50px #000;background:#020407}
+.s4-lake svg{width:100%;height:100%;display:block}
+.s4-lake small,.s4-cell small{position:absolute;left:10px;bottom:8px;font:10px var(--mono);letter-spacing:.24em;color:#c9b28a}
+.s4-boat{animation:s4Drift 8s ease-in-out infinite alternate}
+@keyframes s4Drift{from{transform:translate(-30px,0) rotate(-1.5deg)}to{transform:translate(30px,4px) rotate(1.5deg)}}
+.s4-rip ellipse{transform-origin:210px 190px;animation:s4Rip 3s ease-out infinite}
+@keyframes s4Rip{from{transform:scale(.5);opacity:.8}to{transform:scale(1.6);opacity:0}}
+.s4-mist rect{animation:s4Mist 6s ease-in-out infinite alternate}
+@keyframes s4Mist{to{transform:translateX(-40px);opacity:.6}}
+.s4-slips{inset:auto 0 -12% 0!important;display:flex;justify-content:space-between;gap:10px}
+.s4-slips span{flex:1;padding:10px 12px;background:#f5f2ea;color:#191714;font:11px/1.5 var(--mono);letter-spacing:.08em;box-shadow:0 12px 30px rgba(0,0,0,.7);animation:s4File .6s cubic-bezier(.2,.9,.3,1.2) both}
+.s4-slips span.a{transform:rotate(-4deg)}.s4-slips span.b{transform:rotate(3deg);animation-delay:.35s}
+.s4-cell{border:6px solid #0e0c0a;box-shadow:0 20px 50px #000;overflow:hidden;background:#07080a}
+.s4-cell svg{width:100%;height:100%;display:block}
+.s4-peter{animation:s4Breathe 3.4s ease-in-out infinite}
+@keyframes s4Breathe{50%{transform:translateY(2px)}}
+.s4-bars{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 9%,#16181c 9% 11.5%,#3a3f47 11.5% 12%,transparent 12% 14%),linear-gradient(180deg,#22252a 0 5%,transparent 5% 92%,#22252a 92%);box-shadow:inset 0 0 40px #000;animation:s4Bars .55s cubic-bezier(.6,0,.4,1.4) 1s both}
+@keyframes s4Bars{from{transform:translateY(-105%)}to{transform:none}}
+@media(max-width:900px){.s4fx{display:none}}
+.s4fx{right:2.5%;width:min(31vw,470px)}
+.cine-lake.tell .cine-lines{max-width:min(560px,40vw)}
+.s4-peter{stroke:rgba(210,225,250,.6)!important;stroke-width:2}
+.s4-cell svg path[fill^="rgba(200,215,240"]{fill:rgba(220,230,250,.14)}
+.s4-bars{background:repeating-linear-gradient(90deg,transparent 0 12%,#16181c 12% 13.6%,#4a505a 13.6% 14%,transparent 14% 17%),linear-gradient(180deg,#22252a 0 5%,transparent 5% 92%,#22252a 92%)}
