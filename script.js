@@ -4583,8 +4583,6 @@ Do not look away from it.
     const verdict=O.wrong===0?'Subject solved everything first time. Suspiciously competent.':O.hints>3?'Subject asked for help more than once, and still refused to trust the obvious answer. Correct instinct.':'Subject distrusted everyone except the actual culprit.';
     screen.innerHTML=`<div class="fs-bg"></div><div class="fs-wrap">
       <section class="fs-part fs-head"><small>CASE 25 · RESTRICTED</small><h1>FILE S</h1><h2>SUBJECT: ${f3sEsc(SUBJECT_NAME)}</h2><p>AGE 25 · CASE OPENED: THE DAY HE WAS BORN</p></section>
-      <section class="fs-part fs-log"><h3>OBSERVATION LOG</h3><div class="fs-rows"></div></section>
-      <section class="fs-part fs-verdict"><h3>ASSESSMENT</h3><p>${f3sEsc(verdict)}</p></section>
       <section class="fs-part fs-ex"><h3>EXHIBITS</h3><div class="fs-photos">${FILE_S.exhibits.map(([src,tag,cap],i)=>`<figure style="--r:${[-4,3,-2,5][i%4]}deg"><div class="fs-ph"><img src="${src}" alt="" onerror="this.remove()"></div><figcaption><b>${f3sEsc(tag)}</b> ${f3sEsc(cap)}</figcaption></figure>`).join('')}</div></section>
       <section class="fs-part fs-msg"><h3>FROM ME</h3>${FILE_S.message.map(t=>`<p>${f3sEsc(t)}</p>`).join('')}<i class="fs-sign">— me</i></section>
       <section class="fs-part fs-gifts"><h3>EVIDENCE, GIFT-WRAPPED</h3>${FILE_S.gifts.map(([age,a,b,ico])=>`<div class="fs-gift"><span class="fs-age">${age}</span><i>${ico}</i><p>${f3sEsc(a)}<b>${f3sEsc(b)}</b></p></div>`).join('')}</section>
@@ -4594,10 +4592,7 @@ Do not look away from it.
     parts.forEach(p=>p.style.opacity=0);
     let t=400;const show=(el,ms)=>setTimeout(()=>{if(!screen.isConnected)return;el.style.opacity='';el.classList.add('in');el.scrollIntoView({behavior:'smooth',block:'center'});},t+=ms);
     show(parts[0],200);sfx('dread');
-    show(parts[1],2600);
-    O.rows.forEach(([k,v],i)=>setTimeout(()=>{if(!screen.isConnected)return;rows.insertAdjacentHTML('beforeend',`<div><span>${f3sEsc(k)}</span><b></b></div>`);const b=rows.lastElementChild.querySelector('b');let n=0;const ty=()=>{b.textContent=v.slice(0,++n);if(n<v.length)setTimeout(ty,28);};ty();sfx('key');},t+400+i*1300));
-    t+=O.rows.length*1300+600;
-    show(parts[2],1200);show(parts[3],3600);
+    show(parts[1],3000);
     const msg=screen.querySelector('.fs-msg'),mps=[...msg.querySelectorAll('p,.fs-sign')];mps.forEach(p=>p.style.opacity=0);
     show(msg,4600);mps.forEach((p,i)=>{const at=t+600+i*4200;setTimeout(()=>{if(!screen.isConnected)return;p.style.opacity='';p.classList.add('in');p.scrollIntoView({behavior:'smooth',block:'center'});},at);});t+=600+mps.length*4200;
     const gf=screen.querySelector('.fs-gifts'),gs=[...gf.querySelectorAll('.fs-gift')];gs.forEach(g=>g.style.opacity=0);
