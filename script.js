@@ -4047,6 +4047,14 @@ Do not look away from it.
   // its options are dealt onto the panel like cards.
   function f4Swap(box,build){
     if(reducedMotion||!box.childElementCount){build();f4DealIn(box,false);return;}
+    // File 005: no stamp. The answered page is pulled away like a file turned over, and the next one slides in from beneath.
+    if($('#f3Stage').dataset.mode==='f5'){
+      sfx('paper');box.style.transformOrigin='0 50%';
+      const turn=box.animate([{transform:'perspective(1400px) rotateY(0)',opacity:1,filter:'brightness(1)'},{transform:'perspective(1400px) rotateY(-80deg)',opacity:0,filter:'brightness(.3)'}],{duration:750,easing:'cubic-bezier(.5,0,.6,1)',fill:'forwards'});
+      turn.finished.catch(()=>{}).then(()=>{build();turn.cancel();box.animate([{transform:'translateX(30px)',opacity:0,filter:'blur(6px)'},{transform:'none',opacity:1,filter:'blur(0)'}],{duration:700,easing:'cubic-bezier(.2,.7,.2,1)'});
+        const q=box.querySelector('.f4-q');if(q){q.style.visibility='hidden';setTimeout(()=>{q.style.visibility='';f4Decode(q,Math.min(1400,300+q.textContent.length*8));},250);}
+        box.querySelectorAll('.f4-opt,.f4-verdict-text').forEach((o,i)=>o.animate([{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'none'}],{duration:500,delay:500+i*110,fill:'backwards'}));});
+      return;}
     const stamp=document.createElement('b');stamp.className='f4-stamp';stamp.textContent='VERIFIED';box.append(stamp);
     stamp.animate([{opacity:0,transform:'translate(-50%,-50%) rotate(-12deg) scale(2.6)'},{opacity:1,transform:'translate(-50%,-50%) rotate(-12deg) scale(.95)',offset:.7},{opacity:1,transform:'translate(-50%,-50%) rotate(-12deg) scale(1)'}],{duration:320,easing:'cubic-bezier(.3,0,.2,1)',fill:'forwards'});
     sfx('stamp');box.animate([{transform:'none'},{transform:'translate(-4px,3px)'},{transform:'translate(3px,-2px)'},{transform:'none'}],{duration:240,delay:180});
