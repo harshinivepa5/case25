@@ -3578,6 +3578,18 @@ function f3sFindLines(img,boxes){
     ['And I am nowhere.',{pitch:.35,rate:.66},'clear'],
     ['Thank you, Detective.',{pitch:.4,rate:.68,red:true},'away'],
     ['I couldn’t have put him there without you.',{pitch:.32,rate:.62,red:true}]];
+  // he raises the cigar to his lips, the ember flares, he lowers it and breathes the smoke out
+  function smokeLoop(chair,alive){
+    const ember=chair.querySelector('.cc-ember'),hand=chair.querySelector('.cc-hand');
+    const drag=()=>{if(!alive()||chair.classList.contains('away'))return;
+      if(chair.classList.contains('turned')){
+        hand&&hand.animate([{transform:'translate(232px,352px) rotate(14deg)'},{transform:'translate(196px,258px) rotate(-6deg)',offset:.3},{transform:'translate(196px,258px) rotate(-6deg)',offset:.7},{transform:'translate(232px,352px) rotate(14deg)'}],{duration:2600,easing:'cubic-bezier(.45,0,.3,1)'});
+        ember.animate([{r:5.5,fill:'#ff6a1a'},{r:5.5,offset:.3},{r:9,fill:'#ffd27a',filter:'drop-shadow(0 0 22px #ff8a2a) drop-shadow(0 0 40px #ff5a10)',offset:.55},{r:5.5,fill:'#ff6a1a'}],{duration:2600,easing:'ease-in-out'});
+        chair.animate([{filter:'brightness(1)'},{filter:'brightness(1.3)',offset:.55},{filter:'brightness(1)'}],{duration:2600});
+        setTimeout(()=>{if(!alive())return;for(let i=0;i<5;i++){const p=document.createElement('i');p.className='cc-puff';p.style.setProperty('--dx',(-40-Math.random()*90)+'px');p.style.setProperty('--dy',(-90-Math.random()*120)+'px');p.style.animationDelay=(i*.16)+'s';chair.append(p);setTimeout(()=>p.remove(),5400);}},2100);}
+      setTimeout(drag,6500+Math.random()*2500);};
+    setTimeout(drag,3800);
+  }
   function confessionScene(screen,done){
     const src=document.querySelector('#cliffhanger .cc-stage');
     screen.classList.add('conf-screen');
@@ -3596,7 +3608,7 @@ function f3sFindLines(img,boxes){
     const shake=(px=8)=>st.animate([{transform:'none'},{transform:`translate(${-px}px,${px/2}px)`},{transform:`translate(${px*.7}px,${-px/3}px)`},{transform:'none'}],{duration:320});
     const card=(tag,title,body,cls='')=>{clear();setTimeout(()=>{if(alive()){add(`<div class="conf-card ${cls}"><small>${tag}</small><h4>${title}</h4><p>${body}</p></div>`);sfx('paper');}},350);};
     const beat={
-      turn:()=>{chair.classList.add('turning');cliffPhase('mystery');setTimeout(()=>chair.classList.add('turned'),3200);},
+      turn:()=>{chair.classList.add('turning');cliffPhase('mystery');setTimeout(()=>{chair.classList.add('turned');smokeLoop(chair,alive);},3200);},
       stampM:()=>{stamp.textContent='M = THOMAS REED';stamp.className='cc-stamp on wide';stamp.animate([{opacity:0,transform:'translate(-50%,-50%) scale(2.6)'},{opacity:1,transform:'translate(-50%,-50%) scale(1)'}],{duration:380,fill:'forwards'});sfx('stamp');shake(12);setTimeout(()=>stamp.animate([{opacity:1},{opacity:0}],{duration:700,fill:'forwards'}),2600);},
       photo:()=>{clear();const ph=document.querySelector('#cliffhanger .cliff-wrap .cliff-subject').cloneNode(true);ph.className='cliff-subject burnt conf-photo on burning';setTimeout(()=>{if(alive()){fx.append(ph);sfx('key');}},350);},
       record:()=>card('MAINTENANCE RECORD MR-114','12 Sep — Electrical inspection','<s>SCHEDULED</s> → <b>COMPLETED</b><br>Edited 23 Sep 2016 · 01:12 · user: <b>pshaw</b>','rec'),
