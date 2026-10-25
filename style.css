@@ -3449,3 +3449,7 @@ html body #f3Stage[data-mode="fs"] #f3sSkip{display:none!important}
 .fs-ph{aspect-ratio:3/4!important}
 #devFileSButton{position:fixed;z-index:999;left:20px;bottom:64px;padding:10px 14px;border:1px solid #c39752;background:#100d09e8;color:#e4bf79;font:10px var(--mono);letter-spacing:.14em;cursor:pointer}
 body:has(#f3Stage.visible) #devFileSButton,body.wall-cinematic #devFileSButton{display:none}
+.lf-pop{position:absolute;left:-4%;top:6%;width:30%;margin:0;padding:8px 8px 26px;background:#f3ede0;box-shadow:0 18px 40px rgba(0,0,0,.7);transform:rotate(-6deg);animation:lfPop .8s cubic-bezier(.2,1.4,.4,1) 1.4s both;z-index:3}
+.lf-pop img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}
+.lf-pop figcaption{position:absolute;left:0;right:0;bottom:6px;text-align:center;font:italic 14px var(--serif);color:#3a2a1a}
+@keyframes lfPop{from{opacity:0;transform:rotate(-20deg) scale(.3)}to{opacity:1;transform:rotate(-6deg) scale(1)}}

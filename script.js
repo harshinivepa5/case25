@@ -4491,7 +4491,8 @@ Do not look away from it.
     const stage=host.querySelector('.lf-stage'),sm=host.querySelector('.lf-cap small'),pp=host.querySelector('.lf-cap p');let stop=false;
     host.querySelector('.lf-skip').addEventListener('click',()=>{stop=true;try{speechSynthesis.cancel();}catch{}host.remove();done();});
     (async()=>{await new Promise(r=>setTimeout(r,400));for(const [tag,text,kind] of LIFE){if(stop||!screen.isConnected)return;
-        stage.innerHTML=`<div class="lf-frame">${lifeScene(kind)}<img class="lf-photo" src="assets/file-s/${kind}.jpg" alt="" onerror="this.remove()"></div>`;stage.classList.remove('in');void stage.offsetWidth;stage.classList.add('in');sm.textContent=tag;pp.textContent='';sfx('ink');
+        stage.innerHTML=`<div class="lf-frame">${lifeScene(kind)}<img class="lf-photo" src="assets/file-s/${kind}.jpg" alt="" onerror="this.remove()"></div>`;
+        if(kind==='family')stage.querySelector('.lf-frame').insertAdjacentHTML('beforeend','<figure class="lf-pop"><img src="assets/file-s/familypop.jpg" alt="" onerror="this.parentNode.remove()"><figcaption>the whole family</figcaption></figure>');stage.classList.remove('in');void stage.offsetWidth;stage.classList.add('in');sm.textContent=tag;pp.textContent='';sfx('ink');
         if(kind==='name'){const b=stage.querySelector('b');for(let k=1;k<=LIFE_NAME.length;k++){if(stop)return;b.textContent=LIFE_NAME.slice(0,k);await new Promise(r=>setTimeout(r,90));}sfx('stamp');}
         pp.textContent=text;pp.classList.remove('on');void pp.offsetWidth;pp.classList.add('on');
         await narrate(text);if(kind==='name')await narrate(LIFE_NAME.toLowerCase());await new Promise(r=>setTimeout(r,900));}
