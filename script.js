@@ -4419,7 +4419,7 @@ Do not look away from it.
   }
   function fsScoreStop(){if(!fsAudio)return;const a=fsAudio;fsAudio=null;clearInterval(a.tm);try{a.out.gain.setTargetAtTime(.0001,audioContext.currentTime,.6);}catch{}setMusic(a.prev);}
   function openFileS(){
-    setTimeout(fsScoreStart,200);
+    try{setMusic(false);cliffStop();f4ScoreStop();}catch{}setTimeout(partyStart,150);
     clearTimers();const stage=$('#f3Stage');stage.dataset.mode='fs';stage.hidden=false;$('#f3sList').hidden=true;$('#f3sReturn').hidden=true;
     requestAnimationFrame(()=>stage.classList.add('visible'));
     stage.querySelectorAll('.f3s-screen').forEach(s2=>s2.remove());
@@ -4542,7 +4542,7 @@ Do not look away from it.
   const LIFE_TR=['zoom','whip','flash','blur','page','ink'];
   // from the chapter where they meet: the two songs, the second fading in as the first ends
   function lifeSongs(){
-    try{fsScoreStop();setMusic(false);}catch{}
+    try{fsScoreStop();partyStop();setMusic(false);}catch{}
     const a=new Audio('assets/file-s/song1.mp3'),b=new Audio('assets/file-s/song2.mp3');a.volume=0;b.volume=0;
     const fade=(el,to,ms)=>{const from=el.volume,t0=performance.now();const k=()=>{const e=Math.min(1,(performance.now()-t0)/ms);el.volume=from+(to-from)*e;if(e<1)requestAnimationFrame(k);else if(to===0)el.pause();};k();};
     let swapped=false;const swap=()=>{if(swapped)return;swapped=true;b.play().catch(()=>{});fade(b,.9,2500);fade(a,0,2500);};
@@ -4618,13 +4618,13 @@ Do not look away from it.
     const rows=screen.querySelector('.fs-rows'),parts=[...screen.querySelectorAll('.fs-part')];
     parts.forEach(p=>p.style.opacity=0);
     let t=400;const show=(el,ms)=>setTimeout(()=>{if(!screen.isConnected)return;el.style.opacity='';el.classList.add('in');el.scrollIntoView({behavior:'smooth',block:'center'});},t+=ms);
-    show(parts[0],200);sfx('dread');
+    show(parts[0],200);
     show(parts[1],3000);
     const msg=screen.querySelector('.fs-msg'),mps=[...msg.querySelectorAll('p,.fs-sign')];mps.forEach(p=>p.style.opacity=0);
     show(msg,4600);mps.forEach((p,i)=>{const at=t+600+i*4200;setTimeout(()=>{if(!screen.isConnected)return;p.style.opacity='';p.classList.add('in');p.scrollIntoView({behavior:'smooth',block:'center'});},at);});t+=600+mps.length*4200;
     const gf=screen.querySelector('.fs-gifts'),gs=[...gf.querySelectorAll('.fs-gift')];gs.forEach(g=>g.style.opacity=0);
     show(gf,2000);gs.forEach((g,i)=>setTimeout(()=>{if(!screen.isConnected)return;g.style.opacity='';g.classList.add('in');g.scrollIntoView({behavior:'smooth',block:'center'});sfx('paper');},t+800+i*3600));t+=800+gs.length*3600;
-    const vid=screen.querySelector('.fs-video');if(vid){show(vid,1600);setTimeout(()=>{const v=vid.querySelector('video');if(v&&screen.isConnected){try{fsScoreStop();setMusic(false);}catch{}v.play().catch(()=>{});}},t+300);}show(screen.querySelector('.fs-end'),7000);
+    const vid=screen.querySelector('.fs-video');if(vid){show(vid,1600);setTimeout(()=>{const v=vid.querySelector('video');if(v&&screen.isConnected){try{fsScoreStop();partyStop();setMusic(false);}catch{}v.play().catch(()=>{});}},t+300);}show(screen.querySelector('.fs-end'),7000);
     screen.querySelector('.f4-submit').addEventListener('click',()=>{progress.fileSSeen=true;persistProgress();closeF3Stage();paintProgress();});
   }
   function f5Finish(){
