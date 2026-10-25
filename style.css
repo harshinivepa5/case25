@@ -3116,3 +3116,16 @@ body:has(#cliffhanger:not([hidden])) #devCliffButton,body:has(#f3Stage.visible) 
 .cc-hand{transform:translate(232px,352px) rotate(14deg)}
 .cc-chair.laugh .cc-hand{transform:translate(232px,348px) rotate(10deg)}
 #f3Stage:not([data-mode="f4"]):not([data-mode="f5"]) #f3sSkip{display:block!important}
+/* File 004 opening: the song */
+.cc-scene.singing .cc-singer{animation:ccSing 1.1s ease-in-out infinite}
+@keyframes ccSing{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg) translateY(-4px)}}
+.cc-scene.singing .cc-follow{animation:ccFollowPulse 2.2s ease-in-out infinite}
+@keyframes ccFollowPulse{50%{opacity:.7}}
+.cc-scene.singing .cc-fan{animation-duration:2.2s}
+.cc-scene.singing .cc-crowd{filter:drop-shadow(0 -2px 0 rgba(255,200,120,.25))}
+.cc-scene.singing .cc-light.on .cc-beam{opacity:.62}
+.cc-scene.singing .cc-pool{animation:ccFollowPulse 1.1s ease-in-out infinite}
+.cc-notes{position:absolute;inset:0;pointer-events:none;z-index:3}
+.cc-notes i{position:absolute;bottom:42%;font:normal 30px serif;color:#ffd9a0;text-shadow:0 0 12px rgba(255,190,110,.9);animation:ccNote 4s ease-out forwards}
+@keyframes ccNote{0%{opacity:0;transform:translate(0,0) rotate(-10deg)}15%{opacity:1}100%{opacity:0;transform:translate(-60px,-260px) rotate(20deg)}}
+.cc-scene.singing~.cc-notes{display:block}

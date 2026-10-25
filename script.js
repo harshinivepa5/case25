@@ -3409,7 +3409,7 @@ function f3sFindLines(img,boxes){
   // File 004 opening: The Lantern on a good night. The neon sign buzzes on, the stage lights click on one by one and sweep
   // through the haze, a singer stands in the follow spot and the crowd sways. The story then turns the room against itself.
   function cineConcertPrelude(screen){
-    const D=5600,layer=screen.querySelector('.cine-layer');screen.classList.add('prelude');
+    const SONG=20000,D=5600+SONG,layer=screen.querySelector('.cine-layer');screen.classList.add('prelude');
     const COL=['#ffb347','#ff5d7d','#5f8dff','#ffd27a','#ff7a3d','#9a6bff','#ffc56b'];
     const LX=[150,380,610,840,1070,1300,1500];
     const beams=LX.map((x,i)=>`<g class="cc-light" style="--i:${i};--sd:${(-i*1.3).toFixed(1)}s"><path class="cc-beam" d="M${x} 92 L${x-170} 860 L${x+170} 860 Z" fill="url(#ccB${i})" style="transform-origin:${x}px 92px"/><rect x="${x-16}" y="70" width="32" height="24" rx="4" fill="#0c0a09"/><circle class="cc-lamp" cx="${x}" cy="92" r="9" fill="#1a1512"/></g>`).join('');
@@ -3439,10 +3439,38 @@ function f3sFindLines(img,boxes){
     const sc=layer.querySelector('.cc-scene'),lights=[...sc.querySelectorAll('.cc-light')];
     sc.querySelector('.cc-neon').animate([{opacity:0},{opacity:0,offset:.15},{opacity:.9,offset:.2},{opacity:.1,offset:.26},{opacity:.95,offset:.34},{opacity:.3,offset:.4},{opacity:1}],{duration:2200,fill:'both'});
     lights.forEach((l,i)=>laterWait(()=>{if(!sc.isConnected)return;l.classList.add('on');if(i%3===0)sfx('key');},reducedMotion?0:1700+i*330));
-    sc.querySelectorAll('.cc-follow,.cc-pool,.cc-singer').forEach(n=>n.animate([{opacity:0},{opacity:0,offset:.6},{opacity:1}],{duration:D,fill:'both'}));
-    sc.querySelector('.cc-crowd').animate([{opacity:0,transform:'translateY(40px)'},{opacity:0,offset:.55},{opacity:1,transform:'none'}],{duration:D,easing:'ease-out',fill:'both'});
+    sc.querySelectorAll('.cc-follow,.cc-pool,.cc-singer').forEach(n=>n.animate([{opacity:0},{opacity:0,offset:.6},{opacity:1}],{duration:5600,fill:'both'}));
+    sc.querySelector('.cc-crowd').animate([{opacity:0,transform:'translateY(40px)'},{opacity:0,offset:.55},{opacity:1,transform:'none'}],{duration:5600,easing:'ease-out',fill:'both'});
+    // the song: the singer steps up to the mic, the crowd raises lights, the room sways. The track is the file at
+    // assets/file-004/song.mp3 (from 0:00 unless SONG_START is set); without it a soft piano-and-hum melody plays instead.
+    const songStart=5600,stopSong=[];
+    laterWait(()=>{if(!screen.isConnected||reducedMotion)return;
+      sc.classList.add('singing');
+      const notes=document.createElement('div');notes.className='cc-notes';sc.after(notes);
+      const spawn=setInterval(()=>{if(!notes.isConnected)return clearInterval(spawn);const n=document.createElement('i');n.textContent=['♪','♫','♩'][Math.random()*3|0];n.style.left=(62+Math.random()*16)+'%';n.style.animationDuration=(3+Math.random()*2)+'s';notes.append(n);setTimeout(()=>n.remove(),5200);},420);
+      stopSong.push(()=>{clearInterval(spawn);notes.remove();sc.classList.remove('singing');});
+      try{if(f4Audio)f4Audio.out.gain.setTargetAtTime(.0001,audioContext.currentTime,.6);}catch{}
+      const a=new Audio('assets/file-004/song.mp3');a.volume=0;let real=false;
+      a.addEventListener('playing',()=>{real=true;});
+      a.play().then(()=>{const up=setInterval(()=>{a.volume=Math.min(.9,a.volume+.06);if(a.volume>=.9)clearInterval(up);},120);}).catch(()=>{});
+      setTimeout(()=>{if(!real&&screen.isConnected)stopSong.push(f4Hum());},1200);
+      stopSong.push(()=>{const dn=setInterval(()=>{a.volume=Math.max(0,a.volume-.05);if(a.volume<=0){clearInterval(dn);a.pause();}},120);});
+    },songStart);
+    const endSong=()=>{stopSong.splice(0).forEach(f=>{try{f();}catch{}});try{if(f4Audio)f4Audio.out.gain.setTargetAtTime(.9,audioContext.currentTime,1.2);}catch{}sfx('dread');};
+    laterWait(endSong,reducedMotion?0:songStart+SONG-1200);
+    screen.addEventListener('click',()=>{if(screen.classList.contains('prelude'))endSong();},{once:true});
     laterWait(()=>screen.classList.remove('prelude'),reducedMotion?0:D);
     return D;
+  }
+  // fallback when no song file is present: a slow piano with a wordless hummed line over it
+  function f4Hum(){
+    ensureSound();const c=audioContext;if(!c)return()=>{};const out=c.createGain();out.gain.value=.9;out.connect(c.destination);
+    const N=n=>440*Math.pow(2,(n-69)/12);const mel=[69,72,74,72,69,67,69,null,65,67,69,67,65,64,62,null];let k=0,t=c.currentTime+.2;
+    const tm=setInterval(()=>{while(t<c.currentTime+1.5){const n=mel[k%mel.length];k++;
+      if(n){const o=c.createOscillator(),v=c.createOscillator(),vg=c.createGain(),f=c.createBiquadFilter(),g=c.createGain();o.type='sawtooth';o.frequency.value=N(n);v.frequency.value=5.5;vg.gain.value=4;v.connect(vg);vg.connect(o.frequency);f.type='bandpass';f.frequency.value=900;f.Q.value=1.2;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.06,t+.15);g.gain.exponentialRampToValueAtTime(.0001,t+.85);o.connect(f);f.connect(g);g.connect(out);o.start(t);v.start(t);o.stop(t+.9);v.stop(t+.9);}
+      if(k%4===1)[N(50),N(57),N(62)].forEach(f=>{const o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.05,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+2.4);o.connect(g);g.connect(out);o.start(t);o.stop(t+2.5);});
+      t+=.6;}},250);
+    return()=>{clearInterval(tm);out.gain.setTargetAtTime(.0001,c.currentTime,.5);};
   }
   // Story-telling text: each word surfaces from a soft blur, one after another; names glow gold, a line starting
   // with "!" is the warning and comes in red.
@@ -3495,6 +3523,20 @@ function f3sFindLines(img,boxes){
       },start);
     });
   }
+  // The narrator: a calm, clear storyteller's voice for File 004's story screens, different from M's.
+  let narratorPick=null;
+  function narrate(text){
+    return new Promise(res=>{
+      const words=text.split(/\s+/).length,est=Math.max(1200,words*380);let done=false,started=false;const fin=()=>{if(!done){done=true;res();}};
+      try{
+        if(soundMuted||!('speechSynthesis' in window)||!speechSynthesis.getVoices().length)throw 0;
+        if(!narratorPick){const vs=speechSynthesis.getVoices();narratorPick=['Samantha','Karen','Moira','Serena','Tessa','Google UK English Female','Microsoft Libby','Microsoft Sonia','Microsoft Aria','Veena'].map(n=>vs.find(v=>v.name.includes(n))).find(Boolean)||vs.find(v=>/^en/i.test(v.lang)&&!/Daniel|Arthur|Fred|Alex|Male/i.test(v.name))||null;}
+        const u=new SpeechSynthesisUtterance(text.replace(/…/g,'...'));if(narratorPick)u.voice=narratorPick;u.pitch=1;u.rate=.9;u.volume=1;
+        u.onstart=()=>{started=true;};u.onend=()=>setTimeout(fin,250);u.onerror=()=>setTimeout(fin,est);
+        speechSynthesis.speak(u);setTimeout(()=>{if(!started)fin();},est+1500);setTimeout(fin,est*2.5+3000);
+      }catch{setTimeout(fin,est);}
+    });
+  }
   function cineStory(screen,d,scene,onDone){
     const sc=CINE_SCENES[scene]||CINE_SCENES.board;
     screen.classList.add('cine',`cine-${scene}`,`tone-${sc.tone}`);
@@ -3508,7 +3550,7 @@ function f3sFindLines(img,boxes){
     if(d.hand)cineHand(screen);
     if(d.tell)cineTell(screen);
     const lines=[...screen.querySelectorAll('.cine-lines p')],box=screen.querySelector('.cine-lines'),go=screen.querySelector('.cine-go');
-    go.addEventListener('click',onDone);
+    go.addEventListener('click',()=>{try{speechSynthesis.cancel();}catch{}onDone();});
     let n=0,finished=false;
     // paragraphs fill the panel like pages: when the next one would not fit, the page clears and it starts a new one
     const fits=()=>box.scrollHeight<=box.clientHeight+2;
@@ -3516,9 +3558,11 @@ function f3sFindLines(img,boxes){
     const finish=()=>{if(finished)return;finished=true;lines.forEach(p=>{p.classList.add('on');p.classList.remove('gone');});
       let start=lines.length-1;while(start>0){lines.slice(0,start).forEach(p=>p.classList.add('gone'));lines.slice(start-1).forEach(p=>p.classList.remove('gone'));if(!fits()){lines[start-1].classList.add('gone');break;}start--;}
       go.hidden=false;go.focus({preventScroll:true});};
-    const next=()=>{if(finished||!screen.isConnected)return;if(n>=lines.length){laterWait(finish,500);return;}show(n);const len=d.hand?lines[n].textContent.length*1.5+lines[n].querySelectorAll('.hl').length*20:lines[n].textContent.length;n++;laterWait(next,reducedMotion?0:Math.min(5200,1100+len*38));};
+    const next=()=>{if(finished||!screen.isConnected)return;if(n>=lines.length){laterWait(finish,500);return;}
+      if(d.tell&&!reducedMotion){const i=n;show(i);n++;narrate(lines[i].textContent).then(()=>{if(!finished&&screen.isConnected)laterWait(next,500);});return;}
+      show(n);const len=d.hand?lines[n].textContent.length*1.5+lines[n].querySelectorAll('.hl').length*20:lines[n].textContent.length;n++;laterWait(next,reducedMotion?0:Math.min(5200,1100+len*38));};
     laterWait(next,700+preludeMs);
-    screen.addEventListener('click',e=>{if(!finished&&!e.target.closest('button')){screen.classList.remove('prelude');finish();}});
+    screen.addEventListener('click',e=>{if(!finished&&!e.target.closest('button')){try{if(d.tell)speechSynthesis.cancel();}catch{}screen.classList.remove('prelude');finish();}});
   }
   // ---------------------------------------------------------------------------------------------
   // File 004 — The Lantern Fire. Runs inside the File 03 stage (#f3Stage, data-mode="f4") and reuses its
@@ -3906,7 +3950,7 @@ Do not look away from it.
     const upd=()=>{count.textContent=`${words()} words`;f4.verdict=t.value;saveF4();};t.addEventListener('input',upd);upd();
     task.querySelector('.f4-submit').addEventListener('click',()=>{
       if(f3sBusy)return;
-      if(words()<3){f3sToast('Write a few words first, Detective.');t.focus();return;}
+      if(!t.value.trim()){f3sToast('Write a few words first, Detective.');t.focus();return;}
       // Not graded: acknowledge the reasoning habits we can see, and note the ones worth adding.
       const v=t.value.toLowerCase(),seen=[],missing=[];
       (/inspect|maintenance|record|log|ins-?0417|certificate|attachment/.test(v)?seen:missing).push('the documents themselves');
