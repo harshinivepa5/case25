@@ -4470,7 +4470,7 @@ Do not look away from it.
     ['KNOWN WEAKNESSES','A football spotted at a friend’s house turned into football forever. Badminton, where he never once liked losing. Dogs, every single one. And any dance floor, anywhere.','loves','F','CHAPTER 4 · KNOWN WEAKNESSES'],
     ['AGE 11 TO 15','Pocket money went straight into games.','games','F','CHAPTER 5 · GROWING UP'],
     ['THE CUBE','A Rubik’s cube he refused to put down until it was solved.','rubik','W'],
-    ['THE STYLE ERA','The subject grew taller. The hair grew taller.','style','F'],
+    ['THE STYLE ERA','Then came the style era. Trends, clothes, and a lot of mirror time.','style','F'],
     ['17 SEPTEMBER 2022 · THE COMPETITION','And then, on the seventeenth of September, twenty twenty-two, at a college competition, the case took a turn no detective saw coming.','college','S','CHAPTER 6 · THE COMPETITION'],
     ['2:14 AM','They started talking. Then texting. Late. Very late.','night','W','CHAPTER 7 · THE MESSAGES'],
     ['ONE NIGHT','One night, she typed: I have a crush on someone.','crush','S'],
