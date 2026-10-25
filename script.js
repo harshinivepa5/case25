@@ -4394,7 +4394,7 @@ Do not look away from it.
   function f5BuildWhy(screen){
     setTimeout(()=>{if(screen.isConnected)partyStart();},300);
     screen.classList.add('f5-why');
-    screen.innerHTML=`<div class="f5-why-dark"></div><div class="gj-confetti">${Array.from({length:60},(_,i)=>`<i style="left:${(i*37)%100}%;--d:${(i%12)*.25}s;--c:${['#f5a','#5cf','#fd5','#a5f','#5f9','#ff7a5a'][i%6]}"></i>`).join('')}</div><article class="f5-parchment gj"><small>CASE 25 · FILE 005 · CLOSED</small><h2>HAPPY 25TH BIRTHDAY, SAM.</h2><p class="gj-sub">Ready for your gift?</p><div class="f4-actions"><button type="button" class="f4-btn f4-submit">CONTINUE →</button></div></article>`;
+    screen.innerHTML=`<div class="f5-why-dark"></div><div class="gj-confetti">${Array.from({length:60},(_,i)=>`<i style="left:${(i*37)%100}%;--d:${(i%12)*.25}s;--c:${['#f5a','#5cf','#fd5','#a5f','#5f9','#ff7a5a'][i%6]}"></i>`).join('')}</div><article class="f5-parchment gj"><small>CASE 25 · FILE 005 · CLOSED</small><h2>HAPPY 25TH BIRTHDAY, SAM.</h2><div class="f4-actions"><button type="button" class="f4-btn f4-submit fs-claim">🎁 CLAIM YOUR REWARD</button></div></article>`;
     screen.querySelector('.f4-submit').addEventListener('click',()=>f5Continue('why'));
   }
   // FILE S: the last file on the wall, opened with CONTINUE after File 005. Why Case 25.
