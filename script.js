@@ -3488,6 +3488,9 @@ function f3sFindLines(img,boxes){
   // File 004, "nine years later": the story plays out beside the words. The Lantern relights, Peter's secret file fans
   // out across the screen and is stamped as his, the lake and the drifting boat, the slip and the toll, and last the cell:
   // bars slam down in front of Peter Shaw and the charge is stamped across them.
+  const S4_FILES=[['APPROVAL MEMO · 19 APR 2016','Maintenance deferred to cut costs.','Approved — T. Reed'],['DEFERRED REPAIRS','Stage circuit B · panel warm · inspection pending','Signed — T. Reed'],['MR-114 · ORIGINAL COPY','12 Sep — Electrical inspection — SCHEDULED',''],['PRIVATE FILE · P. SHAW','“If anyone asks, it was his call.”','']];
+  function s4AddFile(L,i){const box=L.querySelector('.s4-files');if(!box||box.querySelector(`[data-f="${i}"]`))return;const [tag,body,sig]=S4_FILES[i],n=box.children.length;
+    box.insertAdjacentHTML('beforeend',`<article class="s4-file" data-f="${i}" style="--i:${n}"><small>${tag}</small><p>${body}</p>${sig?`<i>${sig}</i>`:''}</article>`);sfx('paper');}
   function s4Cue(screen,t){
     let L=screen.querySelector('.s4fx');
     if(!L){L=document.createElement('div');L.className='s4fx';L.setAttribute('aria-hidden','true');screen.querySelector('.cine-layer').append(L);}
@@ -3495,14 +3498,13 @@ function f3sFindLines(img,boxes){
     const clear=()=>[...L.children].forEach(n=>{n.classList.add('out');setTimeout(()=>n.remove(),900);});
     const add=html=>{L.insertAdjacentHTML('beforeend',html);return L.lastElementChild;};
     if(/reopened/.test(t)){clear();add(`<div class="s4-neon"><b>THE LANTERN</b><small>REOPENED · MAY 2017</small></div>`);sfx('ink');}
-    else if(/second file/.test(t)){clear();sfx('paper');
-      const files=[['APPROVAL MEMO · 19 APR 2016','Maintenance deferred to cut costs.','Approved — T. Reed'],['DEFERRED REPAIRS','Stage circuit B · panel warm · inspection pending','Signed — T. Reed'],['MR-114 · ORIGINAL COPY','12 Sep — Electrical inspection — SCHEDULED',''],['NOTES · P. SHAW','“If anyone asks, it was his call.”','']];
-      const box=add('<div class="s4-files"></div>');
-      files.forEach(([tag,body,sig],i)=>setTimeout(()=>{box.insertAdjacentHTML('beforeend',`<article class="s4-file" style="--i:${i}"><small>${tag}</small><p>${body}</p>${sig?`<i>${sig}</i>`:''}</article>`);sfx('paper');},i*650));}
+    else if(/second file/.test(t)){clear();add('<div class="s4-files"></div>');s4AddFile(L,3);}
+    else if(/April memo/.test(t)){s4AddFile(L,0);setTimeout(()=>s4AddFile(L,1),900);}
+    else if(/every page that could put/.test(t)){s4AddFile(L,2);}
     else if(/anyone ever asked/.test(t)){const f=L.querySelector('.s4-files');if(f){f.insertAdjacentHTML('beforeend','<b class="s4-stamp">KEPT BY P. SHAW</b>');sfx('stamp');shake(6);}}
     else if(/went to the water/.test(t)){clear();setTimeout(()=>{add(`<div class="s4-lake"><svg viewBox="0 0 400 260"><defs><linearGradient id="s4w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1420"/><stop offset="1" stop-color="#020407"/></linearGradient></defs><rect width="400" height="260" fill="url(#s4w)"/><path d="M0 120 Q60 96 120 112 T240 104 T400 110 V130 H0Z" fill="#05080d"/><g class="s4-rip" fill="none" stroke="rgba(180,200,230,.25)"><ellipse cx="210" cy="190" rx="60" ry="8"/><ellipse cx="210" cy="190" rx="100" ry="14"/></g><g class="s4-boat"><path d="M150 180 L270 180 L250 198 L170 198Z" fill="#020202" stroke="rgba(200,215,240,.35)"/><g fill="#020202" stroke="rgba(200,215,240,.3)"><circle cx="206" cy="146" r="8"/><path d="M196 156 Q206 151 216 156 L218 180 L194 180Z"/></g></g><g class="s4-mist"><rect y="150" width="400" height="40" fill="rgba(200,210,225,.08)"/></g></svg><small>LAKE ASH · 14 OCTOBER</small></div>`);sfx('dread');},400);
-      setTimeout(()=>{if(!L.isConnected)return;add('<div class="s4-slips"><span class="a">BOAT No. 6<br><b>HIRER: P. SHAW</b></span><span class="b">TOLL · 21:00<br><b>CARD 4417 · P. SHAW</b></span></div>');sfx('stamp');},3600);}
-    else if(/in a cell/.test(t)){clear();setTimeout(()=>{
+    }
+    else if(/name on the boat/.test(t)){if(L.querySelector('.s4-slips'))return;add('<div class="s4-slips"><span class="a">BOAT No. 6<br><b>HIRER: P. SHAW</b></span><span class="b">TOLL · 21:00<br><b>CARD 4417 · P. SHAW</b></span></div>');sfx('stamp');}    else if(/in a cell/.test(t)){clear();setTimeout(()=>{
       add(`<div class="s4-cell"><svg viewBox="0 0 400 300"><rect width="400" height="300" fill="#07080a"/><rect x="0" y="230" width="400" height="70" fill="#0d0d0f"/><path d="M250 30 h50 v26 h-50z" fill="#1a1d22"/><g stroke="#2a2e35" stroke-width="2"><path d="M258 30v26M268 30v26M278 30v26M288 30v26"/></g><path d="M200 60 L120 300 H330 L240 60Z" fill="rgba(200,215,240,.07)"/><g class="s4-peter" fill="#020203" stroke="rgba(190,205,235,.3)"><rect x="150" y="196" width="110" height="18" rx="3"/><circle cx="205" cy="150" r="17"/><path d="M180 168 Q205 160 230 168 L236 210 L174 210Z"/><path d="M178 196 L190 246 H204 L200 210Z M232 196 L220 246 H206 L210 210Z"/><path d="M182 172 L196 194 L214 194 L228 172" fill="none"/></g></svg><div class="s4-bars"></div><small>LAKE ASH POLICE · CELL 3</small></div>`);
       sfx('dread');setTimeout(()=>{sfx('stamp');sfx('stamp');shake(12);},1150);},400);}
     else if(/never looked stronger/.test(t)){const c=L.querySelector('.s4-cell');if(c){c.insertAdjacentHTML('beforeend','<b class="s4-stamp red">CHARGED · MURDER</b>');sfx('stamp');shake(8);}}
@@ -3589,12 +3591,14 @@ function f3sFindLines(img,boxes){
     let n=0,finished=false;
     // paragraphs fill the panel like pages: when the next one would not fit, the page clears and it starts a new one
     const fits=()=>box.scrollHeight<=box.clientHeight+2;
-    const show=i=>{lines[i].classList.add('on');if(d.cue)d.cue(screen,lines[i].textContent);if(d.hand&&!reducedMotion)cineHandLine(screen,lines[i]);if(!fits()){lines.slice(0,i).forEach(p=>p.classList.add('gone'));}};
+    const show=i=>{lines[i].classList.add('on');if(d.cue&&!(d.tell&&!reducedMotion))d.cue(screen,lines[i].textContent);if(d.hand&&!reducedMotion)cineHandLine(screen,lines[i]);if(!fits()){lines.slice(0,i).forEach(p=>p.classList.add('gone'));}};
     const finish=()=>{if(finished)return;finished=true;lines.forEach(p=>{p.classList.add('on');p.classList.remove('gone');});
       let start=lines.length-1;while(start>0){lines.slice(0,start).forEach(p=>p.classList.add('gone'));lines.slice(start-1).forEach(p=>p.classList.remove('gone'));if(!fits()){lines[start-1].classList.add('gone');break;}start--;}
       go.hidden=false;go.focus({preventScroll:true});};
     const next=()=>{if(finished||!screen.isConnected)return;if(n>=lines.length){laterWait(finish,500);return;}
-      if(d.tell&&!reducedMotion){const i=n;show(i);n++;narrate(lines[i].textContent).then(()=>{if(!finished&&screen.isConnected)laterWait(next,500);});return;}
+      if(d.tell&&!reducedMotion){const i=n;show(i);n++;
+        const parts=[...lines[i].querySelectorAll('.tl')].map(x=>x.textContent.trim()).filter(Boolean);
+        (async()=>{for(const part of parts){if(finished||!screen.isConnected)return;if(d.cue)d.cue(screen,part);await narrate(part);}if(!finished&&screen.isConnected)laterWait(next,500);})();return;}
       show(n);const len=d.hand?lines[n].textContent.length*1.5+lines[n].querySelectorAll('.hl').length*20:lines[n].textContent.length;n++;laterWait(next,reducedMotion?0:Math.min(5200,1100+len*38));};
     laterWait(next,700+preludeMs);
     screen.addEventListener('click',e=>{if(!finished&&!e.target.closest('button')){try{if(d.tell)speechSynthesis.cancel();}catch{}screen.classList.remove('prelude');finish();}});
