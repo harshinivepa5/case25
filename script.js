@@ -4551,30 +4551,54 @@ Do not look away from it.
     b.addEventListener('ended',()=>{b.currentTime=0;b.play().catch(()=>{});});
     return()=>{fade(a,0,1200);fade(b,0,1200);setTimeout(()=>{a.pause();b.pause();},1300);};
   }
+  // His story, as a short film: full-screen photos with a slow drift, soft dissolves between scenes,
+  // a running year in the corner, and one or two lines of narration per scene.
+  const FILM=[
+    {yr:'2001',k:'31 OCTOBER 2001 · VIJAYAWADA',t:'On a quiet night in Vijayawada,|a boy was born.',bg:'night',tone:'S'},
+    {yr:'2001',k:'THE FAMILY',t:'And a whole family|that could not stop smiling.',img:'family',tone:'W'},
+    {yr:'2001',k:'NAME ON RECORD',name:true,t:'They called him',tone:'W'},
+    {yr:'2006',k:'THE EARLY YEARS',t:'Cartoons. Chocolates.|And in second class, a kiss on a girl’s cheek.',sub:'Fast, from the very beginning.',bg:'warm',tone:'F'},
+    {yr:'2010',k:'KNOWN WEAKNESSES',words:['Football.','Badminton.','Dogs.','Any dance floor.'],t:'Football. Badminton. Dogs. Any dance floor.',bg:'green',tone:'F'},
+    {yr:'2014',k:'GROWING UP',t:'Pocket money went into games.|And a Rubik’s cube he would not put down.',img:'games',img2:'rubik',tone:'W'},
+    {yr:'2018',k:'THE STYLE ERA',t:'Then came the trends,|the clothes, and the mirror.',img:'style',tone:'F'},
+    {yr:'2020',k:'',t:'The attitude came free.',img:'5',tone:'F'},
+    {yr:'2022',k:'17 SEPTEMBER 2022',t:'A college competition.|Two strangers in a crowded room.',bg:'rose',tone:'S',songs:true},
+    {yr:'2022',k:'2:14 AM',t:'Late nights. Long texts.|Then she said she had a crush on someone.',bg:'phone',tone:'W'},
+    {yr:'2022',k:'AND HE REPLIED',t:'',img:'crush',contain:true,tone:'F',say:'And he replied with this.'},
+    {yr:'2023',k:'US',reel:['dance2','trip','pondy','shop','laugh','kiss'],words:['Concerts.','Go-karting.','Shopping.','Cooking at home.','Trips.','Dancing.','Singing, badly.','Laughing, a lot.'],t:'They said yes to everything.',tone:'F'},
+    {yr:'2025',k:'',t:'Twenty-five years.|One story.|Still being written.',img:'present',tone:'S'},
+    {yr:'2025',k:'31 OCTOBER 2025',t:'Happy 25th, Sam.',img:'6',tone:'W'}];
+  const FILM_TONE={W:{p:1.05,r:.9},F:{p:1.18,r:1},S:{p:.95,r:.84}};
   function lifeStory(screen,done){
-    let stopSongs=null;
-    const host=document.createElement('div');host.className='lf';host.innerHTML=`<div class="lf-stage"></div><div class="lf-chap"><small></small><b></b></div><div class="lf-cap"><small></small><p></p></div><div class="lf-flash"></div><button type="button" class="f4-btn lf-skip">SKIP TO THE FILE →</button>`;screen.append(host);
-    const stage=host.querySelector('.lf-stage'),sm=host.querySelector('.lf-cap small'),pp=host.querySelector('.lf-cap p'),chap=host.querySelector('.lf-chap'),flash=host.querySelector('.lf-flash');let stop=false;
+    let stopSongs=null,stop=false;
+    const host=document.createElement('div');host.className='film';
+    host.innerHTML=`<div class="film-stage"></div><div class="film-bars"></div><div class="film-yr"><span></span></div><div class="film-grain"></div><button type="button" class="f4-btn lf-skip">SKIP →</button>`;
+    screen.append(host);
+    const stage=host.querySelector('.film-stage'),yr=host.querySelector('.film-yr span');
     const wait=ms=>new Promise(r=>setTimeout(r,ms));
     host.querySelector('.lf-skip').addEventListener('click',()=>{stop=true;try{speechSynthesis.cancel();}catch{}stopSongs&&stopSongs();host.remove();done();});
-    (async()=>{await wait(400);let i=0;
-      for(const [tag,text,kind,tone,chapter] of LIFE){if(stop||!screen.isConnected)return;
-        if(kind==='college'&&!stopSongs)stopSongs=lifeSongs();
-        if(chapter){// chapter card on its own screen
-          stage.classList.add('lf-out');await wait(500);stage.innerHTML='';stage.classList.remove('lf-out');
-          const [k,t]=chapter.split(' · ');chap.querySelector('small').textContent=k;chap.querySelector('b').textContent=t||'';chap.classList.remove('on');void chap.offsetWidth;chap.classList.add('on');sfx('ink');
-          await wait(2200);chap.classList.remove('on');await wait(400);}
-        const tr=LIFE_TR[i++%LIFE_TR.length];
-        const old=stage.firstElementChild;if(old){old.classList.add('lf-leave-'+tr);await wait(450);}
-        const pop=kind!=='guess'&&kind!=='crush'?`<figure class="lf-pop"><img src="assets/file-s/${kind}.jpg" alt="" onerror="this.parentNode.remove()">${LIFE_CAP[kind]?`<figcaption>${LIFE_CAP[kind]}</figcaption>`:''}</figure>`:'';
-        stage.innerHTML=`<div class="lf-frame lf-in-${tr}">${lifeScene(kind)}${pop}</div>`;
-        if(tr==='flash'){flash.animate([{opacity:0},{opacity:.9,offset:.1},{opacity:0}],{duration:600});sfx('key');}else sfx(tr==='page'?'paper':'ink');
-        sm.textContent=tag;pp.textContent='';
-        if(kind==='name'){const b2=stage.querySelector('b');for(let k=1;k<=LIFE_NAME.length;k++){if(stop)return;b2.textContent=LIFE_NAME.slice(0,k);await wait(90);}sfx('stamp');}
-        if(kind==='closed'||kind==='open')setTimeout(()=>sfx('stamp'),kind==='open'?500:1200);
-        pp.textContent=text;pp.classList.remove('on');void pp.offsetWidth;pp.classList.add('on');
-        await narrate(text,T[tone]||T.W);if(kind==='name')await narrate(LIFE_NAME.toLowerCase(),T.W);await wait(900);}
-      if(!stop){stopSongs&&stopSongs();host.classList.add('out');setTimeout(()=>{host.remove();done();},1000);}})();
+    const bgOf=sc=>sc.img?`<div class="film-bgblur" style="background-image:url('assets/file-s/${sc.img}.jpg')"></div><div class="film-bg contain" style="background-image:url('assets/file-s/${sc.img}.jpg')"></div>`:`<div class="film-bg plain ${sc.bg||''}"></div>`;
+    let curYr=0;
+    const setYear=y=>{const to=Number(y),from=curYr||to;curYr=to;const t0=performance.now();const k=()=>{const e=Math.min(1,(performance.now()-t0)/1200);yr.textContent=Math.round(from+(to-from)*e);if(e<1)requestAnimationFrame(k);};k();};
+    (async()=>{await wait(500);
+      for(const sc of FILM){if(stop||!screen.isConnected)return;
+        if(sc.songs&&!stopSongs)stopSongs=lifeSongs();
+        setYear(sc.yr);
+        const el=document.createElement('section');el.className='film-scene';
+        const lines=(sc.words&&!sc.reel?'':(sc.t||'')).split('|').filter(Boolean);
+        el.innerHTML=`${sc.reel?`<div class="film-reel">${sc.reel.map((r,i)=>`<div class="film-slide"><div class="film-bgblur" style="background-image:url('assets/file-s/${r}.jpg')"></div><div class="film-bg contain" style="background-image:url('assets/file-s/${r}.jpg')"></div></div>`).join('')}</div>`:bgOf(sc)}
+          ${sc.img2?`<figure class="film-inset"><img src="assets/file-s/${sc.img2}.jpg" alt=""></figure>`:''}
+          <div class="film-shade"></div>
+          <div class="film-cap">${sc.k?`<small>${sc.k}</small>`:''}${lines.map(l=>`<p>${f3sEsc(l)}</p>`).join('')}${sc.name?`<h1 class="film-name"></h1>`:''}${sc.words?`<div class="film-words">${sc.words.map(w=>`<span>${w}</span>`).join('')}</div>`:''}${sc.sub?`<em>${sc.sub}</em>`:''}</div>`;
+        stage.append(el);const old=[...stage.children].slice(0,-1);
+        requestAnimationFrame(()=>el.classList.add('in'));old.forEach(o=>{o.classList.add('out');setTimeout(()=>o.remove(),1800);});
+        const ps=[...el.querySelectorAll('.film-cap p,.film-cap small,.film-cap em')];ps.forEach((p,i)=>p.style.animationDelay=(.6+i*.7)+'s');
+        if(sc.reel){const bgs=[...el.querySelectorAll('.film-reel .film-slide')];let r=0;const tick=()=>{if(!el.isConnected||stop)return;bgs.forEach((b,i)=>b.classList.toggle('on',i===r%bgs.length));r++;setTimeout(tick,2200);};tick();}
+        const tone=FILM_TONE[sc.tone]||FILM_TONE.W;
+        if(sc.name){await wait(1400);await narrate('They called him',tone);const h=el.querySelector('.film-name');for(let k=1;k<=LIFE_NAME.length;k++){if(stop)return;h.textContent=LIFE_NAME.slice(0,k);await wait(85);}await narrate(LIFE_NAME.toLowerCase(),tone);await wait(1400);continue;}
+        if(sc.words){const ws=[...el.querySelectorAll('.film-words span')];await wait(900);if(sc.reel)await narrate(sc.t,tone);for(const w of ws){if(stop)return;ws.forEach(x=>x.classList.remove('on'));w.classList.add('on');await narrate(w.textContent.replace(/,.*$/,''),tone);await wait(250);}await wait(1200);continue;}
+        await wait(900);await narrate(sc.say||lines.join(' ')+(sc.sub?' '+sc.sub:''),tone);await wait(sc.contain?3500:1600);}
+      if(stop)return;await wait(800);stopSongs&&stopSongs();host.classList.add('done');setTimeout(()=>{host.remove();done();},1400);})();
   }
   function fileSBuild(screen){
     if(!screen.dataset.lifeDone&&!reducedMotion){screen.dataset.lifeDone='1';screen.classList.add('fs');lifeStory(screen,()=>{screen.innerHTML='';fileSBuild(screen);});return;}
