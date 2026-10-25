@@ -3509,6 +3509,82 @@ function f3sFindLines(img,boxes){
       sfx('dread');setTimeout(()=>{sfx('stamp');sfx('stamp');shake(12);},1150);},400);}
     else if(/never looked stronger/.test(t)){const c=L.querySelector('.s4-cell');if(c){c.insertAdjacentHTML('beforeend','<b class="s4-stamp red">CHARGED · MURDER</b>');sfx('stamp');shake(8);}}
   }
+  // File 005: Thomas's confession, told by M in the chair. Each line is spoken with subtitles, and what he describes
+  // appears beside him as he says it.
+  const CONF=[
+    ['Hello, Detective.',{pitch:.45,rate:.7},'turn'],
+    ['Yes. It’s me.',{pitch:.5,rate:.74}],
+    ['I am M.',{pitch:.32,rate:.62,red:true},'stampM'],
+    ['Nine years ago a musician died on my stage.',{pitch:.42,rate:.74},'photo'],
+    ['Peter rewrote the record that night, and I let him.',{pitch:.45,rate:.76},'record'],
+    ['That is the part of this I will carry.',{pitch:.4,rate:.7},'clear'],
+    ['Then I opened his safe.',{pitch:.5,rate:.76},'safe'],
+    ['He had kept a file on me for nine years.',{pitch:.45,rate:.76},'files'],
+    ['Everything he needed to bury me with the fire, the day anyone asked.',{pitch:.42,rate:.76},'fileStamp'],
+    ['So I gave him a different story to be buried in.',{pitch:.38,rate:.7,red:true},'clear'],
+    ['My blood, from a hospital fridge.',{pitch:.45,rate:.76},'blood'],
+    ['His card, from a bank counter.',{pitch:.45,rate:.76},'card'],
+    ['His name, typed into a machine no one was watching.',{pitch:.45,rate:.76},'kiosk'],
+    ['A jacket, folded the way I fold it.',{pitch:.42,rate:.74},'jacket'],
+    ['I did not lie to you once. Every record you read was real.',{pitch:.45,rate:.76},'clear'],
+    ['I only chose the order you read them in.',{pitch:.35,rate:.68}],
+    ['Peter is in a cell for a murder that never happened.',{pitch:.45,rate:.76},'cell'],
+    ['He is not innocent. He is just not guilty of this.',{pitch:.42,rate:.74}],
+    ['And I am nowhere.',{pitch:.35,rate:.66},'clear'],
+    ['Thank you, Detective.',{pitch:.4,rate:.68,red:true},'away'],
+    ['I couldn’t have put him there without you.',{pitch:.32,rate:.62,red:true}]];
+  function confessionScene(screen,done){
+    const src=document.querySelector('#cliffhanger .cc-stage');
+    screen.classList.add('conf-screen');
+    screen.innerHTML='<div class="conf-black"></div>';
+    const st=src.cloneNode(true);st.className='cc-stage';st.querySelectorAll('.cc-sub,.cc-props,.cc-stamp').forEach(n=>{n.innerHTML='';n.className=n.classList[0];});
+    st.querySelector('.cc-chair').className='cc-chair';screen.append(st);
+    const fx=document.createElement('div');fx.className='s4fx conf-fx';st.append(fx);
+    const go=document.createElement('button');go.type='button';go.className='f4-btn conf-go';go.hidden=true;go.textContent='CLOSE CASE 25 →';screen.append(go);
+    const sub=st.querySelector('.cc-sub'),chair=st.querySelector('.cc-chair'),ember=st.querySelector('.cc-ember'),ck=st.querySelector('.cc-kicker'),stamp=st.querySelector('.cc-stamp'),room=st.querySelector('.cc-room');
+    let dead=false;const alive=()=>!dead&&screen.isConnected;
+    const wait=ms=>new Promise(r=>setTimeout(r,ms));
+    const end=()=>{if(dead)return;dead=true;try{speechSynthesis.cancel();}catch{}cliffStop();};
+    go.addEventListener('click',()=>{end();done();});
+    const add=html=>{fx.insertAdjacentHTML('beforeend',html);return fx.lastElementChild;};
+    const clear=()=>[...fx.children].forEach(n=>{n.classList.add('out');setTimeout(()=>n.remove(),900);});
+    const shake=(px=8)=>st.animate([{transform:'none'},{transform:`translate(${-px}px,${px/2}px)`},{transform:`translate(${px*.7}px,${-px/3}px)`},{transform:'none'}],{duration:320});
+    const card=(tag,title,body,cls='')=>{clear();setTimeout(()=>{if(alive()){add(`<div class="conf-card ${cls}"><small>${tag}</small><h4>${title}</h4><p>${body}</p></div>`);sfx('paper');}},350);};
+    const beat={
+      turn:()=>{chair.classList.add('turning');cliffPhase('mystery');setTimeout(()=>chair.classList.add('turned'),3200);},
+      stampM:()=>{stamp.textContent='M = THOMAS REED';stamp.className='cc-stamp on wide';stamp.animate([{opacity:0,transform:'translate(-50%,-50%) scale(2.6)'},{opacity:1,transform:'translate(-50%,-50%) scale(1)'}],{duration:380,fill:'forwards'});sfx('stamp');shake(12);setTimeout(()=>stamp.animate([{opacity:1},{opacity:0}],{duration:700,fill:'forwards'}),2600);},
+      photo:()=>{clear();const ph=document.querySelector('#cliffhanger .cliff-wrap .cliff-subject').cloneNode(true);ph.className='cliff-subject burnt conf-photo on burning';setTimeout(()=>{if(alive()){fx.append(ph);sfx('key');}},350);},
+      record:()=>card('MAINTENANCE RECORD MR-114','12 Sep — Electrical inspection','<s>SCHEDULED</s> → <b>COMPLETED</b><br>Edited 23 Sep 2016 · 01:12 · user: <b>pshaw</b>','rec'),
+      clear:()=>clear(),
+      safe:()=>card('OFFICE SAFE LOG · THE LANTERN','Tue 30 Sep · 23:05','Code entered: <b>T. REED</b><br>Contents: “PROJECT NORTH QUAY / FIRE” · kept by P. Shaw'),
+      files:()=>{clear();setTimeout(()=>{if(!alive())return;add('<div class="s4-files"></div>');[0,1,3].forEach((i,k)=>setTimeout(()=>alive()&&s4AddFile(fx,i),k*700));},350);},
+      fileStamp:()=>{const f=fx.querySelector('.s4-files');if(f){f.insertAdjacentHTML('beforeend','<b class="s4-stamp">KEPT BY P. SHAW</b>');sfx('stamp');shake(6);}},
+      blood:()=>card('ST. AGNES · BLOOD BANK','Autologous donation · T. Reed · A+','2 units stored 12 Sep<br><b>Withdrawn by patient · 10 Oct · 09:40</b>','blood'),
+      card:()=>card('BRANCH COLLECTION SLIP','Replacement card ending 4417','Collected 02 Oct · 11:20<br>Signed for: <b>T. R.</b>'),
+      kiosk:()=>{clear();setTimeout(()=>{if(alive()){add('<div class="conf-receipt">LAKE ASH BOAT HIRE<br>KIOSK 02 · 14 OCT · 17:40<hr>HIRER <b>P. SHAW</b><br>ID CHECK <b>NONE</b><hr>CARD **** 4417</div>');sfx('paper');}},350);},
+      jacket:()=>card('LAKE ASH SEARCH · ITEM 2','Jacket, under the stern seat','<b>Folded.</b> Watch in the pocket, stopped at 23:47.'),
+      cell:()=>{clear();setTimeout(()=>{if(!alive())return;add(`<div class="s4-cell"><svg viewBox="0 0 400 300"><rect width="400" height="300" fill="#07080a"/><rect x="0" y="230" width="400" height="70" fill="#0d0d0f"/><path d="M200 60 L120 300 H330 L240 60Z" fill="rgba(220,230,250,.14)"/><g class="s4-peter" fill="#020203" stroke="rgba(210,225,250,.6)" stroke-width="2"><rect x="150" y="196" width="110" height="18" rx="3"/><circle cx="205" cy="150" r="17"/><path d="M180 168 Q205 160 230 168 L236 210 L174 210Z"/><path d="M178 196 L190 246 H204 L200 210Z M232 196 L220 246 H206 L210 210Z"/></g></svg><div class="s4-bars"></div><small>PETER SHAW · CELL 3</small></div>`);setTimeout(()=>{sfx('stamp');shake(10);},1100);},350);},
+      away:()=>{clear();chair.classList.add('away');cliffPhase('rain');ember.animate([{opacity:1},{opacity:0}],{duration:3000,fill:'forwards'});}};
+    const line=async(text,{pitch=.45,rate=.76,red:isRed=false}={})=>{
+      sub.className='cc-sub'+(isRed?' red':'');const words=text.split(' ');sub.innerHTML=words.map(w=>`<span>${f3sEsc(w)}</span>`).join(' ');
+      const spans=[...sub.children],ends=[];let acc=0;words.forEach(w=>{acc+=w.length+1;ends.push(acc);});
+      sub.animate([{opacity:0},{opacity:1}],{duration:300,fill:'forwards'});
+      if(isRed){shake(8);sfx('sting');}
+      await cliffSpeak(text,pitch,rate,ci=>spans.forEach((s2,i)=>{if(ends[i]-1<=ci+1||ci>=text.length)s2.classList.add('on');}));
+      spans.forEach(s2=>s2.classList.add('on'));await wait(450);
+      if(alive())sub.animate([{opacity:1},{opacity:0}],{duration:400,fill:'forwards'});await wait(350);};
+    screen.addEventListener('click',e=>{if(e.target.closest('.conf-go'))return;if(!dead){dead=true;try{speechSynthesis.cancel();}catch{}cliffStop();showText();}});
+    const showText=()=>{st.remove();screen.classList.add('conf-done');screen.insertAdjacentHTML('beforeend',`<div class="conf-text"><small>INCOMING TRANSMISSION · SOURCE IDENTIFIED · THOMAS REED · ALIVE</small><h2>YOU FOUND ME.</h2>${CONF.map(([t,o])=>`<p class="${o.red?'red':''}">${f3sEsc(t)}</p>`).join('')}<i>— T.</i></div>`);screen.append(go);go.hidden=false;};
+    (async()=>{
+      cliffScore();await wait(300);
+      st.classList.add('on');ck.textContent='INCOMING TRANSMISSION · SOURCE IDENTIFIED · THOMAS REED';ck.style.opacity=1;f4Decode(ck,1400);sfx('ink');
+      room.animate([{transform:'scale(1)'},{transform:'scale(1.18) translateY(3%)'}],{duration:14000,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
+      await wait(3600);
+      for(const [t,o,b] of CONF){if(!alive())return;if(b)beat[b]();if(b==='turn'){await wait(4200);}await line(t,o);}
+      if(!alive())return;await wait(2500);if(!alive())return;
+      st.animate([{opacity:1},{opacity:0}],{duration:1400,fill:'forwards'});await wait(1300);if(alive()){dead=true;cliffStop();showText();}
+    })();
+  }
   // Story-telling text: each word surfaces from a soft blur, one after another; names glow gold, a line starting
   // with "!" is the warning and comes in red.
   function cineTell(screen){
@@ -4080,6 +4156,7 @@ Do not look away from it.
   }
   const f5Continue=id=>{const next=f5Next(id);if(next)f5Go(next);else f5Finish();};
   function f5BuildStory(screen,id){
+    if(id==='s4'&&!reducedMotion){confessionScene(screen,()=>f5Continue('s4'));return;}
     cineStory(screen,F5_STORY[id],id==='s4'?'reveal':'lakenight',()=>f5Continue(id));
   }
   // two choice questions, then a written one that is always accepted and answered with the file's own reading
@@ -4126,6 +4203,6 @@ Do not look away from it.
     progress.file05Complete=true;persistProgress();
     f5.screen='why';saveF5();closeF3Stage();paintProgress();
   }
-  function f5Skip(){f3sCloseModal();f5Continue(f5.screen);}
+  function f5Skip(){try{speechSynthesis.cancel();}catch{}cliffStop();f3sCloseModal();f5Continue(f5.screen);}
   function f5Retry(){f5={screen:'s1',attempts:{},p1step:0,p2step:0,p3step:0,p1text:'',p3text:''};saveF5();progress.file05Complete=false;persistProgress();paintProgress();f3sCloseModal();f5Go('s1');}
 })();
