@@ -3453,3 +3453,29 @@ body:has(#f3Stage.visible) #devFileSButton,body.wall-cinematic #devFileSButton{d
 .lf-pop img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}
 .lf-pop figcaption{position:absolute;left:0;right:0;bottom:6px;text-align:center;font:italic 14px var(--serif);color:#3a2a1a}
 @keyframes lfPop{from{opacity:0;transform:rotate(-20deg) scale(.3)}to{opacity:1;transform:rotate(-6deg) scale(1)}}
+/* FILE S story: chapters and transitions */
+.lf-chap{position:absolute;inset:0;z-index:4;display:grid;place-content:center;text-align:center;pointer-events:none;opacity:0}
+.lf-chap small{color:#c99a55;font:13px var(--mono);letter-spacing:.4em}
+.lf-chap b{margin-top:12px;font:clamp(34px,5vw,72px) var(--type);color:#f6ecd8;letter-spacing:.06em}
+.lf-chap.on{animation:lfChap 2.2s ease both}
+@keyframes lfChap{0%{opacity:0;transform:scale(1.15);filter:blur(10px)}25%{opacity:1;transform:none;filter:none}80%{opacity:1}100%{opacity:0;transform:scale(.96)}}
+.lf-flash{position:absolute;inset:0;z-index:5;background:#fff;opacity:0;pointer-events:none}
+.lf-stage.lf-out{opacity:0;transition:opacity .45s}
+.lf-in-zoom{animation:lfInZoom 1s cubic-bezier(.2,.7,.2,1) both}@keyframes lfInZoom{from{opacity:0;transform:scale(1.25);filter:blur(8px)}}
+.lf-in-whip{animation:lfInWhip .7s cubic-bezier(.2,.8,.2,1) both}@keyframes lfInWhip{from{opacity:0;transform:translateX(60%) rotate(4deg);filter:blur(10px)}}
+.lf-in-flash{animation:lfInFlash .8s ease both}@keyframes lfInFlash{from{opacity:0;filter:brightness(3)}}
+.lf-in-blur{animation:lfInBlur 1.2s ease both}@keyframes lfInBlur{from{opacity:0;filter:blur(24px)}}
+.lf-in-page{transform-origin:0 50%;animation:lfInPage .9s cubic-bezier(.3,0,.2,1) both}@keyframes lfInPage{from{opacity:0;transform:perspective(1400px) rotateY(70deg)}}
+.lf-in-ink{animation:lfInInk 1.2s ease both}@keyframes lfInInk{from{opacity:0;clip-path:circle(0% at 50% 50%)}to{clip-path:circle(80% at 50% 50%)}}
+[class*="lf-leave-"]{transition:all .45s ease-in}
+.lf-leave-zoom{opacity:0;transform:scale(.85)}.lf-leave-whip{opacity:0;transform:translateX(-60%) rotate(-4deg)}.lf-leave-flash{opacity:0}.lf-leave-blur{opacity:0;filter:blur(20px)}.lf-leave-page{opacity:0;transform:perspective(1400px) rotateY(-70deg);transform-origin:100% 50%}.lf-leave-ink{opacity:0;clip-path:circle(0% at 50% 50%)}
+.lf-slam{animation:lfSlam .5s cubic-bezier(.3,0,.2,1) both;transform-box:fill-box;transform-origin:center}@keyframes lfSlam{from{transform:scale(2.4) rotate(-12deg);opacity:0}}
+.lf-stampin{animation:lfSlam .4s cubic-bezier(.3,0,.2,1) 1.2s both;transform-box:fill-box;transform-origin:center}
+.lf-dog{animation:lfDog 1.6s ease-in-out infinite alternate}@keyframes lfDog{from{transform:translate(620px,420px)}to{transform:translate(430px,400px)}}
+.lf-tail{animation:lfWag .25s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:100% 100%}@keyframes lfWag{to{transform:rotate(25deg)}}
+.lf-kart{animation:lfKart 2.6s linear var(--d) infinite}@keyframes lfKart{from{transform:translate(-120px,330px)}to{transform:translate(920px,330px)}}
+.lf-bags rect{animation:lfBounce .5s ease-in-out var(--d) infinite alternate;transform-box:fill-box}
+.lf-steam circle{animation:lfFloat 2s ease-out var(--d) infinite;opacity:0;transform-box:fill-box}
+.lf-car{animation:lfCarT 4s linear infinite}@keyframes lfCarT{from{transform:translate(-100px,320px)}to{transform:translate(900px,320px)}}
+.lf-notes2 text{animation:lfFloat 2.4s ease-out var(--d) infinite;opacity:0}
+.lf-censor{animation:lfWin 1.4s steps(1) infinite}

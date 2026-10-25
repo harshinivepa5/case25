@@ -3719,14 +3719,14 @@ function f3sFindLines(img,boxes){
   let narratorPick=null;
   const voicesReady=()=>new Promise(r=>{try{if(!('speechSynthesis' in window))return r();if(speechSynthesis.getVoices().length)return r();const on=()=>{speechSynthesis.removeEventListener('voiceschanged',on);r();};speechSynthesis.addEventListener('voiceschanged',on);setTimeout(r,2500);}catch{r();}});
   try{speechSynthesis.getVoices();}catch{}
-  async function narrate(text){await voicesReady();return narrateNow(text);}
-  function narrateNow(text){
+  async function narrate(text,tone){await voicesReady();return narrateNow(text,tone);}
+  function narrateNow(text,tone){
     return new Promise(res=>{
       const words=text.split(/\s+/).length,est=Math.max(1200,words*380);let done=false,started=false;const fin=()=>{if(!done){done=true;res();}};
       try{
         if(soundMuted||!('speechSynthesis' in window)||!speechSynthesis.getVoices().length)throw 0;
         if(!narratorPick){const vs=speechSynthesis.getVoices();narratorPick=['Samantha','Karen','Moira','Serena','Tessa','Google UK English Female','Microsoft Libby','Microsoft Sonia','Microsoft Aria','Veena'].map(n=>vs.find(v=>v.name.includes(n))).find(Boolean)||vs.find(v=>/^en/i.test(v.lang)&&!/Daniel|Arthur|Fred|Alex|Male/i.test(v.name))||null;}
-        const u=new SpeechSynthesisUtterance(text.replace(/…/g,'...'));if(narratorPick)u.voice=narratorPick;u.pitch=1;u.rate=.9;u.volume=1;
+        const u=new SpeechSynthesisUtterance(text.replace(/…/g,'...'));if(narratorPick)u.voice=narratorPick;u.pitch=(tone&&tone.p)||1;u.rate=(tone&&tone.r)||.9;u.volume=1;
         u.onstart=()=>{started=true;};u.onend=()=>setTimeout(fin,250);u.onerror=()=>setTimeout(fin,est);
         speechSynthesis.speak(u);setTimeout(()=>{if(!started)fin();},est+1500);setTimeout(fin,est*2.5+3000);
       }catch{setTimeout(fin,est);}
@@ -4425,34 +4425,40 @@ Do not look away from it.
   }
   // FILE S opens with his story: a life told in short scenes, each read by the narrator, before his file itself.
   const LIFE_NAME='SHAIK JAMEEL AHMAD';
+  // tones: W warm, F fun and bouncy, S soft and slow, M mysterious
+  const T={W:{p:1.05,r:.92},F:{p:1.2,r:1.02},S:{p:.95,r:.84},M:{p:.85,r:.82}};
   const LIFE=[
-    ['31 OCTOBER 2001 · VIJAYAWADA','On the thirty-first of October, two thousand and one, in Vijayawada, a baby boy was born.','born'],
-    ['THE FAMILY','And the whole family could not stop smiling at him.','family'],
-    ['THE NAME','They gave him a name.','name'],
-    ['AGE 2','Even then, there was one thing that always made him smile. Something sweet, wrapped in shiny paper.','choco'],
-    ['AGE 5','He grew up glued to the television. Cartoons first. Everything else later.','tv'],
-    ['CLASS 2 · CASE FILE 001','In second class, he kissed a girl on the cheek. Second class. The subject was fast from the very beginning.','peck'],
-    ['AGE 8','Evenings meant cards and carrom with the family. He took every game far too seriously.','cards'],
-    ['A FRIEND’S HOUSE','Then one day, at a friend’s house, he saw a football in the corner.','ball'],
-    ['FOOTBALL','He picked it up, dragged everyone outside, and from that day on, it was football.','football'],
-    ['BADMINTON','Then came badminton. Same story. He did not like to lose.','badminton'],
-    ['AGE 11 TO 15','Pocket money. Every rupee went straight into games.','games'],
-    ['THE CUBE','And a Rubik’s cube, which he refused to put down until it was solved.','rubik'],
-    ['AGE 15 TO 20','Then he discovered style. Clothes, sport, and the dance floor.','style'],
-    ['THE DANCE FLOOR','He loved to dance. He still does.','dance'],
-    ['COLLEGE · THE COMPETITION','In college, at a competition, he met a girl.','college'],
-    ['AND THEN','They started talking. Slowly. Then a little more every day.','talk'],
-    ['LATE NIGHTS','Then the texts started going later. And later. Phone under the blanket, long after everyone was asleep.','night'],
-    ['ONE NIGHT','And one night, she typed something.','crush'],
-    ['THE GUESS','He read it twice. And then he took his guess.','guess'],
-    ['THE NEXT DAY · CREAM STONE','The next day, they went out. Ice cream at Cream Stone, and far too much laughing.','date'],
-    ['PLAYER TWO','After that, every day was a new adventure. Late nights on the PS5, and neither of them ever admitted losing.','ps5'],
-    ['THE POTTERY CLASS','A pottery workshop. Nothing they made was round. Everything they made was kept.','pottery'],
-    ['LIVE MUSIC','Concerts, live music, new cafés every other weekend.','concert'],
-    ['THE COURT','Badminton, then pickleball. He still did not like to lose. Now neither did she.','pickle'],
-    ['PONDY','And then, Pondy. The sea, the streets, and a cake to celebrate being together.','pondy'],
-    ['TOGETHER','Every day after that, still together. Still laughing.','together'],
-    ['TODAY · 31 OCTOBER','And today, they are celebrating again. Because today is his birthday.','bday']];
+    ['PROLOGUE','Every detective has a file somewhere. This one took twenty-five years to write.','open','M','PROLOGUE · THE SUBJECT'],
+    ['VIJAYAWADA · 31 OCTOBER 2001','On a quiet October night, in Vijayawada, the case was opened. A baby boy.','born','S','CHAPTER 1 · THE ARRIVAL'],
+    ['THE FAMILY','And a whole family that could not stop smiling at him.','family','W','CHAPTER 2 · THE FAMILY'],
+    ['NAME ON RECORD','They wrote his name down for the very first time.','name','W'],
+    ['EARLY EVIDENCE · EXHIBIT 1','Exhibit one. Cartoons. Glued to the TV, every single day.','tv','F','CHAPTER 3 · EARLY EVIDENCE'],
+    ['EARLY EVIDENCE · EXHIBIT 2','Exhibit two. Chocolates kept going missing from the fridge. The suspect never confessed.','choco','F'],
+    ['CLASS 2 · CASE FILE 001','And exhibit three. In second class, he kissed a girl on the cheek. In second class! The subject was fast from the very beginning.','peck','F'],
+    ['A FRIEND’S HOUSE','Then one day, at a friend’s house, he spotted a football in the corner.','ball','W','CHAPTER 4 · THE THINGS HE LOVES'],
+    ['FOOTBALL','He dragged everyone outside. And that was it. Football, forever.','football','F'],
+    ['BADMINTON','Then badminton. He did not like to lose. He still does not like to lose.','badminton','F'],
+    ['THE DOGS','And dogs. Every dog. His one weakness, officially on record.','dog','W'],
+    ['THE DANCE FLOOR','Put on a song, and the subject takes over the floor.','dance','F'],
+    ['AGE 11 TO 15','Pocket money went straight into games.','games','F','CHAPTER 5 · GROWING UP'],
+    ['THE CUBE','A Rubik’s cube he refused to put down until it was solved.','rubik','W'],
+    ['THE STYLE ERA','The subject grew taller. The hair grew taller.','style','F'],
+    ['17 SEPTEMBER 2022 · THE COMPETITION','And then, on the seventeenth of September, twenty twenty-two, at a college competition, the case took a turn no detective saw coming.','college','S','CHAPTER 6 · THE COMPETITION'],
+    ['2:14 AM','They started talking. Then texting. Late. Very late.','night','W','CHAPTER 7 · THE MESSAGES'],
+    ['ONE NIGHT','One night, she typed: I have a crush on someone.','crush','S'],
+    ['THE GUESS','And he replied with this.','guess','F'],
+    ['CONCERTS','After that, they said yes to everything. Concerts.','concert','F','CHAPTER 8 · US'],
+    ['GO-KARTING','Go-karting. Very competitive go-karting.','kart','F'],
+    ['SHOPPING','Shopping trips that took the whole day.','shop','F'],
+    ['COOKING AT HOME','Cooking at home. Some of it was even edible.','cook','F'],
+    ['THE TRIPS','Trips. New places, new roads.','trip','W'],
+    ['PONDY','Pondy, and the sea.','pondy','W'],
+    ['DANCING','They danced.','dance2','W'],
+    ['SINGING','They sang, badly, and loudly.','sing','F'],
+    ['LAUGHING','They laughed until it hurt.','laugh','W'],
+    ['AND','And a few things the case file will keep private.','kiss','S'],
+    ['THE PRESENT','Twenty-five years of evidence. One conclusion.','present','S','CHAPTER 9 · THE PRESENT'],
+    ['CASE 25','Subject loved. Case file updated.','closed','W','EPILOGUE']];
   const kidFig=(x,y,s=1,cls='',girl=false)=>`<g class="lf-kid ${cls}" transform="translate(${x} ${y}) scale(${s})"><circle cx="0" cy="-62" r="12" fill="#1a1412"/>${girl?'<circle cx="-12" cy="-66" r="5" fill="#1a1412"/><circle cx="12" cy="-66" r="5" fill="#1a1412"/>':''}<path d="M-11 -50 Q0 -55 11 -50 L${girl?16:12} -18 L${girl?-16:-12} -18Z" fill="${girl?'#9a3b52':'#2f5a8a'}"/><path d="M-8 -18 L-9 0 L-2 0 L0 -18Z M1 -18 L3 0 L10 0 L8 -18Z" fill="#1d2a44"/></g>`;
   const adult=(x,c)=>`<g transform="translate(${x} 330)"><circle cx="0" cy="-118" r="16" fill="${c}"/><path d="M-20 -100 Q0 -108 20 -100 L26 -30 L-26 -30Z" fill="${c}"/><path d="M-18 -30 L-16 0 L-4 0 L0 -30Z M2 -30 L4 0 L16 0 L18 -30Z" fill="${c}"/></g>`;
   function lifeScene(kind){
@@ -4477,6 +4483,18 @@ Do not look away from it.
     if(kind==='crush')return chat([['l',90,'can i tell you something'],['r',134,'always'],['l',178,'i have a crush on someone'],['r',222,'oh?'],['l',266,'…']]);
     if(kind==='guess')return `<div class="lf-guess"><img src="assets/file-s/crush.jpg" alt="" onerror="this.parentNode.classList.add('noimg');this.remove()"><div class="lf-guess-fb">${chat([['l',90,'i have a crush on someone'],['r',140,'wait'],['r',184,'am i your crush? 👀']])}</div></div>`;
     if(kind==='date')return W+`<rect width="800" height="450" fill="#f7e3d0"/><rect x="0" y="0" width="800" height="90" fill="#5a2a5e"/><text x="400" y="58" text-anchor="middle" font-size="34" fill="#fff" font-family="Libre Baskerville,serif" font-style="italic">Cream Stone</text><rect x="200" y="300" width="400" height="20" fill="#8a6a4a"/><rect x="230" y="320" width="10" height="100" fill="#6a4a2a"/><rect x="560" y="320" width="10" height="100" fill="#6a4a2a"/>${kidFig(250,420,2.4,'lf-run')}${kidFig(560,420,2.4,'lf-run2',true)}<g class="lf-cone"><path d="M380 300 L400 250 L420 300Z" fill="#d9a35a"/><circle cx="400" cy="244" r="18" fill="#f3b6c8"/><circle cx="392" cy="232" r="12" fill="#f8e7c0"/></g><g class="lf-hearts" fill="#e0607a">${[330,420,480].map((x,i)=>`<path style="--d:${i*.7}s" d="M${x} 200 c-6-8-18-4-18 6 0 8 18 18 18 18s18-10 18-18c0-10-12-14-18-6z"/>`).join('')}</g><text class="lf-smack" x="560" y="200" font-size="24" fill="#a3201a" font-family="Special Elite,serif">haha</text></svg>`;
+    if(kind==='open')return W+`<rect width="800" height="450" fill="#0c0906"/><ellipse cx="400" cy="230" rx="300" ry="190" fill="rgba(255,210,150,.12)"/><g class="lf-slam"><rect x="250" y="110" width="300" height="220" fill="#c9a874"/><path d="M250 110 h110 l14 -18 h176 v18Z" fill="#b8955e"/><text x="400" y="190" text-anchor="middle" font-size="22" fill="#2a1d12" font-family="Special Elite,serif">CASE 25</text><text x="400" y="230" text-anchor="middle" font-size="16" fill="#2a1d12" font-family="DM Mono,monospace">SUBJECT: UNKNOWN</text><g transform="rotate(-10 400 280)"><rect x="300" y="258" width="200" height="40" fill="none" stroke="#a3201a" stroke-width="5"/><text x="400" y="286" text-anchor="middle" font-size="22" fill="#a3201a" font-family="Special Elite,serif">CLASSIFIED</text></g></g></svg>`;
+    if(kind==='dog')return W+`<rect width="800" height="450" fill="#cfe6c4"/><rect y="340" width="800" height="110" fill="#8bbf6a"/>${kidFig(300,420,2.4)}<g class="lf-dog"><ellipse cx="0" cy="-30" rx="46" ry="26" fill="#c98a4a"/><circle cx="44" cy="-56" r="20" fill="#c98a4a"/><path d="M50 -74 l14 -10 l-4 18z" fill="#8a5a2a"/><circle cx="50" cy="-60" r="3" fill="#222"/><path d="M-40 -40 q-30 -20 -24 -40" stroke="#c98a4a" stroke-width="8" fill="none" class="lf-tail"/><rect x="-30" y="-10" width="8" height="24" fill="#c98a4a"/><rect x="24" y="-10" width="8" height="24" fill="#c98a4a"/></g><g class="lf-hearts" fill="#e0607a"><path style="--d:0s" d="M380 200 c-6-8-18-4-18 6 0 8 18 18 18 18s18-10 18-18c0-10-12-14-18-6z"/></g></svg>`;
+    if(kind==='kart')return W+`<rect width="800" height="450" fill="#2a2a32"/><path d="M0 300 Q400 200 800 300 V450 H0Z" fill="#3c3c44"/><g fill="none" stroke="#e8e0c8" stroke-dasharray="20 18" stroke-width="4"><path d="M0 360 Q400 260 800 360"/></g>${[0,1].map(k=>`<g class="lf-kart" style="--d:${k*.6}s"><rect x="-50" y="-30" width="100" height="34" rx="10" fill="${k?'#e0405a':'#3aa0e0'}"/><circle cx="-30" cy="6" r="12" fill="#111"/><circle cx="30" cy="6" r="12" fill="#111"/><circle cx="0" cy="-42" r="14" fill="${k?'#f3e3c7':'#e8c9a5'}"/><rect x="-16" y="-58" width="32" height="12" rx="6" fill="#222"/></g>`).join('')}<rect x="680" y="200" width="10" height="110" fill="#ddd"/><path d="M690 200 h60 v40 h-60z" fill="url(#chk)"/><defs><pattern id="chk" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#111"/><rect x="10" y="10" width="10" height="10" fill="#111"/><rect x="10" width="10" height="10" fill="#fff"/><rect y="10" width="10" height="10" fill="#fff"/></pattern></defs></svg>`;
+    if(kind==='shop')return W+`<rect width="800" height="450" fill="#f2e3d6"/><rect x="60" y="60" width="300" height="240" fill="#fff" stroke="#c9a874" stroke-width="6"/><text x="210" y="110" text-anchor="middle" font-size="26" fill="#a3201a" font-family="Special Elite,serif">SALE</text>${kidFig(480,420,2.4)}${kidFig(600,420,2.4,'',true)}<g class="lf-bags">${['#e0405a','#3aa0e0','#e6c25a','#5f9'].map((c,i)=>`<rect style="--d:${i*.3}s" x="${430+i*48}" y="${330-(i%2)*10}" width="36" height="44" rx="4" fill="${c}"/>`).join('')}</g></svg>`;
+    if(kind==='cook')return W+`<rect width="800" height="450" fill="#f4ead8"/><rect y="320" width="800" height="130" fill="#c9a874"/><rect x="330" y="290" width="140" height="30" rx="8" fill="#333"/><ellipse cx="400" cy="290" rx="80" ry="14" fill="#555"/><g class="lf-steam">${[0,1,2].map(i=>`<circle style="--d:${i*.5}s" cx="${380+i*20}" cy="270" r="10" fill="rgba(200,200,200,.6)"/>`).join('')}</g>${kidFig(260,420,2.4,'lf-run')}${kidFig(560,420,2.4,'lf-run2',true)}<text class="lf-smack" x="400" y="190" text-anchor="middle" font-size="28" fill="#a3201a" font-family="Special Elite,serif">*smoke alarm*</text></svg>`;
+    if(kind==='trip')return W+`<rect width="800" height="450" fill="#a8d8f0"/><path d="M0 300 L200 160 L380 300Z" fill="#6a8a6a"/><path d="M260 300 L480 130 L700 300Z" fill="#4e6e4e"/><rect y="300" width="800" height="150" fill="#d8c09a"/><g class="lf-car"><rect x="-70" y="-40" width="140" height="44" rx="12" fill="#e0405a"/><rect x="-40" y="-62" width="80" height="26" rx="8" fill="#e0405a"/><circle cx="-40" cy="6" r="14" fill="#111"/><circle cx="40" cy="6" r="14" fill="#111"/></g></svg>`;
+    if(kind==='dance2')return lifeScene('dance');
+    if(kind==='sing')return W+`<rect width="800" height="450" fill="#201028"/>${kidFig(330,420,2.6,'lf-dance')}${kidFig(470,420,2.6,'lf-run2',true)}<rect x="392" y="230" width="6" height="190" fill="#999"/><g class="lf-notes2" fill="#ffd27a" font-size="40">${['♪','♫','♩','♪'].map((n,i)=>`<text style="--d:${i*.5}s" x="${300+i*70}" y="200">${n}</text>`).join('')}</g></svg>`;
+    if(kind==='laugh')return W+`<rect width="800" height="450" fill="#fdf0e0"/>${kidFig(350,420,2.6,'lf-run')}${kidFig(450,420,2.6,'lf-run2',true)}<g font-family="Special Elite,serif" fill="#c0283a" font-size="34"><text class="lf-smack" x="250" y="180">HAHA</text><text class="lf-smack" style="animation-delay:.6s" x="480" y="150">hahaha</text></g></svg>`;
+    if(kind==='kiss')return W+`<rect width="800" height="450" fill="#1a0f18"/><circle cx="400" cy="220" r="200" fill="rgba(255,150,180,.12)"/>${kidFig(380,420,2.8)}${kidFig(430,420,2.8,'',true)}<g class="lf-heart"><path d="M405 150 c-12-16-38-10-38 12 0 16 38 36 38 36s38-20 38-36c0-22-26-28-38-12z" fill="#e0405a"/></g><rect class="lf-censor" x="330" y="180" width="140" height="40" fill="#000"/><text x="400" y="207" text-anchor="middle" font-size="18" fill="#fff" font-family="DM Mono,monospace" class="lf-censor">CLASSIFIED</text></svg>`;
+    if(kind==='present')return W+`<rect width="800" height="450" fill="#2a1a24"/><circle cx="400" cy="220" r="220" fill="rgba(255,200,150,.15)"/>${kidFig(370,430,3)}${kidFig(440,430,3,'',true)}</svg>`;
+    if(kind==='closed')return W+`<rect width="800" height="450" fill="#0c0906"/><rect x="250" y="110" width="300" height="220" fill="#c9a874"/><text x="400" y="190" text-anchor="middle" font-size="20" fill="#2a1d12" font-family="Special Elite,serif">CASE 25</text><text x="400" y="225" text-anchor="middle" font-size="15" fill="#2a1d12" font-family="DM Mono,monospace">SUBJECT: SHAIK JAMEEL AHMAD</text><text x="400" y="250" text-anchor="middle" font-size="13" fill="#5a4128" font-family="DM Mono,monospace">OPENED: 31 OCT 2001 · VIJAYAWADA</text><g class="lf-stampin" transform="rotate(-10 400 290)"><rect x="300" y="268" width="200" height="44" fill="rgba(255,255,255,.2)" stroke="#c0283a" stroke-width="5"/><text x="400" y="299" text-anchor="middle" font-size="26" fill="#c0283a" font-family="Special Elite,serif">LOVED</text></g></svg>`;
     if(kind==='ps5')return W+`<rect width="800" height="450" fill="#0c0f1c"/><rect x="200" y="70" width="400" height="230" rx="10" fill="#1a1d2a"/><rect class="lf-game" x="214" y="84" width="372" height="202" fill="#2b4c9a"/><path d="M0 450 L200 300 L600 300 L800 450Z" fill="rgba(100,140,255,.12)"/>${kidFig(320,430,2.2,'lf-run')}${kidFig(480,430,2.2,'lf-run2',true)}<text x="400" y="200" text-anchor="middle" font-size="28" fill="#fff" font-family="DM Mono,monospace" class="lf-clock">P1 3 : 3 P2</text></svg>`;
     if(kind==='pottery')return W+`<rect width="800" height="450" fill="#e8d7c0"/><rect y="300" width="800" height="150" fill="#a5774a"/><ellipse cx="400" cy="300" rx="90" ry="20" fill="#5a4a40"/><g class="lf-wheel"><path d="M360 300 Q350 240 380 220 Q400 214 420 220 Q450 240 440 300Z" fill="#b87a52"/></g>${kidFig(270,420,2.2)}${kidFig(530,420,2.2,'',true)}</svg>`;
     if(kind==='concert')return W+`<rect width="800" height="450" fill="#0d0a14"/>${['#f5a','#5cf','#fd5','#a5f','#5f9'].map((c,i)=>`<path class="lf-beam" style="--d:${i*.3}s" d="M${120+i*140} 0 L${60+i*140} 450 L${180+i*140} 450Z" fill="${c}" opacity=".2"/>`).join('')}<g fill="#000">${Array.from({length:14},(_,i)=>`<circle class="lf-run" cx="${30+i*58}" cy="${410+(i%3)*10}" r="22"/>`).join('')}</g>${kidFig(370,440,2.3,'lf-dance')}${kidFig(450,440,2.3,'lf-run2',true)}<g class="lf-hearts" fill="#ffd27a"><path style="--d:0s" d="M400 200 l6 14 15 2 -11 10 3 15 -13 -8 -13 8 3 -15 -11 -10 15 -2z"/></g></svg>`;
@@ -4486,17 +4504,29 @@ Do not look away from it.
     if(kind==='bday')return W+`<rect width="800" height="450" fill="#1a0f1c"/>${Array.from({length:40},(_,i)=>`<rect class="lf-confetti" style="--d:${(i%10)*.3}s;--x:${(i*53)%800}px" x="0" y="0" width="8" height="14" fill="${['#f5a','#5cf','#fd5','#a5f','#5f9'][i%5]}"/>`).join('')}<text x="400" y="170" text-anchor="middle" font-size="64" fill="#ffe2a8" font-family="Special Elite,serif" class="lf-bdaytxt">HAPPY BIRTHDAY</text><text x="400" y="230" text-anchor="middle" font-size="30" fill="#f6ecd8" font-family="Libre Baskerville,serif" font-style="italic">Mr. Shaik · 25</text>${kidFig(360,430,2.3)}${kidFig(440,430,2.3,'',true)}<g transform="translate(400 330)"><rect x="-50" y="0" width="100" height="44" rx="6" fill="#fff"/><rect x="-50" y="0" width="100" height="12" fill="#a5d8ff"/>${[-24,-8,8,24].map(x=>`<rect x="${x-2}" y="-20" width="4" height="20" fill="#f5a"/><circle class="lf-flame" cx="${x}" cy="-24" r="4" fill="#ffb347"/>`).join('')}</g></svg>`;
     return W+`<rect width="800" height="450" fill="#203550"/><rect y="330" width="800" height="120" fill="#3a6a4a"/><path d="M400 200 V420" stroke="#ddd" stroke-width="4"/><path d="M400 250 H400" /><rect x="396" y="250" width="8" height="90" fill="rgba(255,255,255,.4)"/>${kidFig(220,420,2.2,'lf-swing')}${kidFig(600,420,2.2,'lf-swing2')}<g class="lf-shuttle"><path d="M0 0 l-12 -8 l4 8 l-4 8z" fill="#fff"/><circle cx="2" cy="0" r="4" fill="#f4e7c3"/></g></svg>`;
   }
+  const LIFE_CAP={family:'the whole family',games:'11 to 15',rubik:'solved it',style:'the style era',dance2:'us',pondy:'Pondy',trip:'on the water',shop:'mirror evidence',kiss:'',present:'',laugh:'subject, smiling'};
+  const LIFE_TR=['zoom','whip','flash','blur','page','ink'];
   function lifeStory(screen,done){
-    const host=document.createElement('div');host.className='lf';host.innerHTML=`<div class="lf-stage"></div><div class="lf-cap"><small></small><p></p></div><button type="button" class="f4-btn lf-skip">SKIP TO THE FILE →</button>`;screen.append(host);
-    const stage=host.querySelector('.lf-stage'),sm=host.querySelector('.lf-cap small'),pp=host.querySelector('.lf-cap p');let stop=false;
+    const host=document.createElement('div');host.className='lf';host.innerHTML=`<div class="lf-stage"></div><div class="lf-chap"><small></small><b></b></div><div class="lf-cap"><small></small><p></p></div><div class="lf-flash"></div><button type="button" class="f4-btn lf-skip">SKIP TO THE FILE →</button>`;screen.append(host);
+    const stage=host.querySelector('.lf-stage'),sm=host.querySelector('.lf-cap small'),pp=host.querySelector('.lf-cap p'),chap=host.querySelector('.lf-chap'),flash=host.querySelector('.lf-flash');let stop=false;
+    const wait=ms=>new Promise(r=>setTimeout(r,ms));
     host.querySelector('.lf-skip').addEventListener('click',()=>{stop=true;try{speechSynthesis.cancel();}catch{}host.remove();done();});
-    (async()=>{await new Promise(r=>setTimeout(r,400));for(const [tag,text,kind] of LIFE){if(stop||!screen.isConnected)return;
-        // the drawn scene plays, and the real photo for that moment pops in on the left like a polaroid
-        const CAP={family:'the whole family',games:'11 to 15',rubik:'solved it',style:'the style era',concert:'live music',pondy:'Pondy',together:'still together',bday:'today'};
-        stage.innerHTML=`<div class="lf-frame">${lifeScene(kind)}${kind!=='guess'&&kind!=='crush'?`<figure class="lf-pop"><img src="assets/file-s/${kind}.jpg" alt="" onerror="this.parentNode.remove()"><figcaption>${CAP[kind]||''}</figcaption></figure>`:''}</div>`;stage.classList.remove('in');void stage.offsetWidth;stage.classList.add('in');sm.textContent=tag;pp.textContent='';sfx('ink');
-        if(kind==='name'){const b=stage.querySelector('b');for(let k=1;k<=LIFE_NAME.length;k++){if(stop)return;b.textContent=LIFE_NAME.slice(0,k);await new Promise(r=>setTimeout(r,90));}sfx('stamp');}
+    (async()=>{await wait(400);let i=0;
+      for(const [tag,text,kind,tone,chapter] of LIFE){if(stop||!screen.isConnected)return;
+        if(chapter){// chapter card on its own screen
+          stage.classList.add('lf-out');await wait(500);stage.innerHTML='';stage.classList.remove('lf-out');
+          const [k,t]=chapter.split(' · ');chap.querySelector('small').textContent=k;chap.querySelector('b').textContent=t||'';chap.classList.remove('on');void chap.offsetWidth;chap.classList.add('on');sfx('ink');
+          await wait(2200);chap.classList.remove('on');await wait(400);}
+        const tr=LIFE_TR[i++%LIFE_TR.length];
+        const old=stage.firstElementChild;if(old){old.classList.add('lf-leave-'+tr);await wait(450);}
+        const pop=kind!=='guess'&&kind!=='crush'?`<figure class="lf-pop"><img src="assets/file-s/${kind}.jpg" alt="" onerror="this.parentNode.remove()">${LIFE_CAP[kind]?`<figcaption>${LIFE_CAP[kind]}</figcaption>`:''}</figure>`:'';
+        stage.innerHTML=`<div class="lf-frame lf-in-${tr}">${lifeScene(kind)}${pop}</div>`;
+        if(tr==='flash'){flash.animate([{opacity:0},{opacity:.9,offset:.1},{opacity:0}],{duration:600});sfx('key');}else sfx(tr==='page'?'paper':'ink');
+        sm.textContent=tag;pp.textContent='';
+        if(kind==='name'){const b2=stage.querySelector('b');for(let k=1;k<=LIFE_NAME.length;k++){if(stop)return;b2.textContent=LIFE_NAME.slice(0,k);await wait(90);}sfx('stamp');}
+        if(kind==='closed'||kind==='open')setTimeout(()=>sfx('stamp'),kind==='open'?500:1200);
         pp.textContent=text;pp.classList.remove('on');void pp.offsetWidth;pp.classList.add('on');
-        await narrate(text);if(kind==='name')await narrate(LIFE_NAME.toLowerCase());await new Promise(r=>setTimeout(r,900));}
+        await narrate(text,T[tone]||T.W);if(kind==='name')await narrate(LIFE_NAME.toLowerCase(),T.W);await wait(900);}
       if(!stop){host.classList.add('out');setTimeout(()=>{host.remove();done();},1000);}})();
   }
   function fileSBuild(screen){
